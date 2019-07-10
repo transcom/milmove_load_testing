@@ -1,0 +1,13 @@
+# misc
+.DS_Store
+.idea
+.vscode
+*.swp
+*.sublime-*
+
+# Makefile
+*.stamp
+
+# Virtualenv
+.venv
+__pycache__
