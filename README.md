@@ -1,5 +1,9 @@
 # Load Testing
 
+Load testing for the [MilMove](https://github.com/transcom/mymove) application is done with the code in this repo.
+Testing employs the [locust.io](https://docs.locust.io/en/stable/) framework which in turn uses the
+[Bravado](https://bravado.readthedocs.io/en/stable/) swagger library to make requests.
+
 ## Creating devlocal users for load testing
 
 Load testing will require that you create a number of different users for your scenarios. To create a devlocal
@@ -8,7 +12,16 @@ returns a JSON formatted version of the User model for the new user instead of r
 The new user will be logged in upon creation and the response will contain the session token you'd expect from
 a normal login.
 
-## `locust.io`
+## What is tested
+
+The load testing demo implements these things:
+
+- Anon User: Touching home page only
+- Service Member App: PPM Flow only
+- Office App: Queue and Move Inspection (no move modification)
+- TSP App: Queue and Move Inspection (no move modification)
+
+## Quick Start
 
 Getting started
 
@@ -18,7 +31,7 @@ make setup
 
 In a separate window ensure that the app server is running with `make server_run`.
 
-## Running tests with Web UI
+### Running tests with Web UI
 
 ```sh
 make load_test
@@ -27,7 +40,7 @@ make load_test
 Then open [http://localhost:8089](http://localhost:8089/) and enter the number of users to simulate and the hatch rate.
 Finally, hit the `Start swarming` button and wait for the tests to finish.
 
-## Running tests from the CLI
+### Running tests from the CLI
 
 You can run the test suite without the Web UI with a command similar to this:
 
@@ -41,7 +54,20 @@ Or you can run this by hand with:
 locust -f locustfile.py --no-web --clients=50 --hatch-rate=5 --run-time=60s
 ```
 
-## Handling Rate Limiting
+## Load Testing against AWS Experimental Environment
+
+To load test against the AWS Experimental Environment you must modify the
+[`DEVLOCAL_AUTH` environment variable](https://github.com/transcom/mymove/blob/master/config/env/experimental.env#L15)
+and [deploy the code to the experimental environment](https://github.com/transcom/mymove/blob/master/docs/how-to/deploy-to-experimental.md).
+
+Then you can use the same steps as the development as above as long as you change the `host` parameter in the
+`locustfile.py` test classes and point them to the experimental domains:
+
+- [https://my.experimental.move.mil](https://my.experimental.move.mil)
+- [https://office.experimental.move.mil](https://office.experimental.move.mil)
+- [https://tsp.experimental.move.mil](https://tsp.experimental.move.mil)
+
+### Handling Rate Limiting
 
 Each environment is set to limit the number of requests from a single IP in a 5 minute period. That limit
 is usually 2000. For load testing it's likely you'll want a much higher limit, perhaps even 10 times as high. Work
