@@ -1,0 +1,61 @@
+############
+#
+# Caches
+#
+# Caches may have a `v1-` prefix, since caches in CircleCI 2.0 are immutable.
+# A prefix provides an easy way to invalidate a cache.  See https://circleci.com/docs/2.0/caching/#clearing-cache
+#
+############
+
+version: "2.1"
+
+executors:
+  # `main` uses the `trussworks/circleci-docker-primary` docker image with a checkout of the mymove code
+  primary:
+    resource_class: small
+    docker:
+      - image: trussworks/circleci-docker-primary:9b7bfbf6bfae544566ade0c896f8aacbd16281e5
+
+jobs:
+
+  # `pre_deps_precommit` is used for cache pre-commit sources
+  pre_deps_precommit:
+    executor: primary
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+
+      - run: pre-commit install-hooks
+
+      - save_cache:
+          key: pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+          paths:
+            - ~/.cache/pre-commit
+
+  # `test` is used to run pre-commit hooks on all files
+  test:
+    executor: primary
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+      - run:
+          name: Run pre-commit tests
+          command: pre-commit run --all-files
+
+workflows:
+  version: 2
+
+  main:
+    jobs:
+      - pre_deps_precommit
+
+      - test:
+          requires:
+            - pre_deps_precommit
