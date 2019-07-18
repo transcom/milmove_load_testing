@@ -29,7 +29,7 @@ Getting started
 make setup
 ```
 
-From the MilMove application in a separate window ensure that the app server is running with `make server_run`.
+From the MilMove application in a separate window ensure that the app server is running with `make server_run_standalone`.
 
 ### Running tests with Web UI
 
