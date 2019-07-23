@@ -10,6 +10,7 @@ help:  ## Print the help documentation
 
 $(VENV_ACTIVATE): requirements.txt requirements-dev.txt
 	brew list libev || brew install libev
+	which virtualenv || pip install virtualenv
 	test -f $@ || virtualenv --python=python3 $(VENV_DIR)
 	$(WITH_VENV) pip install -r requirements.txt
 	$(WITH_VENV) pip install -r requirements-dev.txt
