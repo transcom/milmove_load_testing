@@ -4,7 +4,6 @@ from locust import HttpLocust
 from apps import AnonBehavior
 from apps import ServiceMemberUserBehavior
 from apps import OfficeUserBehavior
-from apps import TSPUserBehavior
 
 
 class AnonUser(HttpLocust):
@@ -27,10 +26,3 @@ class OfficeUser(HttpLocust):
     # host = "https://office.experimental.move.mil"
     weight = 1
     task_set = OfficeUserBehavior
-
-
-class TSPUser(HttpLocust):
-    host = "http://tsplocal:8080"
-    # host = "https://tsp.experimental.move.mil"
-    weight = 1
-    task_set = TSPUserBehavior
