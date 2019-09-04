@@ -19,7 +19,6 @@ The load testing demo implements these things:
 - Anon User: Touching home page only
 - Service Member App: PPM Flow only
 - Office App: Queue and Move Inspection (no move modification)
-- TSP App: Queue and Move Inspection (no move modification)
 
 ## Quick Start
 
@@ -65,7 +64,6 @@ Then you can use the same steps as the development as above as long as you chang
 
 - [https://my.experimental.move.mil](https://my.experimental.move.mil)
 - [https://office.experimental.move.mil](https://office.experimental.move.mil)
-- [https://tsp.experimental.move.mil](https://tsp.experimental.move.mil)
 
 ### Handling Rate Limiting
 

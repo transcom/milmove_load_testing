@@ -71,10 +71,7 @@ if __name__ == "__main__":
         user_type="office",
         session_token_name="office_session_token",
     )
-    tsp_demo = Demo(
-        "http://tsplocal:8080", user_type="tsp", session_token_name="tsp_session_token"
-    )
-    for demo in [milmove_demo, office_demo, tsp_demo]:
+    for demo in [milmove_demo, office_demo]:
         print(demo.url)
         demo.create_user()
         print("User", demo.user)
