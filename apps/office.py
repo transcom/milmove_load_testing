@@ -86,9 +86,9 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
         """
         queue_types = [
             "new",
-            "ppm",
-            "hhg_approved",
-            "hhg_delivered",
+            "ppm_payment_requested",
+            "ppm_approved",
+            "ppm_completed",
         ]  # Excluding 'all' queue
         q_type = random.choice(queue_types)
 
