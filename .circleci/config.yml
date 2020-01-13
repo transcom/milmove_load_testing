@@ -14,26 +14,9 @@ executors:
   primary:
     resource_class: small
     docker:
-      - image: trussworks/circleci-docker-primary:9b7bfbf6bfae544566ade0c896f8aacbd16281e5
+      - image: trussworks/circleci-docker-primary:tf12-a87f764f23bf209329e02011d7e5280bc15a9624
 
 jobs:
-
-  # `pre_deps_precommit` is used for cache pre-commit sources
-  pre_deps_precommit:
-    executor: primary
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-            - pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
-
-      - run: pre-commit install-hooks
-
-      - save_cache:
-          key: pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
-          paths:
-            - ~/.cache/pre-commit
 
   # `test` is used to run pre-commit hooks on all files
   test:
@@ -41,21 +24,22 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          docker_layer_caching: true
+          docker_layer_caching: false
       - restore_cache:
           keys:
-            - pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+            - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+      - run: pre-commit install-hooks
       - run:
           name: Run pre-commit tests
           command: pre-commit run --all-files
+      - save_cache:
+          key: v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+          paths:
+            - ~/.cache/pre-commit
 
 workflows:
   version: 2
 
   main:
     jobs:
-      - pre_deps_precommit
-
-      - test:
-          requires:
-            - pre_deps_precommit
+      - test

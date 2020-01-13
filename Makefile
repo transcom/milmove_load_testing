@@ -30,6 +30,13 @@ ensure_pre_commit: .git/hooks/pre-commit ## Ensure pre-commit is installed
 	pre-commit install
 	pre-commit install-hooks
 
+.PHONY: pre_commit_update_deps
+pre_commit_update_deps: ## Update pre-commit dependencies
+	pre-commit autoupdate
+
+.PHONY: update_deps
+update_deps: pre_commit_update_deps ## Update all dependencies
+
 .PHONY: pre_commit_tests
 pre_commit_tests: ## Run pre-commit tests
 	pre-commit run --all-files
