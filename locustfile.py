@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from locust import HttpLocust
+from locust import HttpLocust, between
 
 from apps import AnonBehavior
 from apps import ServiceMemberUserBehavior
@@ -12,6 +12,7 @@ class AnonUser(HttpLocust):
     # weight = 5  # 5x more likely than other users
     weight = 1
     task_set = AnonBehavior
+    wait_time = between(2, 5)
 
 
 class ServiceMemberUser(HttpLocust):
@@ -19,6 +20,7 @@ class ServiceMemberUser(HttpLocust):
     # host = "https://my.experimental.move.mil"
     weight = 1
     task_set = ServiceMemberUserBehavior
+    wait_time = between(2, 5)
 
 
 class OfficeUser(HttpLocust):
@@ -26,3 +28,4 @@ class OfficeUser(HttpLocust):
     # host = "https://office.experimental.move.mil"
     weight = 1
     task_set = OfficeUserBehavior
+    wait_time = between(2, 5)
