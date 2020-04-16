@@ -60,14 +60,6 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
             if not self.swagger_internal:
                 self.kill("internal swagger client failure")
 
-            self.swagger_public = SwaggerClient.from_url(
-                urljoin(self.parent.parent.host, "api/v1/swagger.yaml"),
-                request_headers={"x-csrf-token": self.csrf},
-                http_client=self.requests_client,
-                config=get_swagger_config(),
-            )
-            if not self.swagger_public:
-                self.kill("public swagger client failure")
         except Exception as e:
             print(e)
             return self.kill("unknown swagger client failure")
@@ -113,7 +105,7 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
             self.swagger_internal.move_docs.indexMoveDocuments, moveId=move_id
         )
         swagger_request(
-            self.swagger_public.accessorials.getTariff400ngItems,
+            self.swagger_internal.accessorials.getTariff400ngItems,
             requires_pre_approval=True,
         )
         swagger_request(
@@ -146,30 +138,30 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
 
         shipment_id = move["shipments"][0]["id"]
         swagger_request(
-            self.swagger_public.shipments.getShipment, shipmentId=shipment_id
+            self.swagger_internal.shipments.getShipment, shipmentId=shipment_id
         )
 
         swagger_request(
-            self.swagger_public.transportation_service_provider.getTransportationServiceProvider,
+            self.swagger_internal.transportation_service_provider.getTransportationServiceProvider,
             shipmentId=shipment_id,
         )
 
         swagger_request(
-            self.swagger_public.accessorials.getShipmentLineItems,
+            self.swagger_internal.accessorials.getShipmentLineItems,
             shipmentId=shipment_id,
         )
 
         swagger_request(
-            self.swagger_public.shipments.getShipmentInvoices, shipmentId=shipment_id
+            self.swagger_internal.shipments.getShipmentInvoices, shipmentId=shipment_id
         )
 
         swagger_request(
-            self.swagger_public.service_agents.indexServiceAgents,
+            self.swagger_internal.service_agents.indexServiceAgents,
             shipmentId=shipment_id,
         )
 
         swagger_request(
-            self.swagger_public.storage_in_transits.indexStorageInTransits,
+            self.swagger_internal.storage_in_transits.indexStorageInTransits,
             shipmentId=shipment_id,
         )
 
