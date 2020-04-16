@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-from .anon import AnonBehavior  # noqa
-from .service_member import ServiceMemberUserBehavior  # noqa
-from .office import OfficeUserBehavior  # noqa
+from .internal.anon import AnonBehavior  # noqa
+from .internal.service_member import ServiceMemberUserBehavior  # noqa
+from .internal.office import OfficeUserBehavior  # noqa
