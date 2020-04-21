@@ -5,6 +5,7 @@ from apps.internal import AnonBehavior
 from apps.internal import ServiceMemberUserBehavior
 from apps.internal import OfficeUserBehavior
 
+from apps.prime import PrimeClientBehavior
 
 class AnonUser(HttpLocust):
     host = "http://milmovelocal:8080"
@@ -29,3 +30,10 @@ class OfficeUser(HttpLocust):
     weight = 1
     task_set = OfficeUserBehavior
     wait_time = between(2, 5)
+
+class PrimeClient(HttpLocust):
+    host = "http://primelocal:9443"
+    # host = "https://office.experimental.move.mil"
+    weight = 1
+    task_set = PrimeClientBehavior
+    wait_time = between(1,2)
