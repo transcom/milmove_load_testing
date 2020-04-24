@@ -1,0 +1,46 @@
+swagger: '2.0'
+paths:
+  /users:
+    get:
+      summary: Gets a list of users.
+      response:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ArrayOfUsers'
+        401:
+          $ref: '#/responses/Unauthorized'   # <-----
+  /users/{id}:
+    get:
+      summary: Gets a user by ID.
+      response:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          $ref: '#/responses/Unauthorized'   # <-----
+        404:
+          $ref: '#/responses/NotFound'       # <-----
+# Descriptions of common responses
+responses:
+  NotFound:
+    description: The specified resource was not found
+    schema:
+      $ref: '#/definitions/Error'
+  Unauthorized:
+    description: Unauthorized
+    schema:
+      $ref: '#/definitions/Error'
+definitions:
+  # Schema for error response body
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    required:
+      - code
+      - message
