@@ -7,12 +7,18 @@ from .base import BaseTaskSequence
 class PrimeEndpoints(BaseTaskSequence):
 
     def move_task_orders(self):
-        local_cert = (
-            "./config/tls/devlocal-mtls.cer",
-            "./config/tls/devlocal-mtls.key",
+        # local_cert = (
+        #     "./config/tls/devlocal-mtls.cer",
+        #     "./config/tls/devlocal-mtls.key",
+        # )
+        my_cert = (
+            "./tmp/piv.cer",
+            "./tmp/piv.key",
         )
-        url = 'https://primelocal:9443/prime/v1/move-task-orders'
-        self.client.get(url, verify=False, cert=self.local_cert)
+        cert = './tmp/piv.pem'
+        url = 'https://api.experimental.move.mil/prime/v1/move-task-orders'
+        # self.client.get(url, verify=cert, cert=cert)
+        self.client.get(url, verify=cert)
         
     @seq_task(1)
     def fetch_move_task_orders(self):

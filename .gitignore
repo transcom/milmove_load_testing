@@ -11,3 +11,9 @@
 # Virtualenv
 .venv
 __pycache__
+
+# temp dir
+.tmp
+
+# env dir
+env
