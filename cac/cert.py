@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from asn1crypto import x509
 from PyKCS11 import *
 
@@ -11,7 +12,7 @@ from PyKCS11 import *
 
 # https://github.com/paultag/go-pksigner/blob/master/pkcs11.go
 # https://github.com/paultag/go-piv/blob/master/certificate.go
-# TLSCertificate -> LoadCertificate -> GetCertificateTemplate -> 
+# TLSCertificate -> LoadCertificate -> GetCertificateTemplate ->
 # go run ./cmd/prime-api-client --cac --hostname api.experimental.move.mil --port 443 fetch-mtos | jq
 
 
@@ -23,8 +24,8 @@ pkcs11.load(lib_path)
 slot = pkcs11.getSlotList(tokenPresent=True)[0]
 
 session = pkcs11.openSession(slot, CKF_SERIAL_SESSION | CKF_RW_SESSION)
-pin = os.getenv('PIN')
-print (pin)
+pin = os.getenv("PIN")
+print(pin)
 session.login(pin)
 
 print("sessionInfo")
@@ -42,18 +43,20 @@ certs = session.findObjects([(CKA_CLASS, CKO_CERTIFICATE)])
 # print(label)
 
 for cert in certs:
-	print("&&&&&&&&")
-	print(cert)
+    print("&&&&&&&&")
+    print(cert)
 
-	cka_label, cka_value, cka_id = session.getAttributeValue(cert, [CKA_LABEL, CKA_VALUE, CKA_ID])
-	if cka_label == "Certificate for PIV Authentication":
-		print (cka_label)
-		cert_der = bytes(cka_value)
-		cert_x509 = x509.Certificate.load(cert_der)
-		print (cert_x509)
-		return cert_x509
-	# 	results.append(cert)
-	# print(len(results))
+    cka_label, cka_value, cka_id = session.getAttributeValue(
+        cert, [CKA_LABEL, CKA_VALUE, CKA_ID]
+    )
+    if cka_label == "Certificate for PIV Authentication":
+        print(cka_label)
+        cert_der = bytes(cka_value)
+        cert_x509 = x509.Certificate.load(cert_der)
+        print(cert_x509)
+        return cert_x509
+    # 	results.append(cert)
+    # print(len(results))
 
 
 # for r in certs:

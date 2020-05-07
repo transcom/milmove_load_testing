@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 #   Copyright (C) 2015 Roman Pasechnik
 #   Copyright (C) 2018 Ludovic Rousseau
@@ -25,8 +26,8 @@ import binascii
 import os
 import sys
 
-pin = os.getenv('PIN')
-print (pin)
+pin = os.getenv("PIN")
+print(pin)
 
 pkcs11 = PyKCS11Lib()
 # /env/lib/python3.8/site-packages/PyKCS11
@@ -42,21 +43,21 @@ session = pkcs11.openSession(slot, CKF_SERIAL_SESSION | CKF_RW_SESSION)
 
 session.login(pin)
 
-objects = session.findObjects()                
-all_attributes = PyKCS11.CKA.keys()             # all keys supported by SC
+objects = session.findObjects()
+all_attributes = PyKCS11.CKA.keys()  # all keys supported by SC
 
 print(session)
 print(all_attributes)
 
-print ("Defining KEY_GENERATION mechanism")
+print("Defining KEY_GENERATION mechanism")
 mech = PyKCS11.Mechanism(PyKCS11.CKM_RSA_PKCS_KEY_PAIR_GEN, None)
 
 priv_search_tmpl = [(CKA_CLASS, CKO_PRIVATE_KEY), (CKA_KEY_TYPE, CKK_ECDSA)]
 pub_search_tmpl = [(CKA_CLASS, CKO_PUBLIC_KEY), (CKA_KEY_TYPE, CKK_ECDSA)]
-print ("111111")
+print("111111")
 print(priv_search_tmpl)
 print(pub_search_tmpl)
-print ("222")
+print("222")
 
 # "Hello world" in hex
 toSign = "48656c6c6f20776f726c640d0a"

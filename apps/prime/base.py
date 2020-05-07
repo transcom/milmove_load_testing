@@ -19,13 +19,20 @@ from PyKCS11 import *
 
 import requests
 
-from cryptography.hazmat.primitives.serialization.pkcs12 import load_key_and_certificates
-from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
+from cryptography.hazmat.primitives.serialization.pkcs12 import (
+    load_key_and_certificates,
+)
+from cryptography.hazmat.primitives.serialization import (
+    Encoding,
+    PrivateFormat,
+    NoEncryption,
+)
 from cryptography.hazmat.backends import default_backend
 from requests_toolbelt.adapters.x509 import X509Adapter
 
 
 from OpenSSL import crypto
+
 
 def get_swagger_config():
     """
@@ -58,13 +65,12 @@ def get_swagger_config():
             description="Converts [wire]string:string <=> python string",
         )
         milmove_formats.append(swagger_fmt)
-        
+
     # local_cert = (
     #     "./config/tls/devlocal-mtls.cer",
     #     "./config/tls/devlocal-mtls.key",
     # )
     # self.requests_client = (ssl_verify=False, ssl_cert=self.local_cert)
-
 
     swagger_config = {
         # Validate our own requests to catch any problems with python type conversions
@@ -75,10 +81,11 @@ def get_swagger_config():
         # doesnt like definitions and responses toogether,
         "validate_swagger_spec": False,
         "use_models": False,
-        # "ssl_verify": False, 
+        # "ssl_verify": False,
         # "ssl_cert": local_cert
     }
     return swagger_config
+
 
 def swagger_request(callable_operation, *args, **kwargs):
     """
@@ -121,6 +128,7 @@ def swagger_request(callable_operation, *args, **kwargs):
         # this is equivalent to json.loads(metadata.incoming_response.text)
         return response.result
 
+
 def card_cert(cert):
     # go code
     # https://github.com/paultag/go-pksigner/blob/master/pkcs11.go
@@ -128,7 +136,7 @@ def card_cert(cert):
     if cert:
         return cert
     else:
-        
+
         pkcs11 = PyKCS11Lib()
         lib_path = "/usr/local/lib/pkcs11/opensc-pkcs11.so"
         pkcs11.load(lib_path)
@@ -137,8 +145,8 @@ def card_cert(cert):
         slot = pkcs11.getSlotList(tokenPresent=True)[0]
 
         session = pkcs11.openSession(slot, CKF_SERIAL_SESSION | CKF_RW_SESSION)
-        pin = os.getenv('PIN')
-        print (pin)
+        pin = os.getenv("PIN")
+        print(pin)
         session.login(pin)
 
         cert_label = "Certificate for PIV Authentication"
@@ -149,8 +157,8 @@ def card_cert(cert):
         priv_key = session.findObjects([(CKA_CLASS, CKO_PRIVATE_KEY)])
 
         print("keys")
-        print (pub_key)
-        print (priv_key)
+        print(pub_key)
+        print(priv_key)
 
         # label = session.findObjects([(CKA_LABEL, CKA_CLASS)])
         # print("label")
@@ -160,36 +168,30 @@ def card_cert(cert):
             print("&&&&&&&&")
             # print(cert)
 
-            cka_label, cka_value, cka_id = session.getAttributeValue(cert, [CKA_LABEL, CKA_VALUE, CKA_ID])
+            cka_label, cka_value, cka_id = session.getAttributeValue(
+                cert, [CKA_LABEL, CKA_VALUE, CKA_ID]
+            )
             cert_der = bytes(cka_value)
             # cert_x509 = x509.Certificate.load(cert_der)
-            cert12 = crypto.load_certificate(
-                crypto.FILETYPE_ASN1,
-                cert_der,
-            )
+            cert12 = crypto.load_certificate(crypto.FILETYPE_ASN1, cert_der,)
             subject = cert12.get_subject()
             print(subject)
 
-            cert13 = crypto.dump_certificate(
-                crypto.FILETYPE_PEM,
-                cert12
-            )
-
+            cert13 = crypto.dump_certificate(crypto.FILETYPE_PEM, cert12)
 
             f = open("./tmp/my.pem", "wb")
             f.write(cert13)
             f.close()
 
-            print(cert13)            
+            print(cert13)
             return cert13
 
             # return (results[0], results[1])
             # return results[1]
+
 
 class BaseTaskSequence(TaskSequence):
     local_cert = (
         "./config/tls/devlocal-mtls.cer",
         "./config/tls/devlocal-mtls.key",
     )
-
-

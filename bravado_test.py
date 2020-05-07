@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import os
 import sys
@@ -14,16 +15,11 @@ from bravado.requests_client import RequestsClient
 
 # petstore = SwaggerClient.from_url('./swagger/pet.yaml')
 
-petstore = SwaggerClient.from_spec(load_file('./swagger/pet.yaml'))
+petstore = SwaggerClient.from_spec(load_file("./swagger/pet.yaml"))
 
 pet_response = petstore.pet.getPetById(petId=42).response()
 http_response = pet_response.incoming_response
 assert isinstance(http_response, bravado_core.response.IncomingResponse)
-print (http_response.headers)
-print (http_response.status_code)
-print (pet_response.result.name)
-
-
-
-
-
+print(http_response.headers)
+print(http_response.status_code)
+print(pet_response.result.name)

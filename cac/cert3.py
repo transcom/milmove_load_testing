@@ -1,8 +1,8 @@
+# -*- coding: utf-8 -*-
 from asn1crypto import x509
 from PyKCS11 import *
 
 import requests
-
 
 
 # 	tokenLabel := v.GetString(TokenLabelFlag)
@@ -14,7 +14,7 @@ import requests
 
 # https://github.com/paultag/go-pksigner/blob/master/pkcs11.go
 # https://github.com/paultag/go-piv/blob/master/certificate.go
-# TLSCertificate -> LoadCertificate -> GetCertificateTemplate -> 
+# TLSCertificate -> LoadCertificate -> GetCertificateTemplate ->
 # go run ./cmd/prime-api-client --cac --hostname api.experimental.move.mil --port 443 fetch-mtos | jq
 
 
@@ -26,8 +26,8 @@ pkcs11.load(lib_path)
 slot = pkcs11.getSlotList(tokenPresent=True)[0]
 
 session = pkcs11.openSession(slot, CKF_SERIAL_SESSION | CKF_RW_SESSION)
-pin = os.getenv('PIN')
-print (pin)
+pin = os.getenv("PIN")
+print(pin)
 session.login(pin)
 
 print("sessionInfo")
@@ -45,17 +45,19 @@ certs = session.findObjects([(CKA_CLASS, CKO_CERTIFICATE)])
 # print(label)
 
 for cert in certs:
-	print("&&&&&&&&")
-	print(cert)
+    print("&&&&&&&&")
+    print(cert)
 
-	cka_label, cka_value, cka_id = session.getAttributeValue(cert, [CKA_LABEL, CKA_VALUE, CKA_ID])
-	if cka_label == "Certificate for PIV Authentication":
-		print (cka_label)
-		cert_der = bytes(cka_value)
-		cert_x509 = x509.Certificate.load(cert_der)
+    cka_label, cka_value, cka_id = session.getAttributeValue(
+        cert, [CKA_LABEL, CKA_VALUE, CKA_ID]
+    )
+    if cka_label == "Certificate for PIV Authentication":
+        print(cka_label)
+        cert_der = bytes(cka_value)
+        cert_x509 = x509.Certificate.load(cert_der)
 
 
-print (cert_x509)
+print(cert_x509)
 
 # The PKCS#11 API is an abstract API to perform operations on cryptographic objects such as private keys, without requiring access to the objects themselves. That is, it provides a logical separation of the keys from the operations. The PKCS #11 API is mainly used to access objects in smart cards and Hardware or Software Security Modules (HSMs). That is because in these modules the cryptographic keys are isolated in hardware or software and are not made available to the applications using them.
 
@@ -75,9 +77,9 @@ print (cert_x509)
 # Using the engine from the command line
 # In systems with p11-kit-proxy engine_pkcs11 has access to all the configured PKCS #11 modules and requires no further OpenSSL configuration. In systems without p11-kit-proxy you need to configure OpenSSL to know about the engine and to use OpenSC PKCS#11 module by the engine_pkcs11. For that you add something like the following into your global OpenSSL configuration file (often in /etc/ssl/openssl.cnf). This line must be placed at the top, before any sections are defined:
 
-		# return cert_x509
-	# 	results.append(cert)
-	# print(len(results))
+# return cert_x509
+# 	results.append(cert)
+# print(len(results))
 
 
 # for r in certs:
@@ -89,8 +91,6 @@ print (cert_x509)
 # for r in certs:
 
 
-
-
 from requests import Session
 
 from m2requests import M2HttpsAdapter
@@ -98,5 +98,5 @@ from m2requests import M2HttpsAdapter
 request = Session()
 request.mount("https://", M2HttpsAdapter())
 # PKCS#11 URI; REF: https://tools.ietf.org/html/rfc7512
-request.cert=("pkcs11:type=cert;...", "pkcs11:type=private;...")
+request.cert = ("pkcs11:type=cert;...", "pkcs11:type=private;...")
 request.get("https://...")

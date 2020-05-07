@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 #   Copyright (C) 2015 Roman Pasechnik
 #
@@ -20,8 +21,8 @@ from PyKCS11 import *
 import os
 import sys
 
-pin = os.getenv('PIN')
-print (pin)
+pin = os.getenv("PIN")
+print(pin)
 
 # the key_id has to be the same for both objects
 key_id = (0x22,)

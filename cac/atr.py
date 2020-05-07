@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Sample script that displays the ATR of inserted cards.
 
@@ -38,6 +39,4 @@ for reader in readers():
         connection.connect()
         print(reader, toHexString(connection.getATR()))
     except NoCardException:
-        print(reader, 'no card inserted')
-
-
+        print(reader, "no card inserted")

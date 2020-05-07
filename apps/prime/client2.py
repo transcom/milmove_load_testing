@@ -91,7 +91,7 @@ class PrimeEndpoints(BaseTaskSequence, PrimeAPIMixin):
         )
         url = 'https://primelocal:9443/prime/v1/move-task-orders'
         self.client.get(url, verify=False, cert=self.local_cert)
-        
+
     @seq_task(1)
     def fetch_move_task_orders(self):
         self.move_task_orders()
@@ -106,7 +106,7 @@ class PrimeEndpoints(BaseTaskSequence, PrimeAPIMixin):
     #         "./config/tls/devlocal-mtls.cer",
     #         "./config/tls/devlocal-mtls.key",
     #     )
-        
+
     #     self.requests_client =  (ssl_verify=False, ssl_cert=local_cert)
     #     # Set the session to be the same session as locust uses
     #     # self.requests_client.session = self.client

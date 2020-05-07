@@ -3,6 +3,7 @@ from locust import HttpLocust, between
 
 # from apps.internal import AnonBehavior
 from apps.internal import ServiceMemberUserBehavior
+
 # from apps.internal import OfficeUserBehavior
 
 from apps.prime import PrimeClientBehavior
