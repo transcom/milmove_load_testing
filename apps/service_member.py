@@ -185,17 +185,6 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
                 http_client=self.requests_client,
                 config=get_swagger_config(),
             )
-            if not self.swagger_internal:
-                self.kill("internal swagger client failure")
-
-            self.swagger_public = SwaggerClient.from_url(
-                urljoin(self.parent.parent.host, "api/v1/swagger.yaml"),
-                request_headers={"x-csrf-token": self.csrf},
-                http_client=self.requests_client,
-                config=get_swagger_config(),
-            )
-            if not self.swagger_public:
-                self.kill("public swagger client failure")
         except Exception as e:
             print(e)
             return self.kill("unknown swagger client failure")
