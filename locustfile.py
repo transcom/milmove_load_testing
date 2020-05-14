@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from locust import HttpLocust, between
 
-from apps import AnonBehavior
-from apps import ServiceMemberUserBehavior
-from apps import OfficeUserBehavior
+from apps.internal import AnonBehavior
+from apps.internal import ServiceMemberUserBehavior
+from apps.internal import OfficeUserBehavior
 
 
 class AnonUser(HttpLocust):
