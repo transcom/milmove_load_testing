@@ -8,11 +8,11 @@ from locust import task
 from bravado.client import SwaggerClient
 from bravado.requests_client import RequestsClient
 
-from .base import BaseTaskSequence
-from .base import InternalAPIMixin
-from .base import PublicAPIMixin
-from .base import get_swagger_config
-from .base import swagger_request
+from ..common.base import BaseTaskSequence
+from ..common.base import InternalAPIMixin
+from ..common.base import PublicAPIMixin
+from ..common.base import get_swagger_config
+from ..common.base import swagger_request
 
 
 class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
