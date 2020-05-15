@@ -8,6 +8,11 @@ from bravado_core.formatter import SwaggerFormat
 from bravado_core.exception import SwaggerMappingError
 from bravado.exception import HTTPError
 
+# supress `Unverified HTTPS request` warnings
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 def get_swagger_config():
     """
