@@ -61,10 +61,14 @@ lint: venv ## Run linting tests
 .PHONY: load_test
 load_test: venv ## Run load testing on http://localhost:8089
 	open http://localhost:8089
-	$(WITH_VENV) locust -f locustfile.py
+	$(WITH_VENV) locust -f locustfiles/locustfile.py
 
 .PHONY: load_test_noweb
 load_test_noweb: venv ## Run load testing with no web interface
-	$(WITH_VENV) locust -f prime_locust.py --host local -u 1 -r 1 -t 6s --headless
+	$(WITH_VENV) locust -f locustfiles/locustfile.py --host local -u 1 -r 1 -t 6s --headless
+
+.PHONY: load_test_prime
+load_test_prime: venv ## Run load testing for the prime locust file
+	$(WITH_VENV) locust -f locustfiles/prime.py --host local
 
 default: help
