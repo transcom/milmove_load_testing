@@ -3,7 +3,7 @@ import json
 from locust import HttpUser, task, between
 from common.utils import MilMoveUserMixin, MilMoveDomain
 
-PRIME_CERT_KWARGS = {"certs": ("certs/devlocal-mtls.cer", "certs/devlocal-mtls.key"), "verify": False}
+PRIME_CERT_KWARGS = {"cert": ("./certs/devlocal-mtls.cer", "./certs/devlocal-mtls.key"), "verify": False}
 
 
 # class PrimeTasks(TaskSet):
