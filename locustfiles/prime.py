@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from locust import HttpUser, task, between
-from utils import MilMoveUserMixin, MilMoveDomain
+from common.utils import MilMoveUserMixin, MilMoveDomain
 
 PRIME_CERT_KWARGS = {"certs": ("certs/devlocal-mtls.cer", "certs/devlocal-mtls.key"), "verify": False}
 
@@ -36,7 +36,7 @@ class PrimeUser(MilMoveUserMixin, HttpUser):
     @task
     def fetch_mto_updates(self):
         resp = self.client.get("/move-task-orders", **PRIME_CERT_KWARGS)
-        print("🏵", resp.status_code)  # todo log this?
+        print(f"🏵 status code {resp.status_code}")  # todo log this?
 
         try:
             json_body = json.loads(resp.content)
