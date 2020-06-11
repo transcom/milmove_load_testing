@@ -65,6 +65,6 @@ load_test: venv ## Run load testing on http://localhost:8089
 
 .PHONY: load_test_noweb
 load_test_noweb: venv ## Run load testing with no web interface
-	$(WITH_VENV) locust -f locustfile.py --no-web --clients=50 --hatch-rate=5 --run-time=60s
+	$(WITH_VENV) locust -f prime_locust.py --host local -u 1 -r 1 -t 6s --headless
 
 default: help
