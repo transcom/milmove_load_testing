@@ -489,4 +489,4 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
 
 
 class ServiceMemberUserBehavior(SequentialTaskSet):
-    tasks = {ServiceMemberSignupFlow: 1}
+    tasks = ServiceMemberSignupFlow.tasks

@@ -162,4 +162,4 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
 
 
 class OfficeUserBehavior(SequentialTaskSet):
-    tasks = {OfficeQueue: 1}
+    tasks = OfficeQueue.tasks
