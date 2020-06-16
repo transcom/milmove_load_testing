@@ -4,8 +4,7 @@ import os
 import random
 from urllib.parse import urljoin
 
-from locust import TaskSet
-from locust import seq_task
+from locust import SequentialTaskSet, task
 from bravado.client import SwaggerClient
 from bravado.requests_client import RequestsClient
 
@@ -20,9 +19,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
     login_gov_user = None
     session_token = None
 
-    fixtures_path = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "fixtures"
-    )
+    fixtures_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "fixtures")
 
     # User is the LoggedInUserPayload
     user = {}
@@ -46,9 +43,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         station_list = [short_name[0], short_name[0:3], short_name]
         duty_stations = None
         for station in station_list:
-            duty_stations = swagger_request(
-                self.swagger_internal.duty_stations.searchDutyStations, search=station
-            )
+            duty_stations = swagger_request(self.swagger_internal.duty_stations.searchDutyStations, search=station)
         return duty_stations
 
     def get_user(self):
@@ -123,8 +118,6 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
             return self.kill("get_duty_station_id 1")
         if "id" not in self.duty_stations[0]:
             return self.kill("get_duty_station_id 2")
-            self.intterupt()
-            return None
         return self.duty_stations[0]["id"]
 
     def get_new_duty_station_id(self):
@@ -132,38 +125,24 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
             return self.kill("get_new_duty_station_id 1")
         if "id" not in self.new_duty_stations[0]:
             return self.kill("get_new_duty_station_id 2")
-            self.intterupt()
-            return None
         return self.new_duty_stations[0]["id"]
 
     def get_address_origin(self):
         address = self.swagger_internal.get_model("Address")
-        return address(
-            street_address_1="12345 Fake St",
-            city="Crescent City",
-            state="FL",
-            postal_code=self.zip_origin,
-        )
+        return address(street_address_1="12345 Fake St", city="Crescent City", state="FL", postal_code=self.zip_origin,)
 
     def get_address_destination(self):
         address = self.swagger_internal.get_model("Address")
-        return address(
-            street_address_1="12345 Fake St",
-            city="Austin",
-            state="TX",
-            postal_code=self.zip_destination,
-        )
+        return address(street_address_1="12345 Fake St", city="Austin", state="TX", postal_code=self.zip_destination,)
 
-    @seq_task(1)
+    @task
     def login(self):
         resp = self.client.post("/devlocal-auth/create", data={"userType": "milmove"})
         try:
             self.login_gov_user = resp.json()
         except Exception as e:
             print(e)
-            return self.kill(
-                "login could not be parsed. content: {}".format(resp.content)
-            )
+            return self.kill("login could not be parsed. content: {}".format(resp.content))
 
         try:
             self.session_token = self.client.cookies.get("mil_session_token")
@@ -200,36 +179,31 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
             print(e)
             return self.kill("unknown swagger client failure")
 
-    @seq_task(2)
+    @task
     def retrieve_user(self):
         self.update_user()
 
-    @seq_task(3)
+    @task
     def create_service_member(self):
         model = self.swagger_internal.get_model("CreateServiceMemberPayload")
         payload = model(user_id=self.get_user_id())
         service_member = swagger_request(
-            self.swagger_internal.service_members.createServiceMember,
-            createServiceMemberPayload=payload,
+            self.swagger_internal.service_members.createServiceMember, createServiceMemberPayload=payload,
         )
         self.update_service_member(service_member)
 
-    @seq_task(4)
+    @task
     def create_your_profile(self):
 
         # Need the entitlements to get ranks and weight allotments
-        self.entitlements = swagger_request(
-            self.swagger_internal.entitlements.indexEntitlements
-        )
+        self.entitlements = swagger_request(self.swagger_internal.entitlements.indexEntitlements)
         self.rank = random.choice(list(self.entitlements.keys()))
         self.allotment = self.entitlements[self.rank]
 
         # Now set the profile
         model = self.swagger_internal.get_model("PatchServiceMemberPayload")
         payload = model(
-            affiliation=random.choice(
-                ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD"]
-            ),
+            affiliation=random.choice(["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD"]),
             edipi=str(random.randint(10 ** 9, 10 ** 10 - 1)),
             social_security_number="333-33-3333",  # Random
             rank=self.rank,
@@ -241,15 +215,10 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         )
         self.update_service_member(service_member)
 
-    @seq_task(5)
+    @task
     def create_your_name(self):
         model = self.swagger_internal.get_model("PatchServiceMemberPayload")
-        payload = model(
-            first_name="Alice",  # Random
-            middle_name="Carol",
-            last_name="Bob",  # Random
-            suffix="",
-        )
+        payload = model(first_name="Alice", middle_name="Carol", last_name="Bob", suffix="",)  # Random  # Random
         service_member = swagger_request(
             self.swagger_internal.service_members.patchServiceMember,
             serviceMemberId=self.get_service_member_id(),
@@ -257,7 +226,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         )
         self.update_service_member(service_member)
 
-    @seq_task(6)
+    @task
     def create_your_contact_info(self):
         model = self.swagger_internal.get_model("PatchServiceMemberPayload")
         payload = model(
@@ -274,11 +243,11 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         )
         self.update_service_member(service_member)
 
-    @seq_task(7)
+    @task
     def search_for_duty_station(self):
         self.duty_stations = self.get_dutystations("eglin")
 
-    @seq_task(8)
+    @task
     def current_duty_station(self):
         model = self.swagger_internal.get_model("PatchServiceMemberPayload")
         payload = model(current_station_id=self.get_duty_station_id())
@@ -289,7 +258,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         )
         self.update_service_member(service_member)
 
-    @seq_task(9)
+    @task
     def current_residence_address(self):
         model = self.swagger_internal.get_model("PatchServiceMemberPayload")
         payload = model(residential_address=self.get_address_origin())
@@ -300,7 +269,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         )
         self.update_service_member(service_member)
 
-    @seq_task(10)
+    @task
     def backup_mailing_address(self):
         model = self.swagger_internal.get_model("PatchServiceMemberPayload")
         payload = model(backup_mailing_address=self.get_address_origin())
@@ -311,17 +280,10 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         )
         self.update_service_member(service_member)
 
-    @seq_task(11)
+    @task
     def backup_contact(self):
-        model = self.swagger_internal.get_model(
-            "CreateServiceMemberBackupContactPayload"
-        )
-        payload = model(
-            name="Alice",
-            email="alice@example.com",
-            permission="NONE",
-            telephone="333-333-3333",
-        )
+        model = self.swagger_internal.get_model("CreateServiceMemberBackupContactPayload")
+        payload = model(name="Alice", email="alice@example.com", permission="NONE", telephone="333-333-3333",)
         swagger_request(
             self.swagger_internal.backup_contacts.createServiceMemberBackupContact,
             serviceMemberId=self.get_service_member_id(),
@@ -333,7 +295,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
     # of the user's profile.
     #
 
-    @seq_task(12)
+    @task
     def refresh_user_profile(self):
         self.update_user()
 
@@ -341,15 +303,13 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
     # Start adding move orders
     #
 
-    @seq_task(13)
+    @task
     def move_orders(self):
         # Get new duty station
         self.new_duty_stations = self.get_dutystations("travis")
 
         # Determine a few things randomly
-        issue_date = datetime.datetime.now() + datetime.timedelta(
-            days=random.randint(0, 15)
-        )
+        issue_date = datetime.datetime.now() + datetime.timedelta(days=random.randint(0, 15))
         report_by_date = issue_date + datetime.timedelta(days=random.randint(30, 60))
         spouse_has_pro_gear = False
         has_dependents = bool(random.getrandbits(1))
@@ -368,7 +328,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         )
         swagger_request(self.swagger_internal.orders.createOrders, createOrders=payload)
 
-    @seq_task(14)
+    @task
     def upload_orders(self):
         with open(os.path.join(self.fixtures_path, "test.pdf"), "rb") as f:
             swagger_request(self.swagger_internal.uploads.createUpload, file=f)
@@ -378,7 +338,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
     # of the user's profile.
     #
 
-    @seq_task(15)
+    @task
     def refresh_user_profile_2(self):
         self.update_user()
 
@@ -386,21 +346,17 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
     # Create the PPM Move
     #
 
-    @seq_task(16)
+    @task
     def select_ppm_move(self):
         model = self.swagger_internal.get_model("PatchMovePayload")
         payload = model(selected_move_type="PPM")
         swagger_request(
-            self.swagger_internal.moves.patchMove,
-            moveId=self.get_move_id(),
-            patchMovePayload=payload,
+            self.swagger_internal.moves.patchMove, moveId=self.get_move_id(), patchMovePayload=payload,
         )
 
-    @seq_task(17)
+    @task
     def ppm_dates_and_locations(self):
-        self.original_move_date = (
-            datetime.datetime.now() + datetime.timedelta(days=random.randint(15, 30))
-        ).date()
+        self.original_move_date = (datetime.datetime.now() + datetime.timedelta(days=random.randint(15, 30))).date()
         swagger_request(
             self.swagger_internal.ppm.showPPMEstimate,
             original_move_date=self.original_move_date,
@@ -409,7 +365,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
             weight_estimate=11500,  # This appears to be hard coded in the original API call
         )
 
-    @seq_task(18)
+    @task
     def create_ppm(self):
         model = self.swagger_internal.get_model("CreatePersonallyProcuredMovePayload")
         payload = model(
@@ -426,7 +382,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
             createPersonallyProcuredMovePayload=payload,
         )
 
-    @seq_task(19)
+    @task
     def select_ppm_weight(self):
         # Choose the TShirt size but don't update weight just yet
         model = self.swagger_internal.get_model("PatchPersonallyProcuredMovePayload")
@@ -448,14 +404,8 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         # Weights are decided by TShirt size
         allotment = self.allotment["total_weight_self"]
         size_weight = {
-            "S": {
-                "min": int(allotment * 0.01),
-                "max": int(allotment * 0.10),
-            },  # 1% - 10%
-            "M": {
-                "min": int(allotment * 0.10),
-                "max": int(allotment * 0.25),
-            },  # 10% - 25%
+            "S": {"min": int(allotment * 0.01), "max": int(allotment * 0.10)},  # 1% - 10%
+            "M": {"min": int(allotment * 0.10), "max": int(allotment * 0.25)},  # 10% - 25%
             "L": {"min": int(allotment * 0.25), "max": int(allotment)},  # 25% to max
         }
 
@@ -490,33 +440,26 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         if new_ppm_2 is not None:
             self.ppm = new_ppm_2
 
-    @seq_task(20)
+    @task
     def update_move(self):
-        self.move = swagger_request(
-            self.swagger_internal.moves.showMove, moveId=self.get_move_id()
-        )
+        self.move = swagger_request(self.swagger_internal.moves.showMove, moveId=self.get_move_id())
 
-    @seq_task(21)
+    @task
     def validate_entitlements(self):
-        self.move = swagger_request(
-            self.swagger_internal.entitlements.validateEntitlement,
-            moveId=self.get_move_id(),
-        )
+        self.move = swagger_request(self.swagger_internal.entitlements.validateEntitlement, moveId=self.get_move_id(),)
 
-    @seq_task(22)
+    @task
     def signature(self):
         model = self.swagger_internal.get_model("CreateSignedCertificationPayload")
         swagger_request(
             self.swagger_internal.certification.createSignedCertification,
             moveId=self.get_move_id(),
             createSignedCertificationPayload=model(
-                date=datetime.datetime.now(),
-                signature="ABC",
-                certification_text="clatto verata necktie",
+                date=datetime.datetime.now(), signature="ABC", certification_text="clatto verata necktie",
             ),
         )
 
-    @seq_task(23)
+    @task
     def submit_move(self):
         model = self.swagger_internal.get_model("SubmitMoveForApprovalPayload")
         swagger_request(
@@ -525,7 +468,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
             submitMoveForApprovalPayload=model(ppm_submit_date=datetime.datetime.now()),
         )
 
-    @seq_task(24)
+    @task
     def get_transportation_offices(self):
         swagger_request(
             self.swagger_internal.transportation_offices.showDutyStationTransportationOffice,
@@ -536,7 +479,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
             dutyStationId=self.get_new_duty_station_id(),
         )
 
-    @seq_task(25)
+    @task
     def logout(self):
         self.client.post("/auth/logout")
         self.login_gov_user = None
@@ -545,5 +488,5 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         self.interrupt()
 
 
-class ServiceMemberUserBehavior(TaskSet):
+class ServiceMemberUserBehavior(SequentialTaskSet):
     tasks = {ServiceMemberSignupFlow: 1}

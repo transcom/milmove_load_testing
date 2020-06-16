@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from locust import TaskSet
-from locust import task
+from locust import TaskSet, task
 
 
 class AnonBehavior(TaskSet):

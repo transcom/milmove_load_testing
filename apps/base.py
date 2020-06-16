@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from locust import TaskSequence
-from locust import task
-from locust import events
+from locust import SequentialTaskSet, task, events
 from bravado_core.formatter import SwaggerFormat
 from bravado_core.exception import SwaggerMappingError
 from bravado.exception import HTTPError
@@ -59,25 +57,19 @@ def swagger_request(callable_operation, *args, **kwargs):
     method = callable_operation.operation.http_method.upper()
     path_name = callable_operation.operation.path_name
     response_future = callable_operation(*args, **kwargs)
+    start_time = time.time()
     try:
-        start_time = time.time()
         response = response_future.response()
     except HTTPError as e:
         events.request_failure.fire(
-            request_type=method,
-            name=path_name,
-            response_time=time.time() - start_time,
-            exception=e,
+            request_type=method, name=path_name, response_time=time.time() - start_time, exception=e,
         )
         print(e.response)
         return e.swagger_result
     except SwaggerMappingError as e:
         # Even though we don't return the result here we at least fire off the failure event
         events.request_failure.fire(
-            request_type=method,
-            name=path_name,
-            response_time=time.time() - start_time,
-            exception=e,
+            request_type=method, name=path_name, response_time=time.time() - start_time, exception=e,
         )
         raise e
     else:
@@ -93,7 +85,7 @@ def swagger_request(callable_operation, *args, **kwargs):
         return response.result
 
 
-class BaseTaskSequence(TaskSequence):
+class BaseTaskSequence(SequentialTaskSet):
 
     csrf = None
 

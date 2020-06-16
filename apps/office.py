@@ -2,9 +2,7 @@
 import random
 from urllib.parse import urljoin
 
-from locust import TaskSet
-from locust import seq_task
-from locust import task
+from locust import SequentialTaskSet, task
 from bravado.client import SwaggerClient
 from bravado.requests_client import RequestsClient
 
@@ -26,16 +24,14 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
     def update_user(self):
         self.user = swagger_request(self.swagger_internal.users.showLoggedInUser)
 
-    @seq_task(1)
+    @task
     def login(self):
         resp = self.client.post("/devlocal-auth/create", data={"userType": "office"})
         try:
             self.login_gov_user = resp.json()
         except Exception as e:
             print(e)
-            return self.kill(
-                "login could not be parsed. content: {}".format(resp.content)
-            )
+            return self.kill("login could not be parsed. content: {}".format(resp.content))
 
         try:
             self.session_token = self.client.cookies.get("office_session_token")
@@ -72,11 +68,10 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
             print(e)
             return self.kill("unknown swagger client failure")
 
-    @seq_task(2)
+    @task
     def retrieve_user(self):
         self.update_user()
 
-    @seq_task(3)
     @task(10)
     def view_move_in_random_queue(self):
         """
@@ -92,9 +87,7 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
         ]  # Excluding 'all' queue
         q_type = random.choice(queue_types)
 
-        queue = swagger_request(
-            self.swagger_internal.queues.showQueue, queueType=q_type
-        )
+        queue = swagger_request(self.swagger_internal.queues.showQueue, queueType=q_type)
 
         if not queue:
             return
@@ -109,16 +102,11 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
         # Move Requests
         move_id = item["id"]
         move = swagger_request(self.swagger_internal.moves.showMove, moveId=move_id)
+        swagger_request(self.swagger_internal.move_docs.indexMoveDocuments, moveId=move_id)
         swagger_request(
-            self.swagger_internal.move_docs.indexMoveDocuments, moveId=move_id
+            self.swagger_public.accessorials.getTariff400ngItems, requires_pre_approval=True,
         )
-        swagger_request(
-            self.swagger_public.accessorials.getTariff400ngItems,
-            requires_pre_approval=True,
-        )
-        swagger_request(
-            self.swagger_internal.ppm.indexPersonallyProcuredMoves, moveId=move_id
-        )
+        swagger_request(self.swagger_internal.ppm.indexPersonallyProcuredMoves, moveId=move_id)
 
         # Orders Requests
         orders_id = move["orders_id"]
@@ -127,13 +115,11 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
         # Service Member Requests
         service_member_id = move["service_member_id"]
         swagger_request(
-            self.swagger_internal.service_members.showServiceMember,
-            serviceMemberId=service_member_id,
+            self.swagger_internal.service_members.showServiceMember, serviceMemberId=service_member_id,
         )
 
         swagger_request(
-            self.swagger_internal.backup_contacts.indexServiceMemberBackupContacts,
-            serviceMemberId=service_member_id,
+            self.swagger_internal.backup_contacts.indexServiceMemberBackupContacts, serviceMemberId=service_member_id,
         )
 
         # Shipment Requests
@@ -145,9 +131,7 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
             return
 
         shipment_id = move["shipments"][0]["id"]
-        swagger_request(
-            self.swagger_public.shipments.getShipment, shipmentId=shipment_id
-        )
+        swagger_request(self.swagger_public.shipments.getShipment, shipmentId=shipment_id)
 
         swagger_request(
             self.swagger_public.transportation_service_provider.getTransportationServiceProvider,
@@ -155,25 +139,20 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
         )
 
         swagger_request(
-            self.swagger_public.accessorials.getShipmentLineItems,
-            shipmentId=shipment_id,
+            self.swagger_public.accessorials.getShipmentLineItems, shipmentId=shipment_id,
+        )
+
+        swagger_request(self.swagger_public.shipments.getShipmentInvoices, shipmentId=shipment_id)
+
+        swagger_request(
+            self.swagger_public.service_agents.indexServiceAgents, shipmentId=shipment_id,
         )
 
         swagger_request(
-            self.swagger_public.shipments.getShipmentInvoices, shipmentId=shipment_id
+            self.swagger_public.storage_in_transits.indexStorageInTransits, shipmentId=shipment_id,
         )
 
-        swagger_request(
-            self.swagger_public.service_agents.indexServiceAgents,
-            shipmentId=shipment_id,
-        )
-
-        swagger_request(
-            self.swagger_public.storage_in_transits.indexStorageInTransits,
-            shipmentId=shipment_id,
-        )
-
-    @seq_task(4)
+    @task
     def logout(self):
         self.client.post("/auth/logout")
         self.login_gov_user = None
@@ -182,5 +161,5 @@ class OfficeQueue(BaseTaskSequence, InternalAPIMixin, PublicAPIMixin):
         self.interrupt()
 
 
-class OfficeUserBehavior(TaskSet):
+class OfficeUserBehavior(SequentialTaskSet):
     tasks = {OfficeQueue: 1}
