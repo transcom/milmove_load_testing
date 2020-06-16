@@ -1,4 +1,4 @@
 awscli>=1.16.195
 bravado>=10.4.1
 requests>=2.22.0
-locustio>=0.11.0
+locust>=1
