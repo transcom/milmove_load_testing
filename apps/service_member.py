@@ -19,7 +19,7 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
     login_gov_user = None
     session_token = None
 
-    fixtures_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "fixtures")
+    fixtures_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "static")
 
     # User is the LoggedInUserPayload
     user = {}
