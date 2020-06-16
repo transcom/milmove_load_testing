@@ -61,10 +61,10 @@ lint: venv ## Run linting tests
 .PHONY: load_test
 load_test: venv ## Run load testing on http://localhost:8089
 	open http://localhost:8089
-	$(WITH_VENV) locust -f locustfile.py
+	$(WITH_VENV) locust -f locustfiles/locustfile.py
 
 .PHONY: load_test_noweb
 load_test_noweb: venv ## Run load testing with no web interface
-	$(WITH_VENV) locust -f locustfile.py --no-web --clients=50 --hatch-rate=5 --run-time=60s
+	$(WITH_VENV) locust -f locustfiles/locustfile.py --no-web --clients=50 --hatch-rate=5 --run-time=60s
 
 default: help
