@@ -20,6 +20,7 @@ repos:
       - id: check-yaml
       - id: debug-statements
       - id: detect-private-key
+        exclude: devlocal-*
       - id: fix-encoding-pragma
       - id: flake8
       - id: trailing-whitespace
