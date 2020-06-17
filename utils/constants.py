@@ -49,6 +49,7 @@ class MilMoveDomain(ListEnum):
             raise ImplementationError("The environment for determining the host name must be included in MilMoveEnv.")
 
         if env == MilMoveEnv.LOCAL.value:
+            port = str(port)  # in case an int was passed in
             if not port.isdigit() or len(port) != 4:
                 raise ImplementationError("The local port must be a string of 4 digits.")
 
