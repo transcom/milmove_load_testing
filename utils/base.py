@@ -19,3 +19,8 @@ class ListEnum(Enum):
     @classmethod
     def validate(cls, value):
         return value in cls or value in cls.values()
+
+    @classmethod
+    def match(cls, value):
+        """ Returns the first literal that matches the value - throws an IndexError if not found. """
+        return [c for c in cls if c == value or c.value == value][0]

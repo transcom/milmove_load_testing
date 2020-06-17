@@ -22,7 +22,8 @@ class MilMoveHostMixin:
         Sets host based on environment value from --host flag in command.
         """
         if MilMoveEnv.validate(self.host):
-            self.host = self.set_host_name()
+            self.env = self.host  # preserve the original value that was passed in on the command line
+            self.host = self.set_host_name()  # set the actual host based on the env
 
         super().__init__(*args, **kwargs)
 
@@ -34,4 +35,4 @@ class MilMoveHostMixin:
             logger.debug(f"Bad domain value: {self.domain}")
             raise ImplementationError("Domain for MilMoveUser must be one of the values in MilMoveDomain.")
 
-        return self.domain.host_name(self.host, self.is_api, self.local_port)
+        return MilMoveDomain.match(self.domain).host_name(self.env, self.is_api, self.local_port)
