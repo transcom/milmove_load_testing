@@ -1,20 +1,280 @@
 # -*- coding: utf-8 -*-
-import datetime
 import os
+import time
+import datetime
 import random
 from urllib.parse import urljoin
 
-from locust import SequentialTaskSet, task
+from bravado_core.formatter import SwaggerFormat
+from bravado_core.exception import SwaggerMappingError
+from bravado.exception import HTTPError
 from bravado.client import SwaggerClient
 from bravado.requests_client import RequestsClient
 
-from .base import BaseTaskSequence
-from .base import InternalAPIMixin
-from .base import get_swagger_config
-from .base import swagger_request
+from locust import SequentialTaskSet, task, events
+
+# TODO: most of this code is non-functional and needs to be reviewed and then fixed or deleted as appropriate
 
 
-class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
+def get_swagger_config():
+    """
+    Generate the config used in generating the swagger client from the spec
+    """
+
+    # MilMove uses custom formats for some fields. Without wanting to duplicate them here but
+    # still wanting to not get warnings about them being undefined the UDFs are created here.
+    # See https://bravado-core.readthedocs.io/en/stable/formats.html
+    milmove_formats = []
+    string_fmt_list = [
+        "basequantity",
+        "cents",
+        "edipi",
+        "millicents",
+        "mime-type",
+        "ssn",
+        "telephone",
+        "uri",
+        "uuid",
+        "x-email",
+        "zip",
+    ]
+    for fmt in string_fmt_list:
+        swagger_fmt = SwaggerFormat(
+            format=fmt,
+            to_wire=str,
+            to_python=str,
+            validate=lambda x: x,
+            description="Converts [wire]string:string <=> python string",
+        )
+        milmove_formats.append(swagger_fmt)
+    swagger_config = {
+        # Validate our own requests to catch any problems with python type conversions
+        "validate_requests": True,
+        # Many of our payloads have invalid responses per the spec because of OpenAPI 2.0 issues
+        "validate_responses": False,
+        "formats": milmove_formats,
+        "use_models": False,
+    }
+    return swagger_config
+
+
+def swagger_request(callable_operation, *args, **kwargs):
+    """
+    Swagger client uses requests send() method instead of request(). This means we need to send off
+    events to Locust on our own.
+    """
+    method = callable_operation.operation.http_method.upper()
+    path_name = callable_operation.operation.path_name
+    response_future = callable_operation(*args, **kwargs)
+    start_time = time.time()
+    try:
+        response = response_future.response()
+    except HTTPError as e:
+        events.request_failure.fire(
+            request_type=method, name=path_name, response_time=time.time() - start_time, exception=e,
+        )
+        print(e.response)
+        return e.swagger_result
+    except SwaggerMappingError as e:
+        # Even though we don't return the result here we at least fire off the failure event
+        events.request_failure.fire(
+            request_type=method, name=path_name, response_time=time.time() - start_time, exception=e,
+        )
+        raise e
+    else:
+        metadata = response.metadata
+
+        events.request_success.fire(
+            request_type=method,
+            name=path_name,
+            response_time=metadata.elapsed_time,
+            response_length=len(metadata.incoming_response.raw_bytes),
+        )
+        # this is equivalent to json.loads(metadata.incoming_response.text)
+        return response.result
+
+
+class BaseTaskSequence(SequentialTaskSet):
+
+    csrf = None
+
+    def kill(self, message="no message"):
+        print(message)
+        return self.interrupt()
+
+    def _get_csrf_token(self):
+        """
+        Pull the CSRF token from the website by hitting the root URL.
+
+        The token is set as a cookie with the name `masked_gorilla_csrf`
+        """
+        self.client.get("/")
+        self.csrf = self.client.cookies.get("masked_gorilla_csrf")
+        self.client.headers.update({"x-csrf-token": self.csrf})
+
+    def on_start(self):
+        """ on_start is called when a Locust start before any task is scheduled """
+        self._get_csrf_token()
+
+
+class InternalAPIMixin(object):
+    swagger_internal = None
+
+    def load_swagger_file_internal(self):
+        self.client.get("/internal/swagger.yaml")
+
+
+class PublicAPIMixin(object):
+    swagger_public = None
+
+    def load_swagger_file_public(self):
+        self.client.get("/api/v1/swagger.yaml")
+
+
+class OfficeQueue(InternalAPIMixin, PublicAPIMixin, BaseTaskSequence):
+
+    login_gov_user = None
+    session_token = None
+
+    # User is the LoggedInUserPayload
+    user_payload = {}
+
+    def update_user(self):
+        self.user_payload = swagger_request(self.swagger_internal.users.showLoggedInUser)
+
+    @task
+    def login(self):
+        resp = self.client.post("/devlocal-auth/create", data={"userType": "office"})
+        try:
+            self.login_gov_user = resp.json()
+        except Exception as e:
+            print(e)
+            return self.kill("login could not be parsed. content: {}".format(resp.content))
+
+        try:
+            self.session_token = self.client.cookies.get("office_session_token")
+        except Exception as e:
+            print(e)
+            return self.kill("missing session token")
+
+        self.requests_client = RequestsClient()
+        # Set the session to be the same session as locust uses
+        self.requests_client.session = self.client
+
+        # Set the csrf token in the global headers for all requests
+        # Don't validate requests or responses because we're using OpenAPI Spec 2.0
+        # which doesn't respect nullable sub-definitions
+        self.swagger_internal = SwaggerClient.from_url(
+            urljoin(self.parent.host, "internal/swagger.yaml"),
+            request_headers={"x-csrf-token": self.csrf},
+            http_client=self.requests_client,
+            config=get_swagger_config(),
+        )
+
+        self.swagger_public = SwaggerClient.from_url(
+            urljoin(self.parent.host, "api/v1/swagger.yaml"),
+            request_headers={"x-csrf-token": self.csrf},
+            http_client=self.requests_client,
+            config=get_swagger_config(),
+        )
+
+        self.load_swagger_file_public()
+        self.load_swagger_file_internal()
+
+    @task
+    def retrieve_user(self):
+        self.update_user()
+
+    @task
+    def view_move_in_random_queue(self):
+        """
+        Choose a random queue to visit and pick a random move to view
+
+        This task pretents to be a user who has work to do in a specific queue.
+        """
+        queue_types = [
+            "new",
+            "ppm_payment_requested",
+            "ppm_approved",
+            "ppm_completed",
+        ]  # Excluding 'all' queue
+        q_type = random.choice(queue_types)
+
+        queue = swagger_request(self.swagger_internal.queues.showQueue, queueType=q_type)
+
+        if not queue:
+            return
+        if len(queue) == 0:
+            return
+
+        # Pick a random move
+        item = random.choice(queue)
+
+        # These are all the requests loaded in a single move in rough order of execution
+
+        # Move Requests
+        move_id = item["id"]
+        move = swagger_request(self.swagger_internal.moves.showMove, moveId=move_id)
+        swagger_request(self.swagger_internal.move_docs.indexMoveDocuments, moveId=move_id)
+        swagger_request(
+            self.swagger_public.accessorials.getTariff400ngItems, requires_pre_approval=True,
+        )
+        swagger_request(self.swagger_internal.ppm.indexPersonallyProcuredMoves, moveId=move_id)
+
+        # Orders Requests
+        orders_id = move["orders_id"]
+        swagger_request(self.swagger_internal.orders.showOrders, ordersId=orders_id)
+
+        # Service Member Requests
+        service_member_id = move["service_member_id"]
+        swagger_request(
+            self.swagger_internal.service_members.showServiceMember, serviceMemberId=service_member_id,
+        )
+
+        swagger_request(
+            self.swagger_internal.backup_contacts.indexServiceMemberBackupContacts, serviceMemberId=service_member_id,
+        )
+
+        # Shipment Requests
+        if "shipments" not in move:
+            return
+        if not isinstance(move["shipments"], list):
+            return
+        if len(move["shipments"]) == 0:
+            return
+
+        shipment_id = move["shipments"][0]["id"]
+        swagger_request(self.swagger_public.shipments.getShipment, shipmentId=shipment_id)
+
+        swagger_request(
+            self.swagger_public.transportation_service_provider.getTransportationServiceProvider,
+            shipmentId=shipment_id,
+        )
+
+        swagger_request(
+            self.swagger_public.accessorials.getShipmentLineItems, shipmentId=shipment_id,
+        )
+
+        swagger_request(self.swagger_public.shipments.getShipmentInvoices, shipmentId=shipment_id)
+
+        swagger_request(
+            self.swagger_public.service_agents.indexServiceAgents, shipmentId=shipment_id,
+        )
+
+        swagger_request(
+            self.swagger_public.storage_in_transits.indexStorageInTransits, shipmentId=shipment_id,
+        )
+
+    @task
+    def logout(self):
+        self.client.post("/auth/logout")
+        self.login_gov_user = None
+        self.session_token = None
+        self.user_payload = {}
+        self.interrupt()
+
+
+class ServiceMemberSignupFlow(InternalAPIMixin, PublicAPIMixin, BaseTaskSequence):
 
     login_gov_user = None
     session_token = None
@@ -178,6 +438,9 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         except Exception as e:
             print(e)
             return self.kill("unknown swagger client failure")
+
+        self.load_swagger_file_public()
+        self.load_swagger_file_internal()
 
     @task
     def retrieve_user(self):
@@ -486,7 +749,3 @@ class ServiceMemberSignupFlow(BaseTaskSequence, InternalAPIMixin):
         self.session_token = None
         self.user = {}
         self.interrupt()
-
-
-class ServiceMemberUserBehavior(SequentialTaskSet):
-    tasks = ServiceMemberSignupFlow.tasks

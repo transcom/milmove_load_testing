@@ -1,31 +1,26 @@
 # -*- coding: utf-8 -*-
 from locust import HttpUser, between
 
-from apps import AnonBehavior
-from apps import ServiceMemberUserBehavior
-from apps import OfficeUserBehavior
+from tasks import AnonBehavior
+from tasks.fixme import OfficeQueue, ServiceMemberSignupFlow
 
 
 class AnonUser(HttpUser):
     host = "http://milmovelocal:8080"
     # host = "https://my.experimental.move.mil"
-    # weight = 5  # 5x more likely than other users
-    weight = 1
-    task_set = AnonBehavior
-    wait_time = between(5, 9)
+    tasks = {AnonBehavior: 1}
+    wait_time = between(2, 9)
 
 
 class ServiceMemberUser(HttpUser):
     host = "http://milmovelocal:8080"
     # host = "https://my.experimental.move.mil"
-    weight = 1
-    task_set = ServiceMemberUserBehavior
-    wait_time = between(5, 9)
+    tasks = {ServiceMemberSignupFlow: 1}
+    wait_time = between(2, 9)
 
 
 class OfficeUser(HttpUser):
     host = "http://officelocal:8080"
     # host = "https://office.experimental.move.mil"
-    weight = 1
-    task_set = OfficeUserBehavior
-    wait_time = between(5, 9)
+    tasks = {OfficeQueue: 1}
+    wait_time = between(2, 9)

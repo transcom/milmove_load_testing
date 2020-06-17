@@ -3,6 +3,6 @@ from locust import TaskSet, task
 
 
 class AnonBehavior(TaskSet):
-    @task(1)
+    @task
     def index(self):
         self.client.get("/")
