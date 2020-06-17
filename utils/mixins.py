@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+""" utils/mixins.py is for classes that get inherited in conjunction with others, likely Locust classes. """
 import logging
-from .base import ImplementationError, MilMoveEnv, MilMoveDomain
+
+from .base import ImplementationError
+from .constants import MilMoveEnv, MilMoveDomain
 
 logger = logging.getLogger(__name__)
 
