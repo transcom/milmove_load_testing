@@ -21,5 +21,5 @@ echo "Code goes here"
 
 ## References
 
-* [Jira story](tbd) for this change
+* [Jira story](tbd) for this change.
 * [This article](tbd) explains more about the approach used.
