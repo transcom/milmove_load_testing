@@ -22,7 +22,7 @@ class OfficeTasks(LoginTaskSet):
         super().on_start()  # sets the csrf token
 
         resp = self._create_login(user_type="office", session_token_name="office_session_token")
-        if not resp.status_code == 200:
+        if resp.status_code != 200:
             self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
 
     @task
