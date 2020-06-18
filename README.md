@@ -49,29 +49,92 @@ To create the python virtual environment and install the dependencies from `requ
 make setup
 ```
 
-From the MilMove application in a separate window ensure that the app server is running with `make server_run_standalone`.
+### Setting up the local environment
 
-### Running tests with Web UI
+To run load tests against a local server, you will need to check out and set up the [MilMove](https://github.com/transcom/mymove)
+project. Once you have completed this process, run the following commands to spin up your local environment:
 
 ```sh
-make load_test
+make db_dev_e2e_populate  ## populates the development database with test data
+make server_run
+make client_run
 ```
 
-Then open [http://localhost:8089](http://localhost:8089/) and enter the number of users to simulate and the hatch rate.
-Finally, hit the `Start swarming` button and wait for the tests to finish.
+### Running preset tests
 
-### Running tests from the CLI
+Default tests commands for each locustfile are added to the Makefile to make rerunning common preset tests either. These
+commands include:
 
-You can run the test suite without the Web UI with a command similar to this:
+* `make load_test`
+
+  Runs the load tests associated with the base `locustfile.py` file.
+
+* `make load_test_prime`
+
+  Runs the load tests for `locustfiles/prime.py`, which test the endpoints in the Prime and Support APIs.
+
+* `make load_test_office`
+
+  Runs the load tests for `locustfiles/office.py`, which tests the MilMove Office interface.
+
+Each of these commands opens the Locust interface for initiating and monitoring the tests, set to [http://localhost:8089](http://localhost:8089).
+Using this interface, you can set the number of users to simulate and their hatch rate, then start and stop the test at
+will. For the host, you can enter a full URL address, or you can simply enter "local", "staging", or "experimental", and
+let the system set the URL as appropriate.
+
+You can also run the tests directly from the command line without the web interface. `make load_test_noweb` is the
+headless version of the `make load_test` command, and it also presets the number of users, their hatch rate, and a time
+limit for the test.
+
+**NOTE: Currently the system only functions in the local environment. You may try the other settings for fun, but don't
+expect them to work.**
+
+### Running custom tests
+
+If you need more control over the parameters for a load test, you will need to run a custom locust command. To do so,
+you must first activate the virtual environment:
 
 ```sh
-make load_test_noweb
+. .venv/bin/activate
 ```
 
-Or you can run this by hand with:
+Then run a locust command like so:
 
 ```sh
-locust -f locustfile.py --no-web --clients=50 --hatch-rate=5 --run-time=60s
+locust -f locustfiles/<file_to_test>.py --host <local/staging/experimental>
+```
+
+Ex:
+
+```sh
+locust -f locustfiles/prime.py --host local
+```
+
+To run the test without the web interface, add the `--headless` tag and some guidelines for the test (such as number of
+users, their hatch rate, and the time limit for the test):
+
+```sh
+locust -f locustfiles/prime.py --headless --host local --users 50 --hatch-rate 5 --run-time 60s
+```
+
+To control which tasks run during the test, you can filter using tags:
+
+```sh
+locust -f locustfiles/prime.py --tags prime --exclude-tags support
+```
+
+To specify which `User` classes are spawned from locustfile, add the class name to the end of the command:
+
+```sh
+locust -f locustfiles/prime.py PrimeUser
+```
+
+For more CLI config options, refer to the Locust docs for [Configuration](https://docs.locust.io/en/stable/configuration.html).
+
+To deactivate your virtual environment once you have completed testing, enter:
+
+```sh
+deactivate
 ```
 
 ## Load Testing against AWS Experimental Environment
@@ -83,8 +146,8 @@ and [deploy the code to the experimental environment](https://github.com/transco
 Then you can use the same steps as the development as above as long as you change the `host` parameter in the
 `locustfile.py` test classes and point them to the experimental domains:
 
-- [https://my.experimental.move.mil](https://my.experimental.move.mil)
-- [https://office.experimental.move.mil](https://office.experimental.move.mil)
+* [https://my.experimental.move.mil](https://my.experimental.move.mil)
+* [https://office.experimental.move.mil](https://office.experimental.move.mil)
 
 ### Handling Rate Limiting
 
@@ -110,9 +173,9 @@ index 4ef1a29..bac3cf7 100644
 
 You will want to see metrics from your runs:
 
-- [app-experimental cluster metrics](https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/clusters/app-experimental/services/app/metrics)
-- [app-experimental CloudWatch dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=mil-experimental)
+* [app-experimental cluster metrics](https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/clusters/app-experimental/services/app/metrics)
+* [app-experimental CloudWatch dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=mil-experimental)
 
 ## References
 
-- [Original Load Testing PR](https://github.com/transcom/mymove/pull/1597)
+* [Original Load Testing PR](https://github.com/transcom/mymove/pull/1597)
