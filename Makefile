@@ -68,8 +68,13 @@ load_test_noweb: venv ## Run load testing with no web interface
 	$(WITH_VENV) locust -f locustfiles/locustfile.py --headless --clients=50 --hatch-rate=5 --run-time=60s
 
 .PHONY: load_test_prime
-load_test_prime: venv ## Run load testing on http://localhost:8089
+load_test_prime: venv ## Run load testing on the Prime API
 	open http://localhost:8089
 	$(WITH_VENV) locust -f locustfiles/prime.py --host local
+
+.PHONY: load_test_office
+load_test_office: venv ## Run load testing on the Office app
+	open http://localhost:8089
+	$(WITH_VENV) locust -f locustfiles/office.py --host local
 
 default: help
