@@ -1,8 +1,7 @@
 # MilMove Load Testing
 
-Load testing for the [MilMove](https://github.com/transcom/mymove) application is done with the code in this repo.
-Testing employs the [locust.io](https://docs.locust.io/en/stable/) framework which in turn uses the
-[Bravado](https://bravado.readthedocs.io/en/stable/) swagger library to make requests.
+This repository contains code written to run load testing for the [MilMove](https://github.com/transcom/mymove) application.
+Load testing is accomplished via the [Locust](https://docs.locust.io/en/stable/) framework.
 
 ## License Information
 
@@ -12,25 +11,39 @@ the public domain. In places where it is eligible for copyright, such as some fo
 this work is licensed under [the MIT License](https://opensource.org/licenses/MIT), the full text of which is included
 in the [LICENSE.txt](./LICENSE.txt) file in this repository.
 
-## Creating devlocal users for load testing
+## Overview
 
-Load testing will require that you create a number of different users for your scenarios. To create a devlocal
-user you'll hit the `/devlocal-auth/create` endpoint. The `/create` method is different from `/new` because it
-returns a JSON formatted version of the User model for the new user instead of redirecting to the landing page.
-The new user will be logged in upon creation and the response will contain the session token you'd expect from
-a normal login.
+MilMove is a system to help service members (and other authorized personnel) move their gear and possessions from one
+place to another. This codebase has been written to perform load tests on the MilMove app for the purpose of gathering
+data about responses times, finding breakpoints, and assessing the overall health of the system.
 
-## What is tested
+### `locustfiles/`
 
-The load testing demo implements these things:
+[Locust](https://docs.locust.io/en/stable/) uses a python file called a "locustfile" as the base for running a load
+test. This directory contains all of the locustfiles for this repo. This file must contain at least one class
+definition that inherits from the locust `User` class. Locust will dynamically create instances of these `User` classes
+to simulate the request load desired.
 
-- Anon User: Touching home page only
-- Service Member App: PPM Flow only
-- Office App: Queue and Move Inspection (no move modification)
+Each of these files can be thought of as a different test case for the system, although locust also provides a number of
+[config options](https://docs.locust.io/en/stable/configuration.html) to allow you to manipulate which users and/or
+tasks run from any given locustfile.
 
-## Quick Start
+### `tasks/`
 
-Getting started
+Each `User` class needs a set of tasks to complete to be able to run a load test. All tasks are callables that can be
+manually set into the `tasks` attribute of the user, or they can be organized into instances of the locust class
+`TaskSet` and then associated with a user. This directory contains all of the tasks used in our load tests.
+
+To read more about users and tasks and how they interact, refer to [Writing a locustfile](https://docs.locust.io/en/stable/writing-a-locustfile.html).
+
+### `utils/`
+
+This directory contains python code and utilities that are do not rely on the locust package. Mixin classes and
+constants are located here.
+
+## Getting Started
+
+To create the python virtual environment and install the dependencies from `requirements.txt`, run:
 
 ```sh
 make setup
