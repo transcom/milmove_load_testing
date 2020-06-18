@@ -13,6 +13,7 @@ class MilMoveHostMixin:
     Mixin for Locust's HttpUser to set a host value based on the environment passed in as the --host flag.
     """
 
+    local_protocol = "https"
     local_port = "8080"
     domain = MilMoveDomain.MILMOVE  # any MilMoveDomain value
     is_api = False  # if True, defaults to using the api.<env>.move.mil domain for deployed envs
@@ -35,4 +36,4 @@ class MilMoveHostMixin:
             logger.debug(f"Bad domain value: {self.domain}")
             raise ImplementationError("Domain for MilMoveUser must be one of the values in MilMoveDomain.")
 
-        return MilMoveDomain.match(self.domain).host_name(self.env, self.is_api, self.local_port)
+        return MilMoveDomain.match(self.domain).host_name(self.env, self.is_api, self.local_port, self.local_protocol)

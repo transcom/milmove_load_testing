@@ -33,13 +33,14 @@ class MilMoveDomain(ListEnum):
 
         return self.value
 
-    def host_name(self, env, is_api=False, port="3000"):
+    def host_name(self, env, is_api=False, port="3000", protocol="https"):
         """
         Returns the host name for this domain based on the environment, whether or not it is in the API domain, and the
-        port (for local envs).
+        port and protocol (for local envs).
         :param env: str MilMoveEnv
         :param is_api: bool
         :param port: str containing 4 digits
+        :param protocol: str "https" or "http"
         :return: str host
         """
         if env in MilMoveEnv:
@@ -53,6 +54,7 @@ class MilMoveDomain(ListEnum):
             if not port.isdigit() or len(port) != 4:
                 raise ImplementationError("The local port must be a string of 4 digits.")
 
-            return f"https://{self.local_value}:{port}"
+            return f"{protocol}://{self.local_value}:{port}"
 
+        # NOTE: deployed protocol is always https
         return f"https://{'api' if is_api else self.deployed_value}.{env}.move.mil"
