@@ -33,7 +33,7 @@ class PrimeTasks(CertTaskSet):
 
         try:
             json_body = json.loads(resp.content)
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, TypeError):
             logger.exception("Non-JSON response")
         else:
             logger.info(f"ℹ️ Num MTOs returned: {len(json_body)}")
