@@ -18,7 +18,7 @@ class ListEnum(Enum):
 
     @classmethod
     def validate(cls, value):
-        return value in cls or value in cls.values()
+        return isinstance(value, cls) or value in cls.values()
 
     @classmethod
     def match(cls, value):

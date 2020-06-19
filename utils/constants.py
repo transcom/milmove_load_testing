@@ -43,7 +43,7 @@ class MilMoveDomain(ListEnum):
         :param protocol: str "https" or "http"
         :return: str host
         """
-        if env in MilMoveEnv:
+        if isinstance(env, MilMoveEnv):
             env = env.value  # ensure that we're using the value string instead of the Enum literal
 
         if env not in MilMoveEnv.values():
