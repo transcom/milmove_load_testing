@@ -58,13 +58,14 @@ pretty: venv ## Prettify the code
 lint: venv ## Run linting tests
 	$(WITH_VENV) flake8 .
 
-.PHONY: load_test
-load_test: venv ## Run load testing on http://localhost:8089
+.PHONY: load_test_prime
+load_test_prime: venv ## Run load testing on the Prime API
 	open http://localhost:8089
-	$(WITH_VENV) locust -f locustfile.py
+	$(WITH_VENV) locust -f locustfiles/prime.py --host local
 
-.PHONY: load_test_noweb
-load_test_noweb: venv ## Run load testing with no web interface
-	$(WITH_VENV) locust -f locustfile.py --no-web --clients=50 --hatch-rate=5 --run-time=60s
+.PHONY: load_test_office
+load_test_office: venv ## Run load testing on the Office app
+	open http://localhost:8089
+	$(WITH_VENV) locust -f locustfiles/office.py --host local
 
 default: help
