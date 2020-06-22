@@ -25,7 +25,7 @@ class PrimeTasks(CertTaskSet):
     tags where appropriate to make filtering for custom tests easier.
     """
 
-    @tag("mto")
+    @tag("mto", "fetchMTOUpdates")
     @task
     def fetch_mto_updates(self):
         resp = self.client.get(prime_path("/move-task-orders"), **self.user.cert_kwargs)
