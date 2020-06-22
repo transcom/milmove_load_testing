@@ -65,10 +65,6 @@ make client_run
 Default tests commands for each locustfile are added to the Makefile to make rerunning common preset tests either. These
 commands include:
 
-* `make load_test`
-
-  Runs the load tests associated with the base `locustfile.py` file.
-
 * `make load_test_prime`
 
   Runs the load tests for `locustfiles/prime.py`, which test the endpoints in the Prime and Support APIs.
@@ -81,10 +77,6 @@ Each of these commands opens the Locust interface for initiating and monitoring 
 Using this interface, you can set the number of users to simulate and their hatch rate, then start and stop the test at
 will. For the host, you can enter a full URL address, or you can simply enter "local", "staging", or "experimental", and
 let the system set the URL as appropriate.
-
-You can also run the tests directly from the command line without the web interface. `make load_test_noweb` is the
-headless version of the `make load_test` command, and it also presets the number of users, their hatch rate, and a time
-limit for the test.
 
 **NOTE: Currently the system only functions in the local environment. You may try the other settings for fun, but don't
 expect them to work.**
