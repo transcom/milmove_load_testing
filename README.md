@@ -159,6 +159,9 @@ class MyUser(MilMoveHostMixin, HttpUser):
     domain = MilMoveDomain.OFFICE  # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
     # NOTE: The domain corresponds to whatever you use in local - so <domain>local
     is_api = True  # Are you testing an API endpoint or path in the interface? This changes the host.
+
+    # If not using MilMoveHostMixin:
+    host = "https://primelocal:9443"  # Can set the host on the class directly. Useful if it never changes based on env.
 ```
 
 This is the bare minimum that you need to have a functional load test. The `MilMoveHostMixin` class is designed to make set up faster and running tests an easier, simpler process. You don't
