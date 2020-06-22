@@ -137,6 +137,42 @@ To deactivate your virtual environment once you have completed testing, enter:
 deactivate
 ```
 
+## Adding Load Tests
+
+### Starting from scratch
+
+If you are developing load testing for a new MilMove application, or perhaps just designing a new suite of tests, the
+first step will be to create a new locustfile in the `locustfiles/` directory.
+
+This where you will define all of the `User` classes for your load tests. A common user might look like:
+
+```python
+from locust import HttpUser, between
+
+from utils.constants import MilMoveDomain
+from utils.mixins import MilMoveHostMixin
+
+
+# Use MilMoveHostMixin to easily switch between local, experimental, and staging environments
+# HttpUser is the Locust user class we want to use to hit endpoint paths
+class MyUser(MilMoveHostMixin, HttpUser):
+    """ Here's a short description of what my user does. """
+
+    wait_time = between(1, 9)  # Wait time in between tasks
+    tasks = []  # You can define a list of tasks here, add a TaskSet, or define tasks in your MyUser class itself
+
+    # MilMoveHostMixin attributes:
+    local_protocol = "http"  # Some local hosts for MilMove don't use HTTPS - you can override the default here
+    local_port = "3000"  # The default port you want to use for local testing
+    domain = MilMoveDomain.OFFICE  # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
+    # NOTE: The domain corresponds to whatever you use in local - so <domain>local
+    is_api = True  # Are you testing an API endpoint or path in the interface? This changes the host.
+```
+
+This is the bare minimum that you need to have a functional load test. The `MilMoveHostMixin` class is designed to make set up faster and running tests an easier, simpler process. You don't
+have to use this structure, however. If it makes sense to create a custom user for your test case, please do so! Please
+note that it may be easier to add your customization to the `TaskSet` instead of the `User`, however.
+
 ## Load Testing against AWS Experimental Environment
 
 To load test against the AWS Experimental Environment you must modify the
