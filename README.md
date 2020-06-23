@@ -150,23 +150,139 @@ from utils.mixins import MilMoveHostMixin
 class MyUser(MilMoveHostMixin, HttpUser):
     """ Here's a short description of what my user does. """
 
-    wait_time = between(1, 9)  # Wait time in between tasks
-    tasks = []  # You can define a list of tasks here, add a TaskSet, or define tasks in your MyUser class itself
+    # Required attributes:
+
+    # The time (in seconds) Locust waits in between tasks. Can use decimals.
+    wait_time = between(1, 9)
+    # The list of tasks for this user. You can use a TaskSet or define tasks in your MyUser class itself.
+    tasks = []
 
     # MilMoveHostMixin attributes:
-    local_protocol = "http"  # Some local hosts for MilMove don't use HTTPS - you can override the default here
-    local_port = "3000"  # The default port you want to use for local testing
-    domain = MilMoveDomain.OFFICE  # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
+
+    # Some local hosts for MilMove don't use HTTPS - you can override that default here:
+    local_protocol = "http"
+    # The default port you want to use for local testing:
+    local_port = "3000"
+    # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
     # NOTE: The domain corresponds to whatever you use in local - so <domain>local
-    is_api = True  # Are you testing an API endpoint or path in the interface? This changes the host.
+    domain = MilMoveDomain.OFFICE
+    # Are you testing an API endpoint or path in the interface? This changes the host:
+    is_api = True
 
     # If not using MilMoveHostMixin:
-    host = "https://primelocal:9443"  # Can set the host on the class directly. Useful if it never changes based on env.
+
+    # Can set the host on the class directly. Useful if it never changes based on env.
+    host = "https://primelocal:9443"
 ```
 
 This is the bare minimum that you need to have a functional load test. The `MilMoveHostMixin` class is designed to make set up faster and running tests an easier, simpler process. You don't
 have to use this structure, however. If it makes sense to create a custom user for your test case, please do so! Please
 note that it may be easier to add your customization to the `TaskSet` instead of the `User`, however.
+
+### Creating TaskSets
+
+Tasks are distinct functions, or callables, that tell Locust what to do during load testing. `TaskSet` classes are a
+clean way to link tasks together and keep the code organized. You can link a `User` class with a task set using the
+following syntax in the `tasks` attribute:
+
+```python
+tasks = {MyMainTaskSet: 5, MyOtherTaskSet: 1}
+```
+
+The number next to the task set indicates its relative _weight_ - so in this example, tasks from `MyMainTaskSet` would
+be 5 times more likely than tasks from `MyOtherTaskSet`. Task sets and functions should all be defined in python files
+in the `tasks/` directory. An example `TaskSet` for this project might be:
+
+```python
+import logging
+import json
+
+from locust import TaskSet, task
+
+logger = logging.getLogger(__name__)
+
+
+class MyTasks(TaskSet):
+    """
+    Description of the flow for these tasks here.
+    """
+
+    def on_start(self):
+        """
+        Description of functionality that runs whenever the task set is initialized.
+        """
+        # Set up tasks might go here, like:
+        # - logging in
+        # - grabbing cookies
+        # - setting shared headers
+
+    @task
+    def do_something(self):
+        """
+        Do a task! Tasks generally have three steps: Set-up, make a request, validate/log results
+        """
+        # First, complete any set up you need:
+        request_body = {
+            "userName": "squidGirl1992",
+            "email": "actual-squid-scientist@marinebiology.edu"
+        }
+        headers = {"content-type": "application/json"}
+
+        # Next, make the request:
+        resp = self.client.post("/my-path-here/update-user", data=json.dumps(request_body), headers=headers)
+
+        # Lastly, validate the response and/or log any relevant info:
+        logger.info(f"ℹ️ Status code: {resp.status_code}")
+
+        try:
+            json_body = json.loads(resp.content)
+        except (json.JSONDecodeError, TypeError):
+            logger.exception("Non-JSON response")
+        else:
+            logger.info(f"ℹ️ User's most liked post: {json_body['best_post']}")
+```
+
+There are a couple of base `TaskSet` classes that you may also want to take advantage of:
+
+* `SequentialTaskSet` - Locust base class, asserts that all of the tasks in the `TaskSet` are executed in the order in
+which they are defined (instead of randomly)
+* `CertTaskSet` - in `tasks/base.py`, accounts for the use of a `cert_kwargs` attribute defined on the `User`-level that
+can then be passed in as validation during the request. Ex:
+
+Add this as an attribute to your user:
+
+```python
+# MyUser
+cert_kwargs = {'cert': ("path_to_my_cert", "path_to_my_key"), "verify": True}
+```
+
+Then in your task, write your request like so:
+
+```python
+# MyTasks.get_something
+self.client.get("/path", **self.user.cert_kwargs)
+```
+
+* `LoginTaskSet` - in `tasks/base.py`, adds code for logging into the MilMove Office and MyMove interfaces. To use it,
+you can add an `on_start` definition to your `TaskSet` like so:
+
+```python
+class MyLoggedInTasks(LoginTaskSet):
+
+    def on_start(self):
+        """
+        Creates a login right at the start of the TaskSet and stops task execution if the login fails.
+        """
+        super().on_start()  # sets the csrf token
+
+        resp = self._create_login(user_type="my_user_type", session_token_name="my_token_name")
+        if resp.status_code != 200:
+            self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
+```
+
+There are multiple other ways to organize and link tasks together, but using `TaskSet` classes is the main recommendation
+in this repo. If you need to do something different, however, Locust's documentation is a great place to get started:
+[https://docs.locust.io/en/stable/writing-a-locustfile.html#tasks](https://docs.locust.io/en/stable/writing-a-locustfile.html#tasks)
 
 ## Load Testing against AWS Experimental Environment
 
