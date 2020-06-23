@@ -284,6 +284,27 @@ There are multiple other ways to organize and link tasks together, but using `Ta
 in this repo. If you need to do something different, however, Locust's documentation is a great place to get started:
 [https://docs.locust.io/en/stable/writing-a-locustfile.html#tasks](https://docs.locust.io/en/stable/writing-a-locustfile.html#tasks)
 
+### Adding tasks to existing load tests
+
+Adding a task to an existing load test is thankfully a fairly straight-forward processs that requires just a bit of
+research and just a bit of coding. Here are the general steps:
+
+* Locate the locust file your test needs to be run from.
+* Figure out which user class (if multiple) that will run your task.
+  * Generally a `HttpUser` only has one host to use as the base for its tasks, so find the one with the right host for
+  your endpoint.
+* Pick a `TaskSet` used by the user for your task.
+  * This should make sense thematically, but using clues like if the tasks in a `TaskSet` use the same login or certificates
+  that you need for your task, then that's probably the place to be.
+  * But keep in mind that it may not make sense in any of the current task sets - or maybe the `TaskSet` is used in multiple
+  places and you don't want to affect other load tests in the system. In that case, you should create a new one.
+* Add a function with the code for your task to the `TaskSet`. Make sure to decorate it with `@task`.
+  * You should also decorate it with any tags you think are relevant to this task. Look at some of the other tags for this
+  user to give you an idea of what you have to work with. This should look like `@tag('tag1', 'tag2')` either directly
+  above or below the `@task` decorator.
+* Run the load test and check that your task is working properly.
+  * If it is, you're good to go!
+
 ## Load Testing against AWS Experimental Environment
 
 To load test against the AWS Experimental Environment you must modify the
