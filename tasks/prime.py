@@ -50,3 +50,35 @@ class SupportTasks(CertTaskSet):
     def update_mto_shipment_status(self):
         # etc.
     """
+
+    @tag("mto", "createMoveTaskOrder")
+    @task
+    def create_move_task_order(self):
+        payload = {
+            "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
+            "moveOrder": {
+                "customer": {
+                    "firstName": "Christopher",
+                    "lastName": "Swinglehurst-Walters",
+                    "agency": "MARINES",
+                    "email": "swinglehurst@example.com",
+                },
+                "entitlement": {"nonTemporaryStorage": False, "totalDependents": 47},
+                "orderNumber": "32",
+                "rank": "E-6",
+                "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
+                "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
+            },
+        }
+        headers = {"content-type": "application/json"}
+        resp = self.client.post(
+            support_path("/move-task-orders"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
+        )
+        logger.info(f"ℹ️ Create MTOs status code: {resp.status_code}")
+
+        try:
+            json_body = json.loads(resp.content)
+        except (json.JSONDecodeError, TypeError):
+            logger.exception("Non-JSON response")
+        else:
+            logger.info(f"ℹ️ MoveTaskOrder {json_body['id']} created!")
