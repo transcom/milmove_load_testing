@@ -82,3 +82,14 @@ class SupportTasks(CertTaskSet):
             logger.exception("Non-JSON response")
         else:
             logger.info(f"ℹ️ MoveTaskOrder {json_body['id']} created!")
+
+            move_task_order_id = json_body["id"]
+            e_tag = json_body["eTag"]
+            headers["if-match"] = e_tag
+            resp = self.client.patch(
+                support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
+                headers=headers,
+                **self.user.cert_kwargs,
+            )
+
+            logger.info(f"ℹ️ Make MTO available to Prime status code: {resp.status_code}")
