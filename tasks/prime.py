@@ -38,6 +38,58 @@ class PrimeTasks(CertTaskSet):
         else:
             logger.info(f"ℹ️ Num MTOs returned: {len(json_body)}")
 
+    @tag("mtoShipment", "createMTOShipment")
+    @task
+    def create_mto_shipment(self):
+        payload = {
+            "shipmentType": "HHG",
+            "requestedPickupDate": "2020-03-15",
+            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+            "pickupAddress": {
+                "streetAddress1": "7 Q St",
+                "city": "Los Angeles",
+                "state": "CA",
+                "postalCode": "99999",
+                "country": "USA",
+            },
+            "destinationAddress": {
+                "streetAddress1": "17 8th St",
+                "city": "<string>",
+                "state": "CA",
+                "postalCode": "99999",
+                "country": "USA",
+            },
+            "agents": [
+                {
+                    "firstName": "jo",
+                    "lastName": "xi",
+                    "email": "jo.xi@example.com",
+                    "phone": "999-999-9999",
+                    "agentType": "RECEIVING_AGENT",
+                },
+                {
+                    "firstName": "xi",
+                    "lastName": "jo",
+                    "email": "xi.jo@example.com",
+                    "phone": "999-999-9999",
+                    "agentType": "RECEIVING_AGENT",
+                },
+            ],
+        }
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.post(
+            prime_path("/mto-shipments"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
+        )
+        logger.info(f"ℹ️ Create MTO Shipment status code: {resp.status_code}")
+
+        try:
+            json_body = json.loads(resp.content)
+        except (json.JSONDecodeError, TypeError):
+            logger.exception("Non-JSON response")
+        else:
+            logger.info(f"ℹ️ MTOShipment {json_body['id']} created!")
+
 
 @tag("support")
 class SupportTasks(CertTaskSet):
