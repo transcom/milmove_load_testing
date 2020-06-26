@@ -90,6 +90,7 @@ class SupportTasks(CertTaskSet):
                 support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
                 headers=headers,
                 **self.user.cert_kwargs,
+                name=support_path("/move-task-orders/:moveTaskOrderID/available-to-prime"),
             )
 
             logger.info(f"ℹ️ Make MTO available to Prime status code: {resp.status_code}")
