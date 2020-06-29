@@ -38,6 +38,35 @@ class PrimeTasks(CertTaskSet):
         else:
             logger.info(f"ℹ️ Num MTOs returned: {len(json_body)}")
 
+    @tag("mtoServiceItem", "createMTOServiceItem")
+    @task
+    def create_mto_service_item(self):
+        payload = {
+            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+            "mtoShipmentID": "475579d5-aaa4-4755-8c43-c510381ff9b5",
+            "modelType": "MTOServiceItemDDFSIT",
+            "reServiceID": "8d600f25-1def-422d-b159-617c7d59156e",
+            "firstAvailableDeliveryDate1": "2020-01-20",
+            "firstAvailableDeliveryDate2": "2020-01-22",
+            "timeMilitary1": "0400Z",
+            "timeMilitary2": "0500Z",
+            "feeType": "COUNSELING",
+            "status": "SUBMITTED",
+        }
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.post(
+            prime_path("/mto-service-items"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
+        )
+        logger.info(f"ℹ️ Create MTO Service Items status code: {resp.status_code}")
+
+        try:
+            json_body = json.loads(resp.content)
+        except (json.JSONDecodeError, TypeError):
+            logger.exception("Non-JSON response")
+        else:
+            logger.info(f"ℹ️ MTOServiceItem {json_body['id']} created!")
+
     @tag("mtoShipment", "createMTOShipment")
     @task
     def create_mto_shipment(self):
