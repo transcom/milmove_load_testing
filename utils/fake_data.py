@@ -48,7 +48,7 @@ class MilMoveData:
             DataTypes.BOOLEAN: self.fake.boolean,
         }
 
-    def populate_fake_data(self, fields: dict, overrides: Optional[dict]) -> dict:
+    def populate_fake_data(self, fields: dict, overrides: Optional[dict] = None) -> dict:
         """
         Takes in a dictionary of field names and their intended data types, returns a dictionary of those field name
         with fake data populated. Optionally accepts a dictionary of override data to use instead of the fake data for
