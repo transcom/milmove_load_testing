@@ -58,3 +58,20 @@ class MilMoveDomain(ListEnum):
 
         # NOTE: deployed protocol is always https
         return f"https://{'api' if is_api else self.deployed_value}.{env}.move.mil"
+
+
+class DataTypes(ListEnum):
+    """ Swagger data types that we expect to deal with. Uses camelcase in values to match. """
+
+    FIRST_NAME = "firstName"
+    LAST_NAME = "lastName"
+    PHONE = "phone"
+    EMAIL = "email"
+    STREET_ADDRESS = "streetAddress"
+    CITY = "city"
+    STATE = "state"
+    POSTAL_CODE = "postalCode"
+    COUNTRY = "country"
+    DATE = "date"
+    SENTENCE = "sentence"
+    BOOLEAN = "boolean"
