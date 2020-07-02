@@ -46,6 +46,7 @@ class MilMoveData:
             DataTypes.DATE: self.fake.date,
             DataTypes.SENTENCE: self.fake.sentence,
             DataTypes.BOOLEAN: self.fake.boolean,
+            DataTypes.INTEGER: self.fake.random_number,
         }
 
     def populate_fake_data(self, fields: dict, overrides: Optional[dict] = None) -> dict:

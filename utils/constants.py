@@ -75,3 +75,4 @@ class DataTypes(ListEnum):
     DATE = "date"
     SENTENCE = "sentence"
     BOOLEAN = "boolean"
+    INTEGER = "integer"
