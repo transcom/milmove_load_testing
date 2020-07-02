@@ -76,3 +76,4 @@ class DataType(ListEnum):
     SENTENCE = "sentence"
     BOOLEAN = "boolean"
     INTEGER = "integer"
+    UUID = "uuid"
