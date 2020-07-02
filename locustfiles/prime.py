@@ -4,7 +4,12 @@ from locust import HttpUser, between
 
 from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS
 from utils.mixins import MilMoveHostMixin
+from utils.parsers import PrimeAPIParser
 from tasks import PrimeTasks, SupportTasks
+
+# init these classes just once because we don't need to parse the API over and over:
+prime_api = PrimeAPIParser()
+# support_api = SupportAPIParser()
 
 
 class PrimeUser(MilMoveHostMixin, HttpUser):
@@ -17,6 +22,7 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
     is_api = True  # if True, uses the api base domain in deployed environments
     # cert_kwargs are used by CertTaskSet for verifying requests:
     cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
+    parser = prime_api
 
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
     tasks = {PrimeTasks: 1}  # the set of tasks to be executed and their relative weight
@@ -31,6 +37,7 @@ class SupportUser(MilMoveHostMixin, HttpUser):
     domain = MilMoveDomain.PRIME
     is_api = True
     cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
+    # parser = support_api
 
     wait_time = between(1, 9)
     tasks = {SupportTasks: 1}

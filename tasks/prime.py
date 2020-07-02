@@ -3,9 +3,9 @@
 import logging
 import json
 
-from locust import tag, task
+from locust import tag, task, TaskSet
 
-from .base import CertTaskSet
+from .base import CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ def support_path(url):
 
 
 @tag("prime")
-class PrimeTasks(CertTaskSet):
+class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Prime API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier.
@@ -121,7 +121,7 @@ class PrimeTasks(CertTaskSet):
 
 
 @tag("support")
-class SupportTasks(CertTaskSet):
+class SupportTasks(CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Support API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier. Ex:
