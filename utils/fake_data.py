@@ -5,8 +5,10 @@ from copy import deepcopy
 
 from faker import Faker
 from faker.providers import BaseProvider
+from prance import ResolvingParser
 
-from .constants import DataTypes
+from .constants import DataType
+from .base import ImplementationError
 
 
 class MilMoveProvider(BaseProvider):
@@ -34,19 +36,19 @@ class MilMoveData:
         self.fake.add_provider(MilMoveProvider)
 
         self.data_types = {
-            DataTypes.FIRST_NAME: self.fake.first_name,  # TODO: replace with data from milmove fake address spreadsheet
-            DataTypes.LAST_NAME: self.fake.last_name,  # TODO: same ^
-            DataTypes.PHONE: self.fake.safe_phone_number,
-            DataTypes.EMAIL: self.fake.safe_email,
-            DataTypes.STREET_ADDRESS: self.fake.street_address,  # TODO: same ^^
-            DataTypes.CITY: self.fake.city,
-            DataTypes.STATE: self.fake.state_abbr,
-            DataTypes.POSTAL_CODE: self.fake.postalcode,
-            DataTypes.COUNTRY: self.fake.country,
-            DataTypes.DATE: self.fake.date,
-            DataTypes.SENTENCE: self.fake.sentence,
-            DataTypes.BOOLEAN: self.fake.boolean,
-            DataTypes.INTEGER: self.fake.random_number,
+            DataType.FIRST_NAME: self.fake.first_name,  # TODO: replace with data from milmove fake address spreadsheet
+            DataType.LAST_NAME: self.fake.last_name,  # TODO: same ^
+            DataType.PHONE: self.fake.safe_phone_number,
+            DataType.EMAIL: self.fake.safe_email,
+            DataType.STREET_ADDRESS: self.fake.street_address,  # TODO: same ^^
+            DataType.CITY: self.fake.city,
+            DataType.STATE: self.fake.state_abbr,
+            DataType.POSTAL_CODE: self.fake.postalcode,
+            DataType.COUNTRY: self.fake.country,
+            DataType.DATE: self.fake.date,
+            DataType.SENTENCE: self.fake.sentence,
+            DataType.BOOLEAN: self.fake.boolean,
+            DataType.INTEGER: self.fake.random_number,
         }
 
     def populate_fake_data(self, fields: dict, overrides: Optional[dict] = None) -> dict:
@@ -74,3 +76,105 @@ class MilMoveData:
         data.update(overrides if overrides else {})
 
         return data
+
+
+class APIParser:
+    """ Parses a YAML Swagger file to isolate endpoint definitions. """
+
+    api_file = ""  # can be a relative path or a url
+
+    def __init__(self, api_file=""):
+        """
+        Sets the api_file and the parser attributes up for the class.
+        :param api_file: str url, optional
+        """
+        if api_file:
+            self.api_file = api_file
+
+        if not self.api_file:
+            raise ImplementationError("There must be an API file set to use the APIParser class.")
+
+        self.parser = ResolvingParser(self.api_file)
+
+    def _get_endpoint(self, path, method):
+        """
+        Given a relative endpoint path and method, returns the dictionary representation of the full swagger definition
+        of the endpoint.
+
+        :param path: str
+        :param method: str
+        :return: dict
+        """
+        try:
+            return self.parser.specification["paths"][path][method]
+        except KeyError:
+            # todo log
+            raise ImplementationError("Endpoint path or method not found in API.")
+        except TypeError as e:
+            # todo log exception "Bad API structure, unable to get endpoint."
+            raise e
+
+    def get_request_body(self, path, method):
+        """
+        Given a relative endpoint path and the HTTP/REST method for the endpoint, returns the dictionary representation
+        of the request body.
+
+        :param path: str
+        :param method: str
+        :return: dict
+        """
+        endpoint = self._get_endpoint(path, method)
+        try:
+            # grabbing the first body parameter in the endpoint to work with:
+            body = [param for param in endpoint["parameters"] if param["in"] == "body"][0]
+        except IndexError:  # this means we got an empty list - no body! Could be intended for this endpoint though
+            return {}
+
+        return body["schema"]
+
+    def get_response_body(self, path, method, status="200"):
+        """
+        Given a relative endpoint path, the HTTP/REST method for the endpoint, and an optional status code, returns the
+        dictionary representation of the response body.
+
+        :param path: str
+        :param method: str
+        :param status: str, optional
+        :return: dict
+        """
+        endpoint = self._get_endpoint(path, method)
+        try:
+            response = endpoint["responses"][status]
+        except KeyError:  # no response body found for the given status code - could be intended
+            return {}
+
+        return response["schema"]
+
+    #
+    # def generate_fake_request(self, request_def):
+    #     """
+    #
+    #     """
+    #     fake_data = {}
+    #
+    #     if request_def.get("type") == "object":
+    #         required_fields = request_def.get("required", [])
+    #         try:
+    #             request_properties = request_def["properties"]
+    #         except KeyError:
+    #             raise TypeError("Bad API structure, unable to get properties for request body.")
+    #
+    #         for field, properties in request_properties.items():
+    #             field_type = properties["type"]
+    #
+    #             if field_type == "array":
+    #                 pass  # todo handle
+    #             elif DataType.validate(field_type):
+    #                 fake_data[field] = DataType.match(field_type)
+    #
+    #             print(field)
+    #             print(properties)
+    #     else:
+    #         raise NotImplementedError("This parser only handles request bodies with type 'object'.")
+    #
+    #     return fake_data

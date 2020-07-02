@@ -60,7 +60,7 @@ class MilMoveDomain(ListEnum):
         return f"https://{'api' if is_api else self.deployed_value}.{env}.move.mil"
 
 
-class DataTypes(ListEnum):
+class DataType(ListEnum):
     """ Swagger data types that we expect to deal with. Uses camelcase in values to match. """
 
     FIRST_NAME = "firstName"
