@@ -20,7 +20,8 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host
     is_api = True  # if True, uses the api base domain in deployed environments
-    # cert_kwargs are used by CertTaskSet for verifying requests:
+
+    # cert_kwargs are used by CertTaskMixin for verifying requests:
     cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
     parser = prime_api
 
