@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ utils/fake_data.py is for Faker classes and functions to set up test data """
+import logging
 from typing import Optional
 from copy import deepcopy
 from datetime import datetime
@@ -8,6 +9,8 @@ from faker import Faker
 from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
 
 from .constants import DataType
+
+logger = logging.getLogger(__name__)
 
 
 class MilMoveProvider(DateProvider):
@@ -79,13 +82,14 @@ class MilMoveData:
         :return: data dict, format: [str field_name, value]
         """
         data = deepcopy(fields)
-        for field_name, data_type in data.items():
+        for field_name, data_type in fields.items():
             try:
                 data[field_name] = self.data_types[data_type]()
             except (KeyError, TypeError):  # the data_type isn't in our dict or it's unhashable
                 try:  # assume it was an iterable and try to pick an element from it:
                     data[field_name] = self.fake.random_element(data_type)
                 except TypeError:
+                    logging.exception(f"No data gen handling for field {field_name} type {data_type}.")
                     pass  # it wasn't an iterable value, so just leave this field alone
 
         # Now we're going to use the override data that was passed in instead of any generated fake data for those
