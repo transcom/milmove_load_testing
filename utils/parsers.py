@@ -86,7 +86,7 @@ class APIParser:
 
         return response["schema"]
 
-    def generate_fake_request(self, path, method, overrides=None, nested_overrides=None):
+    def generate_fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=False):
         """
         Generates a request body filled with fake data to use with a specific endpoint in the API. Requires the endpoint
         path and method. Optional takes top level overrides and nested overrides.
@@ -95,16 +95,17 @@ class APIParser:
         :param method: str
         :param overrides: dict, optional
         :param nested_overrides: dict, optional
+        :param require_all: bool, optional
         :return: dict
         """
         request_def = self.get_request_body(path, method)
         if request_def.get("type") == "object":
-            data, overrides = self._parse_object_data_types(request_def, overrides, nested_overrides)
+            data, overrides = self._parse_object_data_types(request_def, overrides, nested_overrides, require_all)
             return self.milmove_data.populate_fake_data(data, overrides)
         else:
             raise NotImplementedError("This parser only handles request bodies with type 'object'.")
 
-    def _generate_fake_array_data(self, items_def, num_items, nested_overrides=None):
+    def _generate_fake_array_data(self, items_def, num_items, nested_overrides=None, require_all=False):
         """
         Takes in a definition for the items in an array, the number of items to generate, and an optional dictionary of
         nested overrides to use with the data.
@@ -112,6 +113,7 @@ class APIParser:
         :param items_def:
         :param num_items:
         :param nested_overrides:
+        :param require_all:
         :return: list of items with fake data
         """
         items = []
@@ -121,7 +123,9 @@ class APIParser:
             raise NotImplementedError("This parser cannot handle arrays of arbitrary types.")
 
         if items_type == "object":
-            data_types, overrides = self._parse_object_data_types(items_def, nested_overrides, nested_overrides)
+            data_types, overrides = self._parse_object_data_types(
+                items_def, nested_overrides, nested_overrides, require_all
+            )
             for _ in range(num_items):
                 items.append(self.milmove_data.populate_fake_data(data_types, overrides))
         else:
@@ -139,7 +143,7 @@ class APIParser:
 
         return items
 
-    def _parse_object_data_types(self, object_def, overrides=None, nested_overrides=None):
+    def _parse_object_data_types(self, object_def, overrides=None, nested_overrides=None, require_all=False):
         """
         Takes an object definition dictionary and figures out the data types for each of the fields. Takes in two
         optional override dictionaries:
@@ -148,12 +152,14 @@ class APIParser:
               field appears in any of the sub-objects for this definition, ALL values will be overridden to the one
               passed in
 
-        Returns the data type dictionary and the overrides (may be updated) to be passed into the fake data generator at
-        will.
+        Can also vary which non-required fields get sent back, or the require_all field can be set to True and force all
+        fields back. Returns the data type dictionary and the overrides (may be updated) to be passed into the fake data
+        generator at will.
 
         :param object_def: dict, repr of yaml def
         :param overrides: dict, opt
         :param nested_overrides: dict, opt
+        :param require_all: bool, opt
         :return: tuple(dict of data types, dict of overrides)
         """
         data_types = {}
@@ -163,12 +169,16 @@ class APIParser:
             object_properties = object_def["properties"]
         except KeyError:
             raise TypeError("Cannot parse a free-form object to generate fake data.")
+        required_fields = object_properties.keys() if require_all else object_def.get("required", [])
 
         for field, properties in object_properties.items():
             # Check if the field is going to be overridden or if it's readOnly; in both cases we don't need any data.
-            # Also check if not required, and then we have a 1/3 chance to skip adding it entirely:
-            # (field not in object_def.get("required", []) and not randint(0, 2)) TODO when API errors fixed
-            if field in overrides_copy.keys() or properties.get("readOnly"):
+            # Also check if not required, and then we have a 1/4 chance to skip adding it entirely:
+            if (
+                field in overrides_copy.keys()
+                or properties.get("readOnly")
+                or (field not in required_fields and not randint(0, 3))
+            ):
                 continue
 
             field_type = properties.get("type", "")
@@ -183,7 +193,9 @@ class APIParser:
                 overrides_copy[field] = array_data
 
             elif field_type == "object":
-                sub_data, sub_overrides = self._parse_object_data_types(properties, nested_overrides, nested_overrides)
+                sub_data, sub_overrides = self._parse_object_data_types(
+                    properties, nested_overrides, nested_overrides, require_all
+                )
                 overrides_copy[field] = self.milmove_data.populate_fake_data(sub_data, sub_overrides)
 
             elif properties.get("enum"):
