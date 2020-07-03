@@ -14,13 +14,22 @@ class MilMoveProvider(BaseProvider):
 
     def safe_phone_number(self):
         """
-        Sends back a standard US phone number with 555 as the middle three digits.
-        Ex: 042-555-6674
+        Sends back a standard US phone number with 555 as the middle three digits. First digit must be 2-9.
+        Ex: 242-555-6674
         """
-        area_code = f"{self.random_number(digits=3)}".zfill(3)
+        area_code = f"{self.random_int(2, 9)}{str(self.random_number(digits=2)).zfill(2)}"
         last_four = f"{self.random_number(digits=4)}".zfill(4)
 
         return f"{area_code}-555-{last_four}"
+
+    def time_military(self):
+        """
+        Returns a time in military format. Ex: 0830Z
+        """
+        hours = f"{self.random_int(0, 23)}".zfill(2)
+        minutes = f"{self.random_int(0, 59)}".zfill(2)
+
+        return f"{hours}{minutes}Z"
 
 
 class MilMoveData:
@@ -44,6 +53,7 @@ class MilMoveData:
             DataType.POSTAL_CODE: self.fake.postalcode,
             DataType.COUNTRY: self.fake.country,
             DataType.DATE: self.fake.date,
+            DataType.TIME_MILITARY: self.fake.time_military,
             DataType.SENTENCE: self.fake.sentence,
             DataType.BOOLEAN: self.fake.boolean,
             DataType.INTEGER: self.fake.random_number,

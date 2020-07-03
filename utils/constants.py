@@ -73,6 +73,8 @@ class DataType(ListEnum):
     POSTAL_CODE = "postalCode"
     COUNTRY = "country"
     DATE = "date"
+    DATE_TIME = "date-time"  # inconsistent, but matches the swagger format name
+    TIME_MILITARY = "timeMilitary"
     SENTENCE = "sentence"
     BOOLEAN = "boolean"
     INTEGER = "integer"
