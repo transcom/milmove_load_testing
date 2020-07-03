@@ -86,6 +86,59 @@ class APIParser:
 
         return response["schema"]
 
+    def generate_fake_request(self, path, method, overrides=None, nested_overrides=None):
+        """
+        Generates a request body filled with fake data to use with a specific endpoint in the API. Requires the endpoint
+        path and method. Optional takes top level overrides and nested overrides.
+
+        :param path: str
+        :param method: str
+        :param overrides: dict, optional
+        :param nested_overrides: dict, optional
+        :return: dict
+        """
+        request_def = self.get_request_body(path, method)
+        if request_def.get("type") == "object":
+            data, overrides = self._parse_object_data_types(request_def, overrides, nested_overrides)
+            return self.milmove_data.populate_fake_data(data, overrides)
+        else:
+            raise NotImplementedError("This parser only handles request bodies with type 'object'.")
+
+    def _generate_fake_array_data(self, items_def, num_items, nested_overrides=None):
+        """
+        Takes in a definition for the items in an array, the number of items to generate, and an optional dictionary of
+        nested overrides to use with the data.
+
+        :param items_def:
+        :param num_items:
+        :param nested_overrides:
+        :return: list of items with fake data
+        """
+        items = []
+        try:
+            items_type = items_def["type"]
+        except KeyError:
+            raise NotImplementedError("This parser cannot handle arrays of arbitrary types.")
+
+        if items_type == "object":
+            data_types, overrides = self._parse_object_data_types(items_def, nested_overrides, nested_overrides)
+            for _ in range(num_items):
+                items.append(self.milmove_data.populate_fake_data(data_types, overrides))
+        else:
+            data_type = None
+
+            if DataType.validate(items_type):
+                data_type = DataType.match(items_type)
+            elif data_type == "string":
+                data_type = DataType.SENTENCE
+
+            # If we were able to determine the data type above, populate some data. Otherwise we return the empty list
+            if data_type:
+                for _ in range(num_items):
+                    items.append(self.milmove_data.data_types[data_type]())
+
+        return items
+
     def _parse_object_data_types(self, object_def, overrides=None, nested_overrides=None):
         """
         Takes an object definition dictionary and figures out the data types for each of the fields. Takes in two
@@ -106,16 +159,16 @@ class APIParser:
         data_types = {}
         overrides_copy = deepcopy(overrides) if overrides else {}
 
-        object_fields = object_def.get("required", [])
         try:
             object_properties = object_def["properties"]
         except KeyError:
             raise TypeError("Cannot parse a free-form object to generate fake data.")
 
         for field, properties in object_properties.items():
-            # Check if the field is going to be overridden or if it's required - if not required, 1/3 chance to skip
-            # adding it entirely:
-            if (field not in object_fields and not randint(0, 2)) or field in overrides_copy.keys():
+            # Check if the field is going to be overridden or if it's readOnly; in both cases we don't need any data.
+            # Also check if not required, and then we have a 1/3 chance to skip adding it entirely:
+            # (field not in object_def.get("required", []) and not randint(0, 2)) TODO when API errors fixed
+            if field in overrides_copy.keys() or properties.get("readOnly"):
                 continue
 
             field_type = properties.get("type", "")
@@ -153,59 +206,6 @@ class APIParser:
 
         return data_types, overrides_copy
 
-    def _generate_fake_array_data(self, items_def, num_items, nested_overrides=None):
-        """
-        Takes in a definition for the items in an array, the number of items to generate, and an optional dictionary of
-        nested overrides to use with the data.
-
-        :param items_def:
-        :param num_items:
-        :param nested_overrides:
-        :return: list of items with fake data
-        """
-        items = []
-        try:
-            items_type = items_def["type"]
-        except KeyError:
-            raise NotImplementedError("This parser cannot handle arrays of arbitrary types.")
-
-        if items_type == "object":
-            data_types, overrides = self._parse_object_data_types(items_def, nested_overrides, nested_overrides)
-            for _ in range(num_items):
-                items.append(self.milmove_data.populate_fake_data(data_types, overrides))
-        else:
-            data_type = None
-
-            if DataType.validate(items_type):
-                data_type = DataType.match(items_type)
-            elif data_type == "string":
-                data_type = DataType.SENTENCE
-
-            # If we were able to determine the data type above, populate some data. Otherwise we return the empty list
-            if data_type:
-                for _ in range(num_items):
-                    items.append(self.milmove_data.data_types[data_type]())
-
-        return items
-
-    def generate_fake_request(self, path, method, overrides=None, nested_overrides=None):
-        """
-        Generates a request body filled with fake data to use with a specific endpoint in the API. Requires the endpoint
-        path and method. Optional takes top level overrides and nested overrides.
-
-        :param path: str
-        :param method: str
-        :param overrides: dict, optional
-        :param nested_overrides: dict, optional
-        :return: dict
-        """
-        request_def = self.get_request_body(path, method)
-        if request_def.get("type") == "object":
-            data, overrides = self._parse_object_data_types(request_def, overrides, nested_overrides)
-            return self.milmove_data.populate_fake_data(data, overrides)
-        else:
-            raise NotImplementedError("This parser only handles request bodies with type 'object'.")
-
     @staticmethod
     def approximate_str_type(field):
         """
@@ -215,8 +215,11 @@ class APIParser:
         :param field: str, name of the field
         :return: DataType enum
         """
+        field = field.lower()
+
         for data_type in DataType:
-            if (field in data_type.value) or (data_type.value in field):
+            value = data_type.value.lower()
+            if (field in value) or (value in field):
                 return data_type
 
         return DataType.SENTENCE
