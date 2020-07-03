@@ -181,45 +181,62 @@ class APIParser:
             ):
                 continue
 
-            field_type = properties.get("type", "")
-            field_format = properties.get("format", "")
-
-            if field_type == "array":
-                min_items = properties.get("minItems", 1)
-                max_items = properties.get("maxItems", 5)
-                array_data = self._generate_fake_array_data(
-                    properties["items"], randint(min_items, max_items), nested_overrides
-                )
-                overrides_copy[field] = array_data
-
-            elif field_type == "object":
-                sub_data, sub_overrides = self._parse_object_data_types(
-                    properties, nested_overrides, nested_overrides, require_all
-                )
-                overrides_copy[field] = self.milmove_data.populate_fake_data(sub_data, sub_overrides)
-
-            elif properties.get("enum"):
-                data_types[field] = properties["enum"]
-
-            elif DataType.validate(field_type):
-                data_types[field] = DataType.match(field_type)
-
-            elif DataType.validate(field):  # the field name itself indicates one of our handled data types
-                data_types[field] = DataType.match(field)
-
-            elif DataType.validate(field_format):  # the format might also tell us which type to use
-                data_types[field] = DataType.match(field_format)
-
-            elif field_type == "string":
-                data_types[field] = self.approximate_str_type(field)
-
-            # if the field doesn't fall into any of these cases, we just skip it because we have no rules for what data
-            # to pass in
+            # NOTE: This function modifies data_types and overrides_copy directly
+            self._parse_field_properties(field, properties, data_types, overrides_copy, nested_overrides, require_all)
 
         return data_types, overrides_copy
 
+    def _parse_field_properties(self, field, properties, data, overrides, nested_overrides=None, require_all=False):
+        """
+        Parses the properties of a field in a swagger definition to determine what type of fake data to put into it.
+        !!! NOTE: Modifies the data and overrides input dictionaries directly!!!
+
+        :param field: str
+        :param properties: dict
+        :param data: dict, is modified directly!
+        :param overrides: dict, is modified directly!
+        :param nested_overrides: dict, optional
+        :param require_all: bool, optional
+        :return: None
+        """
+        field_type = properties.get("type", "")
+        field_format = properties.get("format", "")
+
+        if field_type == "array":
+            min_items = properties.get("minItems", 1)
+            max_items = properties.get("maxItems", 5)
+            array_data = self._generate_fake_array_data(
+                properties["items"], randint(min_items, max_items), nested_overrides, require_all
+            )
+            overrides[field] = array_data
+
+        elif field_type == "object":
+            sub_data, sub_overrides = self._parse_object_data_types(
+                properties, nested_overrides, nested_overrides, require_all
+            )
+            overrides[field] = self.milmove_data.populate_fake_data(sub_data, sub_overrides)
+
+        elif properties.get("enum"):
+            data[field] = properties["enum"]
+
+        elif DataType.validate(field_type):
+            data[field] = DataType.match(field_type)
+
+        elif DataType.validate(field):  # the field name itself indicates one of our handled data types
+            data[field] = DataType.match(field)
+
+        elif DataType.validate(field_format):  # the format might also tell us which type to use
+            data[field] = DataType.match(field_format)
+
+        elif field_type == "string":
+            data[field] = self._approximate_str_type(field)
+
+        # if the field doesn't fall into any of these cases, we just skip it because we have no rules for what data to
+        # pass in
+        return
+
     @staticmethod
-    def approximate_str_type(field):
+    def _approximate_str_type(field):
         """
         Approximates the data type for a field with type "string" in the YAML based off the name of the field. Defaults
         to the SENTENCE data type.
