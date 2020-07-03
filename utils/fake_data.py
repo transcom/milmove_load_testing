@@ -2,14 +2,15 @@
 """ utils/fake_data.py is for Faker classes and functions to set up test data """
 from typing import Optional
 from copy import deepcopy
+from datetime import datetime
 
 from faker import Faker
-from faker.providers import BaseProvider
+from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
 
 from .constants import DataType
 
 
-class MilMoveProvider(BaseProvider):
+class MilMoveProvider(DateProvider):
     """ Faker Provider class for sending back customized MilMove data. """
 
     def safe_phone_number(self):
@@ -30,6 +31,12 @@ class MilMoveProvider(BaseProvider):
         minutes = f"{self.random_int(0, 59)}".zfill(2)
 
         return f"{hours}{minutes}Z"
+
+    def iso_date_time(self):
+        """
+        Returns an ISO-formatted date as a string. Ex: 2020-06-01T16:06:22
+        """
+        return datetime.isoformat(self.date_time())
 
 
 class MilMoveData:
@@ -53,6 +60,7 @@ class MilMoveData:
             DataType.POSTAL_CODE: self.fake.postalcode,
             DataType.COUNTRY: self.fake.country,
             DataType.DATE: self.fake.date,
+            DataType.DATE_TIME: self.fake.iso_date_time,
             DataType.TIME_MILITARY: self.fake.time_military,
             DataType.SENTENCE: self.fake.sentence,
             DataType.BOOLEAN: self.fake.boolean,
