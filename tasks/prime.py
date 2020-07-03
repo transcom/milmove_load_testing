@@ -127,7 +127,10 @@ class PrimeTasks(CertTaskSet):
         upload_file = {"file": open(TEST_PDF, "rb")}
 
         resp = self.client.post(
-            prime_path(f"/payment-requests/{payment_request_id}/uploads"), files=upload_file, **self.user.cert_kwargs
+            prime_path(f"/payment-requests/{payment_request_id}/uploads"),
+            files=upload_file,
+            name=prime_path("/payment-requests/:paymentRequestID/uploads"),
+            **self.user.cert_kwargs,
         )
 
         logger.info(f"ℹ️ Create Upload status code: {resp.status_code}")
