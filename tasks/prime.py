@@ -119,6 +119,36 @@ class PrimeTasks(CertTaskSet):
         else:
             logger.info(f"ℹ️ MTOShipment {json_body['id']} created!")
 
+    @tag("paymentRequests", "createPaymentRequest")
+    @task
+    def create_payment_request(self):
+        payload = {
+            "moveTaskOrderID": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791",
+            "serviceItems": [
+                {
+                    "id": "8a625314-1922-4987-93c5-a62c0d13f053",
+                    "params": [
+                        {"key": "WeightEstimated", "value": "3254"},
+                        {"key": "RequestedPickupDate", "value": "2020-04-20"},
+                    ],
+                }
+            ],
+            "isFinal": False,
+        }
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.post(
+            prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
+        )
+        logger.info(f"ℹ️ Create Payment Request status code: {resp.status_code}")
+
+        try:
+            json_body = json.loads(resp.content)
+        except (json.JSONDecodeError, TypeError):
+            logger.exception("Non-JSON response")
+        else:
+            logger.info(f"ℹ️ PaymentRequest {json_body['id']} created!")
+
 
 @tag("support")
 class SupportTasks(CertTaskSet):
