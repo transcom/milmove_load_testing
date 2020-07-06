@@ -9,7 +9,7 @@ from tasks import PrimeTasks, SupportTasks
 
 # init these classes just once because we don't need to parse the API over and over:
 prime_api = PrimeAPIParser()
-# support_api = SupportAPIParser()
+# support_api = SupportAPIParser()  # TODO: fix API formatting issues
 
 
 class PrimeUser(MilMoveHostMixin, HttpUser):
@@ -37,6 +37,7 @@ class SupportUser(MilMoveHostMixin, HttpUser):
     local_port = "9443"
     domain = MilMoveDomain.PRIME
     is_api = True
+
     cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
     # parser = support_api
 
