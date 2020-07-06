@@ -14,7 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class APIParser:
-    """ Parses a YAML Swagger file to isolate endpoint definitions. """
+    """
+    Parses a YAML Swagger file to isolate endpoint definitions.
+    NOTE: This is stable for the Prime API yaml file, and may not handle all cases present in other APIs.
+    """
 
     api_file = ""  # can be a relative path or a url
 
@@ -31,6 +34,7 @@ class APIParser:
 
         self.parser = ResolvingParser(self.api_file)
         self.milmove_data = MilMoveData()  # for generating fake requests
+        self.discriminated = False  # indicates if the parser is working with the data for a discriminator
 
     def _get_endpoint(self, path, method):
         """
@@ -85,6 +89,14 @@ class APIParser:
             return {}
 
         return response["schema"]
+
+    def get_definition(self, name):
+        """
+        Grabs a definition object from its name.
+        :param name: str
+        :return: dict
+        """
+        return self.parser.specification["definitions"].get(name)
 
     def generate_fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=False):
         """
@@ -143,6 +155,59 @@ class APIParser:
 
         return items
 
+    def _parse_all_of_data(self, all_defs, overrides=None, nested_overrides=None, require_all=False):
+        """
+        Loops through all of the objects defines in an "allOf" data section and puts them together into one object.
+        :param all_defs:
+        :param overrides:
+        :param nested_overrides:
+        :param require_all:
+        :return:
+        """
+        data_types = {}
+        overrides_copy = deepcopy(overrides) if overrides else {}
+
+        for definition in all_defs:
+            if definition.get("properties"):
+                new_data, new_overrides = self._parse_object_data_types(
+                    definition, overrides, nested_overrides, require_all
+                )
+
+                data_types.update(new_data)
+                overrides_copy.update(new_overrides)
+            else:  # We don't handle non-object types without distinct fields
+                raise NotImplementedError("Cannot parse allOf with non-object members.")
+
+        return data_types, overrides_copy
+
+    def _parse_discriminator_data(self, object_def, overrides=None, nested_overrides=None, require_all=False):
+        """
+        Gets the discriminator value for an object definition, then grabs the possible values for the discriminator,
+        picks one, and continues processing the rest of the object based on that value.
+
+        :param object_def:
+        :param overrides:
+        :param nested_overrides:
+        :param require_all:
+        :return:
+        """
+        self.discriminated = True  # needed to prevent recursion error
+
+        d = object_def["discriminator"]
+        d_properties = object_def["properties"][d]  # for MTOServiceItems, this value is a field name
+        d_data = {}
+
+        # Get the field data type, use faker to pick a value, then parse all data based on that value:
+        self._parse_field_properties(d, d_properties, d_data, overrides, nested_overrides)
+        selection = self.milmove_data.populate_fake_data(d_data, overrides)[d]
+        selection_def = self.get_definition(selection)["allOf"]
+        overrides[d] = selection
+
+        return_data = self._parse_all_of_data(selection_def, overrides, nested_overrides, require_all)
+        self.discriminated = False
+
+        return return_data
+
     def _parse_object_data_types(self, object_def, overrides=None, nested_overrides=None, require_all=False):
         """
         Takes an object definition dictionary and figures out the data types for each of the fields. Takes in two
@@ -162,6 +227,12 @@ class APIParser:
         :param require_all: bool, opt
         :return: tuple(dict of data types, dict of overrides)
         """
+        if object_def.get("discriminator") and not self.discriminated:
+            return self._parse_discriminator_data(object_def, overrides, nested_overrides, require_all)
+
+        if object_def.get("allOf"):
+            return self._parse_all_of_data(object_def["allOf"], overrides, nested_overrides, require_all)
+
         data_types = {}
         overrides_copy = deepcopy(overrides) if overrides else {}
 
@@ -255,12 +326,16 @@ class APIParser:
 
 
 class PrimeAPIParser(APIParser):
-    """ Parser class for the Prime API. """
+    """ Parser class for the Prime API. Handles the polymorphism for MTO Service Items. """
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml"
 
+    def generate_fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=True):
+        """ Overrides method so that require_all defaults to True. TODO remove when API discrepancies are fixed """
+        return super().generate_fake_request(path, method, overrides, nested_overrides, require_all)
 
-class SupportAPIParser(APIParser):
+
+class SupportAPIParser(PrimeAPIParser):
     """ Parser class for the Support API. """
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/support.yaml"
