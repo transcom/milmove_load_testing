@@ -36,7 +36,10 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         except (json.JSONDecodeError, TypeError):
             logger.exception("Non-JSON response")
         else:
-            logger.info(f"ℹ️ Num MTOs returned: {len(json_body)}")
+            if str(resp.status_code).startswith("2"):
+                logger.info(f"ℹ️ Num MTOs returned: {len(json_body)}")
+            else:
+                logger.debug(f"⚠️ {json_body}")
 
     @tag("mtoServiceItem", "createMTOServiceItem")
     @task
@@ -48,18 +51,6 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         payload = self.user.parser.generate_fake_request(
             "/mto-service-items", "post", overrides=overrides, nested_overrides=overrides
         )
-        # payload = {
-        #     "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
-        #     "mtoShipmentID": "475579d5-aaa4-4755-8c43-c510381ff9b5",
-        #     "modelType": "MTOServiceItemDDFSIT",
-        #     "reServiceID": "8d600f25-1def-422d-b159-617c7d59156e",
-        #     "firstAvailableDeliveryDate1": "2020-01-20",
-        #     "firstAvailableDeliveryDate2": "2020-01-22",
-        #     "timeMilitary1": "0400Z",
-        #     "timeMilitary2": "0500Z",
-        #     "feeType": "COUNSELING",
-        #     "status": "SUBMITTED",
-        # }
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -72,52 +63,19 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         except (json.JSONDecodeError, TypeError):
             logger.exception("Non-JSON response")
         else:
-            logger.info(f"ℹ️ MTOServiceItem {json_body['id']} created!")
+            if str(resp.status_code).startswith("2"):
+                logger.info(f"ℹ️ MTOServiceItem {json_body['id']} created!")
+            else:
+                logger.debug(f"⚠️ {json_body}")
+                logger.debug(payload)
 
     @tag("mtoShipment", "createMTOShipment")
     @task
     def create_mto_shipment(self):
-        overrides = {
-            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
-        }
+        overrides = {"moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e", "mtoServiceItems": []}
         payload = self.user.parser.generate_fake_request(
-            "/mto-shipments", "post", overrides=overrides, nested_overrides=overrides
+            "/mto-shipments", "post", overrides=overrides, nested_overrides=overrides,
         )
-        # payload = {
-        #     "shipmentType": "HHG",
-        #     "requestedPickupDate": "2020-03-15",
-        #     "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
-        #     "pickupAddress": {
-        #         "streetAddress1": "7 Q St",
-        #         "city": "Los Angeles",
-        #         "state": "CA",
-        #         "postalCode": "99999",
-        #         "country": "USA",
-        #     },
-        #     "destinationAddress": {
-        #         "streetAddress1": "17 8th St",
-        #         "city": "<string>",
-        #         "state": "CA",
-        #         "postalCode": "99999",
-        #         "country": "USA",
-        #     },
-        #     "agents": [
-        #         {
-        #             "firstName": "jo",
-        #             "lastName": "xi",
-        #             "email": "jo.xi@example.com",
-        #             "phone": "999-999-9999",
-        #             "agentType": "RECEIVING_AGENT",
-        #         },
-        #         {
-        #             "firstName": "xi",
-        #             "lastName": "jo",
-        #             "email": "xi.jo@example.com",
-        #             "phone": "999-999-9999",
-        #             "agentType": "RECEIVING_AGENT",
-        #         },
-        #     ],
-        # }
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -130,7 +88,11 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         except (json.JSONDecodeError, TypeError):
             logger.exception("Non-JSON response")
         else:
-            logger.info(f"ℹ️ MTOShipment {json_body['id']} created!")
+            if str(resp.status_code).startswith("2"):
+                logger.info(f"ℹ️ MTOShipment {json_body['id']} created!")
+            else:
+                logger.debug(f"⚠️ {json_body}")
+                logger.debug(payload)
 
 
 @tag("support")
@@ -174,7 +136,9 @@ class SupportTasks(CertTaskMixin, TaskSet):
             json_body = json.loads(resp.content)
         except (json.JSONDecodeError, TypeError):
             logger.exception("Non-JSON response")
-        else:
+            return
+
+        if str(resp.status_code).startswith("2"):
             logger.info(f"ℹ️ MoveTaskOrder {json_body['id']} created!")
 
             move_task_order_id = json_body["id"]
@@ -188,3 +152,6 @@ class SupportTasks(CertTaskMixin, TaskSet):
             )
 
             logger.info(f"ℹ️ Make MTO available to Prime status code: {resp.status_code}")
+        else:
+            logger.debug(f"⚠️ {json_body}")
+            logger.debug(payload)
