@@ -71,6 +71,17 @@ class MilMoveData:
             DataType.UUID: self.fake.uuid4,
         }
 
+    def get_random_choice(self, choices):
+        """ Given a list of random choices, returns one of them. """
+        return self.fake.random_element(choices)
+
+    def get_fake_data_for_type(self, data_type):
+        """ Given a specific data type, returns faker data for that type (if a mapping exists). """
+        try:
+            return self.data_types[data_type]()
+        except KeyError:  # data_type isn't in dictionary
+            return None
+
     def populate_fake_data(self, fields: dict, overrides: Optional[dict] = None) -> dict:
         """
         Takes in a dictionary of field names and their intended data types, returns a dictionary of those field name
