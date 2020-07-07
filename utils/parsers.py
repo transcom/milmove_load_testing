@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """ utils/parsers.py is for classes that parse an API and populate fake data for use in requests """
 import logging
-from copy import deepcopy
-from random import randint
+import random
 
 from prance import ResolvingParser
 
 from .base import ImplementationError
-from .constants import DataType
+from .constants import DataType, ARRAY_MIN, ARRAY_MAX
 from .fake_data import MilMoveData
+from .fields import APIEndpointBody, ObjectField, ArrayField, EnumField, BaseAPIField
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,8 @@ class APIParser:
 
         self.parser = ResolvingParser(self.api_file)
         self.milmove_data = MilMoveData()  # for generating fake requests
+        self.processed_bodies = []  # list of APIEndpointBody objects
+
         self.discriminated = False  # indicates if the parser is working with the data for a discriminator
 
     def _get_endpoint(self, path, method):
@@ -101,7 +103,7 @@ class APIParser:
     def generate_fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=False):
         """
         Generates a request body filled with fake data to use with a specific endpoint in the API. Requires the endpoint
-        path and method. Optional takes top level overrides and nested overrides.
+        path and method. Optionally takes in top level overrides and nested overrides.
 
         :param path: str
         :param method: str
@@ -110,201 +112,207 @@ class APIParser:
         :param require_all: bool, optional
         :return: dict
         """
+        request_body = self._get_processed_body(path, method)
+        if not request_body:
+            request_body = self._process_request_body(path, method)
+
+        fake_request = request_body.generate_fake_data(self.milmove_data, overrides, nested_overrides, require_all)
+        # Hook method for custom post-data generation validation:
+        self._custom_request_validation(path, method, fake_request)
+
+        return request_body.generate_fake_data(self.milmove_data, overrides, nested_overrides, require_all)
+
+    def _get_processed_body(self, path, method):
+        """
+        Takes in a path and a method and searches for a pre-processed APIEndpointBody class for this endpoint's request
+        body.
+
+        :param path: str
+        :param method: str
+        :return: APIEndpointBody or None
+        """
+        for body in self.processed_bodies:
+            if body.path == path and body.method == method:
+                return body
+
+        return None
+
+    def _process_request_body(self, path, method):
+        """
+        Grabs the endpoint definition for a given path and method and processes it into a cohesive APIEndpointBody
+        object that includes class representations of all request fields. Can be used for quick fake data generation.
+
+        :param path: str
+        :param method: str
+        :return: APIEndpointBody
+        """
         request_def = self.get_request_body(path, method)
-        if request_def.get("type") == "object":
-            data, overrides = self._parse_object_data_types(request_def, overrides, nested_overrides, require_all)
-            return self.milmove_data.populate_fake_data(data, overrides)
+        request_body = APIEndpointBody(path, method)
+
+        body_field = self._parse_definition(name="body", object_def=request_def)
+        request_body.body_field = body_field
+
+        self.processed_bodies.append(request_body)
+        # Hook method for custom validation/manipulation of the generated request body:
+        self._custom_body_validation(request_body)
+
+        return request_body
+
+    def _parse_definition(self, name, object_def):
+        """
+        Given an arbitrary API definition and the name for the definition, parses it into the appropriate BaseAPIField
+        object and returns it.
+
+        :param name: str
+        :param object_def: dict
+        :return: BaseAPIField or None
+        """
+        parsed_field = None
+
+        if object_def.get("readOnly"):
+            pass  # skip this field, maintain parsed_field = None
+
+        elif object_def.get(DataType.ENUM.value):
+            parsed_field = EnumField(name=name, options=object_def[DataType.ENUM.value])
+
+        elif object_def.get("type") and object_def["type"] not in [DataType.ARRAY.value, DataType.OBJECT.value]:
+            parsed_field = self._parse_typed_field(name, object_def["type"], object_def.get("format", ""))
+
+        elif object_def.get("type") and object_def["type"] == DataType.ARRAY.value:
+            parsed_field = self._parse_array_field(name, object_def)
+
         else:
-            raise NotImplementedError("This parser only handles request bodies with type 'object'.")
+            parsed_field = self._parse_object_field(name, object_def)
 
-    def _generate_fake_array_data(self, items_def, num_items, nested_overrides=None, require_all=False):
+        # Hook method for custom validation on a particular field:
+        self._custom_field_validation(parsed_field, object_def)
+
+        return parsed_field
+
+    def _parse_object_field(self, name, object_def):
         """
-        Takes in a definition for the items in an array, the number of items to generate, and an optional dictionary of
-        nested overrides to use with the data.
+        Given a field name and definition, creates an ObjectField instance that captures the attributes of the field.
+        Sets all sub-fields for this object.
 
-        :param items_def:
-        :param num_items:
-        :param nested_overrides:
-        :param require_all:
-        :return: list of items with fake data
+        :param name: str
+        :param object_def: dict
+        :return: ObjectField
         """
-        items = []
-        try:
-            items_type = items_def["type"]
-        except KeyError:
-            raise NotImplementedError("This parser cannot handle arrays of arbitrary types.")
+        object_field = ObjectField(name=name)
 
-        if items_type == "object":
-            data_types, overrides = self._parse_object_data_types(
-                items_def, nested_overrides, nested_overrides, require_all
-            )
-            for _ in range(num_items):
-                items.append(self.milmove_data.populate_fake_data(data_types, overrides))
-        else:
-            data_type = None
-
-            if DataType.validate(items_type):
-                data_type = DataType.match(items_type)
-            elif data_type == "string":
-                data_type = DataType.SENTENCE
-
-            # If we were able to determine the data type above, populate some data. Otherwise we return the empty list
-            if data_type:
-                for _ in range(num_items):
-                    items.append(self.milmove_data.data_types[data_type]())
-
-        return items
-
-    def _parse_all_of_data(self, all_defs, overrides=None, nested_overrides=None, require_all=False):
-        """
-        Loops through all of the objects defines in an "allOf" data section and puts them together into one object.
-        :param all_defs:
-        :param overrides:
-        :param nested_overrides:
-        :param require_all:
-        :return:
-        """
-        data_types = {}
-        overrides_copy = deepcopy(overrides) if overrides else {}
-
-        for definition in all_defs:
-            if definition.get("properties"):
-                new_data, new_overrides = self._parse_object_data_types(
-                    definition, overrides, nested_overrides, require_all
-                )
-
-                data_types.update(new_data)
-                overrides_copy.update(new_overrides)
-            else:  # We don't handle non-object types without distinct fields
-                raise NotImplementedError("Cannot parse allOf with non-object members.")
-
-        return data_types, overrides_copy
-
-    def _parse_discriminator_data(self, object_def, overrides=None, nested_overrides=None, require_all=False):
-        """
-        Gets the discriminator value for an object definition, then grabs the possible values for the discriminator,
-        picks one, and continues processing the rest of the object based on that value.
-
-        :param object_def:
-        :param overrides:
-        :param nested_overrides:
-        :param require_all:
-        :return:
-        """
-        self.discriminated = True  # needed to prevent recursion error
-
-        d = object_def["discriminator"]
-        d_properties = object_def["properties"][d]  # for MTOServiceItems, this value is a field name
-        d_data = {}
-
-        # Get the field data type, use faker to pick a value, then parse all data based on that value:
-        self._parse_field_properties(d, d_properties, d_data, overrides, nested_overrides)
-        selection = self.milmove_data.populate_fake_data(d_data, overrides)[d]
-        selection_def = self.get_definition(selection)["allOf"]
-        overrides[d] = selection
-
-        return_data = self._parse_all_of_data(selection_def, overrides, nested_overrides, require_all)
-        self.discriminated = False
-
-        return return_data
-
-    def _parse_object_data_types(self, object_def, overrides=None, nested_overrides=None, require_all=False):
-        """
-        Takes an object definition dictionary and figures out the data types for each of the fields. Takes in two
-        optional override dictionaries:
-            - overrides = general overrides for the base level of the object, not including fields in nested objects
-            - nested_overrides = applies to ALL nested objects. e.g. if 'moveTaskOrderID' is in this override and this
-              field appears in any of the sub-objects for this definition, ALL values will be overridden to the one
-              passed in
-
-        Can also vary which non-required fields get sent back, or the require_all field can be set to True and force all
-        fields back. Returns the data type dictionary and the overrides (may be updated) to be passed into the fake data
-        generator at will.
-
-        :param object_def: dict, repr of yaml def
-        :param overrides: dict, opt
-        :param nested_overrides: dict, opt
-        :param require_all: bool, opt
-        :return: tuple(dict of data types, dict of overrides)
-        """
         if object_def.get("discriminator") and not self.discriminated:
-            return self._parse_discriminator_data(object_def, overrides, nested_overrides, require_all)
+            # We set this self.discriminated value to avoid infinite recursion loops:
+            self.discriminated = True
+            object_field = self._parse_discriminator(object_field, object_def)
+            self.discriminated = False
 
+        elif object_def.get("properties"):
+            for field, properties in object_def["properties"].items():
+                field = self._parse_definition(field, properties)
+                if field:
+                    # NOTE: These are are all ALWAYS distinct fields in the object, NOT combined into the same
+                    # object-level like allOf and oneOf:
+                    object_field.add_field(field)
+
+        # Separate if/elif statement because this can also happen for an object with a discriminator and/or properties:
         if object_def.get("allOf"):
-            return self._parse_all_of_data(object_def["allOf"], overrides, nested_overrides, require_all)
+            for definition in object_def["allOf"]:
+                field = self._parse_definition(name, definition)
+                if field:
+                    object_field.combine_fields(field)
 
-        data_types = {}
-        overrides_copy = deepcopy(overrides) if overrides else {}
+        elif object_def.get("oneOf"):
+            selection = random.choice(object_def["oneOf"])  # randomly select the object to use
+            field = self._parse_definition(name, selection)
+            if field:
+                object_field.combine_fields(field)
 
-        try:
-            object_properties = object_def["properties"]
-        except KeyError:
-            raise TypeError("Cannot parse a free-form object to generate fake data.")
-        required_fields = object_properties.keys() if require_all else object_def.get("required", [])
+        required_fields = object_def.get("required", [])
+        object_field.update_required_fields(required_fields)
 
-        for field, properties in object_properties.items():
-            # Check if the field is going to be overridden or if it's readOnly; in both cases we don't need any data.
-            # Also check if not required, and then we have a 1/4 chance to skip adding it entirely:
-            if (
-                field in overrides_copy.keys()
-                or properties.get("readOnly")
-                or (field not in required_fields and not randint(0, 3))
-            ):
-                continue
+        return object_field
 
-            # NOTE: This function modifies data_types and overrides_copy directly
-            self._parse_field_properties(field, properties, data_types, overrides_copy, nested_overrides, require_all)
-
-        return data_types, overrides_copy
-
-    def _parse_field_properties(self, field, properties, data, overrides, nested_overrides=None, require_all=False):
+    def _parse_discriminator(self, object_field, object_def):
         """
-        Parses the properties of a field in a swagger definition to determine what type of fake data to put into it.
-        !!! NOTE: Modifies the data and overrides input dictionaries directly!!!
+        Takes in a pre-initialized ObjectField instance and the dict definition of that field, then parses this def
+        using our custom discriminator logic.
 
-        :param field: str
-        :param properties: dict
-        :param data: dict, is modified directly!
-        :param overrides: dict, is modified directly!
-        :param nested_overrides: dict, optional
-        :param require_all: bool, optional
-        :return: None
+        NOTE: This logic does not capture all possible ways in which a discriminator may be used in an API.
+
+        :param object_field: ObjectField
+        :param object_def: dict
+        :return: ObjectField
         """
-        field_type = properties.get("type", "")
-        field_format = properties.get("format", "")
+        if not object_def.get("discriminator"):
+            raise ImplementationError("_parse_discriminator can only be used with API fields with a discriminator.")
 
-        if field_type == "array":
-            min_items = properties.get("minItems", 1)
-            max_items = properties.get("maxItems", 5)
-            array_data = self._generate_fake_array_data(
-                properties["items"], randint(min_items, max_items), nested_overrides, require_all
-            )
-            overrides[field] = array_data
+        # This logic grabs the field definition and properties for the field named as the discriminator, then it parses
+        # that field explicitly.
+        object_field.discriminator = object_def["discriminator"]
+        d_properties = object_def["properties"][object_field.discriminator]
+        d_field = self._parse_definition(object_field.discriminator, d_properties)
 
-        elif field_type == "object":
-            sub_data, sub_overrides = self._parse_object_data_types(
-                properties, nested_overrides, nested_overrides, require_all
-            )
-            overrides[field] = self.milmove_data.populate_fake_data(sub_data, sub_overrides)
+        # We assume an EnumField for processing the discriminator:
+        if not hasattr(d_field, "options"):
+            raise NotImplementedError("This APIParser can only handle discriminators with enum options.")
 
-        elif properties.get("enum"):
-            data[field] = properties["enum"]
+        # For each possible discriminator value, add the fields relevant to that value to the base ObjectField:
+        for value in d_field.options:
+            value_definition = self.get_definition(value)
+            field = self._parse_definition(object_field.name, value_definition)
 
-        elif DataType.validate(field_type):
-            data[field] = DataType.match(field_type)
+            if field:
+                field.add_discriminator_value(value)
+                object_field.combine_fields(field)
 
-        elif DataType.validate(field):  # the field name itself indicates one of our handled data types
-            data[field] = DataType.match(field)
+        return object_field
+
+    def _parse_array_field(self, name, array_def):
+        """
+        Given a field name and definition, creates an ArrayField instance that captures the attributes of the field.
+
+        :param name: str
+        :param array_def: dict
+        :return: ArrayField
+        """
+        if not array_def.get("type") == DataType.ARRAY.value:
+            raise ImplementationError("_parse_array_field can only be used with API fields with type equal to 'array'.")
+
+        array_field = ArrayField(
+            name=name, min_items=array_def.get("minItems", ARRAY_MIN), max_items=array_def.get("maxItems", ARRAY_MAX),
+        )
+        items_field = self._parse_definition(name, array_def["items"])
+        array_field.items_field = items_field
+
+        return array_field
+
+    def _parse_typed_field(self, name, field_type, field_format):
+        """
+        Determines the data type and creates a BaseAPIField instance for a field, given its name, swagger type, and
+        swagger format. May return None if the info cannot be parsed using the default rules.
+
+        :param name: str
+        :param field_type: str
+        :param field_format: str
+        :return: BaseAPIField or None
+        """
+        data_type = None
+        if DataType.validate(field_type):
+            data_type = DataType.match(field_type)
+
+        elif DataType.validate(name):  # the field name itself indicates one of our handled data types
+            data_type = DataType.match(name)
 
         elif DataType.validate(field_format):  # the format might also tell us which type to use
-            data[field] = DataType.match(field_format)
+            data_type = DataType.match(field_format)
 
         elif field_type == "string":
-            data[field] = self._approximate_str_type(field)
+            data_type = self._approximate_str_type(name)
 
-        # if the field doesn't fall into any of these cases, we just skip it because we have no rules for what data to
-        # pass in
-        return
+        if data_type:
+            return BaseAPIField(data_type=data_type, name=name)
+
+        return None
 
     @staticmethod
     def _approximate_str_type(field):
@@ -324,15 +332,79 @@ class APIParser:
 
         return DataType.SENTENCE
 
+    def _custom_field_validation(self, field, object_def):
+        """
+        Hook for adding custom validation after a BaseAPIField object has been parsed. May apply whenever the field is
+        used to generate data.
+
+        :param field: BaseAPIField
+        :param object_def: dict, original definition that was parsed into resultant field
+        :return: field
+        """
+        pass
+
+    def _custom_body_validation(self, body):
+        """
+        Hook for adding custom validation after a full APIEndpointBody has been parsed. May apply whenever the endpoint
+        body is used to generate data.
+
+        :param body: APIEndpointBody
+        :return: body
+        """
+        pass
+
+    def _custom_request_validation(self, path, method, request_data):
+        """
+        Hook for adding custom validation after fake data has been generated for an endpoint request. Takes in the path,
+        method, and the dictionary of fake data. May be used for validation that requires that data already be populated
+        in the field(s).
+
+        :param path: str
+        :param method: str
+        :param request_data: dict
+        :return: request_data dict
+        """
+        pass
+
 
 class PrimeAPIParser(APIParser):
-    """ Parser class for the Prime API. Handles the polymorphism for MTO Service Items. """
+    """ Parser class for the Prime API. """
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml"
 
     def generate_fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=True):
-        """ Overrides method so that require_all defaults to True. TODO remove when API discrepancies are fixed """
+        """
+        Overrides method so that require_all defaults to True. TODO remove when API discrepancies are fixed
+        """
         return super().generate_fake_request(path, method, overrides, nested_overrides, require_all)
+
+    def _custom_field_validation(self, field, object_def):
+        """
+        Custom validation for Prime API fields.
+        """
+        if field and field.name == "modelType" and ("MTOServiceItemBasic" in field.options):
+            field.options.remove("MTOServiceItemBasic")
+
+    def _custom_request_validation(self, path, method, request_data):
+        """
+        Custom post-data generation validation for the Prime API.
+        """
+        if path == "mto-service-items/" and method == "post":
+            # Need to ensure that an 'item' is smaller than the crate it will be shipped in:
+            if request_data["modelType"] == "MTOServiceItemDomesticCrating":
+                item_details = request_data.get("item")
+                crate_details = request_data.get("crate")
+                if item_details and crate_details:
+                    if item_details["length"] >= crate_details["length"]:
+                        item_details["length"] = crate_details["length"] - 1
+
+                    if item_details["width"] >= crate_details["width"]:
+                        item_details["width"] = crate_details["width"] - 1
+
+                    if item_details["height"] >= crate_details["height"]:
+                        item_details["height"] = crate_details["height"] - 1
+
+        return request_data
 
 
 class SupportAPIParser(PrimeAPIParser):
