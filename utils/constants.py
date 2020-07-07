@@ -10,6 +10,9 @@ LOCAL_MTLS_KEY = os.path.join(STATIC_FILES, "certs/devlocal-mtls.key")
 
 PRIME_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
 
+ARRAY_MIN = 1
+ARRAY_MAX = 5
+
 
 class MilMoveEnv(ListEnum):
     LOCAL = "local"
