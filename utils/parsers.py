@@ -120,7 +120,7 @@ class APIParser:
         # Hook method for custom post-data generation validation:
         self._custom_request_validation(path, method, fake_request)
 
-        return request_body.generate_fake_data(self.milmove_data, overrides, nested_overrides, require_all)
+        return fake_request
 
     def _get_processed_body(self, path, method):
         """
@@ -387,9 +387,10 @@ class PrimeAPIParser(APIParser):
 
     def _custom_request_validation(self, path, method, request_data):
         """
-        Custom post-data generation validation for the Prime API.
+        Custom post-data generation validation for the Prime API. Note that request_data is mutable and directly
+        modified, and therefore doesn't need to be returned.
         """
-        if path == "mto-service-items/" and method == "post":
+        if path == "/mto-service-items" and method == "post":
             # Need to ensure that an 'item' is smaller than the crate it will be shipped in:
             if request_data["modelType"] == "MTOServiceItemDomesticCrating":
                 item_details = request_data.get("item")
@@ -403,8 +404,6 @@ class PrimeAPIParser(APIParser):
 
                     if item_details["height"] >= crate_details["height"]:
                         item_details["height"] = crate_details["height"] - 1
-
-        return request_data
 
 
 class SupportAPIParser(PrimeAPIParser):
