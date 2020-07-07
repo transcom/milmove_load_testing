@@ -138,13 +138,6 @@ class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag("mto", "createMoveTaskOrder")
     @task
     def create_move_task_order(self):
-        # overrides = {
-        #     "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
-        #     "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
-        #     "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
-        #     "mtoServiceItems": []
-        # }
-        # payload = self.fake_request("/move-task-orders", "post", overrides=overrides, nested_overrides={"uploads": []})
         payload = {
             "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
             "moveOrder": {
