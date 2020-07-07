@@ -149,7 +149,7 @@ class APIParser:
         request_def = self.get_request_body(path, method)
         request_body = APIEndpointBody(path, method)
 
-        body_field = self._parse_definition(name="body", object_def=request_def)
+        body_field = self._parse_definition(name="body", definition=request_def)
         request_body.body_field = body_field
 
         self.processed_bodies.append(request_body)
@@ -158,34 +158,34 @@ class APIParser:
 
         return request_body
 
-    def _parse_definition(self, name, object_def):
+    def _parse_definition(self, name, definition):
         """
         Given an arbitrary API definition and the name for the definition, parses it into the appropriate BaseAPIField
         object and returns it.
 
         :param name: str
-        :param object_def: dict
+        :param definition: dict
         :return: BaseAPIField or None
         """
         parsed_field = None
 
-        if object_def.get("readOnly"):
+        if not definition or definition.get("readOnly"):
             pass  # skip this field, maintain parsed_field = None
 
-        elif object_def.get(DataType.ENUM.value):
-            parsed_field = EnumField(name=name, options=object_def[DataType.ENUM.value])
+        elif definition.get(DataType.ENUM.value):
+            parsed_field = EnumField(name=name, options=definition[DataType.ENUM.value])
 
-        elif object_def.get("type") and object_def["type"] not in [DataType.ARRAY.value, DataType.OBJECT.value]:
-            parsed_field = self._parse_typed_field(name, object_def["type"], object_def.get("format", ""))
+        elif definition.get("type") and definition["type"] not in [DataType.ARRAY.value, DataType.OBJECT.value]:
+            parsed_field = self._parse_typed_field(name, definition["type"], definition.get("format", ""))
 
-        elif object_def.get("type") and object_def["type"] == DataType.ARRAY.value:
-            parsed_field = self._parse_array_field(name, object_def)
+        elif definition.get("type") and definition["type"] == DataType.ARRAY.value:
+            parsed_field = self._parse_array_field(name, definition)
 
         else:
-            parsed_field = self._parse_object_field(name, object_def)
+            parsed_field = self._parse_object_field(name, definition)
 
         # Hook method for custom validation on a particular field:
-        self._custom_field_validation(parsed_field, object_def)
+        self._custom_field_validation(parsed_field, definition)
 
         return parsed_field
 
