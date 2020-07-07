@@ -4,12 +4,12 @@ from locust import HttpUser, between
 
 from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS
 from utils.mixins import MilMoveHostMixin
-from utils.parsers import PrimeAPIParser
+from utils.parsers import PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks
 
 # init these classes just once because we don't need to parse the API over and over:
 prime_api = PrimeAPIParser()
-# support_api = SupportAPIParser()  # TODO: fix API formatting issues
+support_api = SupportAPIParser()
 
 
 class PrimeUser(MilMoveHostMixin, HttpUser):
@@ -39,7 +39,7 @@ class SupportUser(MilMoveHostMixin, HttpUser):
     is_api = True
 
     cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
-    # parser = support_api
+    parser = support_api
 
-    wait_time = between(1, 9)
+    wait_time = between(0.25, 9)
     tasks = {SupportTasks: 1}
