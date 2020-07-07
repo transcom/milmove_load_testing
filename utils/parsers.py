@@ -376,7 +376,7 @@ class PrimeAPIParser(APIParser):
         """
         Overrides method so that require_all defaults to True. TODO remove when API discrepancies are fixed
         """
-        return super().generate_fake_request(path, method, overrides, nested_overrides, require_all)
+        return super().generate_fake_request(path, method, overrides, nested_overrides, True)
 
     def _custom_field_validation(self, field, object_def):
         """
