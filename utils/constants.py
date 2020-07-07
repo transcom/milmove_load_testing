@@ -79,3 +79,8 @@ class DataType(ListEnum):
     BOOLEAN = "boolean"
     INTEGER = "integer"
     UUID = "uuid"
+
+    # These data type options are structural:
+    ENUM = "enum"
+    ARRAY = "array"
+    OBJECT = "object"
