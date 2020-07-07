@@ -49,7 +49,6 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
             "mtoShipmentID": "475579d5-aaa4-4755-8c43-c510381ff9b5",
         }
         payload = self.fake_request("/mto-service-items", "post", overrides=overrides, nested_overrides=overrides)
-        print("🔆", payload)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -73,7 +72,6 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_shipment(self):
         overrides = {"moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e", "mtoServiceItems": []}
         payload = self.fake_request("/mto-shipments", "post", overrides=overrides, nested_overrides=overrides)
-        print("🐙", payload)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
