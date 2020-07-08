@@ -5,6 +5,7 @@ import json
 
 from locust import tag, task, TaskSet
 
+from utils.constants import TEST_PDF
 from .base import CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
@@ -90,6 +91,28 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
                 logger.error(f"⚠️ {json_body}")
                 logger.error(payload)
 
+    @tag("paymentRequest", "createUpload")
+    @task
+    def create_upload(self):
+        payment_request_id = "a2c34dba-015f-4f96-a38b-0c0b9272e208"
+        upload_file = {"file": open(TEST_PDF, "rb")}
+
+        resp = self.client.post(
+            prime_path(f"/payment-requests/{payment_request_id}/uploads"),
+            files=upload_file,
+            name=prime_path("/payment-requests/:paymentRequestID/uploads"),
+            **self.user.cert_kwargs,
+        )
+
+        logger.info(f"ℹ️ Create Upload status code: {resp.status_code}")
+
+        try:
+            json_body = json.loads(resp.content)
+        except (json.JSONDecodeError, TypeError):
+            logger.exception("Non-JSON response")
+        else:
+            logger.info(f"ℹ️ Upload {json_body['filename']} created!")
+
     @tag("paymentRequests", "createPaymentRequest")
     @task
     def create_payment_request(self):
@@ -111,6 +134,7 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         resp = self.client.post(
             prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
+
         logger.info(f"ℹ️ Create Payment Request status code: {resp.status_code}")
 
         try:
