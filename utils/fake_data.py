@@ -80,6 +80,7 @@ class MilMoveData:
         try:
             return self.data_types[data_type]()
         except KeyError:  # data_type isn't in dictionary
+            logger.exception(f"An unexpected data type was passed into get_fake_data_for_type: {data_type}")
             return None
 
     def populate_fake_data(self, fields: dict, overrides: Optional[dict] = None) -> dict:

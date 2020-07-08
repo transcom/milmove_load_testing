@@ -116,6 +116,7 @@ class ObjectField(BaseAPIField):
         :param field: BaseAPIField
         """
         if not isinstance(field, BaseAPIField):
+            logger.error(f"Unexpected object type passed into combine_fields: {type(field)}, {field}")
             raise TypeError("ObjectField instances can only be combined with other BaseAPIField instances.")
 
         if isinstance(field, ObjectField):
