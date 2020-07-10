@@ -52,8 +52,9 @@ If you wish to use the custom setup commands in our Makefile, you will need to i
 * `pip`
 * `pre-commit`
 
-This may be installing using the method of your choice, although we recommend using `brew install`. If you use `pip3`
-instead of `pip`, you will need to create an alias before running our setup commands:
+These may be installed using the method of your choice, although we strongly recommend using `brew install`. Note that
+`brew install python3` will also install `pip3` (the Py3 version of `pip`). If you use `pip3` instead of `pip`, you may
+need to create an alias before running our setup commands:
 
 ```shell script
 alias pip3="pip"
@@ -70,7 +71,7 @@ NOTE: `requirements.txt` contains the pip-installed requirements needed to run t
 contains the requirements to lint and format our code if you wish to contribute. They are not functional requirements to
 run the code.
 
-Once you are done with your virtual environment, you will want to remove all generated files. To do this, run:
+Once you are done with your virtual environment, you may want to remove all environment files. To do this, run:
 
 ```sh
 make teardown
