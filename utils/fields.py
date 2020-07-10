@@ -140,6 +140,8 @@ class ObjectField(BaseAPIField):
         for field in self.object_fields:
             field.add_discriminator_value(value)
 
+        super().add_discriminator_value(value)
+
     def generate_discriminator_value(self, faker, overrides=None):
         """
         If the class has a discriminator, this function finds the field for the discriminator and generates data for
@@ -159,19 +161,23 @@ class ObjectField(BaseAPIField):
 
         return ""  # return an empty string if we can't determine a value
 
-    def generate_fake_data(self, faker, overrides=None, require_all=False):
+    def generate_fake_data(self, faker, overrides=None, nested_overrides=None, require_all=False):
         """
         Generates fake data for this field by looping through the fields in self.object_fields and generating data for
         those fields as well. Returns a dictionary formatted with [field_name]: field_data.
 
         :param faker: MilMoveData
         :param overrides: dict, optional
+        :param nested_overrides: dict, optional
         :param require_all: bool, optional
         :return: dict
         """
         fake_data = {}
         d_value = self.generate_discriminator_value(faker, overrides)
         if self.discriminator and d_value:
+            if not overrides:
+                overrides = {}
+
             overrides[self.discriminator] = d_value
 
         for field in self.object_fields:
@@ -186,7 +192,9 @@ class ObjectField(BaseAPIField):
                 fake_data[field.name] = overrides[field.name]
                 continue
 
-            fake_data[field.name] = field.generate_fake_data(faker, overrides=overrides, require_all=require_all)
+            fake_data[field.name] = field.generate_fake_data(
+                faker, overrides=nested_overrides, nested_overrides=nested_overrides, require_all=require_all
+            )
 
         return fake_data
 
@@ -212,7 +220,9 @@ class APIEndpointBody:
         :param require_all: bool, optional
         :return: dict
         """
-        fake_data = self.body_field.generate_fake_data(faker, overrides=nested_overrides, require_all=require_all)
+        fake_data = self.body_field.generate_fake_data(
+            faker, overrides=overrides, nested_overrides=nested_overrides, require_all=require_all
+        )
         fake_data.update(overrides if overrides else {})
 
         return fake_data
