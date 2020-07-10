@@ -43,11 +43,63 @@ constants are located here.
 
 ## Getting Started
 
-To create the python virtual environment and install the dependencies from `requirements.txt`, run:
+### Requirements
+
+If you wish to use the custom setup commands in our Makefile, you will need to install:
+
+* Homebrew
+* Python 3.8
+* `pip`
+* `pre-commit`
+
+This may be installing using the method of your choice, although we recommend using `brew install`. If you use `pip3`
+instead of `pip`, you will need to create an alias before running our setup commands:
+
+```shell script
+alias pip3="pip"
+```
+
+To create the python virtual environment and install the dependencies from `requirements.txt` and
+`requirements-dev.txt`, run:
 
 ```sh
 make setup
 ```
+
+NOTE: `requirements.txt` contains the pip-installed requirements needed to run the project. `requirements-dev.txt`
+contains the requirements to lint and format our code if you wish to contribute. They are not functional requirements to
+run the code.
+
+Once you are done with your virtual environment, you will want to remove all generated files. To do this, run:
+
+```sh
+make teardown
+```
+
+To quickly teardown and setup a project when switching branches, run:
+
+```sh
+make rebuild
+```
+
+#### Minimal Setup
+
+You can run this project with a custom setup that doesn't make use of our Makefile commands. To do so, you need the
+following tools:
+
+* Python 3.8
+* `pip`
+* `virtualenv` -> installed via `pip install virtualenv`
+
+To setup your virtual environment and install the `requirements.txt` dependencies:
+
+```shell script
+$ virtualenv --python=python3.8 .venv
+$ . .venv/bin/activate
+(venv) $ pip install -r requirements.txt
+```
+
+Once you have done this, you will be able to interact with the system the same way as with the `make setup` command.
 
 ### Setting up the local environment
 
