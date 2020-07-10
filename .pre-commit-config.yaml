@@ -25,8 +25,8 @@ repos:
       - id: flake8
       - id: trailing-whitespace
 
-  - repo: git://github.com/igorshubovych/markdownlint-cli
-    rev: v0.22.0
-    hooks:
-      - id: markdownlint
-        entry: markdownlint --ignore .github/*.md
+#  - repo: git://github.com/igorshubovych/markdownlint-cli
+#    rev: v0.22.0
+#    hooks:
+#      - id: markdownlint
+#        entry: markdownlint --ignore .github/*.md
