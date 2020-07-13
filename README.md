@@ -57,7 +57,7 @@ These may be installed using the method of your choice, although we strongly rec
 need to create an alias before running our setup commands:
 
 ```shell script
-alias pip3="pip"
+alias pip="pip3"
 ```
 
 To create the python virtual environment and install the dependencies from `requirements.txt` and
@@ -83,10 +83,10 @@ To quickly teardown and setup a project when switching branches, run:
 make rebuild
 ```
 
-#### Minimal Setup
+### Alternate Setup
 
-You can run this project with a custom setup that doesn't make use of our Makefile commands. To do so, you need the
-following tools:
+You can run this project with a custom setup that doesn't make use of our Makefile commands. **If you encounter any issues
+with the Makefile `make setup` command, you will want to use this method.** To do so, you need the following tools:
 
 * Python 3.8
 * `pip`
@@ -100,7 +100,10 @@ $ . .venv/bin/activate
 (venv) $ pip install -r requirements.txt
 ```
 
-Once you have done this, you will be able to interact with the system the same way as with the `make setup` command.
+Once you have done this, you will be able to interact with the system the same way as with the `make setup` command. You
+may want to default to using the locust CLI instead of the `make` commands, however.
+
+## Running Load Tests
 
 ### Setting up the local environment
 
