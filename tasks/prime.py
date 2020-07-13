@@ -3,10 +3,10 @@
 import logging
 import json
 
-from locust import tag, task
+from locust import tag, task, TaskSet
 
 from utils.constants import TEST_PDF
-from .base import CertTaskSet
+from .base import CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +19,39 @@ def support_path(url):
     return f"/support/v1{url}"
 
 
+def check_response(response, task_name="Task", request=None):
+    """
+    Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
+    status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
+    Returns the dictionary representation of the response content and a boolean indicating success or failure.
+
+    :param response: HTTP response object
+    :param task_name: str, optional name of the tasks
+    :param request: any, optional data to print for debugging a failed response
+    :return: tuple(dict, bool)
+    """
+    logger.info(f"ℹ️ {task_name} status code: {response.status_code}")
+
+    try:
+        json_response = json.loads(response.content)
+    except (json.JSONDecodeError, TypeError):
+        logger.exception("Non-JSON response.")
+        return None, False
+
+    if not str(response.status_code).startswith("2"):
+        logger.error(f"⚠️ {json_response}")
+        if request:
+            logger.error(f"Request data: {request}")
+
+        return json_response, False
+
+    logger.info(f"ℹ️ {task_name} successfully completed!")
+
+    return json_response, True
+
+
 @tag("prime")
-class PrimeTasks(CertTaskSet):
+class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Prime API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier.
@@ -30,95 +61,34 @@ class PrimeTasks(CertTaskSet):
     @task
     def fetch_mto_updates(self):
         resp = self.client.get(prime_path("/move-task-orders"), **self.user.cert_kwargs)
-        logger.info(f"ℹ️ Fetch MTOs status code: {resp.status_code}")
-
-        try:
-            json_body = json.loads(resp.content)
-        except (json.JSONDecodeError, TypeError):
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ Num MTOs returned: {len(json_body)}")
+        check_response(resp, "Fetch MTOs")
 
     @tag("mtoServiceItem", "createMTOServiceItem")
     @task
     def create_mto_service_item(self):
-        payload = {
+        overrides = {
             "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
             "mtoShipmentID": "475579d5-aaa4-4755-8c43-c510381ff9b5",
-            "modelType": "MTOServiceItemDDFSIT",
-            "reServiceID": "8d600f25-1def-422d-b159-617c7d59156e",
-            "firstAvailableDeliveryDate1": "2020-01-20",
-            "firstAvailableDeliveryDate2": "2020-01-22",
-            "timeMilitary1": "0400Z",
-            "timeMilitary2": "0500Z",
-            "feeType": "COUNSELING",
-            "status": "SUBMITTED",
         }
+        payload = self.fake_request("/mto-service-items", "post", overrides=overrides, nested_overrides=overrides)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
             prime_path("/mto-service-items"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-        logger.info(f"ℹ️ Create MTO Service Items status code: {resp.status_code}")
-
-        try:
-            json_body = json.loads(resp.content)
-        except (json.JSONDecodeError, TypeError):
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ MTOServiceItem {json_body['id']} created!")
+        check_response(resp, "Create MTO Service Item", payload)
 
     @tag("mtoShipment", "createMTOShipment")
     @task
     def create_mto_shipment(self):
-        payload = {
-            "shipmentType": "HHG",
-            "requestedPickupDate": "2020-03-15",
-            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
-            "pickupAddress": {
-                "streetAddress1": "7 Q St",
-                "city": "Los Angeles",
-                "state": "CA",
-                "postalCode": "99999",
-                "country": "USA",
-            },
-            "destinationAddress": {
-                "streetAddress1": "17 8th St",
-                "city": "<string>",
-                "state": "CA",
-                "postalCode": "99999",
-                "country": "USA",
-            },
-            "agents": [
-                {
-                    "firstName": "jo",
-                    "lastName": "xi",
-                    "email": "jo.xi@example.com",
-                    "phone": "999-999-9999",
-                    "agentType": "RECEIVING_AGENT",
-                },
-                {
-                    "firstName": "xi",
-                    "lastName": "jo",
-                    "email": "xi.jo@example.com",
-                    "phone": "999-999-9999",
-                    "agentType": "RECEIVING_AGENT",
-                },
-            ],
-        }
+        overrides = {"moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e", "mtoServiceItems": []}
+        payload = self.fake_request("/mto-shipments", "post", overrides=overrides, nested_overrides=overrides)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
             prime_path("/mto-shipments"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-        logger.info(f"ℹ️ Create MTO Shipment status code: {resp.status_code}")
-
-        try:
-            json_body = json.loads(resp.content)
-        except (json.JSONDecodeError, TypeError):
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ MTOShipment {json_body['id']} created!")
+        check_response(resp, "Create MTO Shipment", payload)
 
     @tag("paymentRequest", "createUpload")
     @task
@@ -132,15 +102,7 @@ class PrimeTasks(CertTaskSet):
             name=prime_path("/payment-requests/:paymentRequestID/uploads"),
             **self.user.cert_kwargs,
         )
-
-        logger.info(f"ℹ️ Create Upload status code: {resp.status_code}")
-
-        try:
-            json_body = json.loads(resp.content)
-        except (json.JSONDecodeError, TypeError):
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ Upload {json_body['filename']} created!")
+        check_response(resp, "Create Upload")
 
     @tag("paymentRequests", "createPaymentRequest")
     @task
@@ -155,19 +117,11 @@ class PrimeTasks(CertTaskSet):
         resp = self.client.post(
             prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-
-        logger.info(f"ℹ️ Create Payment Request status code: {resp.status_code}")
-
-        try:
-            json_body = json.loads(resp.content)
-        except (json.JSONDecodeError, TypeError):
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ PaymentRequest {json_body['id']} created!")
+        check_response(resp, "Create Payment Request", payload)
 
 
 @tag("support")
-class SupportTasks(CertTaskSet):
+class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Support API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier. Ex:
@@ -201,23 +155,19 @@ class SupportTasks(CertTaskSet):
         resp = self.client.post(
             support_path("/move-task-orders"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-        logger.info(f"ℹ️ Create MTOs status code: {resp.status_code}")
 
-        try:
-            json_body = json.loads(resp.content)
-        except (json.JSONDecodeError, TypeError):
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ MoveTaskOrder {json_body['id']} created!")
+        json_body, success = check_response(resp, "Create MTO", payload)
+        if not success:
+            return  # no point continuing if it didn't work out
 
-            move_task_order_id = json_body["id"]
-            e_tag = json_body["eTag"]
-            headers["if-match"] = e_tag
-            resp = self.client.patch(
-                support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
-                headers=headers,
-                **self.user.cert_kwargs,
-                name=support_path("/move-task-orders/:moveTaskOrderID/available-to-prime"),
-            )
+        move_task_order_id = json_body["id"]
+        e_tag = json_body["eTag"]
+        headers["if-match"] = e_tag
 
-            logger.info(f"ℹ️ Make MTO available to Prime status code: {resp.status_code}")
+        resp = self.client.patch(
+            support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
+            headers=headers,
+            **self.user.cert_kwargs,
+            name=support_path("/move-task-orders/:moveTaskOrderID/available-to-prime"),
+        )
+        check_response(resp, "Make MTO available to Prime")
