@@ -11,6 +11,39 @@ the public domain. In places where it is eligible for copyright, such as some fo
 this work is licensed under [the MIT License](https://opensource.org/licenses/MIT), the full text of which is included
 in the [LICENSE.txt](./LICENSE.txt) file in this repository.
 
+## Table of Contents
+
+<!-- Uses gh-md-toc to generate Table of Contents: https://github.com/ekalinin/github-markdown-toc -->
+<!-- markdownlint-disable -->
+<!--ts-->
+   * [MilMove Load Testing](#milmove-load-testing)
+      * [License Information](#license-information)
+      * [Table of Contents](#table-of-contents)
+      * [Overview](#overview)
+         * [locustfiles/](#locustfiles)
+         * [tasks/](#tasks)
+         * [utils/](#utils)
+      * [Getting Started](#getting-started)
+         * [Requirements](#requirements)
+         * [Alternate Setup](#alternate-setup)
+      * [Running Load Tests](#running-load-tests)
+         * [Setting up the local environment](#setting-up-the-local-environment)
+         * [Running preset tests](#running-preset-tests)
+         * [Running custom tests](#running-custom-tests)
+      * [Adding Load Tests](#adding-load-tests)
+         * [Starting from scratch](#starting-from-scratch)
+         * [Creating TaskSets](#creating-tasksets)
+         * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
+      * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
+         * [Handling Rate Limiting](#handling-rate-limiting)
+         * [Metrics](#metrics)
+      * [References](#references)
+
+<!-- Added by: sandy, at: Mon Jul 13 15:37:31 CDT 2020 -->
+
+<!--te-->
+<!-- markdownlint-restore -->
+
 ## Overview
 
 MilMove is a system to help service members (and other authorized personnel) move their gear and possessions from one
