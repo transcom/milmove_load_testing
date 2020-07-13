@@ -50,6 +50,9 @@ clean: ## Clean all generated files
 teardown: ## Remove all virtualenv files
 	rm -rf $(VENV_DIR)/
 
+.PHONY: rebuild
+rebuild: teardown clean setup  ## Rebuilds the virtual environment
+
 .PHONY: pretty
 pretty: venv ## Prettify the code
 	$(WITH_VENV) black .

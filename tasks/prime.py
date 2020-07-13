@@ -109,15 +109,7 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_payment_request(self):
         payload = {
             "moveTaskOrderID": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791",
-            "serviceItems": [
-                {
-                    "id": "8a625314-1922-4987-93c5-a62c0d13f053",
-                    "params": [
-                        {"key": "WeightEstimated", "value": "3254"},
-                        {"key": "RequestedPickupDate", "value": "2020-04-20"},
-                    ],
-                }
-            ],
+            "serviceItems": [{"id": "8a625314-1922-4987-93c5-a62c0d13f053"}],
             "isFinal": False,
         }
 
