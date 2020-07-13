@@ -246,22 +246,6 @@ There are a couple of base `TaskSet` classes that you may also want to take adva
 
 * `SequentialTaskSet` - Locust base class, asserts that all of the tasks in the `TaskSet` are executed in the order in
 which they are defined (instead of randomly)
-* `CertTaskSet` - in `tasks/base.py`, accounts for the use of a `cert_kwargs` attribute defined on the `User`-level that
-can then be passed in as validation during the request. Ex:
-
-Add this as an attribute to your user:
-
-```python
-# MyUser
-cert_kwargs = {'cert': ("path_to_my_cert", "path_to_my_key"), "verify": True}
-```
-
-Then in your task, write your request like so:
-
-```python
-# MyTasks.get_something
-self.client.get("/path", **self.user.cert_kwargs)
-```
 
 * `LoginTaskSet` - in `tasks/base.py`, adds code for logging into the MilMove Office and MyMove interfaces. To use it,
 you can add an `on_start` definition to your `TaskSet` like so:
@@ -278,6 +262,23 @@ class MyLoggedInTasks(LoginTaskSet):
         resp = self._create_login(user_type="my_user_type", session_token_name="my_token_name")
         if resp.status_code != 200:
             self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
+```
+
+* `CertTaskMixin` - in `tasks/base.py`, accounts for the use of a `cert_kwargs` attribute defined on the `User`-level that
+can then be passed in as validation during the request. Ex:
+
+Add this as an attribute to your user:
+
+```python
+# MyUser
+cert_kwargs = {'cert': ("path_to_my_cert", "path_to_my_key"), "verify": True}
+```
+
+Then in your task, write your request like so:
+
+```python
+# MyTasks.get_something
+self.client.get("/path", **self.user.cert_kwargs)
 ```
 
 There are multiple other ways to organize and link tasks together, but using `TaskSet` classes is the main recommendation
@@ -347,4 +348,6 @@ You will want to see metrics from your runs:
 ## References
 
 * [Locust Documentation](https://docs.locust.io/en/stable/index.html)
+* [Prance Documentation](https://jfinkhaeuser.github.io/prance/index.html#)
+* [Faker Documentation](https://faker.readthedocs.io/en/stable/index.html)
 * [Original Load Testing PR](https://github.com/transcom/mymove/pull/1597)

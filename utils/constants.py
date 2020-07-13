@@ -11,6 +11,9 @@ TEST_PDF = os.path.join(STATIC_FILES, "test.pdf")
 
 PRIME_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
 
+ARRAY_MIN = 1
+ARRAY_MAX = 5
+
 
 class MilMoveEnv(ListEnum):
     LOCAL = "local"
@@ -59,3 +62,29 @@ class MilMoveDomain(ListEnum):
 
         # NOTE: deployed protocol is always https
         return f"https://{'api' if is_api else self.deployed_value}.{env}.move.mil"
+
+
+class DataType(ListEnum):
+    """ Swagger data types that we expect to deal with. Uses camelcase in values to match. """
+
+    FIRST_NAME = "firstName"
+    LAST_NAME = "lastName"
+    PHONE = "phone"
+    EMAIL = "email"
+    STREET_ADDRESS = "streetAddress"
+    CITY = "city"
+    STATE = "state"
+    POSTAL_CODE = "postalCode"
+    COUNTRY = "country"
+    DATE = "date"
+    DATE_TIME = "date-time"  # inconsistent, but matches the swagger format name
+    TIME_MILITARY = "timeMilitary"
+    SENTENCE = "sentence"
+    BOOLEAN = "boolean"
+    INTEGER = "integer"
+    UUID = "uuid"
+
+    # These data type options are structural:
+    ENUM = "enum"
+    ARRAY = "array"
+    OBJECT = "object"

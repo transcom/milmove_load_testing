@@ -1,2 +1,4 @@
 requests>=2.22.0
 locust>=1
+Faker
+prance[osv,cli]
