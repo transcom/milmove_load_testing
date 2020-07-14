@@ -34,12 +34,14 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Starting from scratch](#starting-from-scratch)
          * [Creating TaskSets](#creating-tasksets)
          * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
+      * [Fake Data Generation](#fake-data-generation)
+         * [Creating a custom parser](#creating-a-custom-parser)
       * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
          * [Handling Rate Limiting](#handling-rate-limiting)
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Mon Jul 13 15:37:31 CDT 2020 -->
+<!-- Added by: sandy, at: Tue Jul 14 14:09:41 CDT 2020 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
