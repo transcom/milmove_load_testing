@@ -438,7 +438,111 @@ parser.generate_fake_request(path="/mto-service-items", method="post", overrides
 
 ### Creating a custom parser
 
-The `APIParser` class is designed to be inherited and customized for specific APIs.
+The `APIParser` class is designed to be inherited and customized for specific APIs. To start, go to the bottom of the
+`utils/parsers.py` file and create a new class with the link to your API YAML file:
+
+```python
+class GHCAPIParser(APIParser):
+    """ Parsing the GHC API as an example: """
+
+    api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"
+```
+
+The `APIParser` has three built-in hook methods that are designed to make it easier to implement custom data
+manipulation in your parser class:
+
+```python
+class GHCAPIParser(APIParser):
+    ...
+
+    def _custom_field_validation(self, field, object_def):
+        """
+        This hook is for changes you want to make to a specific field, regardless of which endpoint it is used in.
+        These are PRE-DATA changes and will be used to generate the data you want for this field whenever you call the
+        generate_fake_data method.
+        """
+        # Example:
+        if field.name == "agents":
+            try:
+                field.max_items == 2  # let's say we never want more than two agents, regardless of what the YAML says
+            except AttributeError:
+                pass  # this wasn't the field type we were expecting -- should log as well
+
+    def _custom_body_validation(self, body):
+        """
+        This hook is for changes you want to make to a specific APIEndpointBody class (defined in utils/fields.py).
+        These are PRE-DATA changes and will be used to generate the data you want for this endpoint whenever you call
+        the generate_fake_data method.
+        """
+        # Example:
+        if body.path.endswith("status") and body.method == "patch":
+            if body.body_field.object_fields:  # make sure we have the right BaseAPIField type
+                status_field = body.body_field.get_field("status")
+                if status_field and status_field.options:  # check that we have the field and it is an EnumField
+                    try:
+                        # status will already be SUBMITTED and can't be changed back, so let's just remove that option:
+                        status_field.options.remove("SUBMITTED")
+                    except ValueError:
+                        pass  # it's not in the list, so we're good
+
+    def _custom_request_validation(self, path, method, request_data):
+        """
+        This hook is for changes you want to make to the data for a specific endpoint AFTER generation. This code
+        manipulates actual data and may not apply to every request.
+        """
+        # Example:
+        if path == "/move-task-orders/{moveTaskOrderID}" and method == "patch":
+            if request_data.get("isCanceled"):  # check if this value was set and if it's True
+                request_data["availableToPrimeAt"] = None
+```
+
+Next, instantiate the parser in your `locustfile` and reference it in the `parser` attribute on your `User` class:
+
+```python
+from utils.parsers import GHCAPIParser
+
+ghc_parser = GHCAPIParser()
+
+
+GHCUser(...):
+    ...
+
+    parser = ghc_parser
+```
+
+Instantiating it once at the beginning of the `locustfile` keeps the API from being reparsed over and over, saving you
+valuable processing time.
+
+Next, navigate to your `TaskSet` class and add the `ParserTaskMixin` to its inheritance:
+
+```python
+from tasks.base import ParserTaskMixin
+
+
+GHCTaskSet(ParserTaskMixin, ...):  # ParserTaskMixin needs to be BEFORE the other classes in the MRO
+```
+
+This gives you access to the `self.fake_request` method, and now you can generate a request body filled with fake data:
+
+```python
+GHCTaskSet(ParserTaskMixin, ...):
+    ...
+
+    @task
+    def update_move_task_order(self):
+        mtoID = "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"
+        payload = self.fake_request(path="/move-task-orders/{moveTaskOrderID}", method="patch")
+
+        response = self.client.patch(
+            f"/ghc/v1/move-task-orders/{mtoID}",
+            name="/ghc/v1/move-task-orders/{moveTaskOrderID}",
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
+        )
+
+        # Now process the response however you like:
+        print(response.status_code, response.content)
+```
 
 ## Load Testing against AWS Experimental Environment
 
