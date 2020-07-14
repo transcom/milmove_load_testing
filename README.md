@@ -395,6 +395,51 @@ research and just a bit of coding. Here are the general steps:
 * Run the load test and check that your task is working properly.
   * If it is, you're good to go!
 
+## Fake Data Generation
+
+This repo also contains a tool to generate fake data for creating dynamic request bodies and simulating more varied user
+behavior, the `APIParser` class. It parses an API `.yaml` file using a path or URL using the `prance` library to create
+a fully-resolved dictionary of its Swagger specification. The main methods are:
+
+* `get_request_body`: Returns the full Swagger specification of the request body for a given endpoint. Requires the
+`path` and the `method` (post, get, etc) to be passed in. Returns an empty dictionary if no matching request found.
+
+```python
+from utils.parsers import APIParser
+
+parser = APIParser(api_file="https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml")
+parser.get_request_body(path="/mto-shipments", method="post")
+```
+
+* `get_response_body`: Returns the full Swagger specification of the response for a given endpoint. Requires the
+`path` and the `method` (post, get, etc). Optionally accepts the `status` code for the response, which defaults to
+`"200"`. Returns an empty dictionary if no matching response is found.
+
+```python
+parser.get_response_body(path="/mto-service-items", method="post", status="201")
+```
+
+* `get_definition`: Returns the full Swagger specification for a specific definition. Requires the `name` of the
+definition to be passed in. Returns `None` if no matching definition is found.
+
+```python
+parser.get_definition(name="MoveTaskOrder")
+```
+
+* `generate_fake_request`: Takes in the endpoint `path` and `method` and returns a JSON-ready dictionary with the fields
+and fake data for the request. Uses the `faker` library to generate the data. Can optionally accept a dictionary of
+`overrides` for top-level fields that should have specific fields, a dictionary of `nested_overrides` for fields in
+child objects that should have specific data, or a boolean `require_all` that indicates that all fields should be
+filled, even if not required.
+
+```python
+parser.generate_fake_request(path="/mto-service-items", method="post", overrides={"modelType": "MTOServiceItemDDSFIT"})
+```
+
+### Creating a custom parser
+
+The `APIParser` class is designed to be inherited and customized for specific APIs.
+
 ## Load Testing against AWS Experimental Environment
 
 To load test against the AWS Experimental Environment you must modify the
