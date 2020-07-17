@@ -87,7 +87,7 @@ class MilMoveProvider(DateProvider):
         Returns a safe street address as a string.
         """
         address = self.random_element(self.safe_data["addresses"])
-        return address["address"]
+        return address
 
 
 class MilMoveData:

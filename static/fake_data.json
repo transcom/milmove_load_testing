@@ -182,53 +182,21 @@
     }
   ],
   "addresses": [
-    {
-      "address": "7 Q St"
-    },
-    {
-      "address": "17 8th St"
-    },
-    {
-      "address": "9 W 2nd Ave"
-    },
-    {
-      "address": "148 S East St"
-    },
-    {
-      "address": "412 Avenue M #3E"
-    },
-    {
-      "address": "10642 N Second Ave"
-    },
-    {
-      "address": "812 S 129th Street"
-    },
-    {
-      "address": "448 Washington Blvd NE"
-    },
-    {
-      "address": "4124 Apache Dr"
-    },
-    {
-      "address": "6622 Airport Way S #1430"
-    },
-    {
-      "address": "235 Prospect Valley Road SE"
-    },
-    {
-      "address": "142 E Barrel Hoop Circle #4A"
-    },
-    {
-      "address": "441 SW Río de la Plata Drive"
-    },
-    {
-      "address": "3400 E Del Ray Place"
-    },
-    {
-      "address": "3373 NW Martin Luther King Jr Blvd"
-    },
-    {
-      "address": "1292 Orchard Terrace"
-    }
+    "7 Q St",
+    "17 8th St",
+    "9 W 2nd Ave",
+    "148 S East St",
+    "412 Avenue M #3E",
+    "10642 N Second Ave",
+    "812 S 129th Street",
+    "448 Washington Blvd NE",
+    "4124 Apache Dr",
+    "6622 Airport Way S #1430",
+    "235 Prospect Valley Road SE",
+    "142 E Barrel Hoop Circle #4A",
+    "441 SW Río de la Plata Drive",
+    "3400 E Del Ray Place",
+    "3373 NW Martin Luther King Jr Blvd",
+    "1292 Orchard Terrace"
   ]
 }
