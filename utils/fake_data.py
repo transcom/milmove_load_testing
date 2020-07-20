@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """ utils/fake_data.py is for Faker classes and functions to set up test data """
 import logging
+import json
 from typing import Optional
 from copy import deepcopy
 from datetime import datetime
-
 from faker import Faker
 from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
 
@@ -15,6 +15,16 @@ logger = logging.getLogger(__name__)
 
 class MilMoveProvider(DateProvider):
     """ Faker Provider class for sending back customized MilMove data. """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        with open("static/fake_data.json") as f:
+            self.safe_data = json.load(f)
+
+        self.current_name = {"first_name": "", "last_name": ""}
+        self.first_name_used = True
+        self.last_name_used = True
 
     def safe_phone_number(self):
         """
@@ -41,6 +51,41 @@ class MilMoveProvider(DateProvider):
         """
         return datetime.isoformat(self.date_time())
 
+    def _set_safe_name(self):
+        """
+        Randomly selects a safe full name to use.
+        """
+        random_name = self.random_element(self.safe_data["names"])
+        self.first_name_used, self.last_name_used = False, False
+
+        self.current_name.update({"first_name": random_name["first_name"], "last_name": random_name["last_name"]})
+
+    def safe_first_name(self):
+        """
+        Returns a safe first name as a string.
+        """
+        if self.first_name_used:
+            self._set_safe_name()
+
+        self.first_name_used = True
+        return self.current_name["first_name"]
+
+    def safe_last_name(self):
+        """
+        Returns a safe last name as a string.
+        """
+        if self.last_name_used:
+            self._set_safe_name()
+
+        self.last_name_used = True
+        return self.current_name["last_name"]
+
+    def safe_street_address(self):
+        """
+        Returns a safe street address as a string.
+        """
+        return self.random_element(self.safe_data["addresses"])
+
 
 class MilMoveData:
     """ Base class to return fake data to use in MilMove endpoints. """
@@ -51,13 +96,12 @@ class MilMoveData:
         """
         self.fake = Faker()
         self.fake.add_provider(MilMoveProvider)
-
         self.data_types = {
-            DataType.FIRST_NAME: self.fake.first_name,  # TODO: replace with data from milmove fake address spreadsheet
-            DataType.LAST_NAME: self.fake.last_name,  # TODO: same ^
+            DataType.FIRST_NAME: self.fake.safe_first_name,
+            DataType.LAST_NAME: self.fake.safe_last_name,
             DataType.PHONE: self.fake.safe_phone_number,
             DataType.EMAIL: self.fake.safe_email,
-            DataType.STREET_ADDRESS: self.fake.street_address,  # TODO: same ^^
+            DataType.STREET_ADDRESS: self.fake.safe_street_address,
             DataType.CITY: self.fake.city,
             DataType.STATE: self.fake.state_abbr,
             DataType.POSTAL_CODE: self.fake.postalcode,
@@ -107,5 +151,4 @@ class MilMoveData:
         # Now we're going to use the override data that was passed in instead of any generated fake data for those
         # fields:
         data.update(overrides if overrides else {})
-
         return data

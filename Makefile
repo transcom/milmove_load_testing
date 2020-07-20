@@ -71,4 +71,9 @@ load_test_office: venv ## Run load testing on the Office app
 	open http://localhost:8089
 	$(WITH_VENV) locust -f locustfiles/office.py --host local
 
+.PHONY: load_test_milmove
+load_test_milmove: venv ## Run load testing on the MilMove app
+	open http://localhost:8089
+	$(WITH_VENV) locust -f locustfiles/milmove.py --host local
+
 default: help

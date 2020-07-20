@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" TaskSets and tasks for the Office interface. """
+""" TaskSets and tasks for the MilMove interface. """
 import logging
 import json
 
@@ -10,9 +10,9 @@ from .base import LoginTaskSet
 logger = logging.getLogger(__name__)
 
 
-class OfficeTasks(LoginTaskSet):
+class MilMoveTasks(LoginTaskSet):
     """
-    Set of tasks that can be called for the MilMove Office interface.
+    Set of tasks that can be called for the MilMove interface.
     """
 
     def on_start(self):
@@ -21,7 +21,7 @@ class OfficeTasks(LoginTaskSet):
         """
         super().on_start()  # sets the csrf token
 
-        resp = self._create_login(user_type="PPM office", session_token_name="office_session_token")
+        resp = self._create_login(user_type="milmove", session_token_name="mil_session_token")
         if resp.status_code != 200:
             self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
 
