@@ -51,7 +51,7 @@ class MilMoveProvider(DateProvider):
         """
         return datetime.isoformat(self.date_time())
 
-    def set_safe_name(self):
+    def _set_safe_name(self):
         """
         Randomly selects a safe full name to use.
         """
@@ -64,30 +64,27 @@ class MilMoveProvider(DateProvider):
         """
         Returns a safe first name as a string.
         """
-        if not self.first_name_used:
-            return self.current_name["first_name"]
-        else:
-            self.set_safe_name()
-            self.first_name_used = True
-            return self.current_name["first_name"]
+        if self.first_name_used:
+            self._set_safe_name()
+
+        self.first_name_used = True
+        return self.current_name["first_name"]
 
     def safe_last_name(self):
         """
         Returns a safe last name as a string.
         """
-        if not self.last_name_used:
-            return self.current_name["last_name"]
-        else:
-            self.set_safe_name()
-            self.last_name_used = True
-            return self.current_name["last_name"]
+        if self.last_name_used:
+            self._set_safe_name()
+
+        self.last_name_used = True
+        return self.current_name["last_name"]
 
     def safe_street_address(self):
         """
         Returns a safe street address as a string.
         """
-        address = self.random_element(self.safe_data["addresses"])
-        return address
+        return self.random_element(self.safe_data["addresses"])
 
 
 class MilMoveData:
