@@ -129,6 +129,10 @@ commands include:
 
   Runs the load tests for `locustfiles/office.py`, which tests the MilMove Office interface.
 
+* `make load_test_milmove`
+
+    Runs the load tests for `locustfiles/milmove.py`, which tests the MilMove Customer interface.
+
 Each of these commands opens the Locust interface for initiating and monitoring the tests, set to [http://localhost:8089](http://localhost:8089).
 Using this interface, you can set the number of users to simulate and their hatch rate, then start and stop the test at
 will. For the host, you can enter a full URL address, or you can simply enter "local", "staging", or "experimental", and
