@@ -124,6 +124,20 @@ class ObjectField(BaseAPIField):
         else:
             self.add_field(field)
 
+    def get_field(self, field_name):
+        """
+        Searches the object_fields list for a field matching the specific name passed in. Returns the BaseAPIField
+        object if found; otherwise, returns None.
+
+        :param field_name: str
+        :return: BaseAPIField or None
+        """
+        for field in self.object_fields:
+            if field.name == field_name:
+                return field
+
+        return None
+
     def update_required_fields(self, required_fields):
         """
         Takes in a list of required fields for the object and updates the `required` attribute for each of them.
@@ -155,9 +169,9 @@ class ObjectField(BaseAPIField):
             if overrides and self.discriminator in overrides:
                 return overrides[self.discriminator]  # if the user passed in an explicit discriminator value, use it
 
-            for field in self.object_fields:
-                if field.name == self.discriminator:
-                    return field.generate_fake_data(faker)
+            discriminator_field = self.get_field(self.discriminator)
+            if discriminator_field:
+                return discriminator_field.generate_fake_data(faker)
 
         return ""  # return an empty string if we can't determine a value
 
