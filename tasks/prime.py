@@ -57,6 +57,10 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     tags where appropriate to make filtering for custom tests easier.
     """
 
+    # TODO rework with ticket to update architecture to pass data from one task to another
+    mto_shipment_id = ""
+    mto_shipment_etag = ""
+
     @tag("mto", "fetchMTOUpdates")
     @task
     def fetch_mto_updates(self):
@@ -83,12 +87,19 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_shipment(self):
         overrides = {"moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e", "mtoServiceItems": []}
         payload = self.fake_request("/mto-shipments", "post", overrides=overrides, nested_overrides=overrides)
+        payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
             prime_path("/mto-shipments"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-        check_response(resp, "Create MTO Shipment", payload)
+        resp, success = check_response(resp, "Create MTO Shipment", payload)
+
+        if not success:
+            return
+
+        self.mto_shipment_id = resp["id"]
+        self.mto_shipment_etag = resp["eTag"]
 
     @tag("paymentRequest", "createUpload")
     @task
@@ -98,13 +109,13 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
 
         resp = self.client.post(
             prime_path(f"/payment-requests/{payment_request_id}/uploads"),
-            files=upload_file,
             name=prime_path("/payment-requests/:paymentRequestID/uploads"),
+            files=upload_file,
             **self.user.cert_kwargs,
         )
         check_response(resp, "Create Upload")
 
-    @tag("paymentRequests", "createPaymentRequest")
+    @tag("paymentRequest", "createPaymentRequest")
     @task
     def create_payment_request(self):
         payload = {
@@ -118,6 +129,42 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
             prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
         check_response(resp, "Create Payment Request", payload)
+
+    @tag("mtoShipment", "updateMTOShipment")
+    @task
+    def update_mto_shipment(self):
+        if not self.mto_shipment_id or not self.mto_shipment_etag:
+            return  # can't run this task
+
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "put")
+
+        # These fields need more complicated logic to handle, so remove them for the time being:
+        fields_to_remove = [
+            "agents",
+            "pickupAddress",
+            "destinationAddress",
+            "secondaryPickupAddress",
+            "secondaryDeliveryAddress",
+            "primeEstimatedWeight",
+        ]
+        for f in fields_to_remove:
+            payload.pop(f, None)
+
+        headers = {"content-type": "application/json", "If-Match": self.mto_shipment_etag}
+        resp = self.client.put(
+            prime_path(f"/mto-shipments/{self.mto_shipment_id}"),
+            name=prime_path("/mto-shipments/:mtoShipmentID"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "Update MTO Shipment", payload)
+
+        if not success:
+            return
+
+        self.mto_shipment_id = resp["id"]
+        self.mto_shipment_etag = resp["eTag"]
 
 
 @tag("support")
@@ -166,8 +213,8 @@ class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
 
         resp = self.client.patch(
             support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
+            name=support_path("/move-task-orders/:moveTaskOrderID/available-to-prime"),
             headers=headers,
             **self.user.cert_kwargs,
-            name=support_path("/move-task-orders/:moveTaskOrderID/available-to-prime"),
         )
         check_response(resp, "Make MTO available to Prime")
