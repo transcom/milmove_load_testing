@@ -27,6 +27,7 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
 
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
     tasks = {PrimeTasks: 1}  # the set of tasks to be executed and their relative weight
+    weight = 5
 
 
 class SupportUser(MilMoveHostMixin, HttpUser):
@@ -43,3 +44,4 @@ class SupportUser(MilMoveHostMixin, HttpUser):
 
     wait_time = between(0.25, 9)
     tasks = {SupportTasks: 1}
+    weight = 1
