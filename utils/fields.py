@@ -208,7 +208,7 @@ class ObjectField(BaseAPIField):
         overrides = {} if not overrides else overrides
 
         if self.name in overrides:
-            overrides = overrides[self.name]
+            overrides = overrides[self.name] or {}
 
         d_value = self.generate_discriminator_value(faker, overrides)
         if self.discriminator and d_value:
