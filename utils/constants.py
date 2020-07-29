@@ -14,6 +14,8 @@ PRIME_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
 ARRAY_MIN = 1
 ARRAY_MAX = 5
 
+ZERO_UUID = "00000000-0000-0000-0000-000000000000"
+
 
 class MilMoveEnv(ListEnum):
     LOCAL = "local"
