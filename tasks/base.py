@@ -30,9 +30,12 @@ def check_response(response, task_name="Task", request=None):
         return None, False
 
     if not str(response.status_code).startswith("2"):
-        logger.error(f"⚠️ {json_response}")
+        logger.error(f"⚠️\n{json.dumps(json_response, indent=4)}")
         if request:
-            logger.error(f"Request data: {request}")
+            try:
+                logger.error(f"Request data:\n{json.dumps(request, indent=4)}")
+            except (json.JSONDecodeError, TypeError):
+                logger.error(f"Request data:\n{request}")
 
         return json_response, False
 
