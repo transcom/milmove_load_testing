@@ -171,14 +171,20 @@ class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
                 "rank": "E-6",
                 "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
                 "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
+                "uploadedOrdersID": "f4960bdb-ada6-48dc-b53d-a5961644932e",
+                "ordersType": "GHC",
+                "reportByDate": "2020-01-01",
+                "status": "SUBMITTED",
+                "issueDate": "2020-01-01",
             },
         }
+
         headers = {"content-type": "application/json"}
         resp = self.client.post(
             support_path("/move-task-orders"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-
         json_body, success = check_response(resp, "Create MTO", payload)
+
         if not success:
             return  # no point continuing if it didn't work out
 
