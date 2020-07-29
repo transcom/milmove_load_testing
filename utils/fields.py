@@ -48,6 +48,9 @@ class BaseAPIField:
         :param kwargs:
         :return: any
         """
+        if (overrides := kwargs.get("overrides")) and self.name in overrides:
+            return overrides[self.name]
+
         return faker.get_fake_data_for_type(self.data_type)
 
 
@@ -64,6 +67,9 @@ class EnumField(BaseAPIField):
         :param kwargs:
         :return: str/int/element
         """
+        if (overrides := kwargs.get("overrides")) and self.name in overrides:
+            return overrides[self.name]
+
         return faker.get_random_choice(self.options)
 
 
@@ -83,8 +89,21 @@ class ArrayField(BaseAPIField):
         :param kwargs:
         :return: list
         """
-        num_items = randint(self.min_items, self.max_items)
         fake_data = []
+
+        if (overrides := kwargs.get("overrides")) and self.name in overrides:
+            override_array = overrides[self.name]
+
+            if isinstance(override_array, list):
+                for item in override_array:
+                    kwargs["overrides"] = item
+                    fake_data.append(self.items_field.generate_fake_data(faker, **kwargs))
+
+                return fake_data
+
+            kwargs["overrides"] = override_array
+
+        num_items = randint(self.min_items, self.max_items)
 
         for i in range(0, num_items):
             fake_data.append(self.items_field.generate_fake_data(faker, **kwargs))
@@ -175,23 +194,24 @@ class ObjectField(BaseAPIField):
 
         return ""  # return an empty string if we can't determine a value
 
-    def generate_fake_data(self, faker, overrides=None, nested_overrides=None, require_all=False):
+    def generate_fake_data(self, faker, overrides=None, require_all=False):
         """
         Generates fake data for this field by looping through the fields in self.object_fields and generating data for
         those fields as well. Returns a dictionary formatted with [field_name]: field_data.
 
         :param faker: MilMoveData
         :param overrides: dict, optional
-        :param nested_overrides: dict, optional
         :param require_all: bool, optional
         :return: dict
         """
         fake_data = {}
+        overrides = {} if not overrides else overrides
+
+        if self.name in overrides:
+            overrides = overrides[self.name]
+
         d_value = self.generate_discriminator_value(faker, overrides)
         if self.discriminator and d_value:
-            if not overrides:
-                overrides = {}
-
             overrides[self.discriminator] = d_value
 
         for field in self.object_fields:
@@ -201,14 +221,11 @@ class ObjectField(BaseAPIField):
             if not (require_all or field.required or randint(0, 3)) or not field.is_valid_discriminator(d_value):
                 continue  # skip this one
 
-            # If an override value was provided for the field, use that instead of generating anything:
-            if overrides and field.name in overrides:
-                fake_data[field.name] = overrides[field.name]
-                continue
+            fake_data[field.name] = field.generate_fake_data(faker, overrides=overrides, require_all=require_all)
 
-            fake_data[field.name] = field.generate_fake_data(
-                faker, overrides=nested_overrides, nested_overrides=nested_overrides, require_all=require_all
-            )
+        for field in overrides:
+            if field not in fake_data:
+                fake_data[field] = overrides[field]
 
         return fake_data
 
@@ -219,24 +236,17 @@ class APIEndpointBody:
     method: str
     body_field: BaseAPIField = None
 
-    def generate_fake_data(self, faker, overrides=None, nested_overrides=None, require_all=False):
+    def generate_fake_data(self, faker, overrides=None, require_all=False):
         """
         Generates a dictionary (JSON-valid) representation of the endpoint body filled with fake data. Must have a Faker
-        data generator passed in, and can optionally accept overrides, nested overrides, and a switch indicating if all
-        fields should be required or not (regardless of their actual required value).
-
-        Note that `overrides` only update the top layer of fields. `nested_overrides` affect all INNER fields, meaning
-        that all sub-objects with same-named fields will get the same override value. These do NOT affect the top layer.
+        data generator passed in, and can optionally accept overrides and a switch indicating if all fields should be
+        required or not (regardless of their actual required value).
 
         :param faker: MilMoveData
         :param overrides: dict, optional
-        :param nested_overrides: dict, optional
         :param require_all: bool, optional
         :return: dict
         """
-        fake_data = self.body_field.generate_fake_data(
-            faker, overrides=overrides, nested_overrides=nested_overrides, require_all=require_all
-        )
-        fake_data.update(overrides if overrides else {})
+        fake_data = self.body_field.generate_fake_data(faker, overrides=overrides, require_all=require_all)
 
         return fake_data
