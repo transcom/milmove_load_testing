@@ -5,7 +5,7 @@ import json
 
 from locust import tag, task, TaskSet
 
-from utils.constants import TEST_PDF
+from utils.constants import TEST_PDF, ZERO_UUID
 from .base import CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
             "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
             "mtoShipmentID": "475579d5-aaa4-4755-8c43-c510381ff9b5",
         }
-        payload = self.fake_request("/mto-service-items", "post", overrides=overrides, nested_overrides=overrides)
+        payload = self.fake_request("/mto-service-items", "post", overrides=overrides)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -85,8 +85,14 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag("mtoShipment", "createMTOShipment")
     @task
     def create_mto_shipment(self):
-        overrides = {"moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e", "mtoServiceItems": []}
-        payload = self.fake_request("/mto-shipments", "post", overrides=overrides, nested_overrides=overrides)
+        overrides = {
+            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+            "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
+            "pickupAddress": {"id": ZERO_UUID},
+            "destinationAddress": {"id": ZERO_UUID},
+            "mtoServiceItems": [],
+        }
+        payload = self.fake_request("/mto-shipments", "post", overrides=overrides)
         payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
 
         headers = {"content-type": "application/json"}

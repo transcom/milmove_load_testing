@@ -38,11 +38,11 @@ class ParserTaskMixin:
         if not hasattr(self.user, "parser"):
             raise ImplementationError("The user for a TaskSet using ParserTaskSet mixin must have a parser attribute.")
 
-    def fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=False):
+    def fake_request(self, path, method, overrides=None, require_all=False):
         """
         Wraps the parser's generate_fake_request method for ease of use.
         """
-        return self.user.parser.generate_fake_request(path, method, overrides, nested_overrides, require_all)
+        return self.user.parser.generate_fake_request(path, method, overrides, require_all)
 
 
 class LoginTaskSet(TaskSet):
