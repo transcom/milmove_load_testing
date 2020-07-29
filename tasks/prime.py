@@ -6,7 +6,7 @@ import json
 from locust import tag, task, TaskSet
 
 from utils.constants import TEST_PDF, ZERO_UUID
-from .base import CertTaskMixin, ParserTaskMixin
+from .base import check_response, CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
 
@@ -17,37 +17,6 @@ def prime_path(url):
 
 def support_path(url):
     return f"/support/v1{url}"
-
-
-def check_response(response, task_name="Task", request=None):
-    """
-    Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
-    status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
-    Returns the dictionary representation of the response content and a boolean indicating success or failure.
-
-    :param response: HTTP response object
-    :param task_name: str, optional name of the tasks
-    :param request: any, optional data to print for debugging a failed response
-    :return: tuple(dict, bool)
-    """
-    logger.info(f"ℹ️ {task_name} status code: {response.status_code}")
-
-    try:
-        json_response = json.loads(response.content)
-    except (json.JSONDecodeError, TypeError):
-        logger.exception("Non-JSON response.")
-        return None, False
-
-    if not str(response.status_code).startswith("2"):
-        logger.error(f"⚠️ {json_response}")
-        if request:
-            logger.error(f"Request data: {request}")
-
-        return json_response, False
-
-    logger.info(f"ℹ️ {task_name} successfully completed!")
-
-    return json_response, True
 
 
 @tag("prime")
