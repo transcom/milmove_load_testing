@@ -100,15 +100,14 @@ class APIParser:
         """
         return self.parser.specification["definitions"].get(name)
 
-    def generate_fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=False):
+    def generate_fake_request(self, path, method, overrides=None, require_all=False):
         """
         Generates a request body filled with fake data to use with a specific endpoint in the API. Requires the endpoint
-        path and method. Optionally takes in top level overrides and nested overrides.
+        path and method. Optionally takes in overrides and a bool indicating if all fields should be required or not.
 
         :param path: str
         :param method: str
         :param overrides: dict, optional
-        :param nested_overrides: dict, optional
         :param require_all: bool, optional
         :return: dict
         """
@@ -116,7 +115,7 @@ class APIParser:
         if not request_body:
             request_body = self._process_request_body(path, method)
 
-        fake_request = request_body.generate_fake_data(self.milmove_data, overrides, nested_overrides, require_all)
+        fake_request = request_body.generate_fake_data(self.milmove_data, overrides, require_all)
         # Hook method for custom post-data generation validation:
         self._custom_request_validation(path, method, fake_request)
 
@@ -372,11 +371,11 @@ class PrimeAPIParser(APIParser):
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml"
 
-    def generate_fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=True):
+    def generate_fake_request(self, path, method, overrides=None, require_all=True):
         """
         Overrides method so that require_all defaults to True. TODO remove when API discrepancies are fixed
         """
-        return super().generate_fake_request(path, method, overrides, nested_overrides, True)
+        return super().generate_fake_request(path, method, overrides, True)
 
     def _custom_field_validation(self, field, object_def):
         """

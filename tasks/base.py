@@ -1,8 +1,47 @@
 # -*- coding: utf-8 -*-
 """ tasks/base.py is for code used internally within the tasks package. """
+import logging
+import json
+
 from locust import TaskSet
 
 from utils.base import ImplementationError
+
+logger = logging.getLogger(__name__)
+
+
+def check_response(response, task_name="Task", request=None):
+    """
+    Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
+    status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
+    Returns the dictionary representation of the response content and a boolean indicating success or failure.
+
+    :param response: HTTP response object
+    :param task_name: str, optional name of the tasks
+    :param request: any, optional data to print for debugging a failed response
+    :return: tuple(dict, bool)
+    """
+    logger.info(f"ℹ️ {task_name} status code: {response.status_code}")
+
+    try:
+        json_response = json.loads(response.content)
+    except (json.JSONDecodeError, TypeError):
+        logger.exception("Non-JSON response.")
+        return None, False
+
+    if not str(response.status_code).startswith("2"):
+        logger.error(f"⚠️\n{json.dumps(json_response, indent=4)}")
+        if request:
+            try:
+                logger.error(f"Request data:\n{json.dumps(request, indent=4)}")
+            except (json.JSONDecodeError, TypeError):
+                logger.error(f"Request data:\n{request}")
+
+        return json_response, False
+
+    logger.info(f"ℹ️ {task_name} successfully completed!")
+
+    return json_response, True
 
 
 class CertTaskMixin:
@@ -38,11 +77,11 @@ class ParserTaskMixin:
         if not hasattr(self.user, "parser"):
             raise ImplementationError("The user for a TaskSet using ParserTaskSet mixin must have a parser attribute.")
 
-    def fake_request(self, path, method, overrides=None, nested_overrides=None, require_all=False):
+    def fake_request(self, path, method, overrides=None, require_all=False):
         """
         Wraps the parser's generate_fake_request method for ease of use.
         """
-        return self.user.parser.generate_fake_request(path, method, overrides, nested_overrides, require_all)
+        return self.user.parser.generate_fake_request(path, method, overrides, require_all)
 
 
 class LoginTaskSet(TaskSet):

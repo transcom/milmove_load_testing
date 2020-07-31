@@ -434,9 +434,8 @@ parser.get_definition(name="MoveTaskOrder")
 
 * `generate_fake_request`: Takes in the endpoint `path` and `method` and returns a JSON-ready dictionary with the fields
 and fake data for the request. Uses the `faker` library to generate the data. Can optionally accept a dictionary of
-`overrides` for top-level fields that should have specific fields, a dictionary of `nested_overrides` for fields in
-child objects that should have specific data, or a boolean `require_all` that indicates that all fields should be
-filled, even if not required.
+`overrides` for any fields that need to have specific values set, or a boolean `require_all` that indicates that all
+fields should be filled, even if not required.
 
 ```python
 parser.generate_fake_request(path="/mto-service-items", method="post", overrides={"modelType": "MTOServiceItemDDSFIT"})

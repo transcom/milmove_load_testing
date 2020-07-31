@@ -5,8 +5,8 @@ import json
 
 from locust import tag, task, TaskSet
 
-from utils.constants import TEST_PDF
-from .base import CertTaskMixin, ParserTaskMixin
+from utils.constants import TEST_PDF, ZERO_UUID
+from .base import check_response, CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
 
@@ -17,37 +17,6 @@ def prime_path(url):
 
 def support_path(url):
     return f"/support/v1{url}"
-
-
-def check_response(response, task_name="Task", request=None):
-    """
-    Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
-    status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
-    Returns the dictionary representation of the response content and a boolean indicating success or failure.
-
-    :param response: HTTP response object
-    :param task_name: str, optional name of the tasks
-    :param request: any, optional data to print for debugging a failed response
-    :return: tuple(dict, bool)
-    """
-    logger.info(f"ℹ️ {task_name} status code: {response.status_code}")
-
-    try:
-        json_response = json.loads(response.content)
-    except (json.JSONDecodeError, TypeError):
-        logger.exception("Non-JSON response.")
-        return None, False
-
-    if not str(response.status_code).startswith("2"):
-        logger.error(f"⚠️ {json_response}")
-        if request:
-            logger.error(f"Request data: {request}")
-
-        return json_response, False
-
-    logger.info(f"ℹ️ {task_name} successfully completed!")
-
-    return json_response, True
 
 
 @tag("prime")
@@ -74,7 +43,7 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
             "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
             "mtoShipmentID": "475579d5-aaa4-4755-8c43-c510381ff9b5",
         }
-        payload = self.fake_request("/mto-service-items", "post", overrides=overrides, nested_overrides=overrides)
+        payload = self.fake_request("/mto-service-items", "post", overrides=overrides)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -85,8 +54,14 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag("mtoShipment", "createMTOShipment")
     @task
     def create_mto_shipment(self):
-        overrides = {"moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e", "mtoServiceItems": []}
-        payload = self.fake_request("/mto-shipments", "post", overrides=overrides, nested_overrides=overrides)
+        overrides = {
+            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+            "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
+            "pickupAddress": {"id": ZERO_UUID},
+            "destinationAddress": {"id": ZERO_UUID},
+            "mtoServiceItems": [],
+        }
+        payload = self.fake_request("/mto-shipments", "post", overrides=overrides)
         payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
 
         headers = {"content-type": "application/json"}
@@ -196,14 +171,20 @@ class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
                 "rank": "E-6",
                 "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
                 "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
+                "uploadedOrdersID": "f4960bdb-ada6-48dc-b53d-a5961644932e",
+                "ordersType": "GHC",
+                "reportByDate": "2020-01-01",
+                "status": "SUBMITTED",
+                "issueDate": "2020-01-01",
             },
         }
+
         headers = {"content-type": "application/json"}
         resp = self.client.post(
             support_path("/move-task-orders"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-
         json_body, success = check_response(resp, "Create MTO", payload)
+
         if not success:
             return  # no point continuing if it didn't work out
 
