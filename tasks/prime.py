@@ -171,7 +171,7 @@ class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
                 "rank": "E-6",
                 "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
                 "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
-                "uploadedOrdersID": "f4960bdb-ada6-48dc-b53d-a5961644932e",
+                "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
                 "ordersType": "GHC",
                 "reportByDate": "2020-01-01",
                 "status": "SUBMITTED",
