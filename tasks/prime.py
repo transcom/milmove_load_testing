@@ -6,7 +6,7 @@ import random
 
 from locust import tag, task, TaskSet
 
-from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv
+from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv, PrimeObjects
 from .base import check_response, CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
@@ -27,10 +27,10 @@ class PrimeDataTaskMixin:
 
     DATA_LIST_MAX = 25
     prime_data = {
-        "mto": [],
-        "mtoShipment": [],
-        "mtoServiceItem": [],
-        "paymentRequest": [],
+        PrimeObjects.MOVE_TASK_ORDER: [],
+        PrimeObjects.MTO_SHIPMENT: [],
+        PrimeObjects.MTO_SERVICE_ITEM: [],
+        PrimeObjects.PAYMENT_REQUEST: [],
     }  # data stored will be shared among class instances thanks to mutable dict
 
     def get_random_data(self, object_key):
@@ -39,18 +39,6 @@ class PrimeDataTaskMixin:
 
         if len(data_list) > 0:  # otherwise we return None
             return random.choice(data_list)
-
-    def get_data_for_mto(self, object_key, mto_id):
-        """  """
-        field = "moveTaskOrderID"
-        if object_key == "mto":
-            field = "id"
-
-        data_list = self.prime_data[object_key]
-
-        for item in data_list:
-            if item[field] == mto_id:
-                return item  # return None if never found
 
     def set_prime_data(self, object_key, object_data):
         """  """
@@ -81,30 +69,28 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     tags where appropriate to make filtering for custom tests easier.
     """
 
-    @tag("mto", "fetchMTOUpdates")
+    @tag(PrimeObjects.MOVE_TASK_ORDER.value, "fetchMTOUpdates")
     @task
     def fetch_mto_updates(self):
         resp = self.client.get(prime_path("/move-task-orders"), **self.user.cert_kwargs)
         check_response(resp, "Fetch MTOs")
 
-    @tag("mtoServiceItem", "createMTOServiceItem")
+    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItem")
     @task
     def create_mto_service_item(self):
-        move_task_order = self.get_random_data("mto")
-        mto_shipment = None
-
-        if move_task_order:
-            mto_shipment = self.get_data_for_mto("mtoShipment", move_task_order["id"])
-
-        if not move_task_order or not mto_shipment:
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
             if not self.user.env == MilMoveEnv.LOCAL:
                 return  # we can't do anything else without a default value
 
-            move_task_order = {"id": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"}
-            mto_shipment = {"id": "475579d5-aaa4-4755-8c43-c510381ff9b5"}
+            # default for local testing
+            mto_shipment = {
+                "id": "475579d5-aaa4-4755-8c43-c510381ff9b5",
+                "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+            }
 
         overrides = {
-            "moveTaskOrderID": move_task_order["id"],
+            "moveTaskOrderID": mto_shipment["moveTaskOrderID"],
             "mtoShipmentID": mto_shipment["id"],
         }
         payload = self.fake_request("/mto-service-items", "post", overrides=overrides)
@@ -116,12 +102,12 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         resp, success = check_response(resp, "Create MTO Service Item", payload)
 
         if success:
-            self.set_prime_data("mtoServiceItem", resp)
+            self.set_prime_data(PrimeObjects.MTO_SERVICE_ITEM, resp)
 
-    @tag("mtoShipment", "createMTOShipment")
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "createMTOShipment")
     @task
     def create_mto_shipment(self):
-        move_task_order = self.get_random_data("mto")
+        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         if not move_task_order:
             if not self.user.env == MilMoveEnv.LOCAL:
                 return  # we can't do anything else without a default value
@@ -145,12 +131,12 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         resp, success = check_response(resp, "Create MTO Shipment", payload)
 
         if success:
-            self.set_prime_data("mtoShipment", resp)
+            self.set_prime_data(PrimeObjects.MTO_SHIPMENT, resp)
 
-    @tag("paymentRequest", "createUpload")
+    @tag(PrimeObjects.PAYMENT_REQUEST.value, "createUpload")
     @task
     def create_upload(self):
-        payment_request = self.get_random_data("paymentRequest")
+        payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
         if not payment_request:
             if not self.user.env == MilMoveEnv.LOCAL:
                 return  # we can't do anything else without a default value
@@ -167,24 +153,21 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         )
         check_response(resp, "Create Upload")
 
-    @tag("paymentRequest", "createPaymentRequest")
+    @tag(PrimeObjects.PAYMENT_REQUEST.value, "createPaymentRequest")
     @task
     def create_payment_request(self):
-        move_task_order = self.get_random_data("mto")
-        service_item = None
-
-        if move_task_order:
-            service_item = self.get_data_for_mto("mtoServiceItem", move_task_order["id"])
-
-        if not move_task_order or not service_item:
+        service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
+        if not service_item:
             if not self.user.env == MilMoveEnv.LOCAL:
                 return  # we can't do anything else without a default value
 
-            move_task_order = {"id": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791"}
-            service_item = {"id": "8a625314-1922-4987-93c5-a62c0d13f053"}
+            service_item = {
+                "id": "8a625314-1922-4987-93c5-a62c0d13f053",
+                "moveTaskOrderID": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791",
+            }
 
         payload = {
-            "moveTaskOrderID": move_task_order["id"],
+            "moveTaskOrderID": service_item["moveTaskOrderID"],
             "serviceItems": [{"id": service_item["id"]}],
             "isFinal": False,
         }
@@ -196,12 +179,12 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         resp, success = check_response(resp, "Create Payment Request", payload)
 
         if success:
-            self.set_prime_data("paymentRequest", resp)
+            self.set_prime_data(PrimeObjects.PAYMENT_REQUEST, resp)
 
-    @tag("mtoShipment", "updateMTOShipment")
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipment")
     @task
     def update_mto_shipment(self):
-        mto_shipment = self.get_random_data("mtoShipment")
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
         if not mto_shipment:
             return  # can't run this task
 
@@ -230,7 +213,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         resp, success = check_response(resp, "Update MTO Shipment", payload)
 
         if success:
-            self.replace_prime_data("mtoShipment", mto_shipment, resp)
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
 
 
 @tag("support")
@@ -245,7 +228,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         # etc.
     """
 
-    @tag("mto", "createMoveTaskOrder")
+    @tag(PrimeObjects.MOVE_TASK_ORDER.value, "createMoveTaskOrder")
     @task
     def create_move_task_order(self):
         payload = {
@@ -292,4 +275,4 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         mto_data, success = check_response(resp, "Make MTO available to Prime")
 
         if success:
-            self.set_prime_data("mto", mto_data)
+            self.set_prime_data(PrimeObjects.MOVE_TASK_ORDER, mto_data)
