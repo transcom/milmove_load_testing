@@ -22,10 +22,10 @@ def support_path(url):
 
 class PrimeDataTaskMixin:
     """
-
+    TaskSet mixin used to store data from the Prime API during load testing so that it can be passed around and reused.
     """
 
-    DATA_LIST_MAX = 25
+    DATA_LIST_MAX = 50
     prime_data = {
         PrimeObjects.MOVE_TASK_ORDER: [],
         PrimeObjects.MTO_SHIPMENT: [],
@@ -34,14 +34,22 @@ class PrimeDataTaskMixin:
     }  # data stored will be shared among class instances thanks to mutable dict
 
     def get_random_data(self, object_key):
-        """  """
+        """ Given a PrimeObjects value, returns a random data element from the list. """
         data_list = self.prime_data[object_key]
 
         if len(data_list) > 0:  # otherwise we return None
             return random.choice(data_list)
 
     def set_prime_data(self, object_key, object_data):
-        """  """
+        """
+        Sets data to the list for the object key provided. Also checks if the list is already at the max number of
+        elements, and if so, it randomly removes 1 to MAX number of elements so that the cycle can start again (and so
+        we don't hog too much memory).
+
+        :param object_key: PrimeObjects
+        :param object_data: JSON/dict
+        :return: None
+        """
         data_list = self.prime_data[object_key]
 
         if len(data_list) >= self.DATA_LIST_MAX:
@@ -51,7 +59,7 @@ class PrimeDataTaskMixin:
         data_list.append(object_data)
 
     def replace_prime_data(self, object_key, old_data, new_data):
-        """  """
+        """ Given an object key, it removes a value in the in list with a new updated value. """
         data_list = self.prime_data[object_key]
 
         try:
