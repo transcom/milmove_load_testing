@@ -2,10 +2,11 @@
 """ TaskSets and tasks for the Prime & Support APIs """
 import logging
 import json
+import random
 
 from locust import tag, task, TaskSet
 
-from utils.constants import TEST_PDF, ZERO_UUID
+from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv, PrimeObjects
 from .base import check_response, CertTaskMixin, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
@@ -19,29 +20,86 @@ def support_path(url):
     return f"/support/v1{url}"
 
 
+class PrimeDataTaskMixin:
+    """
+    TaskSet mixin used to store data from the Prime API during load testing so that it can be passed around and reused.
+    """
+
+    DATA_LIST_MAX = 50
+    prime_data = {
+        PrimeObjects.MOVE_TASK_ORDER: [],
+        PrimeObjects.MTO_SHIPMENT: [],
+        PrimeObjects.MTO_SERVICE_ITEM: [],
+        PrimeObjects.PAYMENT_REQUEST: [],
+    }  # data stored will be shared among class instances thanks to mutable dict
+
+    def get_random_data(self, object_key):
+        """ Given a PrimeObjects value, returns a random data element from the list. """
+        data_list = self.prime_data[object_key]
+
+        if len(data_list) > 0:  # otherwise we return None
+            return random.choice(data_list)
+
+    def set_prime_data(self, object_key, object_data):
+        """
+        Sets data to the list for the object key provided. Also checks if the list is already at the max number of
+        elements, and if so, it randomly removes 1 to MAX number of elements so that the cycle can start again (and so
+        we don't hog too much memory).
+
+        :param object_key: PrimeObjects
+        :param object_data: JSON/dict
+        :return: None
+        """
+        data_list = self.prime_data[object_key]
+
+        if len(data_list) >= self.DATA_LIST_MAX:
+            num_to_delete = random.randint(1, self.DATA_LIST_MAX)
+            del data_list[:num_to_delete]
+
+        data_list.append(object_data)
+
+    def replace_prime_data(self, object_key, old_data, new_data):
+        """ Given an object key, it removes a value in the in list with a new updated value. """
+        data_list = self.prime_data[object_key]
+
+        try:
+            data_list.remove(old_data)
+        except ValueError:
+            pass  # this is fine, we didn't want this value in the list anymore anyway
+
+        data_list.append(new_data)
+
+
 @tag("prime")
-class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
+class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Prime API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier.
     """
 
-    # TODO rework with ticket to update architecture to pass data from one task to another
-    mto_shipment_id = ""
-    mto_shipment_etag = ""
-
-    @tag("mto", "fetchMTOUpdates")
+    @tag(PrimeObjects.MOVE_TASK_ORDER.value, "fetchMTOUpdates")
     @task
     def fetch_mto_updates(self):
         resp = self.client.get(prime_path("/move-task-orders"), **self.user.cert_kwargs)
         check_response(resp, "Fetch MTOs")
 
-    @tag("mtoServiceItem", "createMTOServiceItem")
+    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItem")
     @task
     def create_mto_service_item(self):
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
+            if not self.user.env == MilMoveEnv.LOCAL:
+                return  # we can't do anything else without a default value
+
+            # default for local testing
+            mto_shipment = {
+                "id": "475579d5-aaa4-4755-8c43-c510381ff9b5",
+                "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+            }
+
         overrides = {
-            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
-            "mtoShipmentID": "475579d5-aaa4-4755-8c43-c510381ff9b5",
+            "moveTaskOrderID": mto_shipment["moveTaskOrderID"],
+            "mtoShipmentID": mto_shipment["id"],
         }
         payload = self.fake_request("/mto-service-items", "post", overrides=overrides)
 
@@ -49,13 +107,23 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         resp = self.client.post(
             prime_path("/mto-service-items"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-        check_response(resp, "Create MTO Service Item", payload)
+        resp, success = check_response(resp, "Create MTO Service Item", payload)
 
-    @tag("mtoShipment", "createMTOShipment")
+        if success:
+            self.set_prime_data(PrimeObjects.MTO_SERVICE_ITEM, resp)
+
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "createMTOShipment")
     @task
     def create_mto_shipment(self):
+        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
+        if not move_task_order:
+            if not self.user.env == MilMoveEnv.LOCAL:
+                return  # we can't do anything else without a default value
+
+            move_task_order = {"id": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"}  # default for local testing
+
         overrides = {
-            "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+            "moveTaskOrderID": move_task_order["id"],
             "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
             "pickupAddress": {"id": ZERO_UUID},
             "destinationAddress": {"id": ZERO_UUID},
@@ -70,32 +138,45 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         )
         resp, success = check_response(resp, "Create MTO Shipment", payload)
 
-        if not success:
-            return
+        if success:
+            self.set_prime_data(PrimeObjects.MTO_SHIPMENT, resp)
 
-        self.mto_shipment_id = resp["id"]
-        self.mto_shipment_etag = resp["eTag"]
-
-    @tag("paymentRequest", "createUpload")
+    @tag(PrimeObjects.PAYMENT_REQUEST.value, "createUpload")
     @task
     def create_upload(self):
-        payment_request_id = "a2c34dba-015f-4f96-a38b-0c0b9272e208"
+        payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
+        if not payment_request:
+            if not self.user.env == MilMoveEnv.LOCAL:
+                return  # we can't do anything else without a default value
+
+            payment_request = {"id": "a2c34dba-015f-4f96-a38b-0c0b9272e208"}  # default for local testing
+
         upload_file = {"file": open(TEST_PDF, "rb")}
 
         resp = self.client.post(
-            prime_path(f"/payment-requests/{payment_request_id}/uploads"),
+            prime_path(f"/payment-requests/{payment_request['id']}/uploads"),
             name=prime_path("/payment-requests/:paymentRequestID/uploads"),
             files=upload_file,
             **self.user.cert_kwargs,
         )
         check_response(resp, "Create Upload")
 
-    @tag("paymentRequest", "createPaymentRequest")
+    @tag(PrimeObjects.PAYMENT_REQUEST.value, "createPaymentRequest")
     @task
     def create_payment_request(self):
+        service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
+        if not service_item:
+            if not self.user.env == MilMoveEnv.LOCAL:
+                return  # we can't do anything else without a default value
+
+            service_item = {
+                "id": "8a625314-1922-4987-93c5-a62c0d13f053",
+                "moveTaskOrderID": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791",
+            }
+
         payload = {
-            "moveTaskOrderID": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791",
-            "serviceItems": [{"id": "8a625314-1922-4987-93c5-a62c0d13f053"}],
+            "moveTaskOrderID": service_item["moveTaskOrderID"],
+            "serviceItems": [{"id": service_item["id"]}],
             "isFinal": False,
         }
 
@@ -103,12 +184,16 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         resp = self.client.post(
             prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-        check_response(resp, "Create Payment Request", payload)
+        resp, success = check_response(resp, "Create Payment Request", payload)
 
-    @tag("mtoShipment", "updateMTOShipment")
+        if success:
+            self.set_prime_data(PrimeObjects.PAYMENT_REQUEST, resp)
+
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipment")
     @task
     def update_mto_shipment(self):
-        if not self.mto_shipment_id or not self.mto_shipment_etag:
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
             return  # can't run this task
 
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "put")
@@ -125,9 +210,9 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         for f in fields_to_remove:
             payload.pop(f, None)
 
-        headers = {"content-type": "application/json", "If-Match": self.mto_shipment_etag}
+        headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
         resp = self.client.put(
-            prime_path(f"/mto-shipments/{self.mto_shipment_id}"),
+            prime_path(f"/mto-shipments/{mto_shipment['id']}"),
             name=prime_path("/mto-shipments/:mtoShipmentID"),
             data=json.dumps(payload),
             headers=headers,
@@ -135,15 +220,12 @@ class PrimeTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         )
         resp, success = check_response(resp, "Update MTO Shipment", payload)
 
-        if not success:
-            return
-
-        self.mto_shipment_id = resp["id"]
-        self.mto_shipment_etag = resp["eTag"]
+        if success:
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
 
 
 @tag("support")
-class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
+class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Support API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier. Ex:
@@ -154,7 +236,7 @@ class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
         # etc.
     """
 
-    @tag("mto", "createMoveTaskOrder")
+    @tag(PrimeObjects.MOVE_TASK_ORDER.value, "createMoveTaskOrder")
     @task
     def create_move_task_order(self):
         payload = {
@@ -198,4 +280,7 @@ class SupportTasks(ParserTaskMixin, CertTaskMixin, TaskSet):
             headers=headers,
             **self.user.cert_kwargs,
         )
-        check_response(resp, "Make MTO available to Prime")
+        mto_data, success = check_response(resp, "Make MTO available to Prime")
+
+        if success:
+            self.set_prime_data(PrimeObjects.MOVE_TASK_ORDER, mto_data)
