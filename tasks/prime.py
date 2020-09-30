@@ -56,7 +56,12 @@ class PrimeDataTaskMixin:
             num_to_delete = random.randint(1, self.DATA_LIST_MAX)
             del data_list[:num_to_delete]
 
-        data_list.append(object_data)
+        # Some creation endpoint auto-create multiple objects and return an array,
+        # but each object in the array should still be considered individually here:
+        if isinstance(object_data, list):
+            data_list.extend(object_data)
+        else:
+            data_list.append(object_data)
 
     def replace_prime_data(self, object_key, old_data, new_data):
         """ Given an object key, it removes a value in the in list with a new updated value. """
