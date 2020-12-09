@@ -14,7 +14,7 @@ executors:
   primary:
     resource_class: small
     docker:
-      - image: trussworks/circleci-docker-primary:c3a4d876a5681cceef9f927392732c259308d158
+      - image: trussworks/circleci-docker-primary:bf11f9caa281eff394ba0a9cb678b32eb2b6361c
 
 jobs:
 

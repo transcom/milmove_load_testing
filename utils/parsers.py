@@ -278,7 +278,9 @@ class APIParser:
             raise ImplementationError("_parse_array_field can only be used with API fields with type equal to 'array'.")
 
         array_field = ArrayField(
-            name=name, min_items=array_def.get("minItems", ARRAY_MIN), max_items=array_def.get("maxItems", ARRAY_MAX),
+            name=name,
+            min_items=array_def.get("minItems", ARRAY_MIN),
+            max_items=array_def.get("maxItems", ARRAY_MAX),
         )
         items_field = self._parse_definition(name, array_def["items"])
         array_field.items_field = items_field
