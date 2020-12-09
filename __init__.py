@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-""" These imports are important for Docker functionality """
+""" These imports are IMPORTant for Docker functionality """
 import tasks  # noqa
 import utils  # noqa
