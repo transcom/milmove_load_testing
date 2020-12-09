@@ -29,6 +29,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Setup: pre-commit](#setup-pre-commit)
          * [Setup: pyenv](#setup-pyenv)
          * [Setup: virtualenv](#setup-virtualenv)
+         * [Troubleshooting](#troubleshooting)
       * [Running Load Tests](#running-load-tests)
          * [Setting up the local environment](#setting-up-the-local-environment)
          * [Running preset tests](#running-preset-tests)
@@ -44,7 +45,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Wed Dec  9 11:38:54 CST 2020 -->
+<!-- Added by: sandy, at: Wed Dec  9 15:32:07 CST 2020 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -214,6 +215,14 @@ make teardown
 ```
 
 Remember to recreate your virtual environment with `make venv` before attempting to continue development on the project.
+
+### Troubleshooting
+
+If you encounter compiler issues while installing the required Python version, try:
+
+```shell script
+brew unlink binutils
+```
 
 ## Running Load Tests
 
