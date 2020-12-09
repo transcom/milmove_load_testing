@@ -23,9 +23,13 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [locustfiles/](#locustfiles)
          * [tasks/](#tasks)
          * [utils/](#utils)
+         * [static/](#static)
       * [Getting Started](#getting-started)
          * [Requirements](#requirements)
-         * [Alternate Setup](#alternate-setup)
+         * [Setup: pre-commit](#setup-pre-commit)
+         * [Setup: pyenv](#setup-pyenv)
+         * [Setup: virtualenv](#setup-virtualenv)
+         * [Troubleshooting](#troubleshooting)
       * [Running Load Tests](#running-load-tests)
          * [Setting up the local environment](#setting-up-the-local-environment)
          * [Running preset tests](#running-preset-tests)
@@ -41,7 +45,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Tue Jul 14 14:09:41 CDT 2020 -->
+<!-- Added by: sandy, at: Wed Dec  9 15:32:07 CST 2020 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -76,79 +80,175 @@ To read more about users and tasks and how they interact, refer to [Writing a lo
 This directory contains python code and utilities that are do not rely on the locust package. Mixin classes and
 constants are located here.
 
+### `static/`
+
+This folder is for static files (certificates, PDFs, etc.) that will be used during load testing.
+
 ## Getting Started
 
 ### Requirements
 
-If you wish to use the custom setup commands in our Makefile, you will need to install:
-
-* Homebrew
-* Python 3.8
-* `pip`
+* [Homebrew](https://brew.sh)
+  * Install with:
+  `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 * `pre-commit`
+* [`pyenv`](https://github.com/pyenv/pyenv)
 
-These may be installed using the method of your choice, although we strongly recommend using `brew install`. Note that
-`brew install python3` will also install `pip3` (the Py3 version of `pip`). If you use `pip3` instead of `pip`, you may
-need to create an alias before running our setup commands:
+*Note: These instructions include the relevant commands for MacOS only. Please keep this in mind and be prepared to
+search for alternatives if you are running a different OS.*
+
+### Setup: `pre-commit`
+
+Once you have successfully installed Homebrew, you can install `pre-commit` with the command: `brew install pre-commit`.
+
+If you complete the rest of the project's setup as written, installing the required pre-commit hooks and hook libraries
+will happen for you automatically. To manually install and test them, you can use the project's Makefile commands:
 
 ```shell script
-alias pip="pip3"
+make ensure_pre_commit pre_commit_tests
 ```
 
-To create the python virtual environment and install the dependencies from `requirements.txt` and
-`requirements-dev.txt`, run:
+You may also run the equivalent `pre-commit` commands yourself:
 
-```sh
+```shell script
+pre-commit install
+pre-commit install-hooks
+pre-commit run --all-files
+```
+
+### Setup: `pyenv`
+
+This project uses [pyenv](https://github.com/pyenv/pyenv) to manage Python versions. This makes it much easier for devs
+to contribute without having to spend hours navigating the spiderweb that is Python versions on MacOS (which most of us
+are using).
+
+To ensure that you have all the dependencies for `pyenv` installed, first run:
+
+```shell script
+brew install openssl readline sqlite3 xz zlib
+```
+
+Once that has completed, you may download and install `pyenv` with the command:
+
+```shell script
+curl https://pyenv.run | bash
+```
+
+In order to enable `pyenv` to switch which version of Python you are using at any given time (and to enable other neat features),
+you will need to paste the following code to your shell's profile file (`~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, etc):
+
+```bash
+export PATH="{$HOME}/.pyenv/bin:{$PATH}"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+```
+
+Once you have modified and saved your profile file, you will need to resource your profile (where `<profile_file` is one
+of `~/.bash_profile`, `~/.bashrc`, etc):
+
+```shell script
+source <profile_file>  # Or just restart your terminal
+```
+
+Don't worry about installing or setting specific Python versions at this point - our Makefile commands will do that for
+you in the next section.
+
+### Setup: `virtualenv`
+
+To run load testing, you must create and activate a Python virtual environment with all the relevant dependencies installed.
+We have several `make` commands that aim to simplify this process for you, but you will need to activate your virtual
+environment manually so that the changes are properly pushed to the shell.
+
+First, install and set our required Python version (currently 3.8.3), and create the virtual environment using:
+
+```shell script
+make venv
+```
+
+You should only need to run this command once. After the initial set up, you should only need to activate your virtual
+environment to run any of the other commands for the app. To activate the virtual environment, run:
+
+```shell script
+pyenv activate locust-venv
+```
+
+Or, to make the virtual environment auto-activate whenever you `cd` into the project folder:
+
+```shell script
+pyenv local locust-venv
+```
+
+Our default name for the virtual environment is `locust-venv`. You may change this by setting the environment variable
+`VENV_NAME` to any name of your choice prior to running `make venv`. Ex:
+
+```shell script
+export VENV_NAME=myenv
+make venv
+pyenv activate myenv
+```
+
+Once you have activated your virtual environment using the method of your choice, install requirements and complete the
+rest of the setup using:
+
+```shell script
 make setup
 ```
 
-NOTE: `requirements.txt` contains the pip-installed requirements needed to run the project. `requirements-dev.txt`
-contains the requirements to lint and format our code if you wish to contribute. They are not functional requirements to
-run the code.
+*Note: The requirements are indicated in the `requirements.txt` and `requirements-dev.txt` files. `requirements.txt`
+contains the pip-installed requirements needed to run the project. `requirements-dev.txt` contains the requirements to
+lint and format our code if you wish to contribute - they are not functional requirements to run the code.*
 
-Once you are done with your virtual environment, you may want to remove all environment files. To do this, run:
+Once you are done with your virtual environment, you may deactivate it using:
+
+```shell script
+pyenv deactivate
+```
+
+You do not need to worry about this step if you set your virtual environment as default with `pyenv local`.
+
+If you ever feel the need to completely teardown your virtual environment (uninstalling requirements and deleting all
+its files), you may run:
 
 ```sh
 make teardown
 ```
 
-To quickly teardown and setup a project when switching branches, run:
+Remember to recreate your virtual environment with `make venv` before attempting to continue development on the project.
 
-```sh
-make rebuild
-```
+### Troubleshooting
 
-### Alternate Setup
-
-You can run this project with a custom setup that doesn't make use of our Makefile commands. **If you encounter any issues
-with the Makefile `make setup` command, you will want to use this method.** To do so, you need the following tools:
-
-* Python 3.8
-* `pip`
-* `virtualenv` -> installed via `pip install virtualenv`
-
-To setup your virtual environment and install the `requirements.txt` dependencies:
+If you already had `pyenv` installed on your machine with Homebrew, you may find that your installation doesn't include
+the `pyenv-virtualenv` plugin. To fix this, try:
 
 ```shell script
-$ virtualenv --python=python3.8 .venv
-$ . .venv/bin/activate
-(venv) $ pip install -r requirements.txt
+brew install pyenv-virtualenv
 ```
 
-Once you have done this, you will be able to interact with the system the same way as with the `make setup` command. You
-may want to default to using the locust CLI instead of the `make` commands, however.
+If you encounter compiler issues while installing the required Python version, try:
+
+```shell script
+brew unlink binutils
+```
 
 ## Running Load Tests
 
 ### Setting up the local environment
 
 To run load tests against a local server, you will need to check out and set up the [MilMove](https://github.com/transcom/mymove)
-project. Once you have completed this process, run the following commands to spin up your local environment:
+project. Once you have completed this process, run the following commands in the `mymove` directory to spin up your
+local environment:
 
-```sh
+```shell script
 make db_dev_e2e_populate  ## populates the development database with test data
 make server_run
 make client_run
+```
+
+Back in `milmove_load_testing`, make sure you activate your virtual environment before attempting to run tests:
+
+```shell script
+pyenv activate locust-env
 ```
 
 ### Running preset tests
@@ -178,14 +278,8 @@ expect them to work.**
 
 ### Running custom tests
 
-If you need more control over the parameters for a load test, you will need to run a custom locust command. To do so,
-you must first activate the virtual environment:
-
-```sh
-. .venv/bin/activate
-```
-
-Then run a locust command like so:
+If you need more control over the parameters for a load test, you will need to run a custom locust command. This will
+look something like:
 
 ```sh
 locust -f locustfiles/<file_to_test>.py --host <local/staging/experimental>
@@ -221,7 +315,7 @@ For more CLI config options, refer to the Locust docs for [Configuration](https:
 To deactivate your virtual environment once you have completed testing, enter:
 
 ```sh
-deactivate
+pyenv deactivate
 ```
 
 ## Adding Load Tests
