@@ -218,6 +218,13 @@ Remember to recreate your virtual environment with `make venv` before attempting
 
 ### Troubleshooting
 
+If you already had `pyenv` installed on your machine with Homebrew, you may find that your installation doesn't include
+the `pyenv-virtualenv` plugin. To fix this, try:
+
+```shell script
+brew install pyenv-virtualenv
+```
+
 If you encounter compiler issues while installing the required Python version, try:
 
 ```shell script
