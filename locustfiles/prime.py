@@ -2,10 +2,10 @@
 """ Locust test for the Prime & Support APIs """
 from locust import HttpUser, between
 
-from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS
-from utils.mixins import MilMoveHostMixin
-from utils.parsers import PrimeAPIParser, SupportAPIParser
-from tasks import PrimeTasks, SupportTasks
+from ..utils.constants import MilMoveDomain, PRIME_CERT_KWARGS
+from ..utils.mixins import MilMoveHostMixin
+from ..utils.parsers import PrimeAPIParser, SupportAPIParser
+from ..tasks import PrimeTasks, SupportTasks
 
 # init these classes just once because we don't need to parse the API over and over:
 prime_api = PrimeAPIParser()

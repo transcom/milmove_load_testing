@@ -5,7 +5,7 @@ import json
 
 from locust import TaskSet
 
-from utils.base import ImplementationError
+from ..utils.base import ImplementationError
 
 logger = logging.getLogger(__name__)
 
