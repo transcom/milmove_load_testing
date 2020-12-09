@@ -18,6 +18,7 @@ help:  ## Print the help documentation
 
 .PHONY: venv
 venv:  ## Setup the local python version and the virtualenv
+	pyenv versions | grep -q "$(PY_VERSION)" || pyenv install -v $(PY_VERSION)
 	pyenv local $(PY_VERSION)
 	pyenv virtualenv $(PY_VERSION) $(VENV_NAME) || echo "Using existing $(VENV_NAME)..."
 ifndef IN_VENV
@@ -71,9 +72,6 @@ clean:  ## Clean all generated files
 .PHONY: teardown
 teardown:  ## Uninstall the virtualenv and remove all files
 	-pyenv uninstall $(VENV_NAME)
-
-.PHONY: rebuild
-rebuild: teardown clean setup  ## Rebuilds the virtual environment from scratch
 
 .PHONY: pretty
 pretty: ensure_venv  ## Prettify the code
