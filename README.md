@@ -23,9 +23,10 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [locustfiles/](#locustfiles)
          * [tasks/](#tasks)
          * [utils/](#utils)
+         * [static/](#static)
       * [Getting Started](#getting-started)
          * [Requirements](#requirements)
-         * [Alternate Setup](#alternate-setup)
+         * [Setup](#setup)
       * [Running Load Tests](#running-load-tests)
          * [Setting up the local environment](#setting-up-the-local-environment)
          * [Running preset tests](#running-preset-tests)
@@ -41,7 +42,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Tue Jul 14 14:09:41 CDT 2020 -->
+<!-- Added by: sandy, at: Wed Dec  9 00:19:01 CST 2020 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -76,16 +77,19 @@ To read more about users and tasks and how they interact, refer to [Writing a lo
 This directory contains python code and utilities that are do not rely on the locust package. Mixin classes and
 constants are located here.
 
+### `static/`
+
+This folder is for static files (certificates, PDFs, etc.) that will be used during load testing.
+
 ## Getting Started
 
 ### Requirements
 
-If you wish to use the custom setup commands in our Makefile, you will need to install:
-
 * Homebrew
-* Python 3.8
-* `pip`
 * `pre-commit`
+* [`pyenv`](https://github.com/pyenv/pyenv)
+
+TODO update these instructions
 
 These may be installed using the method of your choice, although we strongly recommend using `brew install`. Note that
 `brew install python3` will also install `pip3` (the Py3 version of `pip`). If you use `pip3` instead of `pip`, you may
@@ -94,6 +98,8 @@ need to create an alias before running our setup commands:
 ```shell script
 alias pip="pip3"
 ```
+
+### Setup
 
 To create the python virtual environment and install the dependencies from `requirements.txt` and
 `requirements-dev.txt`, run:
@@ -118,7 +124,9 @@ To quickly teardown and setup a project when switching branches, run:
 make rebuild
 ```
 
-### Alternate Setup
+Alternate Setup
+
+REMOVE THIS SECTION
 
 You can run this project with a custom setup that doesn't make use of our Makefile commands. **If you encounter any issues
 with the Makefile `make setup` command, you will want to use this method.** To do so, you need the following tools:
@@ -143,12 +151,19 @@ may want to default to using the locust CLI instead of the `make` commands, howe
 ### Setting up the local environment
 
 To run load tests against a local server, you will need to check out and set up the [MilMove](https://github.com/transcom/mymove)
-project. Once you have completed this process, run the following commands to spin up your local environment:
+project. Once you have completed this process, run the following commands in the `mymove` directory to spin up your
+local environment:
 
-```sh
+```shell script
 make db_dev_e2e_populate  ## populates the development database with test data
 make server_run
 make client_run
+```
+
+Back in `milmove_load_testing`, make sure you activate your virtual environment before attempting to run tests:
+
+```shell script
+pyenv activate locust-env
 ```
 
 ### Running preset tests
@@ -178,14 +193,8 @@ expect them to work.**
 
 ### Running custom tests
 
-If you need more control over the parameters for a load test, you will need to run a custom locust command. To do so,
-you must first activate the virtual environment:
-
-```sh
-. .venv/bin/activate
-```
-
-Then run a locust command like so:
+If you need more control over the parameters for a load test, you will need to run a custom locust command. This will
+look something like:
 
 ```sh
 locust -f locustfiles/<file_to_test>.py --host <local/staging/experimental>
@@ -221,7 +230,7 @@ For more CLI config options, refer to the Locust docs for [Configuration](https:
 To deactivate your virtual environment once you have completed testing, enter:
 
 ```sh
-deactivate
+pyenv deactivate
 ```
 
 ## Adding Load Tests
