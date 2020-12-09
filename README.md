@@ -143,10 +143,11 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 ```
 
-Once you have modified and saved your profile file, you will need to reload your shell:
+Once you have modified and saved your profile file, you will need to resource your profile (where `<profile_file` is one
+of `~/.bash_profile`, `~/.bashrc`, etc):
 
 ```shell script
-exec "$SHELL"  # Or just restart your terminal
+source <profile_file>  # Or just restart your terminal
 ```
 
 Don't worry about installing or setting specific Python versions at this point - our Makefile commands will do that for
