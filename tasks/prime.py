@@ -228,6 +228,52 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
 
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipmentAddress")
+    @task
+    def update_mto_shipment_address(self):
+        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
+        if not move_task_order:
+            if not self.user.env == MilMoveEnv.LOCAL:
+                return  # we can't do anything else without a default value
+
+            move_task_order = {"id": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"}  # default for local testing
+
+        overrides = {
+            "moveTaskOrderID": move_task_order["id"],
+            "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
+            "pickupAddress": {"id": ZERO_UUID},
+            "destinationAddress": {"id": ZERO_UUID},
+            "mtoServiceItems": [],
+        }
+
+        payload = self.fake_request("/mto-shipments", "post", overrides=overrides)
+        payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
+
+        headers = {"content-type": "application/json"}
+        # create mto_shipment
+        mto_shipment = self.client.post(
+            prime_path("/mto-shipments"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
+        )
+        mto_shipment, success = check_response(mto_shipment, "Create MTO Shipment", payload)
+
+        if success:
+            payload = self.fake_request("/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put")
+            payload.pop("id", None)  # keeps the update endpoint happy
+
+            headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
+            # update mto_shipment address
+            resp = self.client.put(
+                prime_path(f"/mto-shipments/{mto_shipment['id']}"),
+                name=prime_path("/mto-shipments/:mtoShipmentID/addresses/:addressID"),
+                data=json.dumps(payload),
+                headers=headers,
+                **self.user.cert_kwargs,
+            )
+            resp, success = check_response(resp, "Update MTO Shipment Address", payload)
+
+            if success:
+                self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
+
 
 @tag("support")
 class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
