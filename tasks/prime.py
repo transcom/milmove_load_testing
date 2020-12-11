@@ -8,6 +8,7 @@ from locust import tag, task, TaskSet
 
 from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv, PrimeObjects
 from .base import check_response, CertTaskMixin, ParserTaskMixin
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
@@ -231,48 +232,33 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipmentAddress")
     @task
     def update_mto_shipment_address(self):
-        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
-        if not move_task_order:
-            if not self.user.env == MilMoveEnv.LOCAL:
-                return  # we can't do anything else without a default value
-
-            move_task_order = {"id": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"}  # default for local testing
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
+            return  # we can't do anything else without a default value
 
         overrides = {
-            "moveTaskOrderID": move_task_order["id"],
-            "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
-            "pickupAddress": {"id": ZERO_UUID},
-            "destinationAddress": {"id": ZERO_UUID},
-            "mtoServiceItems": [],
+            "id": mto_shipment["destinationAddress"]["id"],
         }
 
-        payload = self.fake_request("/mto-shipments", "post", overrides=overrides)
-        payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put", overrides=overrides)
 
-        headers = {"content-type": "application/json"}
-        # create mto_shipment
-        mto_shipment = self.client.post(
-            prime_path("/mto-shipments"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
+        headers = {"content-type": "application/json", "If-Match": mto_shipment["destinationAddress"]["eTag"]}
+        # update mto_shipment address
+        shipment_address = self.client.put(
+            prime_path(f"/mto-shipments/{mto_shipment['id']}/addresses/{overrides['id']}"),
+            name=prime_path("/mto-shipments/{mtoShipmentID}/addresses/{addressID}"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
         )
-        mto_shipment, success = check_response(mto_shipment, "Create MTO Shipment", payload)
+
+        resp, success = check_response(shipment_address, "Update MTO Shipment Address", payload)
+        new_shipment = deepcopy(mto_shipment)
+
+        new_shipment["destinationAddress"] = resp
 
         if success:
-            payload = self.fake_request("/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put")
-            payload.pop("id", None)  # keeps the update endpoint happy
-
-            headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
-            # update mto_shipment address
-            resp = self.client.put(
-                prime_path(f"/mto-shipments/{mto_shipment['id']}"),
-                name=prime_path("/mto-shipments/:mtoShipmentID/addresses/:addressID"),
-                data=json.dumps(payload),
-                headers=headers,
-                **self.user.cert_kwargs,
-            )
-            resp, success = check_response(resp, "Update MTO Shipment Address", payload)
-
-            if success:
-                self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, new_shipment)
 
 
 @tag("support")
