@@ -1,18 +1,8 @@
-version: '3'
+version: '3.8'
 
 services:
-  master:
-    image: locustio/locust
+  prime:
+    build: .
     ports:
      - "8089:8089"
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfiles/prime.py --master -H http://master:8089
-    # docker run -p 8089:8089 -v $PWD:/mnt/locust locustio/locust -f /mnt/locust/locustfiles/prime.py
-    # docker run -p 8089:8089 -v $PWD locustio/locust -f locustfiles/prime.py
-
-  worker:
-    image: locustio/locust
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfiles/prime.py --worker --master-host master
+    command: -f /app/locustfiles/prime.py --host local
