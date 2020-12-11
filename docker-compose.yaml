@@ -5,4 +5,4 @@ services:
     build: .
     ports:
      - "8089:8089"
-    command: -f /app/locustfiles/prime.py --host local
+    command: -f /app/locustfiles/prime.py --host exp
