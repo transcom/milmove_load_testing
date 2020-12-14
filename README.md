@@ -270,7 +270,7 @@ commands include:
 
 Each of these commands opens the Locust interface for initiating and monitoring the tests, set to [http://localhost:8089](http://localhost:8089).
 Using this interface, you can set the number of users to simulate and their hatch rate, then start and stop the test at
-will. For the host, you can enter a full URL address, or you can simply enter "local", "staging", or "experimental", and
+will. For the host, you can enter a full URL address, or you can simply enter "local", "stg" (for staging), or "exp" (for experimental), and
 let the system set the URL as appropriate.
 
 **NOTE: Currently the system only functions in the local environment. You may try the other settings for fun, but don't
@@ -282,7 +282,7 @@ If you need more control over the parameters for a load test, you will need to r
 look something like:
 
 ```sh
-locust -f locustfiles/<file_to_test>.py --host <local/staging/experimental>
+locust -f locustfiles/<file_to_test>.py --host <local/stg/exp>
 ```
 
 Ex:
