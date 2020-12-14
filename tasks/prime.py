@@ -8,6 +8,7 @@ from locust import tag, task, TaskSet
 
 from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv, PrimeObjects
 from .base import check_response, CertTaskMixin, ParserTaskMixin
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
@@ -227,6 +228,37 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
+
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipmentAddress")
+    @task
+    def update_mto_shipment_address(self):
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
+            return  # we can't do anything else without a default value
+
+        overrides = {
+            "id": mto_shipment["destinationAddress"]["id"],
+        }
+
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put", overrides=overrides)
+
+        headers = {"content-type": "application/json", "If-Match": mto_shipment["destinationAddress"]["eTag"]}
+        # update mto_shipment address
+        shipment_address = self.client.put(
+            prime_path(f"/mto-shipments/{mto_shipment['id']}/addresses/{overrides['id']}"),
+            name=prime_path("/mto-shipments/{mtoShipmentID}/addresses/{addressID}"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+
+        resp, success = check_response(shipment_address, "Update MTO Shipment Address", payload)
+        new_shipment = deepcopy(mto_shipment)
+
+        new_shipment["destinationAddress"] = resp
+
+        if success:
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, new_shipment)
 
 
 @tag("support")

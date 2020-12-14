@@ -646,8 +646,8 @@ GHCTaskSet(ParserTaskMixin, ...):
 ## Load Testing against AWS Experimental Environment
 
 To load test against the AWS Experimental Environment you must modify the
-[`DEVLOCAL_AUTH` environment variable](https://github.com/transcom/mymove/blob/master/config/env/experimental.env#L15)
-and [deploy the code to the experimental environment](https://github.com/transcom/mymove/blob/master/docs/how-to/deploy-to-experimental.md).
+[`DEVLOCAL_AUTH` environment variable](https://github.com/transcom/mymove/blob/master/config/env/exp.app.env#L8)
+and [deploy the code to the experimental environment](https://github.com/transcom/mymove/wiki/deploy-to-experimental).
 
 Then you can use the same steps as the development as above as long as you change the `host` parameter in the
 `locustfile.py` test classes and point them to the experimental domains:
