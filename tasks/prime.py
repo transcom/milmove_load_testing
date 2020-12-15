@@ -264,28 +264,18 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag(PrimeObjects.MTO_AGENT.value, "updateMTOAgent")
     @task
     def update_mto_agent(self):
-        mto_agent = self.get_random_data(PrimeObjects.MTO_AGENT)
-        if not mto_agent:
+        mto_shipment = self.get_random_data(
+            PrimeObjects.MTO_SHIPMENT
+        )  # this grabs response payload from the PrimeObjects.MTO_AGENT list when load testing runs
+        if not mto_shipment:
             return  # can't run this task
 
-        payload = self.fake_request("/mto-agent/{mtoAgentID}", "put")
-
-        # These fields need more complicated logic to handle, so remove them for the time being:
-        fields_to_remove = [
-            # "agents", would we need to remove this one if we are trying to update it?
-            "pickupAddress",
-            "destinationAddress",
-            "secondaryPickupAddress",
-            "secondaryDeliveryAddress",
-            "primeEstimatedWeight",
-        ]
-        for f in fields_to_remove:
-            payload.pop(f, None)
-
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/agents/{agentID}", "put")
+        mto_agent = mto_shipment["agents"][0]
         headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
         resp = self.client.put(
-            prime_path(f"/mto-agent/{mto_agent['id']}"),
-            name=prime_path("/mto-agent/:mtoAgentID"),
+            prime_path(f"mto-shipments/{mto_shipment['id']}/agents/{mto_agent['id']}"),
+            name=prime_path("mto-shipments/:mtoShipmentID/agents/mtoAgentID"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
