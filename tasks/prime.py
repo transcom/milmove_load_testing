@@ -251,7 +251,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         # Generate fake payload based on the endpoint's required fields
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch")
-        print(payload)
+
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
 
         resp = self.client.patch(
