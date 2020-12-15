@@ -31,6 +31,7 @@ def check_response(response, task_name="Task", request=None):
         return None, False
 
     if not str(response.status_code).startswith("2"):
+        logger.exception("TODO remove debug line: " + response.content)
         logger.error(f"⚠️\n{json.dumps(json_response, indent=4)}")
         if request:
             try:
