@@ -241,6 +241,31 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         # etc.
     """
 
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipmentStatus")
+    @task
+    def update_mto_shipment_status(self):
+        # Get shipment we've previously stored in PrimeObjects
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
+            return  # can't run this task
+
+        # Generate fake payload based on the endpoint's required fields
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch")
+        print(payload)
+        headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
+
+        resp = self.client.patch(
+            support_path(f"/mto-shipments/{mto_shipment['id']}/status"),
+            name=support_path("/mto-shipments/:mtoShipmentID/status"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "Update MTO Shipment Status", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
+
     @tag(PrimeObjects.MOVE_TASK_ORDER.value, "createMoveTaskOrder")
     @task
     def create_move_task_order(self):
@@ -264,6 +289,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                 "status": "SUBMITTED",
                 "issueDate": "2020-01-01",
             },
+            "status": "SUBMITTED",
         }
 
         headers = {"content-type": "application/json"}
