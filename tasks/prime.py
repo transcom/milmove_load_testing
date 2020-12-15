@@ -28,6 +28,7 @@ class PrimeDataTaskMixin:
     DATA_LIST_MAX = 50
     prime_data = {
         PrimeObjects.MOVE_TASK_ORDER: [],
+        PrimeObjects.MTO_AGENT: [],  # Is it an array by default?
         PrimeObjects.MTO_SHIPMENT: [],
         PrimeObjects.MTO_SERVICE_ITEM: [],
         PrimeObjects.PAYMENT_REQUEST: [],
@@ -227,6 +228,40 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
+
+    @tag(PrimeObjects.MTO_AGENT.value, "updateMTOAgent")
+    @task
+    def update_mto_agent(self):
+        mto_agent = self.get_random_data(PrimeObjects.MTO_AGENT)
+        if not mto_agent:
+            return  # can't run this task
+
+        payload = self.fake_request("/mto-agent/{mtoAgentID}", "put")
+
+        # These fields need more complicated logic to handle, so remove them for the time being:
+        fields_to_remove = [
+            # "agents", would we need to remove this one if we are trying to update it?
+            "pickupAddress",
+            "destinationAddress",
+            "secondaryPickupAddress",
+            "secondaryDeliveryAddress",
+            "primeEstimatedWeight",
+        ]
+        for f in fields_to_remove:
+            payload.pop(f, None)
+
+        headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
+        resp = self.client.put(
+            prime_path(f"/mto-agent/{mto_agent['id']}"),
+            name=prime_path("/mto-agent/:mtoAgentID"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "Update MTO Agent", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.MTO_AGENT, mto_agent, resp)
 
 
 @tag("support")
