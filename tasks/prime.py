@@ -230,37 +230,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
 
-    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipmentAddress")
-    @task
-    def update_mto_shipment_address(self):
-        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
-        if not mto_shipment:
-            return  # we can't do anything else without a default value
-
-        overrides = {
-            "id": mto_shipment["destinationAddress"]["id"],
-        }
-
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put", overrides=overrides)
-
-        headers = {"content-type": "application/json", "If-Match": mto_shipment["destinationAddress"]["eTag"]}
-        # update mto_shipment address
-        shipment_address = self.client.put(
-            prime_path(f"/mto-shipments/{mto_shipment['id']}/addresses/{overrides['id']}"),
-            name=prime_path("/mto-shipments/{mtoShipmentID}/addresses/{addressID}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
-        )
-
-        resp, success = check_response(shipment_address, "Update MTO Shipment Address", payload)
-        new_shipment = deepcopy(mto_shipment)
-
-        new_shipment["destinationAddress"] = resp
-
-        if success:
-            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, new_shipment)
-
     @tag(PrimeObjects.MTO_AGENT.value, "updateMTOAgent")
     @task
     def update_mto_agent(self):
@@ -274,8 +243,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         mto_agent = mto_shipment["agents"][0]
         headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
         resp = self.client.put(
-            prime_path(f"mto-shipments/{mto_shipment['id']}/agents/{mto_agent['id']}"),
-            name=prime_path("mto-shipments/:mtoShipmentID/agents/mtoAgentID"),
+            prime_path(f"/mto-shipments/{mto_shipment['id']}/agents/{mto_agent['id']}"),
+            name=prime_path("/mto-shipments/{mtoShipmentID}/agents/{agentID}"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -284,7 +253,9 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         resp, success = check_response(resp, "Update MTO Agent", payload)
 
         if success:
-            self.replace_prime_data(PrimeObjects.MTO_AGENT, mto_agent, resp)
+            new_shipment = deepcopy(mto_shipment)
+            new_shipment["agents"][0] = resp
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, new_shipment)
 
 
 @tag("support")
