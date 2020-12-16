@@ -101,7 +101,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             # default for local testing
             mto_shipment = {
                 "id": "475579d5-aaa4-4755-8c43-c510381ff9b5",
-                "moveTaskOrderID": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e",
+                "moveTaskOrderID": "99783f4d-ee83-4fc9-8e0c-d32496bef32b",
             }
 
         overrides = {
@@ -344,3 +344,27 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.set_prime_data(PrimeObjects.MOVE_TASK_ORDER, mto_data)
+
+    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "updateMTOServiceItemStatus")
+    @task
+    def update_mto_service_item_status(self):
+        mto_service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
+        # if we don't have an mto shipment we can't run this task
+        if not mto_service_item:
+            return
+
+        payload = self.fake_request("/service-items/{mtoServiceItemID}/status", "patch")
+        headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
+
+        resp = self.client.patch(
+            support_path(f"/service-items/{mto_service_item['id']}/status"),
+            name=support_path("/service-items/{mtoShipmentID}/status"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+
+        mto_service_item_data, success = check_response(resp, "Update MTO service item status")
+
+        if success:
+            self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, mto_service_item_data)
