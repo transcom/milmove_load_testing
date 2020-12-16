@@ -351,17 +351,12 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "updateMTOServiceItemStatus")
     @task
     def update_mto_service_item_status(self):
-        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        mto_service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
         # if we don't have an mto shipment we can't run this task
-        if not mto_shipment:
-            return
-
-        # if we don't have any service items created for mto shipment can't run this task
-        if mto_shipment.get("mtoServiceItems") is None:
+        if not mto_service_item:
             return
 
         payload = self.fake_request("/service-items/{mtoServiceItemID}/status", "patch")
-        mto_service_item = mto_shipment["mtoServiceItems"][0]
         headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
 
         resp = self.client.patch(
@@ -375,6 +370,4 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         mto_service_item_data, success = check_response(resp, "Update MTO service item status")
 
         if success:
-            new_shipment = deepcopy(mto_shipment)
-            new_shipment["mtoServiceItems"][0] = mto_service_item_data
-            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, new_shipment)
+            self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, mto_service_item_data)
