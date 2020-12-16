@@ -96,6 +96,7 @@ class PrimeObjects(ListEnum):
     """ Constants representing the objects used in the Prime API. """
 
     MOVE_TASK_ORDER = "mto"
+    MTO_AGENT = "mtoAgent"
     MTO_SHIPMENT = "mtoShipment"
     MTO_SERVICE_ITEM = "mtoServiceItem"
     PAYMENT_REQUEST = "paymentRequest"
