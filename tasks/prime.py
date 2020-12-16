@@ -361,7 +361,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         resp = self.client.patch(
             support_path(f"/service-items/{mto_service_item['id']}/status"),
-            name=support_path("/service-items/:mtoShipmentID/status"),
+            name=support_path("/service-items/{mtoShipmentID}/status"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
