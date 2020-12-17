@@ -92,7 +92,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
     @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItem")
     @task
-    def create_mto_service_item(self):
+    def create_mto_service_item(self, overrides=None):
         mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
         if not mto_shipment:
             if not self.user.env == MilMoveEnv.LOCAL:
@@ -104,11 +104,14 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                 "moveTaskOrderID": "99783f4d-ee83-4fc9-8e0c-d32496bef32b",
             }
 
-        overrides = {
+        overridesLocal = {
             "moveTaskOrderID": mto_shipment["moveTaskOrderID"],
             "mtoShipmentID": mto_shipment["id"],
         }
-        payload = self.fake_request("/mto-service-items", "post", overrides=overrides)
+        # override local overrides with parameter overrides
+        if overrides:
+            overridesLocal.update(overrides)
+        payload = self.fake_request("/mto-service-items", "post", overrides=overridesLocal)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -118,6 +121,18 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.set_prime_data(PrimeObjects.MTO_SERVICE_ITEM, resp)
+
+    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItemDestSIT")
+    @task
+    def create_mto_service_item_dest_sit(self):
+        # This function ensures some DOFSIT service items get requested.
+        # These create the trio of SIT items that are needed for update_mto_service_item to function.
+        overrides = {
+            "reServiceCode": "DOFSIT",
+            "modelType": "MTOServiceItemOriginSIT",
+        }
+
+        self.create_mto_service_item(overrides)
 
     @tag(PrimeObjects.MTO_SHIPMENT.value, "createMTOShipment")
     @task
@@ -257,6 +272,37 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             new_shipment["agents"][0] = resp
             self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, new_shipment)
 
+    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "updateMTOServiceItem")
+    @task
+    def update_mto_service_item(self):
+        mto_service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
+        if not mto_service_item:
+            return  # can't run this task
+
+        re_service_code = mto_service_item["reServiceCode"]
+        if re_service_code != "DDDSIT" and re_service_code != "DOPSIT":
+            logging.info(
+                "update_mto_service_item recvd mtoServiceItem from store. Discarding because reServiceCode not in [DDDSIT, DOPSIT]"
+            )
+            return
+
+        payload = self.fake_request(
+            "/mto-service-items/{mtoServiceItemID}", "patch", overrides={"id": mto_service_item["id"]}
+        )
+
+        headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
+        resp = self.client.patch(
+            prime_path(f"/mto-service-items/{mto_service_item['id']}"),
+            name=prime_path("/mto-service-items/:mtoServiceItemID"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, f"Update MTO Service Item {re_service_code}", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, resp)
+
 
 @tag("support")
 class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
@@ -300,6 +346,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_move_task_order(self):
         payload = {
             "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
+            "status": "SUBMITTED",
             "moveOrder": {
                 "customer": {
                     "firstName": "Christopher",
