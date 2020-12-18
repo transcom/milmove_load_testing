@@ -346,7 +346,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_move_task_order(self):
         payload = {
             "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
-            "status": "SUBMITTED",
             "moveOrder": {
                 "customer": {
                     "firstName": "Christopher",
