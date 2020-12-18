@@ -300,7 +300,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             logger.error("⛔️ update_mto_service_item recvd mtoServiceItem without reServiceCode \n{mto_service_item}")
             return
 
-        if re_service_code != "DDDSIT" and re_service_code != "DOPSIT":
+        if re_service_code not in ["DDDSIT", "DOPSIT"]:
             logging.info(
                 "update_mto_service_item recvd mtoServiceItem from store. Discarding because reServiceCode not in [DDDSIT, DOPSIT]"
             )
