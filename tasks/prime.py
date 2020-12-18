@@ -297,7 +297,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         try:
             re_service_code = mto_service_item["reServiceCode"]
         except KeyError:
-            logger.error("⛔️ update_mto_service_item recvd mtoServiceItem without reServiceCode \n{mto_service_item}")
+            logger.error(f"⛔️ update_mto_service_item recvd mtoServiceItem without reServiceCode \n{mto_service_item}")
             return
 
         if re_service_code not in ["DDDSIT", "DOPSIT"]:
