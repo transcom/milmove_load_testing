@@ -95,7 +95,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_service_item(self, overrides=None):
         mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
         if not mto_shipment:
-            if not self.user.env == MilMoveEnv.LOCAL:
+            if self.user.env != MilMoveEnv.LOCAL.value:
                 return  # we can't do anything else without a default value
 
             # default for local testing
@@ -152,7 +152,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_shipment(self):
         move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         if not move_task_order:
-            if not self.user.env == MilMoveEnv.LOCAL:
+            if self.user.env != MilMoveEnv.LOCAL.value:
                 return  # we can't do anything else without a default value
 
             move_task_order = {"id": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"}  # default for local testing
@@ -181,7 +181,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_upload(self):
         payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
         if not payment_request:
-            if not self.user.env == MilMoveEnv.LOCAL:
+            if self.user.env != MilMoveEnv.LOCAL.value:
                 return  # we can't do anything else without a default value
 
             payment_request = {"id": "a2c34dba-015f-4f96-a38b-0c0b9272e208"}  # default for local testing
@@ -201,7 +201,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_payment_request(self):
         service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
         if not service_item:
-            if not self.user.env == MilMoveEnv.LOCAL:
+            if self.user.env != MilMoveEnv.LOCAL.value:
                 return  # we can't do anything else without a default value
 
             service_item = {
