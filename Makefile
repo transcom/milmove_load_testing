@@ -96,14 +96,17 @@ load_test_milmove: clean ensure_venv  ## Run load testing on the MilMove app
 	open http://localhost:8089
 	locust -f locustfiles/milmove.py --host local
 
-.PHONY: load_test_local_docker
-load_test_local_docker: clean  ## Run load testing on the Prime API in local using a Docker container
-	open http://localhost:8089
+.PHONY: local_docker_build
+local_docker_build: clean  ## Build a Docker container to run load testing locally
 	docker-compose -f docker-compose.local.yaml build
+
+.PHONY: local_docker_load_test
+local_docker_load_test: ## Run load testing on the Prime API in local using a Docker container
+	open http://localhost:8089
 	docker-compose -f docker-compose.local.yaml up
 
-.PHONY: stop_local_docker
-stop_local_docker:  ## Shutdown any active local docker containers with docker-compose
+.PHONY: local_docker_down
+local_docker_down:  ## Shutdown any active local docker containers with docker-compose
 	docker-compose -f docker-compose.local.yaml down
 
 default: help
