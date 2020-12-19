@@ -29,7 +29,6 @@ class PrimeDataTaskMixin:
     DATA_LIST_MAX = 50
     prime_data = {
         PrimeObjects.MOVE_TASK_ORDER: [],
-        PrimeObjects.MTO_AGENT: [],  # Is it an array by default?
         PrimeObjects.MTO_SHIPMENT: [],
         PrimeObjects.MTO_SERVICE_ITEM: [],
         PrimeObjects.PAYMENT_REQUEST: [],
@@ -104,14 +103,14 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                 "moveTaskOrderID": "99783f4d-ee83-4fc9-8e0c-d32496bef32b",
             }
 
-        overridesLocal = {
+        overrides_local = {
             "moveTaskOrderID": mto_shipment["moveTaskOrderID"],
             "mtoShipmentID": mto_shipment["id"],
         }
         # override local overrides with parameter overrides
         if overrides:
-            overridesLocal.update(overrides)
-        payload = self.fake_request("/mto-service-items", "post", overrides=overridesLocal)
+            overrides_local.update(overrides)
+        payload = self.fake_request("/mto-service-items", "post", overrides=overrides_local)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -302,7 +301,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if re_service_code not in ["DDDSIT", "DOPSIT"]:
             logging.info(
-                "update_mto_service_item recvd mtoServiceItem from store. Discarding because reServiceCode not in [DDDSIT, DOPSIT]"
+                "update_mto_service_item recvd mtoServiceItem from store. Discarding because reServiceCode not in "
+                "[DDDSIT, DOPSIT]"
             )
             return
 
