@@ -41,6 +41,27 @@ class PrimeDataTaskMixin:
         if len(data_list) > 0:  # otherwise we return None
             return random.choice(data_list)
 
+    def get_random_shipment_address(self, mto_shipment=None):
+        """
+        Grabs one of either pickupAddress or destinationAddress from a shipment and returns the specific field and
+        payload for that address.
+
+        :param mto_shipment: JSON/dict of a specific MTO Shipment payload (optional)
+        :return: tuple(str name of the address field, dict address payload)
+        """
+        if not mto_shipment:
+            mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+
+        address_fields = ["pickupAddress", "destinationAddress"]
+        valid_addresses = [
+            (field, mto_shipment[field])
+            for field in address_fields
+            if mto_shipment.get(field) and mto_shipment[field].get("id", ZERO_UUID) != ZERO_UUID
+        ]
+
+        if len(valid_addresses) > 0:  # otherwise we return None
+            return random.choice(valid_addresses)
+
     def set_prime_data(self, object_key, object_data):
         """
         Sets data to the list for the object key provided. Also checks if the list is already at the max number of
@@ -240,6 +261,38 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
+
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipmentAddress")
+    @task
+    def update_mto_shipment_address(self):
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
+            return
+
+        address_tuple = self.get_random_shipment_address(mto_shipment)  # returns a (field_name, address_dict) tuple
+        if not address_tuple:
+            return  # this shipment didn't have any addresses, we will try again later with a different shipment
+
+        field, address = address_tuple
+
+        overrides = {"id": address["id"]}
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put", overrides=overrides)
+
+        headers = {"content-type": "application/json", "If-Match": address["eTag"]}
+        # update mto_shipment address
+        resp = self.client.put(
+            prime_path(f"/mto-shipments/{mto_shipment['id']}/addresses/{address['id']}"),
+            name=prime_path("/mto-shipments/{mtoShipmentID}/addresses/{addressID}"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "updateMTOShipmentAddress", payload)
+
+        if success:
+            updated_shipment = deepcopy(mto_shipment)
+            updated_shipment[field] = resp
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, updated_shipment)
 
     @tag(PrimeObjects.MTO_AGENT.value, "updateMTOAgent")
     @task
