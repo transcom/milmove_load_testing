@@ -138,14 +138,13 @@ In order to enable `pyenv` to switch which version of Python you are using at an
 you will need to paste the following code to your shell's profile file (`~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, etc):
 
 ```bash
-export PATH="{$HOME}/.pyenv/bin:{$PATH}"
+export PATH="$HOME/.pyenv/bin:$PATH"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 ```
 
-Once you have modified and saved your profile file, you will need to resource your profile (where `<profile_file` is one
-of `~/.bash_profile`, `~/.bashrc`, etc):
+Once you have modified and saved your profile file, you will need to resource your profile:
 
 ```shell script
 source <profile_file>  # Or just restart your terminal
