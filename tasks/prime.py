@@ -200,7 +200,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         resp = self.client.post(
             prime_path(f"/payment-requests/{payment_request['id']}/uploads"),
-            name=prime_path("/payment-requests/:paymentRequestID/uploads"),
+            name=prime_path("/payment-requests/{paymentRequestID}/uploads"),
             files=upload_file,
             **self.user.cert_kwargs,
         )
@@ -252,7 +252,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
         resp = self.client.put(
             prime_path(f"/mto-shipments/{mto_shipment['id']}"),
-            name=prime_path("/mto-shipments/:mtoShipmentID"),
+            name=prime_path("/mto-shipments/{mtoShipmentID}"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -350,7 +350,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
         resp = self.client.patch(
             prime_path(f"/mto-service-items/{mto_service_item['id']}"),
-            name=prime_path("/mto-service-items/:mtoServiceItemID"),
+            name=prime_path("/mto-service-items/{mtoServiceItemID}"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -439,7 +439,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         resp = self.client.patch(
             support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
-            name=support_path("/move-task-orders/:moveTaskOrderID/available-to-prime"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}/available-to-prime"),
             headers=headers,
             **self.user.cert_kwargs,
         )
