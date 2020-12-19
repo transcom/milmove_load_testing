@@ -94,14 +94,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_service_item(self, overrides=None):
         mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
         if not mto_shipment:
-            if self.user.env != MilMoveEnv.LOCAL.value:
-                return  # we can't do anything else without a default value
-
-            # default for local testing
-            mto_shipment = {
-                "id": "475579d5-aaa4-4755-8c43-c510381ff9b5",
-                "moveTaskOrderID": "99783f4d-ee83-4fc9-8e0c-d32496bef32b",
-            }
+            return
 
         overrides_local = {
             "moveTaskOrderID": mto_shipment["moveTaskOrderID"],
@@ -154,7 +147,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             if self.user.env != MilMoveEnv.LOCAL.value:
                 return  # we can't do anything else without a default value
 
-            move_task_order = {"id": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"}  # default for local testing
+            move_task_order = {"id": "ecbc2e6a-1b45-403b-9bd4-ea315d4d3d93"}  # default for local testing
 
         overrides = {
             "moveTaskOrderID": move_task_order["id"],
@@ -180,10 +173,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_upload(self):
         payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
         if not payment_request:
-            if self.user.env != MilMoveEnv.LOCAL.value:
-                return  # we can't do anything else without a default value
-
-            payment_request = {"id": "a2c34dba-015f-4f96-a38b-0c0b9272e208"}  # default for local testing
+            return
 
         upload_file = {"file": open(TEST_PDF, "rb")}
 
@@ -200,13 +190,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_payment_request(self):
         service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
         if not service_item:
-            if self.user.env != MilMoveEnv.LOCAL.value:
-                return  # we can't do anything else without a default value
-
-            service_item = {
-                "id": "8a625314-1922-4987-93c5-a62c0d13f053",
-                "moveTaskOrderID": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791",
-            }
+            return
 
         payload = {
             "moveTaskOrderID": service_item["moveTaskOrderID"],
