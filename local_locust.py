@@ -46,9 +46,8 @@ if __name__ == "__main__":
     command.add_argument(
         "locust_flags",
         type=str,
-        help="All the locust arguments, as they would be written for "
-        "locust, should be written in this argument as one string. \n"
-        "Ex: '-f locustfiles/prime.py --host local'",
+        help="All the locust arguments, as they would be written for locust, should be written in this argument as one "
+        "string.\n  Ex: '-f locustfiles/prime.py --host local'",
     )
 
     args = command.parse_args()
