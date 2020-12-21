@@ -37,8 +37,19 @@ def update_docker_hosts():
 
 
 if __name__ == "__main__":
-    command = argparse.ArgumentParser(description="todo")
-    command.add_argument("locust_flags", type=str, help="todo arg")
+    command = argparse.ArgumentParser(
+        description="When executed, this command will update the /etc/hosts file of a running docker container with "
+        "the hostnames used in the MilMove, then it will execute the <locust> command. To run this script, "
+        "please put the command <python local_locust.py> as the CMD or ENTRYPOINT for a docker container. "
+        "Put the locust arguments you wish to include in one '<string>' argument for the command."
+    )
+    command.add_argument(
+        "locust_flags",
+        type=str,
+        help="All the locust arguments, as they would be written for "
+        "locust, should be written in this argument as one string. \n"
+        "Ex: '-f locustfiles/prime.py --host local'",
+    )
 
     args = command.parse_args()
     locust_flags = args.locust_flags.split()  # We will need the locust arguments as a list so we can invoke it later
