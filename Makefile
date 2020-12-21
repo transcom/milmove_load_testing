@@ -100,8 +100,8 @@ load_test_milmove: clean ensure_venv  ## Run load testing on the MilMove app
 local_docker_build: clean  ## Build a Docker container to run load testing locally
 	docker-compose -f docker-compose.local.yaml build
 
-.PHONY: local_docker_load_test
-local_docker_load_test: ## Run load testing on the Prime API in local using a Docker container
+.PHONY: local_docker_up
+local_docker_up: ## Run load testing on the Prime API in local using a Docker container
 	open http://localhost:8089
 	docker-compose -f docker-compose.local.yaml up
 
