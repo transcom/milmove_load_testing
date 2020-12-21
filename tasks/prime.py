@@ -29,7 +29,6 @@ class PrimeDataTaskMixin:
     DATA_LIST_MAX = 50
     prime_data = {
         PrimeObjects.MOVE_TASK_ORDER: [],
-        PrimeObjects.MTO_AGENT: [],  # Is it an array by default?
         PrimeObjects.MTO_SHIPMENT: [],
         PrimeObjects.MTO_SERVICE_ITEM: [],
         PrimeObjects.PAYMENT_REQUEST: [],
@@ -41,6 +40,27 @@ class PrimeDataTaskMixin:
 
         if len(data_list) > 0:  # otherwise we return None
             return random.choice(data_list)
+
+    def get_random_shipment_address(self, mto_shipment=None):
+        """
+        Grabs one of either pickupAddress or destinationAddress from a shipment and returns the specific field and
+        payload for that address.
+
+        :param mto_shipment: JSON/dict of a specific MTO Shipment payload (optional)
+        :return: tuple(str name of the address field, dict address payload)
+        """
+        if not mto_shipment:
+            mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+
+        address_fields = ["pickupAddress", "destinationAddress"]
+        valid_addresses = [
+            (field, mto_shipment[field])
+            for field in address_fields
+            if mto_shipment.get(field) and mto_shipment[field].get("id", ZERO_UUID) != ZERO_UUID
+        ]
+
+        if len(valid_addresses) > 0:  # otherwise we return None
+            return random.choice(valid_addresses)
 
     def set_prime_data(self, object_key, object_data):
         """
@@ -95,23 +115,16 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_service_item(self, overrides=None):
         mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
         if not mto_shipment:
-            if not self.user.env == MilMoveEnv.LOCAL:
-                return  # we can't do anything else without a default value
+            return
 
-            # default for local testing
-            mto_shipment = {
-                "id": "475579d5-aaa4-4755-8c43-c510381ff9b5",
-                "moveTaskOrderID": "99783f4d-ee83-4fc9-8e0c-d32496bef32b",
-            }
-
-        overridesLocal = {
+        overrides_local = {
             "moveTaskOrderID": mto_shipment["moveTaskOrderID"],
             "mtoShipmentID": mto_shipment["id"],
         }
         # override local overrides with parameter overrides
         if overrides:
-            overridesLocal.update(overrides)
-        payload = self.fake_request("/mto-service-items", "post", overrides=overridesLocal)
+            overrides_local.update(overrides)
+        payload = self.fake_request("/mto-service-items", "post", overrides=overrides_local)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -152,10 +165,10 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_shipment(self):
         move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         if not move_task_order:
-            if not self.user.env == MilMoveEnv.LOCAL:
+            if self.user.env != MilMoveEnv.LOCAL.value:
                 return  # we can't do anything else without a default value
 
-            move_task_order = {"id": "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"}  # default for local testing
+            move_task_order = {"id": "ecbc2e6a-1b45-403b-9bd4-ea315d4d3d93"}  # default for local testing
 
         overrides = {
             "moveTaskOrderID": move_task_order["id"],
@@ -181,16 +194,13 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_upload(self):
         payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
         if not payment_request:
-            if not self.user.env == MilMoveEnv.LOCAL:
-                return  # we can't do anything else without a default value
-
-            payment_request = {"id": "a2c34dba-015f-4f96-a38b-0c0b9272e208"}  # default for local testing
+            return
 
         upload_file = {"file": open(TEST_PDF, "rb")}
 
         resp = self.client.post(
             prime_path(f"/payment-requests/{payment_request['id']}/uploads"),
-            name=prime_path("/payment-requests/:paymentRequestID/uploads"),
+            name=prime_path("/payment-requests/{paymentRequestID}/uploads"),
             files=upload_file,
             **self.user.cert_kwargs,
         )
@@ -201,13 +211,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_payment_request(self):
         service_item = self.get_random_data(PrimeObjects.MTO_SERVICE_ITEM)
         if not service_item:
-            if not self.user.env == MilMoveEnv.LOCAL:
-                return  # we can't do anything else without a default value
-
-            service_item = {
-                "id": "8a625314-1922-4987-93c5-a62c0d13f053",
-                "moveTaskOrderID": "da3f34cc-fb94-4e0b-1c90-ba3333cb7791",
-            }
+            return
 
         payload = {
             "moveTaskOrderID": service_item["moveTaskOrderID"],
@@ -248,7 +252,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
         resp = self.client.put(
             prime_path(f"/mto-shipments/{mto_shipment['id']}"),
-            name=prime_path("/mto-shipments/:mtoShipmentID"),
+            name=prime_path("/mto-shipments/{mtoShipmentID}"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -257,6 +261,38 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, resp)
+
+    @tag(PrimeObjects.MTO_SHIPMENT.value, "updateMTOShipmentAddress")
+    @task
+    def update_mto_shipment_address(self):
+        mto_shipment = self.get_random_data(PrimeObjects.MTO_SHIPMENT)
+        if not mto_shipment:
+            return
+
+        address_tuple = self.get_random_shipment_address(mto_shipment)  # returns a (field_name, address_dict) tuple
+        if not address_tuple:
+            return  # this shipment didn't have any addresses, we will try again later with a different shipment
+
+        field, address = address_tuple
+
+        overrides = {"id": address["id"]}
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put", overrides=overrides)
+
+        headers = {"content-type": "application/json", "If-Match": address["eTag"]}
+        # update mto_shipment address
+        resp = self.client.put(
+            prime_path(f"/mto-shipments/{mto_shipment['id']}/addresses/{address['id']}"),
+            name=prime_path("/mto-shipments/{mtoShipmentID}/addresses/{addressID}"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "updateMTOShipmentAddress", payload)
+
+        if success:
+            updated_shipment = deepcopy(mto_shipment)
+            updated_shipment[field] = resp
+            self.replace_prime_data(PrimeObjects.MTO_SHIPMENT, mto_shipment, updated_shipment)
 
     @tag(PrimeObjects.MTO_AGENT.value, "updateMTOAgent")
     @task
@@ -302,7 +338,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if re_service_code not in ["DDDSIT", "DOPSIT"]:
             logging.info(
-                "update_mto_service_item recvd mtoServiceItem from store. Discarding because reServiceCode not in [DDDSIT, DOPSIT]"
+                "update_mto_service_item recvd mtoServiceItem from store. Discarding because reServiceCode not in "
+                "[DDDSIT, DOPSIT]"
             )
             return
 
@@ -313,7 +350,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
         resp = self.client.patch(
             prime_path(f"/mto-service-items/{mto_service_item['id']}"),
-            name=prime_path("/mto-service-items/:mtoServiceItemID"),
+            name=prime_path("/mto-service-items/{mtoServiceItemID}"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -402,7 +439,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         resp = self.client.patch(
             support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
-            name=support_path("/move-task-orders/:moveTaskOrderID/available-to-prime"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}/available-to-prime"),
             headers=headers,
             **self.user.cert_kwargs,
         )
