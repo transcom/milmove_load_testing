@@ -29,6 +29,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Setup: pre-commit](#setup-pre-commit)
          * [Setup: pyenv](#setup-pyenv)
          * [Setup: virtualenv](#setup-virtualenv)
+         * [Alternative Setup: Docker](#alternative-setup-docker)
          * [Troubleshooting](#troubleshooting)
       * [Running Load Tests](#running-load-tests)
          * [Setting up the local environment](#setting-up-the-local-environment)
@@ -45,7 +46,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Wed Dec  9 15:32:07 CST 2020 -->
+<!-- Added by: sandy, at: Mon Dec 21 11:02:29 CST 2020 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -138,7 +139,7 @@ In order to enable `pyenv` to switch which version of Python you are using at an
 you will need to paste the following code to your shell's profile file (`~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, etc):
 
 ```bash
-export PATH="{$HOME}/.pyenv/bin:{$PATH}"
+export PATH="$HOME/.pyenv/bin:$PATH"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
@@ -214,6 +215,31 @@ make teardown
 ```
 
 Remember to recreate your virtual environment with `make venv` before attempting to continue development on the project.
+
+### Alternative Setup: Docker
+
+It is also possible to run load tests from within a Docker container, eliminating the need to set up a valid python
+environment. This requires Docker and `docker-compose` to be installed on your machine. Get them here:
+
+* [Get Docker](https://docs.docker.com/get-docker/)
+* [Install Docker Compose](https://docs.docker.com/compose/install/)
+
+To get your load testing Docker container up and running for the local environment, use the following commands:
+
+* `docker-compose -f docker-compose.local.yaml build`
+* `docker-compose -f docker-compose.local.yaml up`
+
+And when you are done with testing:
+
+* `docker-compose -f docker-compose.local.yaml build`
+
+You can also use the Makefile equivalents of these commands:
+
+* `make local_docker_build`
+* `make local_docker_up`
+* `make local_docker_down`
+
+As long as your local MilMove server is up and running, you are ready to run your tests!
 
 ### Troubleshooting
 
