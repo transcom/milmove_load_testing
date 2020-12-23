@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
-""" Assertions for the utils/tests/ cases """
+""" Assertions and parameters for the utils/tests/ cases """
 
 ADDRESS_DEFINITION = {
     "type": "object",

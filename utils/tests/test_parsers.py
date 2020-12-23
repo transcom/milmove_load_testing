@@ -11,7 +11,7 @@ from utils.constants import STATIC_FILES
 from utils.fake_data import MilMoveData
 from utils.fields import APIEndpointBody, ObjectField
 from utils.parsers import APIParser
-from .assertions import MTO_SHIPMENT_DEFINITION, CREATE_MTO_SHIPMENT_DEFINITION, UPDATE_MTO_ENDPOINT
+from .parameters import MTO_SHIPMENT_DEFINITION, CREATE_MTO_SHIPMENT_DEFINITION, UPDATE_MTO_ENDPOINT
 
 
 class TestAPIParser:
