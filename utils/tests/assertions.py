@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+# flake8: noqa
 """ Assertions for the utils/tests/ cases """
 
-# flake8: noqa
 ADDRESS_DEFINITION = {
     "type": "object",
     "properties": {
