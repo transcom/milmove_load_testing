@@ -4,13 +4,17 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /app
+
+# Copy over and install requirements:
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
+
+# Copy over everything else for the app:
 COPY . /app
 
 # Certs for mTLS authentication
-COPY config/tls/devlocal-mtls.cer /config/tls/devlocal-mtls.cer
-COPY config/tls/devlocal-mtls.key /config/tls/devlocal-mtls.key
-
-RUN pip install -r /app/requirements.txt
+#COPY config/tls/devlocal-mtls.cer /config/tls/devlocal-mtls.cer
+#COPY config/tls/devlocal-mtls.key /config/tls/devlocal-mtls.key
 
 EXPOSE 8089 5557
 
