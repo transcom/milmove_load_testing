@@ -10,6 +10,7 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
 # Copy over everything else for the app:
+COPY docker.__init__.py /app/__init__.py
 COPY . /app
 
 # Certs for mTLS authentication

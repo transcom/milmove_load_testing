@@ -31,6 +31,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Setup: virtualenv](#setup-virtualenv)
          * [Alternative Setup: Docker](#alternative-setup-docker)
          * [Troubleshooting](#troubleshooting)
+         * [Testing](#testing)
       * [Running Load Tests](#running-load-tests)
          * [Setting up the local environment](#setting-up-the-local-environment)
          * [Running preset tests](#running-preset-tests)
@@ -46,7 +47,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Mon Dec 21 11:02:29 CST 2020 -->
+<!-- Added by: sandy, at: Wed Dec 23 15:56:47 CST 2020 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -93,7 +94,7 @@ This folder is for static files (certificates, PDFs, etc.) that will be used dur
   * Install with:
   `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 * `pre-commit`
-* [`pyenv`](https://github.com/pyenv/pyenv)
+* [`pyenv`](https://github.com/pyenv/pyenv) or Docker + `docker-compose` (See: [Alternative Setup: Docker](#alternative-setup-docker))
 
 *Note: These instructions include the relevant commands for MacOS only. Please keep this in mind and be prepared to
 search for alternatives if you are running a different OS.*
@@ -255,6 +256,29 @@ If you encounter compiler issues while installing the required Python version, t
 ```shell script
 brew unlink binutils
 ```
+
+### Testing
+
+This project uses [`pytest`](https://docs.pytest.org/en/stable/) as its testing framework. To run the tests, activate
+your virtual environment and use the command:
+
+```shell
+pytest
+```
+
+To see verbose output and any print statments in the tests, use:
+
+```shell
+pytest -v -s
+```
+
+To run a specific test, use:
+
+```shell
+pytest /utils/tests/test_parsers.py
+```
+
+For more instructions and examples, please read [their documentation](https://docs.pytest.org/en/stable/).
 
 ## Running Load Tests
 
