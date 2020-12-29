@@ -6,7 +6,7 @@ import random
 
 from locust import tag, task, TaskSet
 
-from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv, PrimeObjects
+from utils.constants import TEST_PDF, ZERO_UUID, PrimeObjects
 from .base import check_response, CertTaskMixin, ParserTaskMixin
 from copy import deepcopy
 
@@ -165,20 +165,16 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_shipment(self):
         move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         if not move_task_order:
-            if self.user.env != MilMoveEnv.LOCAL.value:
-                return  # we can't do anything else without a default value
-
-            move_task_order = {"id": "ecbc2e6a-1b45-403b-9bd4-ea315d4d3d93"}  # default for local testing
+            return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
 
         overrides = {
             "moveTaskOrderID": move_task_order["id"],
             "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
             "pickupAddress": {"id": ZERO_UUID},
             "destinationAddress": {"id": ZERO_UUID},
-            "mtoServiceItems": [],
+            "mtoServiceItems": [],  # let the create_mto_service_item endpoint handle creating these
         }
         payload = self.fake_request("/mto-shipments", "post", overrides=overrides)
-        payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -237,7 +233,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "put")
 
-        # These fields need more complicated logic to handle, so remove them for the time being:
+        # Agents and addresses should not be updated by this endpoint, and primeEstimatedWeight cannot be updated after
+        # it is initially set (and it is set in create_mto_shipment)
         fields_to_remove = [
             "agents",
             "pickupAddress",
@@ -408,11 +405,14 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                     "firstName": "Christopher",
                     "lastName": "Swinglehurst-Walters",
                     "agency": "MARINES",
+                    "rank": "E_6",
+                    "dodID": "1234567890",
                     "email": "swinglehurst@example.com",
                 },
                 "entitlement": {"nonTemporaryStorage": False, "totalDependents": 47},
                 "orderNumber": "32",
-                "rank": "E-6",
+                "rank": "E_6",
+                "tac": "F8J1",
                 "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
                 "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
                 "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
