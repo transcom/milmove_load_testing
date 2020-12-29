@@ -233,7 +233,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "put")
 
-        # These fields need more complicated logic to handle, so remove them for the time being:
+        # Agents and addresses should not be updated by this endpoint, and primeEstimatedWeight cannot be updated after
+        # it is initially set (and it is set in create_mto_shipment)
         fields_to_remove = [
             "agents",
             "pickupAddress",
