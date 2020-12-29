@@ -410,6 +410,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                     "agency": "MARINES",
                     "email": "swinglehurst@example.com",
                     "rank": "E_3",
+                    "dodID": "4586736251",
                 },
                 "entitlement": {"nonTemporaryStorage": False, "totalDependents": 47},
                 "orderNumber": "32",
