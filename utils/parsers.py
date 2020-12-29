@@ -409,3 +409,34 @@ class SupportAPIParser(PrimeAPIParser):
     """ Parser class for the Support API. """
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/support.yaml"
+
+    def _custom_request_validation(self, path, method, request_data):
+        """
+        Custom post-data generation validation for the Support API. Note that request_data is mutable and directly
+        modified, and therefore doesn't need to be returned.
+        """
+        if path == "/move-task-orders" and method == "post":
+
+            move_task_order = request_data
+            move_orders = request_data["moveOrder"]
+            customer = move_orders["customer"]
+            entitlement = move_orders["entitlement"]
+
+            # createMoveTaskOrders cannot create certain nested objects, none are passed in.
+            move_task_order.pop("mtoShipments", None)
+            move_task_order.pop("paymentRequests", None)
+            move_task_order.pop("mtoServiceItems", None)
+
+            move_task_order.pop("moveOrderID", None)  # moveOrderID will be returned on creation
+            move_task_order["locator"] = move_task_order["locator"][0:5]  # Shorten locator to 6 characters
+
+            # Cannot create certain nested objects with this endpoint, instead the caller should pass in an ID (in overrides)
+            move_orders.pop("uploadedOrders", None)
+            move_orders.pop("originDutyStation", None)
+            move_orders.pop("destinationDutyStation", None)
+
+            move_orders.pop("id", None)  # id will be returned on creation
+            move_orders.pop("customerID", None)  # customerID will be returned on creation
+
+            customer.pop("currentAddress", None)  # Cannot create currentAddress with this endpoint
+            entitlement.pop("id", None)  # id will be returned on creation

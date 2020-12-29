@@ -401,28 +401,14 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag(PrimeObjects.MOVE_TASK_ORDER.value, "createMoveTaskOrder")
     @task
     def create_move_task_order(self):
-        payload = {
+
+        overrides = {
+            "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
+            "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
+            "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
             "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
-            "moveOrder": {
-                "customer": {
-                    "firstName": "Christopher",
-                    "lastName": "Swinglehurst-Walters",
-                    "agency": "MARINES",
-                    "email": "swinglehurst@example.com",
-                },
-                "entitlement": {"nonTemporaryStorage": False, "totalDependents": 47},
-                "orderNumber": "32",
-                "rank": "E-6",
-                "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
-                "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
-                "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
-                "ordersType": "GHC",
-                "reportByDate": "2020-01-01",
-                "status": "SUBMITTED",
-                "issueDate": "2020-01-01",
-            },
-            "status": "SUBMITTED",
         }
+        payload = self.fake_request("/move-task-orders", "post", overrides)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
