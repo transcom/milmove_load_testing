@@ -2,3 +2,8 @@
 from .office import OfficeTasks  # noqa
 from .milmove import MilMoveTasks  # noqa
 from .prime import PrimeTasks, SupportTasks  # noqa
+import warnings
+import requests
+
+# Sets warning to trigger once rather than on each instance
+warnings.simplefilter("once", requests.packages.urllib3.exceptions.InsecureRequestWarning)
