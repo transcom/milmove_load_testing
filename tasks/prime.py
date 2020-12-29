@@ -409,10 +409,11 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                     "lastName": "Swinglehurst-Walters",
                     "agency": "MARINES",
                     "email": "swinglehurst@example.com",
+                    "rank": "E_3",
                 },
                 "entitlement": {"nonTemporaryStorage": False, "totalDependents": 47},
                 "orderNumber": "32",
-                "rank": "E-6",
+                "rank": "E_3",
                 "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
                 "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
                 "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
@@ -420,6 +421,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                 "reportByDate": "2020-01-01",
                 "status": "SUBMITTED",
                 "issueDate": "2020-01-01",
+                "tac": "FB71",
             },
             "status": "SUBMITTED",
         }
@@ -471,3 +473,25 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, mto_service_item_data)
+
+    @tag(PrimeObjects.PAYMENT_REQUEST.value, "updatePaymentRequestStatus")
+    @task
+    def update_payment_request_status(self):
+        payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
+        if not payment_request:
+            return
+
+        payload = self.fake_request("/payment-requests/{paymentRequestID}/status", "patch")
+        headers = {"content-type": "application/json", "If-Match": payment_request["eTag"]}
+
+        resp = self.client.patch(
+            support_path(f"/payment-requests/{payment_request['id']}/status"),
+            name=support_path("/payment-requests/{paymentRequestID}/status"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "updatePaymentRequestStatus", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.PAYMENT_REQUEST, payment_request, resp)
