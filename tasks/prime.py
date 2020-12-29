@@ -172,10 +172,9 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
             "pickupAddress": {"id": ZERO_UUID},
             "destinationAddress": {"id": ZERO_UUID},
-            "mtoServiceItems": [],
+            "mtoServiceItems": [],  # let the create_mto_service_item endpoint handle creating these
         }
         payload = self.fake_request("/mto-shipments", "post", overrides=overrides)
-        payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
