@@ -6,7 +6,7 @@ import random
 
 from locust import tag, task, TaskSet
 
-from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv, PrimeObjects
+from utils.constants import TEST_PDF, ZERO_UUID, PrimeObjects
 from .base import check_response, CertTaskMixin, ParserTaskMixin
 from copy import deepcopy
 
@@ -165,10 +165,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_mto_shipment(self):
         move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         if not move_task_order:
-            if self.user.env != MilMoveEnv.LOCAL.value:
-                return  # we can't do anything else without a default value
-
-            move_task_order = {"id": "ecbc2e6a-1b45-403b-9bd4-ea315d4d3d93"}  # default for local testing
+            return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
 
         overrides = {
             "moveTaskOrderID": move_task_order["id"],
