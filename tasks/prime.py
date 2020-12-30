@@ -136,30 +136,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.set_prime_data(PrimeObjects.MTO_SERVICE_ITEM, resp)
 
-    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItemDestSIT")
-    @task
-    def create_mto_service_item_dest_sit(self):
-        # This function ensures some destination SIT service items get requested.
-        # DDFSIT requests create the trio of dest SIT items that are needed for update_mto_service_item to function.
-        overrides = {
-            "reServiceCode": "DDFSIT",
-            "modelType": "MTOServiceItemDestSIT",
-        }
-
-        self.create_mto_service_item(overrides)
-
-    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItemOriginSIT")
-    @task
-    def create_mto_service_item_origin_sit(self):
-        # This function ensures some origin SIT service items get requested.
-        # DOFSIT requests create the trio of origin SIT items that are needed for update_mto_service_item to function.
-        overrides = {
-            "reServiceCode": "DOFSIT",
-            "modelType": "MTOServiceItemOriginSIT",
-        }
-
-        self.create_mto_service_item(overrides)
-
     @tag(PrimeObjects.MTO_SHIPMENT.value, "createMTOShipment")
     @task
     def create_mto_shipment(self):
@@ -405,7 +381,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                     "firstName": "Christopher",
                     "lastName": "Swinglehurst-Walters",
                     "agency": "MARINES",
-                    "rank": "E_6",
                     "email": "swinglehurst@example.com",
                     "rank": "E_3",
                     "dodID": "4586736251",
@@ -421,7 +396,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                 "reportByDate": "2020-01-01",
                 "status": "SUBMITTED",
                 "issueDate": "2020-01-01",
-                "tac": "FB71",
             },
             "status": "SUBMITTED",
         }
