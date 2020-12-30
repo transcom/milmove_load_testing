@@ -136,30 +136,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.set_prime_data(PrimeObjects.MTO_SERVICE_ITEM, resp)
 
-    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItemDestSIT")
-    @task
-    def create_mto_service_item_dest_sit(self):
-        # This function ensures some destination SIT service items get requested.
-        # DDFSIT requests create the trio of dest SIT items that are needed for update_mto_service_item to function.
-        overrides = {
-            "reServiceCode": "DDFSIT",
-            "modelType": "MTOServiceItemDestSIT",
-        }
-
-        self.create_mto_service_item(overrides)
-
-    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItemOriginSIT")
-    @task
-    def create_mto_service_item_origin_sit(self):
-        # This function ensures some origin SIT service items get requested.
-        # DOFSIT requests create the trio of origin SIT items that are needed for update_mto_service_item to function.
-        overrides = {
-            "reServiceCode": "DOFSIT",
-            "modelType": "MTOServiceItemOriginSIT",
-        }
-
-        self.create_mto_service_item(overrides)
-
     @tag(PrimeObjects.MTO_SHIPMENT.value, "createMTOShipment")
     @task
     def create_mto_shipment(self):
@@ -405,13 +381,13 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                     "firstName": "Christopher",
                     "lastName": "Swinglehurst-Walters",
                     "agency": "MARINES",
-                    "rank": "E_6",
-                    "dodID": "1234567890",
                     "email": "swinglehurst@example.com",
+                    "rank": "E_3",
+                    "dodID": "4586736251",
                 },
                 "entitlement": {"nonTemporaryStorage": False, "totalDependents": 47},
                 "orderNumber": "32",
-                "rank": "E_6",
+                "rank": "E_3",
                 "tac": "F8J1",
                 "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
                 "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
@@ -471,3 +447,25 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, mto_service_item_data)
+
+    @tag(PrimeObjects.PAYMENT_REQUEST.value, "updatePaymentRequestStatus")
+    @task
+    def update_payment_request_status(self):
+        payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
+        if not payment_request:
+            return
+
+        payload = self.fake_request("/payment-requests/{paymentRequestID}/status", "patch")
+        headers = {"content-type": "application/json", "If-Match": payment_request["eTag"]}
+
+        resp = self.client.patch(
+            support_path(f"/payment-requests/{payment_request['id']}/status"),
+            name=support_path("/payment-requests/{paymentRequestID}/status"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "updatePaymentRequestStatus", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.PAYMENT_REQUEST, payment_request, resp)
