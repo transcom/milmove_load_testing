@@ -16,9 +16,9 @@ def check_response(response, task_name="Task", request=None):
     status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
     Returns the dictionary representation of the response content and a boolean indicating success or failure.
 
-    :param response: HTTP response object
+    :param response: HTTP response class from the Python Request framework
     :param task_name: str, optional name of the tasks
-    :param request: any, optional data to print for debugging a failed response
+    :param request: any type, optional data to print for debugging a failed response
     :return: tuple(dict, bool)
     """
     logger.info(f"ℹ️ {task_name} status code: {response.status_code}")
