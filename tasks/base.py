@@ -7,10 +7,12 @@ from locust import TaskSet
 
 from utils.base import ImplementationError
 
+from requests import Response
+
 logger = logging.getLogger(__name__)
 
 
-def check_response(response, task_name="Task", request=None):
+def check_response(response: Response, task_name="Task", request=None):
     """
     Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
     status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
