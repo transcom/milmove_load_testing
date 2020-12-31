@@ -428,7 +428,6 @@ class SupportAPIParser(PrimeAPIParser):
             move_task_order.pop("mtoServiceItems", None)
 
             move_task_order.pop("moveOrderID", None)  # moveOrderID will be returned on creation
-            move_task_order["locator"] = move_task_order["locator"][0:5]  # Shorten locator to 6 characters
 
             # Cannot create certain nested objects with this endpoint, instead the caller should pass in an ID (in overrides)
             move_orders.pop("uploadedOrders", None)

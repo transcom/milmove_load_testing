@@ -403,10 +403,14 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     def create_move_task_order(self):
 
         overrides = {
+            # We need these objects to exist
             "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
             "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
             "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
             "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
+            # Currently the state engine will fail on creating all mto service items
+            # unless the state is APPROVED
+            "status": "APPROVED",
         }
         payload = self.fake_request("/move-task-orders", "post", overrides)
 
