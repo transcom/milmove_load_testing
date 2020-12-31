@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """ tasks/base.py is for code used internally within the tasks package. """
+from utils.base import ImplementationError
+
 import logging
 import json
+from requests import Response
 
 from locust import TaskSet
 
-from utils.base import ImplementationError
-
-from requests import Response
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def check_response(response: Response, task_name="Task", request=None):
     status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
     Returns the dictionary representation of the response content and a boolean indicating success or failure.
 
-    :param response: HTTP response class from the Python Request framework
+    :param response: HTTP Response class from the Python requests framework
     :param task_name: str, optional name of the tasks
     :param request: any type, optional data to print for debugging a failed response
     :return: tuple(dict, bool)
