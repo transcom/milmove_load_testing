@@ -12,7 +12,7 @@ paths:
     get:
       summary: Get a list of apples.
       responses:
-        200:
+        '200':
           description: OK
           schema:
             type: array
@@ -22,7 +22,7 @@ paths:
     get:
       summary: Get a list of apple trees.
       responses:
-        200:
+        '200':
           description: OK
           schema:
             $ref: '#/definitions/AppleTrees'
@@ -35,22 +35,22 @@ paths:
     get:
       summary: Get a specific apple tree.
       responses:
-        200:
+        '200':
           description: OK
           schema:
             $ref: '#/definitions/AppleTree'
-        404:
+        '404':
           description: Couldn't find the apple tree.
     delete:
       summary: Delete a specific apple tree.
       responses:
-        200:
+        '200':
           description: OK
   /apple-wine-pairings:
     get:
       summary: Get a list of apples and their recommended wine pairings.
       responses:
-        200:
+        '200':
           description: OK
           schema:
             type: array
@@ -71,7 +71,7 @@ paths:
           schema:
             $ref: '#/definitions/Farmer'
       responses:
-        201:  # code used when something was created
+        '201':  # code used when something was created
           description: OK
           schema:
             $ref: '#/definitions/Farmer'
@@ -89,11 +89,11 @@ paths:
           schema:
             $ref: '#/definitions/Farmer'
       responses:
-        200:  # should resolve to something that looks the same as the POST /farmers endpoint's 201 response
+        '200':  # should resolve to something that looks the same as the POST /farmers endpoint's 201 response
           description: OK
           schema:
             $ref: '#/definitions/Farmer'
-        422:
+        '422':
           $ref: '#/responses/InvalidInput'
   /orchards:
     post:
@@ -105,7 +105,7 @@ paths:
           schema:
             $ref: '#/definitions/Orchard'
       responses:
-        201:  # code used when something was created
+        '201':  # code used when something was created
           description: OK
           schema:
             $ref: '#/definitions/Orchard'
@@ -123,11 +123,11 @@ paths:
           schema:
             $ref: '#/definitions/Tree'
       responses:
-        200:  # should look the same as the 201 response for POST /orchards
+        '200':  # should look the same as the 201 response for POST /orchards
           description: OK
           schema:
             $ref: '#/definitions/Orchard'
-        400:
+        '400':
           $ref: '#/responses/BadRequest'
 definitions:
   Address:
@@ -245,7 +245,7 @@ definitions:
         items:
           $ref: '#/definitions/Tree'
         minItems: 1  # not an orchard without a tree
-        maxItems: 100  # there's only one farmer, oof!
+        maxItems: 30  # there's only one farmer, oof!
   PeachTree:
     allOf:
       - $ref: '#/definitions/Tree'
