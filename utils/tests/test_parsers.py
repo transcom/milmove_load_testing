@@ -11,8 +11,7 @@ from utils.constants import STATIC_FILES
 from utils.fake_data import MilMoveData
 from utils.fields import APIEndpointBody, ObjectField
 from utils.parsers import APIParser
-
-import test_parsers_params as params
+from .test_parsers_params import *
 
 
 class TestAPIParser:
@@ -52,9 +51,9 @@ class TestAPIParser:
     @pytest.mark.parametrize(
         "path,method,endpoint",
         [
-            ("/apple-trees/{appleTreeID}", "get", params.APPLE_TREE_GET),
-            ("/apple-trees/{appleTreeID}", "delete", params.APPLE_TREE_DELETE),
-            ("/orchards", "post", params.ORCHARDS_POST),
+            ("/apple-trees/{appleTreeID}", "get", APPLE_TREE_GET),
+            ("/apple-trees/{appleTreeID}", "delete", APPLE_TREE_DELETE),
+            ("/orchards", "post", ORCHARDS_POST),
         ],
     )
     def test_get_endpoint(self, path, method, endpoint):
@@ -67,8 +66,8 @@ class TestAPIParser:
         "path,method,request_body",
         [
             ("/apples", "get", {}),  # this endpoint has no input
-            ("/farmers/{farmerID}", "put", params.FARMER_DEF),
-            ("/orchards/{orchardID}", "patch", params.TREE_DEF),
+            ("/farmers/{farmerID}", "put", FARMER_DEF),
+            ("/orchards/{orchardID}", "patch", TREE_DEF),
         ],
     )
     def test_get_request_body(self, path, method, request_body):
@@ -80,11 +79,11 @@ class TestAPIParser:
     @pytest.mark.parametrize(
         "path,method,status,response_body",
         [
-            ("/apple-trees/{appleTreeID}", "get", None, params.APPLE_TREE_GET_200),  # should be the 200 response
-            ("/apple-trees/{appleTreeID}", "get", "404", params.APPLE_TREE_GET_404),
-            ("/apple-trees/{appleTreeID}", "delete", "200", params.APPLE_TREE_DELETE_200),
-            ("/farmers", "post", "201", params.FARMERS_POST_201),
-            ("/farmers/{farmerID}", "put", "422", params.FARMER_PUT_422),
+            ("/apple-trees/{appleTreeID}", "get", None, APPLE_TREE_GET_200),  # should be the 200 response
+            ("/apple-trees/{appleTreeID}", "get", "404", APPLE_TREE_GET_404),
+            ("/apple-trees/{appleTreeID}", "delete", "200", APPLE_TREE_DELETE_200),
+            ("/farmers", "post", "201", FARMERS_POST_201),
+            ("/farmers/{farmerID}", "put", "422", FARMER_PUT_422),
         ],
     )
     def test_get_response_body(self, path, method, status, response_body):
@@ -98,12 +97,7 @@ class TestAPIParser:
 
     @pytest.mark.parametrize(
         "name,definition",
-        [
-            ("Apple", params.APPLE_DEF),
-            ("Tree", params.TREE_DEF),
-            ("CherryTree", params.CHERRY_TREE_DEF),
-            ("Orchard", params.ORCHARD_DEF),
-        ],
+        [("Apple", APPLE_DEF), ("Tree", TREE_DEF), ("CherryTree", CHERRY_TREE_DEF), ("Orchard", ORCHARD_DEF)],
     )
     def test_get_definition(self, name, definition):
         """
