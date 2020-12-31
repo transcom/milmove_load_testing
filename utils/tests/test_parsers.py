@@ -11,7 +11,8 @@ from utils.constants import STATIC_FILES
 from utils.fake_data import MilMoveData
 from utils.fields import APIEndpointBody, ObjectField
 from utils.parsers import APIParser
-from .parameters import MTO_SHIPMENT_DEFINITION, CREATE_MTO_SHIPMENT_DEFINITION, UPDATE_MTO_ENDPOINT
+
+import test_parsers_params as params
 
 
 class TestAPIParser:
@@ -51,94 +52,9 @@ class TestAPIParser:
     @pytest.mark.parametrize(
         "path,method,endpoint",
         [
-            (
-                "/mto-shipments",
-                "post",
-                {
-                    "summary": "createMTOShipment",
-                    "description": "Creates a MTO shipment for the specified Move Task Order.\nRequired fields include:"
-                    "\n* Shipment Type\n* Customer requested pick-up date\n* Pick-up Address\n* "
-                    "Delivery Address\n* Releasing / Receiving agents\n\nOptional fields include:\n* "
-                    "Customer Remarks\n* Releasing / Receiving agents\n* An array of optional "
-                    "accessorial service item codes\n",
-                    "consumes": ["application/json"],
-                    "produces": ["application/json"],
-                    "operationId": "createMTOShipment",
-                    "tags": ["mtoShipment"],
-                    "parameters": [{"in": "body", "name": "body", "schema": CREATE_MTO_SHIPMENT_DEFINITION}],
-                    "responses": {
-                        "200": {
-                            "description": "Successfully created a MTO shipment.",
-                            "schema": MTO_SHIPMENT_DEFINITION,
-                        },
-                        "400": {
-                            "description": "The request payload is invalid.",
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "title": {"type": "string"},
-                                    "detail": {"type": "string"},
-                                    "instance": {"type": "string", "format": "uuid"},
-                                },
-                                "required": ["title", "detail", "instance"],
-                            },
-                        },
-                        "404": {
-                            "description": "The requested resource wasn't found.",
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "title": {"type": "string"},
-                                    "detail": {"type": "string"},
-                                    "instance": {"type": "string", "format": "uuid"},
-                                },
-                                "required": ["title", "detail", "instance"],
-                            },
-                        },
-                        "422": {
-                            "description": "The payload was unprocessable.",
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "title": {"type": "string"},
-                                            "detail": {"type": "string"},
-                                            "instance": {"type": "string", "format": "uuid"},
-                                        },
-                                        "required": ["title", "detail", "instance"],
-                                    },
-                                    {"type": "object"},
-                                ],
-                                "properties": {
-                                    "invalidFields": {
-                                        "type": "object",
-                                        "additionalProperties": {
-                                            "description": "List of errors for the field",
-                                            "type": "array",
-                                            "items": {"type": "string"},
-                                        },
-                                    }
-                                },
-                                "required": ["invalidFields"],
-                            },
-                        },
-                        "500": {
-                            "description": "A server error occurred.",
-                            "schema": {
-                                "properties": {
-                                    "title": {"type": "string"},
-                                    "detail": {"type": "string"},
-                                    "instance": {"type": "string", "format": "uuid"},
-                                },
-                                "required": ["title", "detail"],
-                                "type": "object",
-                            },
-                        },
-                    },
-                },
-            ),
-            ("/move-task-orders/{moveTaskOrderID}/post-counseling-info", "patch", UPDATE_MTO_ENDPOINT),
+            ("/apple-trees/{appleTreeID}", "get", params.APPLE_TREE_GET),
+            ("/apple-trees/{appleTreeID}", "delete", params.APPLE_TREE_DELETE),
+            ("/orchards", "post", params.ORCHARDS_POST),
         ],
     )
     def test_get_endpoint(self, path, method, endpoint):
@@ -149,7 +65,11 @@ class TestAPIParser:
 
     @pytest.mark.parametrize(
         "path,method,request_body",
-        [("/mto-shipments", "post", CREATE_MTO_SHIPMENT_DEFINITION), ("/move-task-orders", "get", {})],
+        [
+            ("/apples", "get", {}),  # this endpoint has no input
+            ("/farmers/{farmerID}", "put", params.FARMER_DEF),
+            ("/orchards/{orchardID}", "patch", params.TREE_DEF),
+        ],
     )
     def test_get_request_body(self, path, method, request_body):
         """
@@ -160,61 +80,29 @@ class TestAPIParser:
     @pytest.mark.parametrize(
         "path,method,status,response_body",
         [
-            ("/mto-shipments", "post", "200", MTO_SHIPMENT_DEFINITION),
-            (
-                "/mto-shipments",
-                "post",
-                "422",
-                {
-                    "allOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "title": {"type": "string"},
-                                "detail": {"type": "string"},
-                                "instance": {"type": "string", "format": "uuid"},
-                            },
-                            "required": ["title", "detail", "instance"],
-                        },
-                        {"type": "object"},
-                    ],
-                    "properties": {
-                        "invalidFields": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "description": "List of errors for the field",
-                                "type": "array",
-                                "items": {"type": "string"},
-                            },
-                        }
-                    },
-                    "required": ["invalidFields"],
-                },
-            ),
+            ("/apple-trees/{appleTreeID}", "get", None, params.APPLE_TREE_GET_200),  # should be the 200 response
+            ("/apple-trees/{appleTreeID}", "get", "404", params.APPLE_TREE_GET_404),
+            ("/apple-trees/{appleTreeID}", "delete", "200", params.APPLE_TREE_DELETE_200),
+            ("/farmers", "post", "201", params.FARMERS_POST_201),
+            ("/farmers/{farmerID}", "put", "422", params.FARMER_PUT_422),
         ],
     )
     def test_get_response_body(self, path, method, status, response_body):
         """
         Tests getting a parsed response body for an endpoint in the Prance API resolver.
         """
-        assert self.parser.get_response_body(path, method, status) == response_body
+        if status:
+            assert self.parser.get_response_body(path, method, status) == response_body
+        else:
+            assert self.parser.get_response_body(path, method) == response_body
 
     @pytest.mark.parametrize(
         "name,definition",
         [
-            (
-                "ClientError",
-                {
-                    "type": "object",
-                    "properties": {
-                        "title": {"type": "string"},
-                        "detail": {"type": "string"},
-                        "instance": {"type": "string", "format": "uuid"},
-                    },
-                    "required": ["title", "detail", "instance"],
-                },
-            ),
-            ("MTOShipment", MTO_SHIPMENT_DEFINITION),
+            ("Apple", params.APPLE_DEF),
+            ("Tree", params.TREE_DEF),
+            ("CherryTree", params.CHERRY_TREE_DEF),
+            ("Orchard", params.ORCHARD_DEF),
         ],
     )
     def test_get_definition(self, name, definition):
@@ -223,7 +111,7 @@ class TestAPIParser:
         """
         assert self.parser.get_definition(name) == definition
 
-    @pytest.mark.parametrize("path,method", [("/mto-shipments", "post")])
+    @pytest.mark.parametrize("path,method", [("/orchards", "post")])
     def test_process_request_body(self, path, method):
         """
         Tests the function that processes an endpoint request body from the Prance API resolver and turns it into an

@@ -69,7 +69,10 @@ class APIParser:
         try:
             # grabbing the first body parameter in the endpoint to work with:
             body = [param for param in endpoint["parameters"] if param["in"] == "body"][0]
-        except IndexError:  # this means we got an empty list - no body! Could be intended for this endpoint though
+        except (KeyError, IndexError):
+            # this means we either didn't even have a "parameters" or "in" key (no input at all),
+            # or we got an empty list (the endpoint has parameters but no body),
+            # and both cases are valid states for some endpoints
             return {}
 
         return body["schema"]
@@ -90,7 +93,7 @@ class APIParser:
         except KeyError:  # no response body found for the given status code - could be intended
             return {}
 
-        return response["schema"]
+        return response
 
     def get_definition(self, name):
         """
