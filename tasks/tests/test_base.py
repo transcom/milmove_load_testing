@@ -2,11 +2,6 @@
 from tasks.base import check_response
 from requests import Response
 
-# import logging
-
-
-# def test_check_response_logged():
-
 
 def test_check_response_happy_path():
     response = Response()
