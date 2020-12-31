@@ -1,25 +1,34 @@
 # -*- coding: utf-8 -*-
 from tasks.base import check_response
-from types import SimpleNamespace
+from requests import Response
+
+# import logging
 
 
-def test_check_response():
-    """
-    1. Check that something is logged
-    2. Check the return value (dict, bool)
-    """
-    response_object = {
-        "moveTaskOrderID": "1f2270c7-7166-40ae-981e-b200ebdf3054",
-        "id": "1f2270c7-7166-40ae-981e-b200ebdf3054",
-        "createdAt": "2019-08-24T14:15:22Z",
-        "agents": [],
-        "status_code": 200,
-        "content": '{"field": "value"}',
-    }
-    # response_object = {
-    #     "status_code": 200,
-    #     "content": '{"field": "value"}'
-    # }
-    get_all_data = SimpleNamespace(**response_object)
+# def test_check_response_logged():
 
-    assert check_response(get_all_data) == ({"field": "value"}, True)
+
+def test_check_response_happy_path():
+    response = Response()
+    response.status_code = 200
+    response._content = '{"field": "value"}'
+
+    # Happy Path:
+    assert check_response(response) == ({"field": "value"}, True)
+
+
+# Unhappy Paths:
+def test_check_response_non_json():
+    non_json_response = Response()
+    non_json_response.status_code = 500
+    non_json_response._content = "non-json"
+
+    assert check_response(non_json_response) == (None, False)
+
+
+def test_check_response_bad_status_code():
+    bad_status_code = Response()
+    bad_status_code.status_code = 400
+    bad_status_code._content = '{"this_is": "ok"}'
+
+    assert check_response(bad_status_code) == ({"this_is": "ok"}, False)
