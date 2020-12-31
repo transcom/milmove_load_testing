@@ -7,9 +7,9 @@ from prance import ResolvingParser
 from prance.util.url import ResolutionError
 
 from utils.base import ImplementationError
-from utils.constants import STATIC_FILES
+from utils.constants import STATIC_FILES, DataType, ARRAY_MIN, ARRAY_MAX
 from utils.fake_data import MilMoveData
-from utils.fields import APIEndpointBody, ObjectField
+from utils.fields import APIEndpointBody, ObjectField, BaseAPIField, ArrayField
 from utils.parsers import APIParser
 from .test_parsers_params import *
 
@@ -56,7 +56,7 @@ class TestAPIParser:
             ("/orchards", "post", ORCHARDS_POST),
         ],
     )
-    def test_get_endpoint(self, path, method, endpoint):
+    def test__get_endpoint(self, path, method, endpoint):
         """
         Tests getting a parsed endpoint definition from the Prance API resolver.
         """
@@ -106,7 +106,7 @@ class TestAPIParser:
         assert self.parser.get_definition(name) == definition
 
     @pytest.mark.parametrize("path,method", [("/orchards", "post")])
-    def test_process_request_body(self, path, method):
+    def test__process_request_body(self, path, method):
         """
         Tests the function that processes an endpoint request body from the Prance API resolver and turns it into an
         APIEndpointBody class, which will be used for populating fake data later on.
@@ -120,3 +120,74 @@ class TestAPIParser:
         assert body.path == path
         assert body.method == method
         assert type(body.body_field) is ObjectField
+
+    def test__get_processed_body(self):
+        """ """
+
+    def test_generate_fake_request(self):
+        """ """
+
+    def test__parse_definition(self):
+        """ """
+
+    def test__parse_object_field(self):
+        """ """
+
+    def test__parse_discriminator(self):
+        """ """
+
+    @pytest.mark.parametrize(
+        "array_name,array_def", [("AppleTrees", APPLE_TREES_DEF), ("trees", ORCHARD_DEF["properties"]["trees"])]
+    )
+    def test__parse_array_field(self, array_name, array_def):
+        """ Tests that the correct ArrayField object is returned from _parse_array_field. """
+        array_field = self.parser._parse_array_field(array_name, array_def)
+
+        assert array_field is not None
+        assert type(array_field) is ArrayField
+        assert array_field.name == array_name
+        assert array_field.items_field is not None
+        assert array_field.min_items == array_def.get("minItems", ARRAY_MIN)
+        assert array_field.max_items == array_def.get("maxItems", ARRAY_MAX)
+
+    @pytest.mark.parametrize(
+        "typed_field_args,expected_type",
+        [
+            (("firstName", "string", ""), DataType.FIRST_NAME),
+            (("postalCode", "string", "zip"), DataType.POSTAL_CODE),
+            (("contact", "string", "email"), DataType.EMAIL),
+            (("bestDateForDancing", "string", "date-time"), DataType.DATE_TIME),
+            (("randomThought", "string", ""), DataType.SENTENCE),
+            (("numRandomThoughts", "integer", ""), DataType.INTEGER),
+            (("numRandomThoughts", "integer", ""), DataType.INTEGER),
+            (("randomThing", "badType", "badFormat"), None),
+            (("", "", ""), None),
+        ],
+    )
+    def test__parse_typed_field(self, typed_field_args, expected_type):
+        """ Tests that the correct BaseAPIField is generated for a given field name, type, and format. """
+        if not expected_type:
+            assert self.parser._parse_typed_field(*typed_field_args) is None
+            return  # done with this test
+
+        api_field = self.parser._parse_typed_field(*typed_field_args)
+        field_name, *_ = typed_field_args
+
+        assert api_field is not None
+        assert type(api_field) is BaseAPIField
+        assert api_field.data_type == expected_type
+        assert api_field.name == field_name
+
+    @pytest.mark.parametrize(
+        "field_name,expected_type",
+        [
+            ("firstName", DataType.FIRST_NAME),
+            ("streetAddress2", DataType.STREET_ADDRESS),
+            ("favoriteCity", DataType.CITY),
+            ("bestDateForDancing", DataType.DATE),
+            ("randomThought", DataType.SENTENCE),
+        ],
+    )
+    def test__approximate_str_type(self, field_name, expected_type):
+        """ Test that field names are being used to approximate the closest data type. """
+        assert self.parser._approximate_str_type(field_name) == expected_type
