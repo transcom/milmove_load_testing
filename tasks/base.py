@@ -2,11 +2,10 @@
 """ tasks/base.py is for code used internally within the tasks package. """
 from utils.base import ImplementationError
 
-import logging
 import json
-from requests import Response
-
 from locust import TaskSet
+import logging
+from requests import Response
 
 
 logger = logging.getLogger(__name__)
