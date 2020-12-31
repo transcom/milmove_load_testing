@@ -114,9 +114,7 @@ class APIParser:
         :param require_all: bool, optional
         :return: dict
         """
-        request_body = self._get_processed_body(path, method)
-        if not request_body:
-            request_body = self._process_request_body(path, method)
+        request_body = self._process_request_body(path, method)
 
         fake_request = request_body.generate_fake_data(self.milmove_data, overrides, require_all)
         # Hook method for custom post-data generation validation:
@@ -148,6 +146,10 @@ class APIParser:
         :param method: str
         :return: APIEndpointBody
         """
+        # Check first that we haven't already processed this request:
+        if request_body := self._get_processed_body(path, method):
+            return request_body
+
         request_def = self.get_request_body(path, method)
         request_body = APIEndpointBody(path, method)
 

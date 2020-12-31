@@ -9,7 +9,7 @@ from prance.util.url import ResolutionError
 from utils.base import ImplementationError
 from utils.constants import STATIC_FILES, DataType, ARRAY_MIN, ARRAY_MAX
 from utils.fake_data import MilMoveData
-from utils.fields import APIEndpointBody, ObjectField, BaseAPIField, ArrayField
+from utils.fields import APIEndpointBody, ObjectField, BaseAPIField, ArrayField, EnumField
 from utils.parsers import APIParser
 from .test_parsers_params import *
 
@@ -121,14 +121,39 @@ class TestAPIParser:
         assert body.method == method
         assert type(body.body_field) is ObjectField
 
-    def test__get_processed_body(self):
-        """ """
+    @pytest.mark.parametrize("path,method", [("/orchards", "post")])
+    def test__get_processed_body(self, path, method):
+        """
+        Tests that we can retrieve an already processed request body from the processed_bodies attribute of APIParser.
+
+        :param path: str, endpoint path in the yaml file
+        :param method: str, endpoint HTTP method
+        """
+        body = self.parser._process_request_body(path, method)
+        stored_body = self.parser._get_processed_body(path, method)
+
+        assert stored_body is not None
+        assert stored_body == body
 
     def test_generate_fake_request(self):
         """ """
 
-    def test__parse_definition(self):
-        """ """
+    @pytest.mark.parametrize(
+        "name,definition,expected_type",
+        [
+            ("AppleTrees", APPLE_TREES_DEF, ArrayField),
+            ("Farmer", FARMER_DEF, ObjectField),
+            ("Apple", APPLE_DEF, EnumField),
+            ("size", {"type": "integer"}, BaseAPIField),
+        ],
+    )
+    def test__parse_definition(self, name, definition, expected_type):
+        """ Tests that _parse_definition returns the correct field type. """
+        field = self.parser._parse_definition(name, definition)
+
+        assert field is not None
+        assert type(field) is expected_type
+        assert field.name == name
 
     @pytest.mark.parametrize(
         "object_name,object_def,num_fields_expected",
