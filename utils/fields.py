@@ -122,10 +122,20 @@ class ObjectField(BaseAPIField):
         self.object_fields = []
 
     def add_field(self, field):
-        self.object_fields.append(field)
+        # We don't want to add duplicate fields, so we check for existing fields with this name:
+        if field.name not in [existing_field.name for existing_field in self.object_fields]:
+            self.object_fields.append(field)
+            return
+
+        # If the field exists but there are new discriminator values, add them to the existing field:
+        if field.discriminator_values:
+            existing_field = self.get_field(field.name)
+            for value in field.discriminator_values:
+                existing_field.add_discriminator_value(value)
 
     def add_fields(self, fields_list):
-        self.object_fields.extend(fields_list)
+        for field in fields_list:
+            self.add_field(field)
 
     def combine_fields(self, field):
         """

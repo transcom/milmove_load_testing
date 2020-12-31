@@ -130,11 +130,51 @@ class TestAPIParser:
     def test__parse_definition(self):
         """ """
 
-    def test__parse_object_field(self):
-        """ """
+    @pytest.mark.parametrize(
+        "object_name,object_def,num_fields_expected",
+        [
+            ("AppleTree", APPLE_TREE_DEF, 4),  # num_fields_expected = Tree properties + AppleTree properties - readOnly
+            ("Farmer", FARMER_DEF, 6),  # num_fields_expected = Farmer properties - readOnly
+            ("Orchard", ORCHARD_DEF, 3),  # num_fields_expected = Orchard properties - readOnly
+        ],
+    )
+    def test__parse_object_field(self, object_name, object_def, num_fields_expected):
+        """ Tests that an ObjectField with the correct properties is returned. """
+        field = self.parser._parse_object_field(object_name, object_def)
+
+        assert field.name == object_name
+        assert field.discriminator == object_def.get("discriminator", "")
+        assert len(field.object_fields) == num_fields_expected
 
     def test__parse_discriminator(self):
-        """ """
+        """ Tests that a polymorphic API definition is parsed correctly. """
+        object_field = ObjectField(name="trees")
+        object_field = self.parser._parse_discriminator(object_field, TREE_DEF)
+
+        assert object_field.discriminator == TREE_DEF["discriminator"]
+        assert object_field.object_fields is not None
+
+        field_names = [field.name for field in object_field.object_fields]
+        assert "treeType" in field_names  # from base Tree
+        assert "datePlanted" in field_names  # from base Tree
+        assert "apples" in field_names  # from AppleTree
+        assert "cherryBunchSize" in field_names  # from CherryTree
+        assert "goodForLemonade" in field_names  # from LemonTree
+        assert "peaches" in field_names  # from PeachTree
+
+        date_planted = object_field.get_field("datePlanted")
+        assert date_planted.discriminator_values is not None
+        assert "AppleTree" in date_planted.discriminator_values
+        assert "CherryTree" in date_planted.discriminator_values
+        assert "LemonTree" in date_planted.discriminator_values
+        assert "PeachTree" in date_planted.discriminator_values
+
+        apples = object_field.get_field("apples")
+        assert apples.discriminator_values is not None
+        assert "AppleTree" in apples.discriminator_values
+        assert "CherryTree" not in apples.discriminator_values
+        assert "LemonTree" not in apples.discriminator_values
+        assert "PeachTree" not in apples.discriminator_values
 
     @pytest.mark.parametrize(
         "array_name,array_def", [("AppleTrees", APPLE_TREES_DEF), ("trees", ORCHARD_DEF["properties"]["trees"])]

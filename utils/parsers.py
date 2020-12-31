@@ -203,10 +203,8 @@ class APIParser:
         object_field = ObjectField(name=name)
 
         if object_def.get("discriminator") and not self.discriminated:
-            # We set this self.discriminated value to avoid infinite recursion loops:
-            self.discriminated = True
+            # This function sets self.discriminated:
             object_field = self._parse_discriminator(object_field, object_def)
-            self.discriminated = False
 
         elif object_def.get("properties"):
             for field, properties in object_def["properties"].items():
@@ -248,6 +246,9 @@ class APIParser:
         if not object_def.get("discriminator"):
             raise ImplementationError("_parse_discriminator can only be used with API fields with a discriminator.")
 
+        # We set this self.discriminated value to avoid infinite recursion loops:
+        self.discriminated = True
+
         # This logic grabs the field definition and properties for the field named as the discriminator, then it parses
         # that field explicitly.
         object_field.discriminator = object_def["discriminator"]
@@ -258,8 +259,14 @@ class APIParser:
         if not hasattr(d_field, "options"):
             raise NotImplementedError("This APIParser can only handle discriminators with enum options.")
 
+        d_options = d_field.options
+        # This means we are parsing one of the discriminator definitions now, so we don't need to parse all of the other
+        # options now:
+        if object_field.name in d_options:
+            d_options = [object_field.name]
+
         # For each possible discriminator value, add the fields relevant to that value to the base ObjectField:
-        for value in d_field.options:
+        for value in d_options:
             value_definition = self.get_definition(value)
             field = self._parse_definition(object_field.name, value_definition)
 
@@ -267,6 +274,7 @@ class APIParser:
                 field.add_discriminator_value(value)
                 object_field.combine_fields(field)
 
+        self.discriminated = False
         return object_field
 
     def _parse_array_field(self, name, array_def):
