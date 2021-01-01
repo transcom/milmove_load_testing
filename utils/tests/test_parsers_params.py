@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
-""" Assertions and parameters for the utils/tests/ cases """
+""" Assertions and parameters for the test_parsers.py test cases """
 
 # test_api definitions:
 APPLE_DEF = {

@@ -135,9 +135,6 @@ class TestAPIParser:
         assert stored_body is not None
         assert stored_body == body
 
-    def test_generate_fake_request(self):
-        """ """
-
     @pytest.mark.parametrize(
         "name,definition,expected_type",
         [
