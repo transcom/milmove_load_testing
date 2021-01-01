@@ -221,7 +221,7 @@ class APIParser:
             for definition in object_def["allOf"]:
                 field = self._parse_definition(name, definition)
                 if field:
-                    object_field.combine_fields(field)
+                    object_field.combine_fields(field, unique=True)
 
         elif object_def.get("oneOf"):
             selection = random.choice(object_def["oneOf"])  # randomly select the object to use
@@ -274,6 +274,9 @@ class APIParser:
 
             if field:
                 field.add_discriminator_value(value)
+                # As we combine fields, we want it to NOT unique because different discriminator definitions could have
+                # the same field names. We want to preserve both so that we can pick the right one when generating fake
+                # data and validating discriminator values:
                 object_field.combine_fields(field)
 
         self.discriminated = False

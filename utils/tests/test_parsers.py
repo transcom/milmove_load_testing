@@ -187,13 +187,6 @@ class TestAPIParser:
         assert "goodForLemonade" in field_names  # from LemonTree
         assert "peaches" in field_names  # from PeachTree
 
-        date_planted = object_field.get_field("datePlanted")
-        assert date_planted.discriminator_values is not None
-        assert "AppleTree" in date_planted.discriminator_values
-        assert "CherryTree" in date_planted.discriminator_values
-        assert "LemonTree" in date_planted.discriminator_values
-        assert "PeachTree" in date_planted.discriminator_values
-
         apples = object_field.get_field("apples")
         assert apples.discriminator_values is not None
         assert "AppleTree" in apples.discriminator_values
