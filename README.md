@@ -29,7 +29,9 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Setup: pre-commit](#setup-pre-commit)
          * [Setup: pyenv](#setup-pyenv)
          * [Setup: virtualenv](#setup-virtualenv)
+         * [Alternative Setup: Docker](#alternative-setup-docker)
          * [Troubleshooting](#troubleshooting)
+         * [Testing](#testing)
       * [Running Load Tests](#running-load-tests)
          * [Setting up the local environment](#setting-up-the-local-environment)
          * [Running preset tests](#running-preset-tests)
@@ -45,7 +47,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Wed Dec  9 15:32:07 CST 2020 -->
+<!-- Added by: sandy, at: Wed Dec 23 15:56:47 CST 2020 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -92,7 +94,7 @@ This folder is for static files (certificates, PDFs, etc.) that will be used dur
   * Install with:
   `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 * `pre-commit`
-* [`pyenv`](https://github.com/pyenv/pyenv)
+* [`pyenv`](https://github.com/pyenv/pyenv) or Docker + `docker-compose` (See: [Alternative Setup: Docker](#alternative-setup-docker))
 
 *Note: These instructions include the relevant commands for MacOS only. Please keep this in mind and be prepared to
 search for alternatives if you are running a different OS.*
@@ -138,14 +140,13 @@ In order to enable `pyenv` to switch which version of Python you are using at an
 you will need to paste the following code to your shell's profile file (`~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, etc):
 
 ```bash
-export PATH="{$HOME}/.pyenv/bin:{$PATH}"
+export PATH="$HOME/.pyenv/bin:$PATH"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 ```
 
-Once you have modified and saved your profile file, you will need to resource your profile (where `<profile_file` is one
-of `~/.bash_profile`, `~/.bashrc`, etc):
+Once you have modified and saved your profile file, you will need to resource your profile:
 
 ```shell script
 source <profile_file>  # Or just restart your terminal
@@ -216,6 +217,31 @@ make teardown
 
 Remember to recreate your virtual environment with `make venv` before attempting to continue development on the project.
 
+### Alternative Setup: Docker
+
+It is also possible to run load tests from within a Docker container, eliminating the need to set up a valid python
+environment. This requires Docker and `docker-compose` to be installed on your machine. Get them here:
+
+* [Get Docker](https://docs.docker.com/get-docker/)
+* [Install Docker Compose](https://docs.docker.com/compose/install/)
+
+To get your load testing Docker container up and running for the local environment, use the following commands:
+
+* `docker-compose -f docker-compose.local.yaml build`
+* `docker-compose -f docker-compose.local.yaml up`
+
+And when you are done with testing:
+
+* `docker-compose -f docker-compose.local.yaml build`
+
+You can also use the Makefile equivalents of these commands:
+
+* `make local_docker_build`
+* `make local_docker_up`
+* `make local_docker_down`
+
+As long as your local MilMove server is up and running, you are ready to run your tests!
+
 ### Troubleshooting
 
 If you already had `pyenv` installed on your machine with Homebrew, you may find that your installation doesn't include
@@ -230,6 +256,36 @@ If you encounter compiler issues while installing the required Python version, t
 ```shell script
 brew unlink binutils
 ```
+
+### Testing
+
+This project uses [`pytest`](https://docs.pytest.org/en/stable/) as its testing framework. To run the tests, activate
+your virtual environment and use the command:
+
+```shell
+pytest
+```
+
+To see verbose output and any print statments in the tests, use:
+
+```shell
+pytest -v -s
+```
+
+To run a specific test, use:
+
+```shell
+pytest /utils/tests/test_parsers.py
+```
+
+If you have a pre-existing installation of `pytest` on your machine, you may need to invoke your system's version of
+`python`/`python3` in the command:
+
+```shell
+python3 -m pytest -v
+```
+
+For more instructions and examples, please read [pytest's documentation](https://docs.pytest.org/en/stable/).
 
 ## Running Load Tests
 

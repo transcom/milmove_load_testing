@@ -31,12 +31,14 @@ def check_response(response: Response, task_name="Task", request=None):
         return None, False
 
     if not str(response.status_code).startswith("2"):
-        logger.error(f"⚠️\n{json.dumps(json_response, indent=4)}")
+        logger.error(f"⚠️ {task_name} failed.\n{json.dumps(json_response, indent=4)}")
         if request:
             try:
-                logger.error(f"Request data:\n{json.dumps(request, indent=4)}")
+                logger.error(
+                    f"Request data:\n{response.request.method} {response.request.url}\n{json.dumps(request, indent=4)}"
+                )
             except (json.JSONDecodeError, TypeError):
-                logger.error(f"Request data:\n{request}")
+                logger.error(f"Request data:\n{response.request.method} {response.request.url}\n{request}")
 
         return json_response, False
 

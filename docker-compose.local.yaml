@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  prime:
+    build:
+      context: .
+      network: host
+    ports:
+      - "8089:8089"
+      - "9443:9443"
+    entrypoint: ["python", "local_locust.py"]
+    # To use local_locust.py, we have to pass the locust flags in as a string that can be split to call the locust
+    # command as normal:
+    command: "'-f /app/locustfiles/prime.py --host local'"
+
