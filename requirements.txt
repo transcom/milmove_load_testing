@@ -2,4 +2,3 @@ requests>=2.22.0
 locust>=1
 Faker
 prance[osv,cli]==0.19.0
-pytest

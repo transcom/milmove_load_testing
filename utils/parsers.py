@@ -69,7 +69,10 @@ class APIParser:
         try:
             # grabbing the first body parameter in the endpoint to work with:
             body = [param for param in endpoint["parameters"] if param["in"] == "body"][0]
-        except IndexError:  # this means we got an empty list - no body! Could be intended for this endpoint though
+        except (KeyError, IndexError):
+            # this means we either didn't even have a "parameters" or "in" key (no input at all),
+            # or we got an empty list (the endpoint has parameters but no body),
+            # and both cases are valid states for some endpoints
             return {}
 
         return body["schema"]
@@ -90,7 +93,7 @@ class APIParser:
         except KeyError:  # no response body found for the given status code - could be intended
             return {}
 
-        return response["schema"]
+        return response
 
     def get_definition(self, name):
         """
@@ -111,9 +114,7 @@ class APIParser:
         :param require_all: bool, optional
         :return: dict
         """
-        request_body = self._get_processed_body(path, method)
-        if not request_body:
-            request_body = self._process_request_body(path, method)
+        request_body = self._process_request_body(path, method)
 
         fake_request = request_body.generate_fake_data(self.milmove_data, overrides, require_all)
         # Hook method for custom post-data generation validation:
@@ -145,6 +146,10 @@ class APIParser:
         :param method: str
         :return: APIEndpointBody
         """
+        # Check first that we haven't already processed this request:
+        if request_body := self._get_processed_body(path, method):
+            return request_body
+
         request_def = self.get_request_body(path, method)
         request_body = APIEndpointBody(path, method)
 
@@ -200,10 +205,8 @@ class APIParser:
         object_field = ObjectField(name=name)
 
         if object_def.get("discriminator") and not self.discriminated:
-            # We set this self.discriminated value to avoid infinite recursion loops:
-            self.discriminated = True
+            # This function sets self.discriminated:
             object_field = self._parse_discriminator(object_field, object_def)
-            self.discriminated = False
 
         elif object_def.get("properties"):
             for field, properties in object_def["properties"].items():
@@ -218,7 +221,7 @@ class APIParser:
             for definition in object_def["allOf"]:
                 field = self._parse_definition(name, definition)
                 if field:
-                    object_field.combine_fields(field)
+                    object_field.combine_fields(field, unique=True)
 
         elif object_def.get("oneOf"):
             selection = random.choice(object_def["oneOf"])  # randomly select the object to use
@@ -245,6 +248,9 @@ class APIParser:
         if not object_def.get("discriminator"):
             raise ImplementationError("_parse_discriminator can only be used with API fields with a discriminator.")
 
+        # We set this self.discriminated value to avoid infinite recursion loops:
+        self.discriminated = True
+
         # This logic grabs the field definition and properties for the field named as the discriminator, then it parses
         # that field explicitly.
         object_field.discriminator = object_def["discriminator"]
@@ -255,15 +261,25 @@ class APIParser:
         if not hasattr(d_field, "options"):
             raise NotImplementedError("This APIParser can only handle discriminators with enum options.")
 
+        d_options = d_field.options
+        # This means we are parsing one of the discriminator definitions now, so we don't need to parse all of the other
+        # options now:
+        if object_field.name in d_options:
+            d_options = [object_field.name]
+
         # For each possible discriminator value, add the fields relevant to that value to the base ObjectField:
-        for value in d_field.options:
+        for value in d_options:
             value_definition = self.get_definition(value)
             field = self._parse_definition(object_field.name, value_definition)
 
             if field:
                 field.add_discriminator_value(value)
+                # As we combine fields, we want it to NOT unique because different discriminator definitions could have
+                # the same field names. We want to preserve both so that we can pick the right one when generating fake
+                # data and validating discriminator values:
                 object_field.combine_fields(field)
 
+        self.discriminated = False
         return object_field
 
     def _parse_array_field(self, name, array_def):

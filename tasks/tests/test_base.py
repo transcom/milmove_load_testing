@@ -47,11 +47,16 @@ def test_check_response_bad_status_code(mocker):
     bad_status_code.status_code = 400
     bad_status_code._content = '{"this_is": "ok"}'
 
+    request = Response()
+    request.method = "POST"
+    request.url = "path/here/"
+    bad_status_code.request = request
+
     mocker.patch.object(logger, "error")
     assert check_response(bad_status_code, "Task", '{ "a":1 }') == ({"this_is": "ok"}, False)
     assert logger.error.call_count == 2
     expected_calls = [
-        mocker.call('⚠️\n{\n    "this_is": "ok"\n}'),
-        mocker.call('Request data:\n"{ \\"a\\":1 }"'),
+        mocker.call('⚠️ Task failed.\n{\n    "this_is": "ok"\n}'),
+        mocker.call('Request data:\nPOST path/here/\n"{ \\"a\\":1 }"'),
     ]
     assert logger.error.call_args_list == expected_calls
