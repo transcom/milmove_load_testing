@@ -377,6 +377,13 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         overrides = {
             "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
+            # Moves that are in DRAFT or CANCELED mode cannot be used by the rest of the
+            # loadtesting
+            "status": "SUBMITTED",
+            # Must be set false, or triggers immediate cancelation of the MTO
+            "isCanceled": False,
+            # If this date is set here, the status will not properly transition to APPROVED
+            "availableToPrimeAt": None,
             "moveOrder": {
                 "status": "APPROVED",
                 # We need these objects to exist
@@ -423,18 +430,18 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if not mto_service_item:
             return
 
-        payload = self.fake_request("/service-items/{mtoServiceItemID}/status", "patch")
+        payload = self.fake_request("/mto-service-items/{mtoServiceItemID}/status", "patch")
         headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
 
         resp = self.client.patch(
-            support_path(f"/service-items/{mto_service_item['id']}/status"),
-            name=support_path("/service-items/{mtoShipmentID}/status"),
+            support_path(f"/mto-service-items/{mto_service_item['id']}/status"),
+            name=support_path("/mto-service-items/{mtoServiceItemID}/status"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
         )
 
-        mto_service_item_data, success = check_response(resp, "updateMTOServiceItemStatus")
+        mto_service_item_data, success = check_response(resp, "updateMTOServiceItemStatus", payload)
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, mto_service_item_data)
