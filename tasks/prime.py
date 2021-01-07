@@ -333,6 +333,30 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, resp)
 
+    @tag(PrimeObjects.POST_COUNSELING_INFORMATION.value, "updateMTOPostCounselingInformation")
+    def update_post_counseling_information(self):
+        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
+        if not move_task_order:
+            logger.error(f"⛔️ No move_task_order \n{move_task_order}")
+            return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
+
+        payload = self.fake_request("/move-task-orders/{moveTaskOrderID}/post-counseling-info", "patch")
+
+        move_task_order_id = move_task_order["id"]  # path parameter
+        headers = {"content-type": "application/json", "If-Match": move_task_order["eTag"]}
+
+        resp = self.client.patch(
+            support_path(f"/move-task-orders/{move_task_order_id}/post-counseling-info"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}/post-counseling-info"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "updateMTOPostCounselingInformation", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.POST_COUNSELING_INFORMATION, move_task_order, resp)
+
 
 @tag("support")
 class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
