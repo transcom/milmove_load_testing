@@ -100,4 +100,3 @@ class PrimeObjects(ListEnum):
     MTO_SHIPMENT = "mtoShipment"
     MTO_SERVICE_ITEM = "mtoServiceItem"
     PAYMENT_REQUEST = "paymentRequest"
-    POST_COUNSELING_INFORMATION = "postCounselingInformation"
