@@ -333,7 +333,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, resp)
 
-    @tag(PrimeObjects.POST_COUNSELING_INFORMATION.value, "updateMTOPostCounselingInformation")
+    @tag(PrimeObjects.MOVE_TASK_ORDER.value, "updateMTOPostCounselingInformation")
+    @task
     def update_post_counseling_information(self):
         move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         if not move_task_order:
@@ -346,8 +347,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         headers = {"content-type": "application/json", "If-Match": move_task_order["eTag"]}
 
         resp = self.client.patch(
-            support_path(f"/move-task-orders/{move_task_order_id}/post-counseling-info"),
-            name=support_path("/move-task-orders/{moveTaskOrderID}/post-counseling-info"),
+            prime_path(f"/move-task-orders/{move_task_order_id}/post-counseling-info"),
+            name=prime_path("/move-task-orders/{moveTaskOrderID}/post-counseling-info"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -355,7 +356,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         resp, success = check_response(resp, "updateMTOPostCounselingInformation", payload)
 
         if success:
-            self.replace_prime_data(PrimeObjects.POST_COUNSELING_INFORMATION, move_task_order, resp)
+            self.replace_prime_data(PrimeObjects.MOVE_TASK_ORDER, move_task_order, resp)
 
 
 @tag("support")
