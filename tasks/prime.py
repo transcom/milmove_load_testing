@@ -380,8 +380,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             # Moves that are in DRAFT or CANCELED mode cannot be used by the rest of the
             # loadtesting
             "status": "SUBMITTED",
-            # Must be set false, or triggers immediate cancelation of the MTO
-            "isCanceled": False,
             # If this date is set here, the status will not properly transition to APPROVED
             "availableToPrimeAt": None,
             "moveOrder": {
