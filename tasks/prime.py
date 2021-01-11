@@ -418,7 +418,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
                 "customer": {},
             },
         }
-
         payload = self.fake_request("/move-task-orders", "post", overrides)
 
         headers = {"content-type": "application/json"}
@@ -444,6 +443,8 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.set_prime_data(PrimeObjects.MOVE_TASK_ORDER, mto_data)
+
+        return mto_data
 
     @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "updateMTOServiceItemStatus")
     @task
@@ -490,3 +491,26 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.replace_prime_data(PrimeObjects.PAYMENT_REQUEST, payment_request, resp)
+
+    @tag(PrimeObjects.MOVE_TASK_ORDER.value, "getMoveTaskOrder")
+    @task
+    def get_move_task_order(self):
+        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
+        if not move_task_order:
+            logger.error(f"⛔️ No move_task_order \n{move_task_order}")
+            return
+
+        headers = {"content-type": "application/json"}
+
+        resp = self.client.get(
+            support_path(f"/move-task-orders/{move_task_order['id']}"),
+            name=support_path("move-task-orders/{moveTaskOrderID}"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "getMoveTaskOrder")
+
+        if success:
+            self.replace_prime_data(PrimeObjects.MOVE_TASK_ORDER, move_task_order, resp)
+
+        return move_task_order
