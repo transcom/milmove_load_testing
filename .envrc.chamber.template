@@ -1,0 +1,18 @@
+#! /usr/bin/env bash
+
+# !!! -------------------------------------- !!!
+# !!! DO NOT MAKE LOCAL CHANGES TO THIS FILE !!!
+# !!! -------------------------------------- !!!
+# This file loads in secrets from chamber
+
+# Secrets should be added to chamber with:
+# `aws-vault exec $(AWS_PROFILE) -- chamber write app-devlocal <lower_case_name> <secret_key>`
+
+# This line grabs any available secrets in app-load-testing and adds them to the environment.
+# Lines that begin with `require ...` should still run to verify the secret is set.
+if ! aws-vault exec $AWS_PROFILE -- chamber list app-devlocal --retries=1 > /dev/null ; then
+  log_error "Unable to access app-devlocal variables with chamber."
+  log_error "Login to chamber with 'DISABLE_AWS_VAULT_WRAPPER=1 AWS_REGION=us-gov-west-1 aws-vault exec transcom-gov-dev -- chamber list app-devlocal'."
+else
+  eval "$(aws-vault exec $AWS_PROFILE -- chamber env app-devlocal --retries=1)"
+fi
