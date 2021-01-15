@@ -4,6 +4,7 @@
 .vscode
 *.swp
 *.sublime-*
+gh-md-toc
 
 # Makefile
 *.stamp
