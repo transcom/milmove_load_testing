@@ -1,4 +1,4 @@
-# misc
+# IDE config
 .DS_Store
 .idea
 .vscode
@@ -17,3 +17,5 @@ __pycache__
 # Envrc
 .envrc.chamber
 .envrc.local*
+exp_*.pem
+stg_*.pem
