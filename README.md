@@ -379,38 +379,38 @@ This where you will define all of the `User` classes for your load tests. A comm
 ```python
 from locust import HttpUser, between
 
-from utils.constants import MilMoveDomain
-from utils.mixins import MilMoveHostMixin
+from utils.hosts import MilMoveHostMixin, MilMoveDomain
 
 
 # Use MilMoveHostMixin to easily switch between local, experimental, and staging environments
 # HttpUser is the Locust user class we want to use to hit endpoint paths
 class MyUser(MilMoveHostMixin, HttpUser):
-    """ Here's a short description of what my user does. """
+  """ Here's a short description of what my user does. """
 
-    # Required attributes:
+  # Required attributes:
+  # The time (in seconds) Locust waits in between tasks. Can use decimals.
+  wait_time = between(1, 9)
 
-    # The time (in seconds) Locust waits in between tasks. Can use decimals.
-    wait_time = between(1, 9)
-    # The list of tasks for this user. You can use a TaskSet or define tasks in your MyUser class itself.
-    tasks = []
+  # The list of tasks for this user. You can use a TaskSet or define tasks in your MyUser class itself.
+  tasks = []
 
-    # MilMoveHostMixin attributes:
+  # MilMoveHostMixin attributes:
+  # Some local hosts for MilMove don't use HTTPS - you can override that default here:
+  local_protocol = "http"
 
-    # Some local hosts for MilMove don't use HTTPS - you can override that default here:
-    local_protocol = "http"
-    # The default port you want to use for local testing:
-    local_port = "3000"
-    # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
-    # NOTE: The domain corresponds to whatever you use in local - so <domain>local
-    domain = MilMoveDomain.OFFICE
-    # Are you testing an API endpoint or path in the interface? This changes the host:
-    is_api = True
+  # The default port you want to use for local testing:
+  local_port = "3000"
 
-    # If not using MilMoveHostMixin:
+  # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
+  # NOTE: The domain corresponds to whatever you use in local - so <domain>local
+  domain = MilMoveDomain.OFFICE
 
-    # Can set the host on the class directly. Useful if it never changes based on env.
-    host = "https://primelocal:9443"
+  # Are you testing an API endpoint or path in the interface? This changes the host:
+  is_api = True
+
+  # If not using MilMoveHostMixin:
+  # You can set the host on the class directly. Useful if it never changes based on env.
+  host = "https://primelocal:9443"
 ```
 
 This is the bare minimum that you need to have a functional load test. The `MilMoveHostMixin` class is designed to make set up faster and running tests an easier, simpler process. You don't
