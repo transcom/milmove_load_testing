@@ -6,7 +6,8 @@ import random
 
 from locust import tag, task, TaskSet
 
-from utils.constants import TEST_PDF, ZERO_UUID, MilMoveEnv, PrimeObjects
+from utils.constants import TEST_PDF, ZERO_UUID, PrimeObjects
+from utils.hosts import MilMoveEnv
 from .base import check_response, CertTaskMixin, ParserTaskMixin
 from copy import deepcopy
 

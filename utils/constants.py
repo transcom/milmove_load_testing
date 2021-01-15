@@ -20,55 +20,6 @@ ARRAY_MAX = 5
 ZERO_UUID = "00000000-0000-0000-0000-000000000000"
 
 
-class MilMoveEnv(ListEnum):
-    LOCAL = "local"
-    STG = "stg"
-    EXP = "exp"
-
-
-class MilMoveDomain(ListEnum):
-    PRIME = "prime"
-    OFFICE = "office"
-    MILMOVE = "milmove"
-
-    @property
-    def local_value(self):
-        return f"{self.value}local"
-
-    @property
-    def deployed_value(self):
-        if self.value == self.MILMOVE.value:
-            return "my"
-
-        return self.value
-
-    def host_name(self, env, is_api=False, port="3000", protocol="https"):
-        """
-        Returns the host name for this domain based on the environment, whether or not it is in the API domain, and the
-        port and protocol (for local envs).
-        :param env: str MilMoveEnv
-        :param is_api: bool
-        :param port: str containing 4 digits
-        :param protocol: str "https" or "http"
-        :return: str host
-        """
-        if isinstance(env, MilMoveEnv):
-            env = env.value  # ensure that we're using the value string instead of the Enum literal
-
-        if env not in MilMoveEnv.values():
-            raise ImplementationError("The environment for determining the host name must be included in MilMoveEnv.")
-
-        if env == MilMoveEnv.LOCAL.value:
-            port = str(port)  # in case an int was passed in
-            if not port.isdigit() or len(port) != 4:
-                raise ImplementationError("The local port must be a string of 4 digits.")
-
-            return f"{protocol}://{self.local_value}:{port}"
-
-        # NOTE: deployed protocol is always https
-        return f"https://{'api' if is_api else self.deployed_value}.{env}.move.mil"
-
-
 class DataType(ListEnum):
     """ Swagger data types that we expect to deal with. Uses camelcase in values to match. """
 
