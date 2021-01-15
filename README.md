@@ -43,11 +43,13 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Fake Data Generation](#fake-data-generation)
          * [Creating a custom parser](#creating-a-custom-parser)
       * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
+         * [Prime API](#prime-api)
+         * [MilMove/Office domains](#milmoveoffice-domains)
          * [Handling Rate Limiting](#handling-rate-limiting)
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Wed Dec 23 15:56:47 CST 2020 -->
+<!-- Added by: sandy, at: Fri Jan 15 00:40:16 CST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -694,15 +696,29 @@ GHCTaskSet(ParserTaskMixin, ...):
 
 ## Load Testing against AWS Experimental Environment
 
+### Prime API
+
+To load test against the Prime API in experimental, you will need to install and set up `direnv`, `chamber`, and
+`aws-vault`. Please follow the instructions in the `mymove` repo to complete this step:
+
+* [Setup: `direnv` and `chamber`](https://github.com/transcom/mymove#setup-direnv)
+* [Setup: AWS credentials and `aws-vault`](https://github.com/transcom/mymove#setup-aws-services-optional)
+
+Once you have loaded the secrets from `chamber`, which will include the experimental certificate and private key, you
+may run your load tests using "exp" as the host value. It is strongly recommended that you set up your `User` classes to
+subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "exp."
+
+### MilMove/Office domains
+
 To load test against the AWS Experimental Environment you must modify the
 [`DEVLOCAL_AUTH` environment variable](https://github.com/transcom/mymove/blob/master/config/env/exp.app.env#L8)
 and [deploy the code to the experimental environment](https://github.com/transcom/mymove/wiki/deploy-to-experimental).
 
-Then you can use the same steps as the development as above as long as you change the `host` parameter in the
-`locustfile.py` test classes and point them to the experimental domains:
+Then, if you have `User` classes that take advantage of the `MilMoveHostMixin` class, you may run your load tests using
+"exp" as the host value. If not, make sure to use the experimental domains as your host:
 
-* [https://my.experimental.move.mil](https://my.experimental.move.mil)
-* [https://office.experimental.move.mil](https://office.experimental.move.mil)
+* [https://my.exp.move.mil](https://my.exp.move.mil)
+* [https://office.exp.move.mil](https://office.exp.move.mil)
 
 ### Handling Rate Limiting
 
