@@ -2,7 +2,7 @@
 """ Locust test for the Prime & Support APIs """
 from locust import HttpUser, between
 
-from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS
+from utils.constants import MilMoveDomain, LOCAL_TLS_CERT_KWARGS
 from utils.mixins import MilMoveHostMixin
 from utils.parsers import PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks
@@ -22,7 +22,7 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
     is_api = True  # if True, uses the api base domain in deployed environments
 
     # cert_kwargs are used by CertTaskMixin for verifying requests:
-    cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
+    cert_kwargs = LOCAL_TLS_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
     parser = prime_api
 
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
@@ -39,7 +39,7 @@ class SupportUser(MilMoveHostMixin, HttpUser):
     domain = MilMoveDomain.PRIME
     is_api = True
 
-    cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
+    cert_kwargs = LOCAL_TLS_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
     parser = support_api
 
     wait_time = between(0.25, 9)

@@ -5,11 +5,14 @@ import os
 from .base import ImplementationError, ListEnum
 
 STATIC_FILES = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "static")
-LOCAL_MTLS_CERT = os.path.join(STATIC_FILES, "tls/devlocal-mtls.cer")
-LOCAL_MTLS_KEY = os.path.join(STATIC_FILES, "tls/devlocal-mtls.key")
 TEST_PDF = os.path.join(STATIC_FILES, "test_upload.pdf")
 
-PRIME_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
+STATIC_TLS_FILES = os.path.join(STATIC_FILES, "tls")
+DOD_CA_BUNDLE = os.path.join(STATIC_TLS_FILES, "dod-ca-60-61-bundle.pem")
+LOCAL_MTLS_CERT = os.path.join(STATIC_TLS_FILES, "devlocal-mtls.cer")
+LOCAL_MTLS_KEY = os.path.join(STATIC_TLS_FILES, "devlocal-mtls.key")
+
+LOCAL_TLS_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
 
 ARRAY_MIN = 1
 ARRAY_MAX = 5
