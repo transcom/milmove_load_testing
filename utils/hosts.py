@@ -4,6 +4,8 @@ import logging
 import os
 from typing import Optional
 
+from locust.env import Environment
+
 from .base import ImplementationError, ListEnum
 from .constants import LOCAL_MTLS_CERT, LOCAL_MTLS_KEY, DOD_CA_BUNDLE, STATIC_TLS_FILES
 
@@ -84,23 +86,8 @@ class MilMoveHostMixin:
     # {"cert": <cert/key file path(s)>, "verify": <False or the CA bundle file path>}
     cert_kwargs: Optional[dict] = None
 
-    def __init__(self, *args, **kwargs):
-        """
-        Sets host based on environment value from --host flag in command. Note that the self.host attribute is set on
-        the User class by the locust CLI utility BEFORE initialization.
-        """
-        # Check if the host value is one of our accepted environments, then set the correct hostname:
-        if MilMoveEnv.validate(self.host):
-            self.env = self.host  # preserve the original environment value that was passed in on the command line
-            self.set_host_name()  # set the actual host based on the env
-
-        # If the host was not a MilMoveEnv value, we'll continue with the host the user entered as-is and skip all
-        # customization of the hostname
-
-        super().__init__(*args, **kwargs)
-
     @classmethod
-    def set_mil_move_env(cls, env: str):
+    def set_milmove_env(cls, env: str):
         """
         Sets the environment attribute for the class. Takes in a string and sets a MilMoveEnv literal to cls.env.
         """
@@ -153,13 +140,13 @@ class MilMoveHostMixin:
             return
 
         # We now know we're in a deployed environment, so let's make a deployed cert/key file:
-        cert_key = cls._create_deployed_cert_file()
+        cert_key = cls.create_deployed_cert_file()
 
         # We also need to use the DoD's specific CA bundle for SSL verification in deployed envs:
         cls.cert_kwargs = {"cert": cert_key, "verify": DOD_CA_BUNDLE}
 
     @classmethod
-    def _create_deployed_cert_file(cls) -> str:
+    def create_deployed_cert_file(cls) -> str:
         """
         Grabs the certificate and key values for this environment from the relevant environment variables (which must be
         set for this function to work), and then creates a new .pem file that contains both the certificate and the key
@@ -185,7 +172,7 @@ class MilMoveHostMixin:
         return cert_key_file
 
     @classmethod
-    def _remove_deployed_cert_file(cls):
+    def remove_deployed_cert_file(cls):
         """
         Removes the .pem cert/key file that was created for running load tests against a deployed environment.
         """
@@ -199,10 +186,41 @@ class MilMoveHostMixin:
             # In either case, let's try again to remove the file using the custom filename to be extra sure we're
             # cleaning up after ourselves:
             try:
-                os.remove(os.path.join(STATIC_TLS_FILES, f"{cls.env.value}_tls_cert_key.pem"))
+                os.remove(os.path.join(STATIC_TLS_FILES, f"{cls.env.value if cls.env else ''}_tls_cert_key.pem"))
             except FileNotFoundError:
                 # The file is gone, huzzah!
                 pass
 
         # Finally, clear out all traces of the deployed cert file:
         cls.cert_kwargs = None
+
+
+def setup_milmove_host_users(locust_env: Environment):
+    """
+    Sets the Users' host based on environment value from --host flag in command. This should be called in the
+    "test_start" event for a locustfile/load test.
+
+    To do this, we're going to iterate over all the User classes defined in this locust environment (which is the
+    equivalent of all the User classes defined in the locustfile for the test that calls this function), and if the User
+    is a subclass of MilMoveHostMixin, we'll run all the relevant class-level setup functions.
+    """
+    # Check if the host value is one of our accepted environments. If not, we'll continue with the host entered as-is
+    # and skip the rest of the custom setup.
+    if not MilMoveEnv.validate(locust_env.host):
+        return
+
+    for user_class in locust_env.user_classes:
+        if issubclass(user_class, MilMoveHostMixin):
+            user_class.set_milmove_env(locust_env.host)
+            user_class.set_host_name()
+            user_class.set_cert_kwargs()
+
+
+def clean_milmove_host_users(locust_env: Environment):
+    """
+    Cleans up the Users' cert/key settings if the User is a subclass of MilMoveHostMixin. This should be called in the
+    "test_stop" event for a locustfile/load test.
+    """
+    for user_class in locust_env.user_classes:
+        if issubclass(user_class, MilMoveHostMixin):
+            user_class.remove_deployed_cert_file()
