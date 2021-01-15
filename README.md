@@ -706,7 +706,8 @@ GHCTaskSet(ParserTaskMixin, ...):
 ### Prime API
 
 To load test against the Prime API in experimental, you will need to install and set up `direnv`, `chamber`, and
-`aws-vault`. Please follow the instructions in the `mymove` repo to complete this step:
+`aws-vault`. If you have already set up these tools in order to run the `mymove` project, you do not need to repeat
+these steps. Otherwise, please follow the instructions in the `mymove` repo to complete this setup:
 
 * [Setup: `direnv` and `chamber`](https://github.com/transcom/mymove#setup-direnv)
 * [Setup: AWS credentials and `aws-vault`](https://github.com/transcom/mymove#setup-aws-services-optional)
