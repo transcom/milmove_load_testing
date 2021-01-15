@@ -209,11 +209,14 @@ def setup_milmove_host_users(locust_env: Environment):
     if not MilMoveEnv.validate(locust_env.host):
         return
 
+    logger.info("Setting up the MilMove hostname and TLS certificates...")
     for user_class in locust_env.user_classes:
         if issubclass(user_class, MilMoveHostMixin):
             user_class.set_milmove_env(locust_env.host)
             user_class.set_host_name()
             user_class.set_cert_kwargs()
+
+    logger.info("...User setup complete.")
 
 
 def clean_milmove_host_users(locust_env: Environment):
@@ -224,3 +227,5 @@ def clean_milmove_host_users(locust_env: Environment):
     for user_class in locust_env.user_classes:
         if issubclass(user_class, MilMoveHostMixin):
             user_class.remove_deployed_cert_file()
+
+    logger.info("Cleaned up User TLS certificates.")
