@@ -139,8 +139,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag(PrimeObjects.MTO_SHIPMENT.value, "createMTOShipment")
     @task
     def create_mto_shipment(self):
-        # move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
-        move_task_order = None
+        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         if not move_task_order:
             return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
 

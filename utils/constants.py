@@ -2,7 +2,7 @@
 """ utils/constants.py is for constant values useful throughout the codebase. """
 import os
 
-from .base import ImplementationError, ValueEnum
+from .base import ValueEnum
 
 STATIC_FILES = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "static")
 TEST_PDF = os.path.join(STATIC_FILES, "test_upload.pdf")

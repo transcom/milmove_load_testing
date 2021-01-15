@@ -26,7 +26,6 @@ def check_response(response: Response, task_name="Task", request=None):
 
     try:
         json_response = json.loads(response.content)
-
     except (json.JSONDecodeError, TypeError):
         logger.exception("Non-JSON response.")
         return None, False
