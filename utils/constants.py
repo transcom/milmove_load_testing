@@ -2,7 +2,7 @@
 """ utils/constants.py is for constant values useful throughout the codebase. """
 import os
 
-from .base import ImplementationError, ListEnum
+from .base import ImplementationError, ValueEnum
 
 STATIC_FILES = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "static")
 TEST_PDF = os.path.join(STATIC_FILES, "test_upload.pdf")
@@ -20,7 +20,7 @@ ARRAY_MAX = 5
 ZERO_UUID = "00000000-0000-0000-0000-000000000000"
 
 
-class DataType(ListEnum):
+class DataType(ValueEnum):
     """ Swagger data types that we expect to deal with. Uses camelcase in values to match. """
 
     FIRST_NAME = "firstName"
@@ -46,7 +46,7 @@ class DataType(ListEnum):
     OBJECT = "object"
 
 
-class PrimeObjects(ListEnum):
+class PrimeObjects(ValueEnum):
     """ Constants representing the objects used in the Prime API. """
 
     MOVE_TASK_ORDER = "mto"

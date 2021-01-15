@@ -6,19 +6,19 @@ from typing import Optional
 
 from locust.env import Environment
 
-from .base import ImplementationError, ListEnum
+from .base import ImplementationError, ValueEnum
 from .constants import LOCAL_MTLS_CERT, LOCAL_MTLS_KEY, DOD_CA_BUNDLE, STATIC_TLS_FILES
 
 logger = logging.getLogger(__name__)
 
 
-class MilMoveEnv(ListEnum):
+class MilMoveEnv(ValueEnum):
     LOCAL = "local"
     EXP = "exp"
     STG = "stg"
 
 
-class MilMoveDomain(ListEnum):
+class MilMoveDomain(ValueEnum):
     PRIME = "prime"
     OFFICE = "office"
     MILMOVE = "milmove"

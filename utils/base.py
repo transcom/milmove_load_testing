@@ -7,7 +7,7 @@ class ImplementationError(Exception):
     """ Base exception when a util hasn't been implemented correctly. """
 
 
-class ListEnum(Enum):
+class ValueEnum(Enum):
     @classmethod
     def values(cls):
         return [c.value for c in cls]
