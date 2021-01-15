@@ -85,7 +85,6 @@ class ParserTaskMixin:
         Wraps the parser's generate_fake_request method for ease of use.
         """
         try:
-            print(f"api key is {api_key}")
             return self.user.parser[api_key].generate_fake_request(path, method, overrides, require_all)
         # KeyErrors will be thrown for the developer to fix
         except TypeError:

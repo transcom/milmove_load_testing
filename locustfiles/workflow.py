@@ -12,9 +12,9 @@ prime_api = PrimeAPIParser()
 
 # Then, in the prime_sequential.py, define a user like so:
 class WorkflowUser(MilMoveHostMixin, HttpUser):
-    """ This is the Prime user that will be calling the workflow task sets. """
-
-    # We will set all the attributes we need to work with the Prime API, see the user classes in prime.py
+    """This is the Workflow user that will be calling the workflows in prime_sequential.
+    This user needs access to both prime and support apis.
+    """
 
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host

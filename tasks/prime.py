@@ -384,9 +384,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
-            return new_mto
-        else:
-            return move_task_order
 
 
 @tag("support")
@@ -473,8 +470,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.add_stored(MOVE_TASK_ORDER, new_mto)
-            return new_mto
-        return None
 
     @tag(MTO_SERVICE_ITEM, "updateMTOServiceItemStatus")
     @task
@@ -521,7 +516,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.update_stored(PAYMENT_REQUEST, payment_request, new_payment_request)
-        return new_payment_request
 
     @tag(MOVE_TASK_ORDER, "getMoveTaskOrder")
     @task
@@ -543,5 +537,3 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         if success:
             self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
-
-        return new_mto
