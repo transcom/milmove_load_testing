@@ -7,7 +7,6 @@ services:
      - "8089:8089"
     environment:
      - DEVLOCAL_AUTH=true
-    # - DEVLOCAL_CA=/config/tls/devlocal-ca.pem
-     - MOVE_MIL_DOD_TLS_CERT
-     - MOVE_MIL_DOD_TLS_KEY
+     - MOVE_MIL_EXP_TLS_CERT
+     - MOVE_MIL_EXP_TLS_KEY
     command: -f /app/locustfiles/prime.py --host exp

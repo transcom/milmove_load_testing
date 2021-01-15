@@ -13,10 +13,6 @@ RUN pip install -r /app/requirements.txt
 COPY docker.__init__.py /app/__init__.py
 COPY . /app
 
-# Certs for mTLS authentication
-#COPY config/tls/devlocal-mtls.cer /config/tls/devlocal-mtls.cer
-#COPY config/tls/devlocal-mtls.key /config/tls/devlocal-mtls.key
-
 EXPOSE 8089 5557
 
 ENTRYPOINT ["locust"]
