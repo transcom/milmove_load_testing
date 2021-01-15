@@ -280,7 +280,14 @@ To run a specific test, use:
 pytest /utils/tests/test_parsers.py
 ```
 
-For more instructions and examples, please read [their documentation](https://docs.pytest.org/en/stable/).
+If you have a pre-existing installation of `pytest` on your machine, you may need to invoke your system's version of
+`python`/`python3` in the command:
+
+```shell
+python3 -m pytest -v
+```
+
+For more instructions and examples, please read [pytest's documentation](https://docs.pytest.org/en/stable/).
 
 ## Running Load Tests
 

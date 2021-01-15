@@ -7,7 +7,6 @@ import random
 from locust import tag, task, TaskSet
 
 from utils.constants import TEST_PDF, ZERO_UUID, PrimeObjects
-from utils.hosts import MilMoveEnv
 from .base import check_response, CertTaskMixin, ParserTaskMixin
 from copy import deepcopy
 
@@ -137,50 +136,22 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.set_prime_data(PrimeObjects.MTO_SERVICE_ITEM, resp)
 
-    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItemDestSIT")
-    @task
-    def create_mto_service_item_dest_sit(self):
-        # This function ensures some destination SIT service items get requested.
-        # DDFSIT requests create the trio of dest SIT items that are needed for update_mto_service_item to function.
-        overrides = {
-            "reServiceCode": "DDFSIT",
-            "modelType": "MTOServiceItemDestSIT",
-        }
-
-        self.create_mto_service_item(overrides)
-
-    @tag(PrimeObjects.MTO_SERVICE_ITEM.value, "createMTOServiceItemOriginSIT")
-    @task
-    def create_mto_service_item_origin_sit(self):
-        # This function ensures some origin SIT service items get requested.
-        # DOFSIT requests create the trio of origin SIT items that are needed for update_mto_service_item to function.
-        overrides = {
-            "reServiceCode": "DOFSIT",
-            "modelType": "MTOServiceItemOriginSIT",
-        }
-
-        self.create_mto_service_item(overrides)
-
     @tag(PrimeObjects.MTO_SHIPMENT.value, "createMTOShipment")
     @task
     def create_mto_shipment(self):
         # move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
         move_task_order = None
         if not move_task_order:
-            if self.user.env != MilMoveEnv.LOCAL.value:
-                return  # we can't do anything else without a default value
-
-            move_task_order = {"id": "ecbc2e6a-1b45-403b-9bd4-ea315d4d3d93"}  # default for local testing
+            return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
 
         overrides = {
             "moveTaskOrderID": move_task_order["id"],
             "agents": {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID},
             "pickupAddress": {"id": ZERO_UUID},
             "destinationAddress": {"id": ZERO_UUID},
-            "mtoServiceItems": [],
+            "mtoServiceItems": [],  # let the create_mto_service_item endpoint handle creating these
         }
         payload = self.fake_request("/mto-shipments", "post", overrides=overrides)
-        payload.pop("primeEstimatedWeight", None)  # keeps the update endpoint happy
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -239,7 +210,8 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "put")
 
-        # These fields need more complicated logic to handle, so remove them for the time being:
+        # Agents and addresses should not be updated by this endpoint, and primeEstimatedWeight cannot be updated after
+        # it is initially set (and it is set in create_mto_shipment)
         fields_to_remove = [
             "agents",
             "pickupAddress",
@@ -362,6 +334,31 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, resp)
 
+    @tag(PrimeObjects.MOVE_TASK_ORDER.value, "updateMTOPostCounselingInformation")
+    @task
+    def update_post_counseling_information(self):
+        move_task_order = self.get_random_data(PrimeObjects.MOVE_TASK_ORDER)
+        if not move_task_order:
+            logger.error(f"⛔️ No move_task_order \n{move_task_order}")
+            return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
+
+        payload = self.fake_request("/move-task-orders/{moveTaskOrderID}/post-counseling-info", "patch")
+
+        move_task_order_id = move_task_order["id"]  # path parameter
+        headers = {"content-type": "application/json", "If-Match": move_task_order["eTag"]}
+
+        resp = self.client.patch(
+            prime_path(f"/move-task-orders/{move_task_order_id}/post-counseling-info"),
+            name=prime_path("/move-task-orders/{moveTaskOrderID}/post-counseling-info"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "updateMTOPostCounselingInformation", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.MOVE_TASK_ORDER, move_task_order, resp)
+
 
 @tag("support")
 class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
@@ -403,28 +400,27 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag(PrimeObjects.MOVE_TASK_ORDER.value, "createMoveTaskOrder")
     @task
     def create_move_task_order(self):
-        payload = {
+
+        overrides = {
             "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
+            # Moves that are in DRAFT or CANCELED mode cannot be used by the rest of the
+            # loadtesting
+            "status": "SUBMITTED",
+            # If this date is set here, the status will not properly transition to APPROVED
+            "availableToPrimeAt": None,
             "moveOrder": {
-                "customer": {
-                    "firstName": "Christopher",
-                    "lastName": "Swinglehurst-Walters",
-                    "agency": "MARINES",
-                    "email": "swinglehurst@example.com",
-                },
-                "entitlement": {"nonTemporaryStorage": False, "totalDependents": 47},
-                "orderNumber": "32",
-                "rank": "E-6",
+                "status": "APPROVED",
+                # We need these objects to exist
                 "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
                 "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
                 "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
-                "ordersType": "GHC",
-                "reportByDate": "2020-01-01",
-                "status": "SUBMITTED",
-                "issueDate": "2020-01-01",
+                # To avoid the overrides being inserted into these nested objects...
+                "entitlement": {},
+                "customer": {},
             },
-            "status": "SUBMITTED",
         }
+
+        payload = self.fake_request("/move-task-orders", "post", overrides)
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -458,18 +454,40 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if not mto_service_item:
             return
 
-        payload = self.fake_request("/service-items/{mtoServiceItemID}/status", "patch")
+        payload = self.fake_request("/mto-service-items/{mtoServiceItemID}/status", "patch")
         headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
 
         resp = self.client.patch(
-            support_path(f"/service-items/{mto_service_item['id']}/status"),
-            name=support_path("/service-items/{mtoShipmentID}/status"),
+            support_path(f"/mto-service-items/{mto_service_item['id']}/status"),
+            name=support_path("/mto-service-items/{mtoServiceItemID}/status"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
         )
 
-        mto_service_item_data, success = check_response(resp, "updateMTOServiceItemStatus")
+        mto_service_item_data, success = check_response(resp, "updateMTOServiceItemStatus", payload)
 
         if success:
             self.replace_prime_data(PrimeObjects.MTO_SERVICE_ITEM, mto_service_item, mto_service_item_data)
+
+    @tag(PrimeObjects.PAYMENT_REQUEST.value, "updatePaymentRequestStatus")
+    @task
+    def update_payment_request_status(self):
+        payment_request = self.get_random_data(PrimeObjects.PAYMENT_REQUEST)
+        if not payment_request:
+            return
+
+        payload = self.fake_request("/payment-requests/{paymentRequestID}/status", "patch")
+        headers = {"content-type": "application/json", "If-Match": payment_request["eTag"]}
+
+        resp = self.client.patch(
+            support_path(f"/payment-requests/{payment_request['id']}/status"),
+            name=support_path("/payment-requests/{paymentRequestID}/status"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        resp, success = check_response(resp, "updatePaymentRequestStatus", payload)
+
+        if success:
+            self.replace_prime_data(PrimeObjects.PAYMENT_REQUEST, payment_request, resp)

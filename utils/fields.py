@@ -121,27 +121,32 @@ class ObjectField(BaseAPIField):
         """ Initializes the option_fields list as an instance attribute after the default __init__ method. """
         self.object_fields = []
 
-    def add_field(self, field):
+    def add_field(self, field, unique=False):
+        # We don't want to add duplicate fields if unique is True, so we check for existing fields with this name:
+        if unique and field.name in [existing_field.name for existing_field in self.object_fields]:
+            return
         self.object_fields.append(field)
 
-    def add_fields(self, fields_list):
-        self.object_fields.extend(fields_list)
+    def add_fields(self, fields_list, unique=False):
+        for field in fields_list:
+            self.add_field(field, unique)
 
-    def combine_fields(self, field):
+    def combine_fields(self, field: BaseAPIField, unique=False):
         """
         Combines the fields into this ObjectField. If combining with another ObjectField, all fields are added to the
         same list. If it is another field type, simply adds the field to this object's list of fields.
 
         :param field: BaseAPIField
+        :param unique: boolean, indicates if the fields should be uniquely combined or if duplicates are fine
         """
         if not isinstance(field, BaseAPIField):
             logger.error(f"Unexpected object type passed into combine_fields: {type(field)}, {field}")
             raise TypeError("ObjectField instances can only be combined with other BaseAPIField instances.")
 
         if isinstance(field, ObjectField):
-            self.add_fields(field.object_fields)
+            self.add_fields(field.object_fields, unique)
         else:
-            self.add_field(field)
+            self.add_field(field, unique)
 
     def get_field(self, field_name):
         """

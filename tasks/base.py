@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 """ tasks/base.py is for code used internally within the tasks package. """
-import logging
-import json
-
-from locust import TaskSet
-
 from utils.base import ImplementationError
+
+import json
+from locust import TaskSet
+import logging
+from requests import Response
+
 
 logger = logging.getLogger(__name__)
 
 
-def check_response(response, task_name="Task", request=None):
+def check_response(response: Response, task_name="Task", request=None):
     """
     Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
     status code wasn't a success (2xx), it can also log any request data that was sent in for the sake of debugging.
     Returns the dictionary representation of the response content and a boolean indicating success or failure.
 
-    :param response: HTTP response object
+    :param response: HTTP Response class from the Python requests framework
     :param task_name: str, optional name of the tasks
-    :param request: any, optional data to print for debugging a failed response
+    :param request: any type, optional data to print for debugging a failed response
     :return: tuple(dict, bool)
     """
     logger.info(f"ℹ️ {task_name} status code: {response.status_code}")
@@ -31,8 +32,7 @@ def check_response(response, task_name="Task", request=None):
         return None, False
 
     if not str(response.status_code).startswith("2"):
-        logger.exception("TODO remove debug line: " + response.content)
-        logger.error(f"⚠️\n{json.dumps(json_response, indent=4)}")
+        logger.error(f"⚠️ {task_name} failed.\n{json.dumps(json_response, indent=4)}")
         if request:
             try:
                 logger.error(
