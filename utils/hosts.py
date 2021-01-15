@@ -86,6 +86,25 @@ class MilMoveHostMixin:
     # {"cert": <cert/key file path(s)>, "verify": <False or the CA bundle file path>}
     cert_kwargs: Optional[dict] = None
 
+    def __init__(self, *args, **kwargs):
+        """
+        Sets the Users' host based on environment value from --host flag in command. Note that the self.host value is
+        set on the class from the command line flag BEFORE initialization. Also sets the env and cert_kwargs, the input
+        needed for TLS requests, values.
+
+        These attributes are set on the CLASS-level. This is important because we do not want to repeat this process for
+        thousands of Users with the exact same settings.
+        """
+        # Check if the host value is one of our accepted environments. If not, we'll continue with the host entered
+        # as-is and skip the rest of the custom setup.
+        if MilMoveEnv.validate(self.host):
+            type(self).set_milmove_env(self.host)
+            type(self).host = None
+            type(self).set_host_name()
+            type(self).set_cert_kwargs()
+
+        super().__init__(*args, **kwargs)
+
     @classmethod
     def set_milmove_env(cls, env: str):
         """
@@ -148,12 +167,15 @@ class MilMoveHostMixin:
     @classmethod
     def create_deployed_cert_file(cls) -> str:
         """
-        Grabs the certificate and key values for this environment from the relevant environment variables (which must be
-        set for this function to work), and then creates a new .pem file that contains both the certificate and the key
-        TLS request validation. This is only called for deployed MilMove environments.
+        Grabs the TLS certificate and key values for this environment from the relevant environment variables (which
+        must be set for this function to work), and then creates a new .pem file that contains both the certificate and
+        the key for request validation. This is only called for deployed MilMove environments.
 
         :return: str, the path to the newly created cert file
         """
+        if cls.env == MilMoveEnv.LOCAL:
+            return  # can't complete this logic with local certs
+
         deployed_tls_cert = os.getenv(f"MOVE_MIL_{cls.env.value.upper()}_TLS_CERT")
         deployed_tls_key = os.getenv(f"MOVE_MIL_{cls.env.value.upper()}_TLS_KEY")
 
@@ -176,14 +198,19 @@ class MilMoveHostMixin:
         """
         Removes the .pem cert/key file that was created for running load tests against a deployed environment.
         """
+        if cls.env == MilMoveEnv.LOCAL:
+            return  # can't complete this logic with local certs
+
         try:
             os.remove(cls.cert_kwargs["cert"])
-        except (KeyError, FileNotFoundError):
-            # If there was a KeyError, that means "cert" wasn't in the cert_kwargs dict - it may have been cleard out.
-            # If there was a FileNotFoundError, whatever path was in the "cert" kwarg was incorrect or the file was
-            # already removed.
+        except (KeyError, TypeError, FileNotFoundError):
+            # KeyError means "cert" wasn't in the cert_kwargs dict - it may have been cleared out.
+            # TypeError means self.cert_kwargs["cert"] did not resolve to a string - also means we may have already
+            # removed this file.
+            # FileNotFoundError means whatever path was in the "cert" kwarg was incorrect or the file was already
+            # removed.
 
-            # In either case, let's try again to remove the file using the custom filename to be extra sure we're
+            # In any case, let's try again to remove the file using the custom filename to be extra sure we're
             # cleaning up after ourselves:
             try:
                 os.remove(os.path.join(STATIC_TLS_FILES, f"{cls.env.value if cls.env else ''}_tls_cert_key.pem"))
@@ -192,31 +219,7 @@ class MilMoveHostMixin:
                 pass
 
         # Finally, clear out all traces of the deployed cert file:
-        cls.cert_kwargs = None
-
-
-def setup_milmove_host_users(locust_env: Environment):
-    """
-    Sets the Users' host based on environment value from --host flag in command. This should be called in the
-    "test_start" event for a locustfile/load test.
-
-    To do this, we're going to iterate over all the User classes defined in this locust environment (which is the
-    equivalent of all the User classes defined in the locustfile for the test that calls this function), and if the User
-    is a subclass of MilMoveHostMixin, we'll run all the relevant class-level setup functions.
-    """
-    # Check if the host value is one of our accepted environments. If not, we'll continue with the host entered as-is
-    # and skip the rest of the custom setup.
-    if not MilMoveEnv.validate(locust_env.host):
-        return
-
-    logger.info("Setting up the MilMove hostname and TLS certificates...")
-    for user_class in locust_env.user_classes:
-        if issubclass(user_class, MilMoveHostMixin):
-            user_class.set_milmove_env(locust_env.host)
-            user_class.set_host_name()
-            user_class.set_cert_kwargs()
-
-    logger.info("...User setup complete.")
+        cls.cert_kwargs = {}
 
 
 def clean_milmove_host_users(locust_env: Environment):
@@ -224,8 +227,11 @@ def clean_milmove_host_users(locust_env: Environment):
     Cleans up the Users' cert/key settings if the User is a subclass of MilMoveHostMixin. This should be called in the
     "test_stop" event for a locustfile/load test.
     """
+    if locust_env.host == MilMoveEnv.LOCAL.value:
+        return  # we don't need to remove any cert files for a local test run
+
     for user_class in locust_env.user_classes:
         if issubclass(user_class, MilMoveHostMixin):
             user_class.remove_deployed_cert_file()
 
-    logger.info("Cleaned up User TLS certificates.")
+    logger.info("Cleaned up User SSL/TLS certificates.")

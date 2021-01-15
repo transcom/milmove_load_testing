@@ -2,7 +2,7 @@
 """ Locust test for the Prime & Support APIs """
 from locust import HttpUser, between, events
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain, setup_milmove_host_users, clean_milmove_host_users
+from utils.hosts import MilMoveHostMixin, MilMoveDomain, clean_milmove_host_users
 from utils.parsers import PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks
 
@@ -44,14 +44,6 @@ class SupportUser(MilMoveHostMixin, HttpUser):
     wait_time = between(0.25, 9)
     tasks = {SupportTasks: 1}
     weight = 1
-
-
-@events.test_start.add_listener
-def on_test_start(**kwargs):
-    """
-    Setup steps to run before the load test starts. Customizes the MilMove hostname and sets up the TLS cert settings.
-    """
-    setup_milmove_host_users(locust_env=kwargs["environment"])
 
 
 @events.test_stop.add_listener
