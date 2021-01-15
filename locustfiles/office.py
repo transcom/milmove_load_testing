@@ -3,7 +3,7 @@
 from locust import HttpUser, between
 
 from utils.constants import MilMoveDomain
-from utils.mixins import MilMoveHostMixin
+from utils.hosts import MilMoveHostMixin
 from tasks import OfficeTasks
 
 

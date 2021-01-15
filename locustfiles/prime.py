@@ -3,7 +3,7 @@
 from locust import HttpUser, between
 
 from utils.constants import MilMoveDomain, LOCAL_TLS_CERT_KWARGS
-from utils.mixins import MilMoveHostMixin
+from utils.hosts import MilMoveHostMixin
 from utils.parsers import PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks
 
