@@ -2,8 +2,7 @@
 from .office import OfficeTasks  # noqa
 from .milmove import MilMoveTasks  # noqa
 from .prime import PrimeTasks, SupportTasks  # noqa
-
-from .prime_sequential import WorkflowTasks  # noqa
+from .prime_workflow import WorkflowTasks  # noqa
 import warnings
 import requests
 

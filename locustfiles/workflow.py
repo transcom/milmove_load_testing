@@ -10,9 +10,8 @@ support_api = SupportAPIParser()
 prime_api = PrimeAPIParser()
 
 
-# Then, in the prime_sequential.py, define a user like so:
 class WorkflowUser(MilMoveHostMixin, HttpUser):
-    """This is the Workflow user that will be calling the workflows in prime_sequential.
+    """This is the Workflow user that will be calling the workflows in prime_workflow.py.
     This user needs access to both prime and support apis.
     """
 

@@ -37,7 +37,7 @@ class WorkflowTasks(PrimeTasks, SupportTasks):
         We need to set up this task set with the list of tasks/workflows we want to run. If we don't define this, all
         the tasks in PrimeTasks and SupportTasks will all be run independently and will likely have errors.
         """
-        self.tasks = [self.hhg_move, super().fetch_mto_updates]
+        self.tasks = [self.hhg_move, self.fetch_mto_updates]
 
     # WORKFLOWS
     @tag("hhgMove")
@@ -52,7 +52,7 @@ class WorkflowTasks(PrimeTasks, SupportTasks):
         # Move steps for this workflow
         super().create_move_task_order()
         super().update_post_counseling_information()
-        print(f"{self.current_move['id']}: {self.workflow_title} - Created move and completed counseling")
+        logger.info(f"{self.workflow_title} - Created move and completed counseling {self.current_move['id'][:8]}")
 
     # STORAGE FUNCTIONALITY
     """ We only store one current move in the sequential workflow and keep it updated as we move through the workflow.

@@ -96,6 +96,11 @@ load_test_milmove: clean ensure_venv  ## Run load testing on the MilMove app
 	open http://localhost:8089
 	locust -f locustfiles/milmove.py --host local
 
+.PHONY: load_test_prime_workflow
+load_test_prime_workflow: clean ensure_venv  ## Run load testing on the Prime API
+	open http://localhost:8089
+	locust -f locustfiles/workflow.py --host local
+
 .PHONY: local_docker_build
 local_docker_build: clean  ## Build a Docker container to run load testing locally
 	docker-compose -f docker-compose.local.yaml build
