@@ -10,11 +10,19 @@ LOCAL_MTLS_KEY = os.path.join(STATIC_FILES, "certs/devlocal-mtls.key")
 TEST_PDF = os.path.join(STATIC_FILES, "test_upload.pdf")
 
 PRIME_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
+PRIME_API_KEY = "prime"
+SUPPORT_API_KEY = "support"
 
 ARRAY_MIN = 1
 ARRAY_MAX = 5
 
 ZERO_UUID = "00000000-0000-0000-0000-000000000000"
+
+MOVE_TASK_ORDER = "mto"
+MTO_AGENT = "mtoAgent"
+MTO_SHIPMENT = "mtoShipment"
+MTO_SERVICE_ITEM = "mtoServiceItem"
+PAYMENT_REQUEST = "paymentRequest"
 
 
 class MilMoveEnv(ListEnum):
@@ -90,13 +98,3 @@ class DataType(ListEnum):
     ENUM = "enum"
     ARRAY = "array"
     OBJECT = "object"
-
-
-class PrimeObjects(ListEnum):
-    """ Constants representing the objects used in the Prime API. """
-
-    MOVE_TASK_ORDER = "mto"
-    MTO_AGENT = "mtoAgent"
-    MTO_SHIPMENT = "mtoShipment"
-    MTO_SERVICE_ITEM = "mtoServiceItem"
-    PAYMENT_REQUEST = "paymentRequest"

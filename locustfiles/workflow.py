@@ -2,11 +2,12 @@
 from locust import HttpUser, between
 
 from utils.mixins import MilMoveHostMixin
-from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS
+from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS, PRIME_API_KEY, SUPPORT_API_KEY
 from tasks import WorkflowTasks
-from utils.parsers import SupportAPIParser
+from utils.parsers import SupportAPIParser, PrimeAPIParser
 
 support_api = SupportAPIParser()
+prime_api = PrimeAPIParser()
 
 
 # Then, in the prime_sequential.py, define a user like so:
@@ -24,7 +25,7 @@ class WorkflowUser(MilMoveHostMixin, HttpUser):
 
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
     weight = 1
-    parser = support_api
+    parser = {PRIME_API_KEY: prime_api, SUPPORT_API_KEY: support_api}
 
     # For the tasks, we can define all the workflow tasksets we have set up:
     tasks = {WorkflowTasks: 1}
