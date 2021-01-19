@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @tag("workflow")
-class WorkflowTasks(PrimeTasks, SupportTasks):
+class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
     """Workflow Task Set
     Each task is a workflow from start to finish. Each workflow acts on only one MTO from start to finish.
     There are multiple workflows for different scenarios such as a single shipment HHG move, or an HHG move with a SIT.
@@ -28,8 +28,8 @@ class WorkflowTasks(PrimeTasks, SupportTasks):
     # current_move is the move the whole task will be acting on
     # all updates to the move and nested objects will be stored to this mto
     current_move = None
-    # workflow_descriptor
-    workflow_descriptor = None
+    # workflow_title is a descriptor that can be used in logging anywhere in the workflow
+    workflow_title = None
 
     def on_start(self):
         """
@@ -55,19 +55,18 @@ class WorkflowTasks(PrimeTasks, SupportTasks):
         logger.info(f"{self.workflow_title} - Created move and completed counseling {self.current_move['id'][:8]}")
 
     # STORAGE FUNCTIONALITY
-    """ We only store one current move in the sequential workflow and keep it updated as we move through the workflow.
-        These functions override functions in the PrimeDataTaskMixin and will get automatically called by the tasks
-        in PrimeTasks and SupportTasks.
-    """
 
     def get_stored(self, object_key, id=None):
-        """ Override the get_stored function from PrimeDataTaskMixin """
+        """We only store one current move in the sequential workflow and keep it updated as we move through the workflow.
+        These functions override functions in the PrimeDataTaskMixin and will get automatically called by the tasks
+        in PrimeTasks and SupportTasks.
+        """
 
         # Return whichever part of the move was requested - such as a shipment:
         if object_key == MOVE_TASK_ORDER:
             return self.current_move
 
-        if object_key == MTO_SHIPMENT:
+        if object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
             return self._get_mto_nested(object_key, id)
 
     def add_stored(self, object_key, object_data):
@@ -114,7 +113,7 @@ class WorkflowTasks(PrimeTasks, SupportTasks):
         nested_array = self.current_move.get(array_key, None)
 
         # If nested array is not an array create one
-        if nested_array is None:
+        if not nested_array:
             nested_array = []
 
         # if item does not exist already, add it
@@ -161,7 +160,7 @@ class WorkflowTasks(PrimeTasks, SupportTasks):
         nested_array = self.current_move.get(array_key, None)
 
         # If nested array does not exist or is empty, raise error, we should have found the object to replace
-        if nested_array is None or nested_array == []:
+        if not nested_array or nested_array == []:
             raise ImplementationError(f"Cannot find {object_key} of id {old_data['id']} to replace in {array_key}")
 
         # Find item and replace it!
@@ -187,18 +186,15 @@ class WorkflowTasks(PrimeTasks, SupportTasks):
         nested_array = self.current_move.get(array_key, None)
 
         # If nested array does not exist or is empty, return None
-        if nested_array is None or nested_array == []:
+        if not nested_array or nested_array == []:
             return None
 
         # If id was provided return the specific object or None
-        requested_object = None
         if id:
             for elem in nested_array:
                 if elem["id"] == id:
-                    requested_object = elem
-                    break
-        # If id was not provided select an object at random
-        else:
-            requested_object = random.choice(nested_array)
+                    return elem
+            return None
 
-        return requested_object
+        # If id was not provided select an object at random
+        return random.choice(nested_array)

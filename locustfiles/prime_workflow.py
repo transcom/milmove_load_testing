@@ -3,14 +3,14 @@ from locust import HttpUser, between
 
 from utils.mixins import MilMoveHostMixin
 from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS, PRIME_API_KEY, SUPPORT_API_KEY
-from tasks import WorkflowTasks
+from tasks import PrimeWorkflowTasks
 from utils.parsers import SupportAPIParser, PrimeAPIParser
 
 support_api = SupportAPIParser()
 prime_api = PrimeAPIParser()
 
 
-class WorkflowUser(MilMoveHostMixin, HttpUser):
+class PrimeWorkflowUser(MilMoveHostMixin, HttpUser):
     """This is the Workflow user that will be calling the workflows in prime_workflow.py.
     This user needs access to both prime and support apis.
     """
@@ -27,5 +27,5 @@ class WorkflowUser(MilMoveHostMixin, HttpUser):
     parser = {PRIME_API_KEY: prime_api, SUPPORT_API_KEY: support_api}
 
     # For the tasks, we can define all the workflow tasksets we have set up:
-    tasks = {WorkflowTasks: 1}
+    tasks = {PrimeWorkflowTasks: 1}
     weight = 1

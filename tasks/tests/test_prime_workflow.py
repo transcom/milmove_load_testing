@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from locust.test.testcases import LocustTestCase
 
-from tasks import WorkflowTasks
-from locustfiles.workflow import WorkflowUser
+from tasks import PrimeWorkflowTasks
+from locustfiles.prime_workflow import PrimeWorkflowUser
 from utils.constants import (
     MOVE_TASK_ORDER,
     MTO_SHIPMENT,
@@ -12,19 +12,21 @@ from utils.constants import (
 from utils.base import ImplementationError
 
 
-class TestWorkflowTasks(LocustTestCase):
+class TestPrimeWorkflowTasks(LocustTestCase):
     def setUp(self):
         super().setUp()
 
-        class TestWorkflowUser(WorkflowUser):
+        class TestWorkflowUser(PrimeWorkflowUser):
             host = "127.0.0.1"
 
         self.locust = TestWorkflowUser(self.environment)
-        self.taskset = WorkflowTasks(self.locust)
+        self.taskset = PrimeWorkflowTasks(self.locust)
 
     def test_add_stored_mto(self):
-        # Under test: add_stored function
-        # Mocked: Data objects are simplified versions
+        """
+        Under test: add_stored function
+        Mocked: Data objects are simplified versions
+        """
 
         # Scenario: We add a move, and then another move
         # Expectation: It should store the move into current move and then replace it, since we only keep one move.
@@ -38,8 +40,10 @@ class TestWorkflowTasks(LocustTestCase):
         assert self.taskset.current_move["id"] == new_move["id"]
 
     def test_add_stored_shipment(self):
-        # Under test: add_stored function
-        # Mocked: Data objects are simplified versions
+        """
+        Under test: add_stored function
+        Mocked: Data objects are simplified versions
+        """
 
         # Scenario: We add a move and a shipment
         # Expectation: It should store the shipment into the move
@@ -74,8 +78,10 @@ class TestWorkflowTasks(LocustTestCase):
         assert stored_shipment["id"] == shipment["id"]
 
     def test_add_stored_shipment_errors(self):
-        # Under test: add_stored function
-        # Mocked: Data objects are simplified versions
+        """
+        Under test: add_stored function
+        Mocked: Data objects are simplified versions
+        """
 
         # Scenario: We add a move and a shipment, and then try to add a shipment with the same
         # moveTaskOrderID
@@ -105,8 +111,10 @@ class TestWorkflowTasks(LocustTestCase):
         assert len(stored_move["mtoShipments"]) == 1
 
     def test_add_stored_service_item(self):
-        # Under test: add_stored function
-        # Mocked: Data objects are simplified versions
+        """
+        Under test: add_stored function
+        Mocked: Data objects are simplified versions
+        """
 
         # Scenario: We add a move and a service item
         # Expectation: It should store the service item into the move
@@ -126,9 +134,10 @@ class TestWorkflowTasks(LocustTestCase):
         assert stored_service_item["id"] == service_item["id"]
 
     def test_add_stored_payment_request(self):
-
-        # Under test: add_stored function
-        # Mocked: Data objects are simplified versions
+        """
+        Under test: add_stored function
+        Mocked: Data objects are simplified versions
+        """
 
         # Scenario: We add a move and a payment_request
         # Expectation: It should store the payment_request into the move
@@ -148,8 +157,10 @@ class TestWorkflowTasks(LocustTestCase):
         assert stored_payment_request["id"] == payment_request["id"]
 
     def test_replace_stored_shipment(self):
-        # Under test: add_stored function
-        # Mocked: Data objects are simplified versions
+        """
+        Under test: add_stored function
+        Mocked: Data objects are simplified versions
+        """
 
         # Scenario: We add a move and a shipment
         # Expectation: It should store the shipment into the move
@@ -180,8 +191,10 @@ class TestWorkflowTasks(LocustTestCase):
         assert stored_shipment["weight"] == new_shipment["weight"]
 
     def test_get_stored_shipment(self):
-        # Under test: get_stored function
-        # Mocked: Data objects are simplified versions
+        """
+        Under test: get_stored function
+        Mocked: Data objects are simplified versions
+        """
 
         # Scenario: We add a move and 2 shipments
         # Expectation: We should be able to retrieve a random and a specific shipment
