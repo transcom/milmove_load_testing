@@ -67,7 +67,7 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
             return self.current_move
 
         if object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
-            return self._get_mto_nested(object_key, id)
+            return self._get_nested_object_from_mto(object_key, id)
 
     def add_stored(self, object_key, object_data):
         """Adds the object to the main move."""
@@ -78,7 +78,7 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
         # If it's the following object types, we add them into nested array in the MTO
         elif object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
-            self._add_to_mto_nested(object_key, object_data)
+            self._add_nested_object_to_mto(object_key, object_data)
 
     def update_stored(self, object_key, old_data, new_data):
         """Replaces the object in old_data with the one in new_data"""
@@ -91,9 +91,9 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
                     f"match the current move's id of {self.current_move['id']}."
                 )
         elif object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
-            self._update_mto_nested(object_key, old_data, new_data)
+            self._update_nested_object_in_mto(object_key, old_data, new_data)
 
-    def _add_to_mto_nested(self, object_key, object_data):
+    def _add_nested_object_to_mto(self, object_key, object_data):
         """Adds an object to an array directly nested under the MTO.
         Can be used for mtoServiceItems, mtoShipments and mtoPaymentRequests
         as they are all held in top level arrays.
@@ -109,38 +109,30 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
             )
 
         # Get the nested array from the current move, or None if it doesn't exist
-        array_key = self._get_array_name(object_key)
-        nested_array = self.current_move.get(array_key, None)
+        array_key = self._get_nested_array_name(object_key)
+        nested_array = self.current_move.get(array_key) or []
 
-        # If nested array is not an array create one
-        if not nested_array:
-            nested_array = []
-
-        # if item does not exist already, add it
-        preexisting = list(filter(lambda elem: elem["id"] == object_data["id"], nested_array))
-        if len(preexisting) == 0:
-            nested_array.append(object_data)
-            self.current_move[array_key] = nested_array
-        else:
+        # We filter the list of objects to see if we can find the search object (checking ids)
+        found = list(filter(lambda elem: elem["id"] == object_data["id"], nested_array))
+        if found:
             raise ImplementationError(
                 f"Cannot add object with id of {object_data['id']} since it already exists in {array_key}."
             )
 
-    def _get_array_name(self, object_key):
+        # If not found, we can add the new object
+        nested_array.append(object_data)
+        self.current_move[array_key] = nested_array
+
+    def _get_nested_array_name(self, object_key):
         # Based on the object key, find the right array for nested objects in the mto
-        object_array_map = {
+        nested_array_names = {
             MTO_SERVICE_ITEM: "mtoServiceItems",
             MTO_SHIPMENT: "mtoShipments",
             PAYMENT_REQUEST: "paymentRequests",
         }
-        try:
-            array_key = object_array_map[object_key]
-        except KeyError:
-            logger.exception(f"An unexpected type of {object_key} was passed into _add_to_mto_nested")
-            return None
-        return array_key
+        return nested_array_names[object_key]
 
-    def _update_mto_nested(self, object_key, old_data, new_data):
+    def _update_nested_object_in_mto(self, object_key, old_data, new_data):
         """Replaces an object in an array directly nested under the MTO.
         Can be used for mtoServiceItems, mtoShipments and mtoPaymentRequests
         as they are all held in top level arrays.
@@ -156,11 +148,11 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
             )
 
         # Get the nested array from the current move, or None if it doesn't exist
-        array_key = self._get_array_name(object_key)
-        nested_array = self.current_move.get(array_key, None)
+        array_key = self._get_nested_array_name(object_key)
+        nested_array = self.current_move.get(array_key)
 
         # If nested array does not exist or is empty, raise error, we should have found the object to replace
-        if not nested_array or nested_array == []:
+        if not nested_array:
             raise ImplementationError(f"Cannot find {object_key} of id {old_data['id']} to replace in {array_key}")
 
         # Find item and replace it!
@@ -176,17 +168,17 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
         self.current_move[array_key] = nested_array
 
-    def _get_mto_nested(self, object_key, id):
+    def _get_nested_object_from_mto(self, object_key, id):
         """Return object of type requested. If no id is provided return a random element.
         If id is provided, return the specific element or raise error
         """
 
         # Get the nested array from the current move, or None if it doesn't exist
-        array_key = self._get_array_name(object_key)
-        nested_array = self.current_move.get(array_key, None)
+        array_key = self._get_nested_array_name(object_key)
+        nested_array = self.current_move.get(array_key)
 
         # If nested array does not exist or is empty, return None
-        if not nested_array or nested_array == []:
+        if not nested_array:
             return None
 
         # If id was provided return the specific object or None
