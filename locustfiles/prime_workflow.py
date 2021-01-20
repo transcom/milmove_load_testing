@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from locust import HttpUser, between
 
-from utils.mixins import MilMoveHostMixin
-from utils.constants import MilMoveDomain, PRIME_CERT_KWARGS, PRIME_API_KEY, SUPPORT_API_KEY
+from utils.hosts import MilMoveHostMixin, MilMoveDomain
+from utils.constants import PRIME_API_KEY, SUPPORT_API_KEY
 from tasks import PrimeWorkflowTasks
 from utils.parsers import SupportAPIParser, PrimeAPIParser
 
@@ -18,9 +18,6 @@ class PrimeWorkflowUser(MilMoveHostMixin, HttpUser):
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host
     is_api = True  # if True, uses the api base domain in deployed environments
-
-    # cert_kwargs are used by CertTaskMixin for verifying requests:
-    cert_kwargs = PRIME_CERT_KWARGS  # TODO will need to be handled differently for staging/experimental
 
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
     weight = 1
