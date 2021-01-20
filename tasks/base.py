@@ -80,11 +80,16 @@ class ParserTaskMixin:
         if not hasattr(self.user, "parser"):
             raise ImplementationError("The user for a TaskSet using ParserTaskSet mixin must have a parser attribute.")
 
-    def fake_request(self, path, method, overrides=None, require_all=False):
+    def fake_request(self, path, method, api_key=None, overrides=None, require_all=False):
         """
         Wraps the parser's generate_fake_request method for ease of use.
         """
-        return self.user.parser.generate_fake_request(path, method, overrides, require_all)
+        try:
+            return self.user.parser[api_key].generate_fake_request(path, method, overrides, require_all)
+        # KeyErrors will be thrown for the developer to fix
+        except TypeError:
+            # If parser is not a dictionary, let's see if its just a valid parser object
+            return self.user.parser.generate_fake_request(path, method, overrides, require_all)
 
 
 class LoginTaskSet(TaskSet):
