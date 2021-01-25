@@ -328,7 +328,7 @@ commands include:
 
 Each of these commands opens the Locust interface for initiating and monitoring the tests, set to [http://localhost:8089](http://localhost:8089).
 Using this interface, you can set the number of users to simulate and their hatch rate, then start and stop the test at
-will. For the host, you can enter a full URL address, or you can simply enter "local", "stg" (for staging), or "exp" (for experimental), and
+will. For the host, you can enter a full URL address, or you can simply enter "local" or "exp" (for experimental), and
 let the system set the URL as appropriate.
 
 **NOTE: Currently the system only functions in the local environment. You may try the other settings for fun, but don't
@@ -340,7 +340,7 @@ If you need more control over the parameters for a load test, you will need to r
 look something like:
 
 ```sh
-locust -f locustfiles/<file_to_test>.py --host <local/stg/exp>
+locust -f locustfiles/<file_to_test>.py --host <local/exp>
 ```
 
 Ex:
@@ -391,7 +391,7 @@ from locust import HttpUser, between
 from utils.hosts import MilMoveHostMixin, MilMoveDomain
 
 
-# Use MilMoveHostMixin to easily switch between local, experimental, and staging environments
+# Use MilMoveHostMixin to easily switch between local and experimental environments
 # HttpUser is the Locust user class we want to use to hit endpoint paths
 class MyUser(MilMoveHostMixin, HttpUser):
   """ Here's a short description of what my user does. """

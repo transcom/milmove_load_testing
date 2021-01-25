@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 class MilMoveEnv(ValueEnum):
     LOCAL = "local"
     EXP = "exp"
-    STG = "stg"
 
 
 class MilMoveDomain(ValueEnum):
