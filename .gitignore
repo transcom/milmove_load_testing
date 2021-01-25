@@ -1,9 +1,10 @@
-# misc
+# IDE config
 .DS_Store
 .idea
 .vscode
 *.swp
 *.sublime-*
+gh-md-toc
 
 # Makefile
 *.stamp
@@ -13,3 +14,8 @@
 __pycache__
 /venv/*
 .python-version
+
+# Envrc
+.envrc.chamber
+.envrc.local*
+exp_*.pem

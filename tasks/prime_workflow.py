@@ -45,7 +45,8 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
     def hhg_move(self):
         """
         This is a basic HHG move workflow where we have one shipment and no additional requested service items.
-        To create a new flow, copy this function, but don't forget to add the workflow to the tasks array in the on_start function
+        To create a new flow, copy this function, but don't forget to add the workflow to the tasks array in the
+        on_start function
         """
         self.workflow_title = "HHG Move Basic"
 
@@ -56,8 +57,9 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
     # STORAGE FUNCTIONALITY
 
-    def get_stored(self, object_key, id=None):
-        """We only store one current move in the sequential workflow and keep it updated as we move through the workflow.
+    def get_stored(self, object_key, object_id=None):
+        """
+        We only store one current move in the sequential workflow and keep it updated as we move through the workflow.
         These functions override functions in the PrimeDataTaskMixin and will get automatically called by the tasks
         in PrimeTasks and SupportTasks.
         """
@@ -67,7 +69,7 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
             return self.current_move
 
         if object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
-            return self._get_nested_object_from_mto(object_key, id)
+            return self._get_nested_object_from_mto(object_key, object_id)
 
     def add_stored(self, object_key, object_data):
         """Adds the object to the main move."""
@@ -123,7 +125,8 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         nested_array.append(object_data)
         self.current_move[array_key] = nested_array
 
-    def _get_nested_array_name(self, object_key):
+    @staticmethod
+    def _get_nested_array_name(object_key):
         # Based on the object key, find the right array for nested objects in the mto
         nested_array_names = {
             MTO_SERVICE_ITEM: "mtoServiceItems",
@@ -138,7 +141,8 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         as they are all held in top level arrays.
         Cannot be used for mtoAgent as it is nested further within the mtoShipment
         """
-        # Replacement object should be associated with the current move, we assume it has a moveTaskOrderID field to check
+        # Replacement object should be associated with the current move, we assume it has a moveTaskOrderID field to
+        # check
         if old_data["moveTaskOrderID"] != self.current_move["id"]:
             raise ImplementationError(
                 (
@@ -168,7 +172,7 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
         self.current_move[array_key] = nested_array
 
-    def _get_nested_object_from_mto(self, object_key, id):
+    def _get_nested_object_from_mto(self, object_key, object_id):
         """Return object of type requested. If no id is provided return a random element.
         If id is provided, return the specific element or raise error
         """
@@ -182,9 +186,9 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
             return None
 
         # If id was provided return the specific object or None
-        if id:
+        if object_id:
             for elem in nested_array:
-                if elem["id"] == id:
+                if elem["id"] == object_id:
                     return elem
             return None
 

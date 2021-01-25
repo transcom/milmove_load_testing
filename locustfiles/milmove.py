@@ -2,8 +2,7 @@
 """ Locust test for the MilMove Customer Signup interface. """
 from locust import HttpUser, between
 
-from utils.constants import MilMoveDomain
-from utils.mixins import MilMoveHostMixin
+from utils.hosts import MilMoveHostMixin, MilMoveDomain
 from tasks import MilMoveTasks
 
 

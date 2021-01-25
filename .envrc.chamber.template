@@ -1,0 +1,18 @@
+#! /usr/bin/env bash
+
+# !!! -------------------------------------- !!!
+# !!! DO NOT MAKE LOCAL CHANGES TO THIS FILE !!!
+# !!! -------------------------------------- !!!
+# This file loads in secrets from chamber
+
+# Secrets should be added to chamber with:
+# `aws-vault exec $AWS_PROFILE -- chamber write app-load-testing <lower_case_name> <secret_key>`
+
+# This line grabs any available secrets in app-load-testing and adds them to the environment.
+# Lines that begin with `require ...` should still run to verify the secret is set.
+if ! aws-vault exec $AWS_PROFILE -- chamber list app-load-testing --retries=1 > /dev/null ; then
+  log_error "Unable to access app-load-testing variables with chamber."
+  log_error "Login to chamber with 'aws-vault exec $AWS_PROFILE -- chamber list app-load-testing'."
+else
+  eval "$(aws-vault exec $AWS_PROFILE -- chamber env app-load-testing --retries=1)"
+fi

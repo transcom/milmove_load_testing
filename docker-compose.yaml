@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  prime:
+    build: .
+    ports:
+     - "8089:8089"
+    environment:
+     - DEVLOCAL_AUTH=true
+     - MOVE_MIL_EXP_TLS_CERT
+     - MOVE_MIL_EXP_TLS_KEY
+    command: -f /app/locustfiles/prime.py --host exp --tags fetchMTOUpdates
+    # TODO Fix create_move_task_order in experimental so we can remove the --tags flag

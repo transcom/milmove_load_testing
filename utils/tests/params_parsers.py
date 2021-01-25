@@ -5,16 +5,16 @@
 # test_api definitions:
 APPLE_DEF = {
     "type": "string",
-    "enum": ["Granny Smith", "Red Delicious", "Pink Lady", "Braeburn", "Fuji", "Honeycrisp",],
+    "enum": ["Granny Smith", "Red Delicious", "Pink Lady", "Braeburn", "Fuji", "Honeycrisp"],
 }
 TREE_DEF = {
     "type": "object",
     "discriminator": "treeType",
     "properties": {
-        "id": {"type": "string", "format": "uuid", "readOnly": True,},
-        "datePlanted": {"type": "string", "format": "date",},
-        "timeMilitaryPlanted": {"type": "string", "pattern": "\\d{4}Z",},
-        "treeType": {"type": "string", "enum": ["AppleTree", "CherryTree", "LemonTree", "PeachTree",]},
+        "id": {"type": "string", "format": "uuid", "readOnly": True},
+        "datePlanted": {"type": "string", "format": "date"},
+        "timeMilitaryPlanted": {"type": "string", "pattern": "\\d{4}Z"},
+        "treeType": {"type": "string", "enum": ["AppleTree", "CherryTree", "LemonTree", "PeachTree"]},
     },
 }
 CHERRY_TREE_DEF = {
@@ -32,7 +32,7 @@ CHERRY_TREE_DEF = {
 APPLE_TREE_DEF = {
     "allOf": [
         TREE_DEF,
-        {"type": "object", "properties": {"apples": {"type": "array", "items": APPLE_DEF,},}, "required": ["apples"]},
+        {"type": "object", "properties": {"apples": {"type": "array", "items": APPLE_DEF}}, "required": ["apples"]},
     ]
 }
 APPLE_TREES_DEF = {
@@ -67,10 +67,10 @@ FARMER_DEF = {
 ORCHARD_DEF = {
     "type": "object",
     "properties": {
-        "id": {"type": "string", "format": "uuid", "readOnly": True,},
+        "id": {"type": "string", "format": "uuid", "readOnly": True},
         "address": ADDRESS_DEF,
         "farmer": FARMER_DEF,
-        "trees": {"type": "array", "items": TREE_DEF, "minItems": 1, "maxItems": 30,},
+        "trees": {"type": "array", "items": TREE_DEF, "minItems": 1, "maxItems": 30},
     },
 }
 
@@ -111,11 +111,11 @@ FARMER_PUT_422 = {
 # test_api endpoints:
 APPLE_TREE_GET = {
     "summary": "Get a specific apple tree.",
-    "responses": {"200": APPLE_TREE_GET_200, "404": APPLE_TREE_GET_404,},
+    "responses": {"200": APPLE_TREE_GET_200, "404": APPLE_TREE_GET_404},
 }
 APPLE_TREE_DELETE = {"summary": "Delete a specific apple tree.", "responses": {"200": APPLE_TREE_DELETE_200}}
 ORCHARDS_POST = {
     "summary": "Create an orchard of fruit trees.",
-    "parameters": [{"in": "body", "name": "body", "required": True, "schema": ORCHARD_DEF,}],
-    "responses": {"201": {"description": "OK", "schema": ORCHARD_DEF,}},
+    "parameters": [{"in": "body", "name": "body", "required": True, "schema": ORCHARD_DEF}],
+    "responses": {"201": {"description": "OK", "schema": ORCHARD_DEF}},
 }

@@ -43,11 +43,13 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Fake Data Generation](#fake-data-generation)
          * [Creating a custom parser](#creating-a-custom-parser)
       * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
+         * [Prime API](#prime-api)
+         * [MilMove/Office domains](#milmoveoffice-domains)
          * [Handling Rate Limiting](#handling-rate-limiting)
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Wed Dec 23 15:56:47 CST 2020 -->
+<!-- Added by: sandy, at: Fri Jan 15 00:40:16 CST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -326,7 +328,7 @@ commands include:
 
 Each of these commands opens the Locust interface for initiating and monitoring the tests, set to [http://localhost:8089](http://localhost:8089).
 Using this interface, you can set the number of users to simulate and their hatch rate, then start and stop the test at
-will. For the host, you can enter a full URL address, or you can simply enter "local", "staging", or "experimental", and
+will. For the host, you can enter a full URL address, or you can simply enter "local" or "exp" (for experimental), and
 let the system set the URL as appropriate.
 
 **NOTE: Currently the system only functions in the local environment. You may try the other settings for fun, but don't
@@ -338,7 +340,7 @@ If you need more control over the parameters for a load test, you will need to r
 look something like:
 
 ```sh
-locust -f locustfiles/<file_to_test>.py --host <local/staging/experimental>
+locust -f locustfiles/<file_to_test>.py --host <local/exp>
 ```
 
 Ex:
@@ -386,38 +388,38 @@ This where you will define all of the `User` classes for your load tests. A comm
 ```python
 from locust import HttpUser, between
 
-from utils.constants import MilMoveDomain
-from utils.mixins import MilMoveHostMixin
+from utils.hosts import MilMoveHostMixin, MilMoveDomain
 
 
-# Use MilMoveHostMixin to easily switch between local, experimental, and staging environments
+# Use MilMoveHostMixin to easily switch between local and experimental environments
 # HttpUser is the Locust user class we want to use to hit endpoint paths
 class MyUser(MilMoveHostMixin, HttpUser):
-    """ Here's a short description of what my user does. """
+  """ Here's a short description of what my user does. """
 
-    # Required attributes:
+  # Required attributes:
+  # The time (in seconds) Locust waits in between tasks. Can use decimals.
+  wait_time = between(1, 9)
 
-    # The time (in seconds) Locust waits in between tasks. Can use decimals.
-    wait_time = between(1, 9)
-    # The list of tasks for this user. You can use a TaskSet or define tasks in your MyUser class itself.
-    tasks = []
+  # The list of tasks for this user. You can use a TaskSet or define tasks in your MyUser class itself.
+  tasks = []
 
-    # MilMoveHostMixin attributes:
+  # MilMoveHostMixin attributes:
+  # Some local hosts for MilMove don't use HTTPS - you can override that default here:
+  local_protocol = "http"
 
-    # Some local hosts for MilMove don't use HTTPS - you can override that default here:
-    local_protocol = "http"
-    # The default port you want to use for local testing:
-    local_port = "3000"
-    # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
-    # NOTE: The domain corresponds to whatever you use in local - so <domain>local
-    domain = MilMoveDomain.OFFICE
-    # Are you testing an API endpoint or path in the interface? This changes the host:
-    is_api = True
+  # The default port you want to use for local testing:
+  local_port = "3000"
 
-    # If not using MilMoveHostMixin:
+  # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
+  # NOTE: The domain corresponds to whatever you use in local - so <domain>local
+  domain = MilMoveDomain.OFFICE
 
-    # Can set the host on the class directly. Useful if it never changes based on env.
-    host = "https://primelocal:9443"
+  # Are you testing an API endpoint or path in the interface? This changes the host:
+  is_api = True
+
+  # If not using MilMoveHostMixin:
+  # You can set the host on the class directly. Useful if it never changes based on env.
+  host = "https://primelocal:9443"
 ```
 
 This is the bare minimum that you need to have a functional load test. The `MilMoveHostMixin` class is designed to make set up faster and running tests an easier, simpler process. You don't
@@ -701,15 +703,30 @@ GHCTaskSet(ParserTaskMixin, ...):
 
 ## Load Testing against AWS Experimental Environment
 
+### Prime API
+
+To load test against the Prime API in experimental, you will need to install and set up `direnv`, `chamber`, and
+`aws-vault`. If you have already set up these tools in order to run the `mymove` project, you do not need to repeat
+these steps. Otherwise, please follow the instructions in the `mymove` repo to complete this setup:
+
+* [Setup: `direnv` and `chamber`](https://github.com/transcom/mymove#setup-direnv)
+* [Setup: AWS credentials and `aws-vault`](https://github.com/transcom/mymove#setup-aws-services-optional)
+
+Once you have loaded the secrets from `chamber`, which will include the experimental certificate and private key, you
+may run your load tests using "exp" as the host value. It is strongly recommended that you set up your `User` classes to
+subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "exp."
+
+### MilMove/Office domains
+
 To load test against the AWS Experimental Environment you must modify the
 [`DEVLOCAL_AUTH` environment variable](https://github.com/transcom/mymove/blob/master/config/env/exp.app.env#L8)
 and [deploy the code to the experimental environment](https://github.com/transcom/mymove/wiki/deploy-to-experimental).
 
-Then you can use the same steps as the development as above as long as you change the `host` parameter in the
-`locustfile.py` test classes and point them to the experimental domains:
+Then, if you have `User` classes that take advantage of the `MilMoveHostMixin` class, you may run your load tests using
+"exp" as the host value. If not, make sure to use the experimental domains as your host:
 
-* [https://my.experimental.move.mil](https://my.experimental.move.mil)
-* [https://office.experimental.move.mil](https://office.experimental.move.mil)
+* [https://my.exp.move.mil](https://my.exp.move.mil)
+* [https://office.exp.move.mil](https://office.exp.move.mil)
 
 ### Handling Rate Limiting
 
