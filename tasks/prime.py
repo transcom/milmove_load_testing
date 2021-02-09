@@ -150,7 +150,7 @@ class PrimeDataStorageMixin:
         :return: None
         """
         # Checks that we have a full set of MTO IDs already and halts processing if so:
-        if self.default_mto_ids and all(self.default_mto_ids.values()):
+        if self.has_all_default_mto_ids():
             return
 
         headers = {"content-type": "application/json"}
@@ -186,13 +186,13 @@ class PrimeDataStorageMixin:
                 )
 
             # Do we have all the ID values we need? Cool, then stop processing.
-            if all(self.default_mto_ids.values()):
+            if self.has_all_default_mto_ids():
                 logger.info(f"☑️ Set default MTO IDs for createMoveTaskOrder: \n{self.default_mto_ids}")
                 break
 
         # If we're in the local environment, and we have gone through the entire list without getting a full set of IDs,
         # set our hardcoded IDs as the default:
-        if not all(self.default_mto_ids.values()) and self.user.is_local:
+        if not self.has_all_default_mto_ids() and self.user.is_local:
             logger.warning("⚠️ Using hardcoded MTO IDs for LOCAL env")
             self.default_mto_ids.update(
                 {
@@ -202,6 +202,10 @@ class PrimeDataStorageMixin:
                     "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
                 }
             )
+
+    def has_all_default_mto_ids(self) -> bool:
+        """ Boolean indicating that we have all the values we need for creating new MTOs. """
+        return self.default_mto_ids and all(self.default_mto_ids.values())
 
 
 @tag("prime")
@@ -513,7 +517,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
     @task
     def create_move_task_order(self):
         # Check that we have all required ID values for this endpoint:
-        if not all(self.default_mto_ids.values()):
+        if not self.has_all_default_mto_ids():
             logger.warning(f"⚠️ Missing createMoveTaskOrder IDs for environment {self.user.env}")
             return
 
