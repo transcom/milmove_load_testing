@@ -220,6 +220,16 @@ class MilMoveHostMixin:
         # Finally, clear out all traces of the deployed cert file:
         cls.cert_kwargs = {}
 
+    @property
+    def is_local(self):
+        """ Indicates if this user is using the local environment. """
+        return self.env == MilMoveEnv.LOCAL
+
+    @property
+    def is_deployed(self):
+        """ Indicates if this user is running in a deployed environment. """
+        return self.env != MilMoveEnv.LOCAL
+
 
 def clean_milmove_host_users(locust_env: Environment):
     """
