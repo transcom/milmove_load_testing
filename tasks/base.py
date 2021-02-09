@@ -7,7 +7,6 @@ from locust import TaskSet
 import logging
 from requests import Response
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -52,10 +51,10 @@ class CertTaskMixin:
     TaskSet mixin class that uses a cert_kwargs dictionary set in the User class calling the tasks. Set up for local
     mTLS in particular. Client calls in this TaskSet should look like:
 
-    `self.client.get('url', **self.user.cert_kwargs)`
+    `self.client.get('url', **self.cert_kwargs)`
 
     NOTE: MUST BE PLACED BEFORE TaskSet IN MRO INHERITANCE
-    because TaskSet.__init__ does not call super(), which means this logic will not execute if TaskSet resolves first.
+    because TaskSet.__init__ does not call super(), meaning this logic will not execute if TaskSet resolves first.
     """
 
     def __init__(self, parent):
@@ -80,6 +79,7 @@ class ParserTaskMixin:
     defined.
 
     NOTE: MUST BE PLACED BEFORE TaskSet IN MRO INHERITANCE
+    because TaskSet.__init__ does not call super(), meaning this logic will not execute if TaskSet resolves first.
     """
 
     def __init__(self, parent):
