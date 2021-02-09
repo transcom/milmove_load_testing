@@ -300,13 +300,12 @@ local environment:
 ```shell script
 make db_dev_e2e_populate  ## populates the development database with test data
 make server_run
-make client_run
 ```
 
 Back in `milmove_load_testing`, make sure you activate your virtual environment before attempting to run tests:
 
 ```shell script
-pyenv activate locust-env
+pyenv activate locust-venv
 ```
 
 ### Running preset tests
