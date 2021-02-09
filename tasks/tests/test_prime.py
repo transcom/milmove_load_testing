@@ -18,7 +18,6 @@ class TestPrimeDataStorageMixin:
     @classmethod
     def setup_class(cls):
         """ Define and initialize the classes that will be tested. """
-        # environment = Environment(events=Events(), catch_exceptions=False)
 
         class PrimeStorage1(PrimeDataStorageMixin):
             DATA_LIST_MAX = 3
@@ -153,11 +152,34 @@ class TestPrimeDataStorageMixin:
 
     @responses.activate
     def test_set_default_mto_ids(self):
-        """ TODO """
+        """
+        Tests the process of setting the default MTO IDs for creating new moves.
 
+        This function loops through a list of MTOs that must have "id" values, and then it calls the Support API
+        getMoveTaskOrder endpoint to get further details on the move. It repeats this process for as many of the listed
+        moves as necessary to get a complete set of valid IDs to use with the createMoveTaskOrder endpoint.
+
+        To test this function, we have to mock the session client Locust uses in User/TaskSet classes, which we use to
+        make the API call. At its core, this client is an instance of requests.Session, so we create a simplified
+        subclass of Session and then do the rest of our requests mocking with the responses framework.
+        """
+        # Set up some mock functions and classes for our test:
         def mocked_url(url):
             return f"http:/{url}"
 
+        class MockLocustSession(Session):
+            def get(self, path, **kwargs):
+                return super().get(mocked_url(path))
+
+        class PrimeSessionStorage1(PrimeDataStorageMixin):
+            client = MockLocustSession()
+            cert_kwargs = {}
+
+        class PrimeSessionStorage2(PrimeDataStorageMixin):
+            client = MockLocustSession()
+            cert_kwargs = {}
+
+        # Set up our test data and expected results:
         test_moves = [
             {
                 "id": "0",  # the fake move ID
@@ -202,6 +224,7 @@ class TestPrimeDataStorageMixin:
                 },
             },
         ]
+
         # Mock the API calls for each of these moves:
         for test_move in test_moves:
             responses.add(
@@ -230,18 +253,7 @@ class TestPrimeDataStorageMixin:
             }
         ]
 
-        class MockLocustSession(Session):
-            def get(self, path, **kwargs):
-                return super().get(mocked_url(path))
-
-        class PrimeSessionStorage1(PrimeDataStorageMixin):
-            client = MockLocustSession()
-            cert_kwargs = {}
-
-        class PrimeSessionStorage2(PrimeDataStorageMixin):
-            client = MockLocustSession()
-            cert_kwargs = {}
-
+        # Test set_default_mto_ids:
         session_storage1 = PrimeSessionStorage1()
         session_storage2 = PrimeSessionStorage2()
 
@@ -256,4 +268,4 @@ class TestPrimeDataStorageMixin:
 
         assert session_storage1.default_mto_ids == expected_ids
         assert session_storage1.default_mto_ids == session_storage2.default_mto_ids
-        assert len(responses.calls) == 4  # no additional calls
+        assert len(responses.calls) == 4  # no additional API calls
