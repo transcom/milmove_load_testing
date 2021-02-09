@@ -23,11 +23,11 @@ from .base import check_response, CertTaskMixin, ParserTaskMixin
 logger = logging.getLogger(__name__)
 
 
-def prime_path(url):
+def prime_path(url: str) -> str:
     return f"/prime/v1{url}"
 
 
-def support_path(url):
+def support_path(url: str) -> str:
     return f"/support/v1{url}"
 
 
