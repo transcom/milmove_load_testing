@@ -42,7 +42,12 @@ class PrimeDataStorageMixin:
 
     DATA_LIST_MAX: int = 50
     # contains the ID values needed when creating moves using createMoveTaskOrder:
-    default_mto_ids: Dict[str, str] = {}
+    default_mto_ids: Dict[str, str] = {
+        "contractorID": "",
+        "destinationDutyStationID": "",
+        "originDutyStationID": "",
+        "uploadedOrdersID": "",
+    }
     local_store: Dict[str, list] = {
         MOVE_TASK_ORDER: [],
         MTO_SHIPMENT: [],
@@ -150,8 +155,9 @@ class PrimeDataStorageMixin:
         :param moves: list of JSON/dict objects
         :return: None
         """
-        if all(self.default_mto_ids.values()):
-            return  # if we already have all of the ID values, we don't need to run through this logic again
+        # Checks that we have a full set of MTO IDs already and halts processing if so:
+        if self.default_mto_ids and all(self.default_mto_ids.values()):
+            return
 
         headers = {"content-type": "application/json"}
         for move in moves:
