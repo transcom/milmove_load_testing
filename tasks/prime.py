@@ -31,7 +31,7 @@ def support_path(url):
     return f"/support/v1{url}"
 
 
-class PrimeDataTaskMixin:
+class PrimeDataStorageMixin:
     """
     TaskSet mixin used to store data from the Prime API during load testing so that it can be passed around and reused.
     We store a number of objects in a local store that can be requested by tasks.
@@ -187,7 +187,7 @@ class PrimeDataTaskMixin:
 
 
 @tag("prime")
-class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
+class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Prime API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier.
@@ -455,7 +455,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
 
 @tag("support")
-class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
+class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Support API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier. Ex:
