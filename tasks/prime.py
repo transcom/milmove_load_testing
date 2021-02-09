@@ -71,7 +71,7 @@ class PrimeDataStorageMixin:
         :return: tuple(str name of the address field, dict address payload)
         """
         if not mto_shipment:
-            mto_shipment = self.get_stored(MTO_SHIPMENT)
+            mto_shipment = self.get_stored(MTO_SHIPMENT) or {}
 
         address_fields = ["pickupAddress", "destinationAddress"]
         valid_addresses = [
