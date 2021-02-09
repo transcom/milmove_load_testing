@@ -3,6 +3,7 @@
 import logging
 import json
 import random
+from copy import deepcopy
 
 from locust import tag, task, TaskSet
 
@@ -17,9 +18,7 @@ from utils.constants import (
     MTO_SERVICE_ITEM,
     PAYMENT_REQUEST,
 )
-
 from .base import check_response, CertTaskMixin, ParserTaskMixin
-from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +40,8 @@ class PrimeDataTaskMixin:
     """
 
     DATA_LIST_MAX = 50
+    # contains the ID values needed when creating moves using createMoveTaskOrder:
+    default_mto_ids = {}
     local_store = {
         MOVE_TASK_ORDER: [],
         MTO_SHIPMENT: [],
@@ -49,17 +50,18 @@ class PrimeDataTaskMixin:
     }  # data stored will be shared among class instances thanks to mutable dict
 
     def get_stored(self, object_key):
-        """Given an object_key that represents a type of object, returns a object of that type from the list.
+        """
+        Given an object_key that represents an object type from the MilMove app, returns an object of that type from the
+        list.
 
         :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
         """
-
         data_list = self.local_store[object_key]
 
         if len(data_list) > 0:  # otherwise we return None
             return random.choice(data_list)
 
-    def get_random_shipment_address(self, mto_shipment=None):
+    def get_stored_shipment_address(self, mto_shipment=None):
         """
         Grabs one of either pickupAddress or destinationAddress from a shipment and returns the specific field and
         payload for that address.
@@ -104,14 +106,14 @@ class PrimeDataTaskMixin:
             data_list.append(object_data)
 
     def update_stored(self, object_key, old_data, new_data):
-        """Given an object key, it replaces a stored object in the local store with a new updated object.
+        """
+        Given an object key, replaces a stored object in the local store with a new updated object.
 
         :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
         :param old_data: JSON/dict
         :param new_data: JSON/dict
         :return: None
         """
-
         data_list = self.local_store[object_key]
 
         try:
@@ -120,6 +122,68 @@ class PrimeDataTaskMixin:
             pass  # this is fine, we didn't want this value in the list anymore anyway
 
         data_list.append(new_data)
+
+    def set_default_mto_ids(self, moves):
+        """
+        Given a list of Move Task Orders, gets the four ID values needed to create more MTOs:
+          - contractorID
+          - uploadedOrdersID
+          - destinationDutyStationID
+          - originDutyStationID
+
+        To get these values, this function hits the getMoveTaskOrder endpoint in the Support API to get all of the
+        details on an MTO. The Prime API doesn't have access to all of this info, which is why we need to use the
+        Support API instead. It will go through and hit this endpoint for all of the moves in the list until it finally
+        gets a complete set of IDs.
+
+        Local values we used to default to (before we needed to make this process dynamic for deployed envs):
+          "contractorID": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
+          "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
+          "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
+          "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
+
+        :param moves: list of JSON/dict objects
+        :return: None
+        """
+        if all(self.default_mto_ids.values()):
+            return  # if we already have all of the ID values, we don't need to run through this logic again
+
+        headers = {"content-type": "application/json"}
+        for move in moves:
+            # Call the Support API to get full details on the move:
+            resp = self.client.get(
+                support_path(f"/move-task-orders/{move['id']}"),
+                name=support_path("/move-task-orders/{moveTaskOrderID}"),
+                headers=headers,
+                **self.user.cert_kwargs,
+            )
+            move_details, success = check_response(resp, "getMoveTaskOrder")
+
+            if not success:
+                continue  # try again with the next move in the list
+
+            # Get the values we need from the move and set them in self.default_move_ids.
+            # If this move is missing any of these values, we default to using whatever value is already in
+            # self.default_mto_ids, which could be nothing, or could be a value gotten from a previous move.
+            # This way we never override good ID values from earlier moves in the list.
+            self.default_mto_ids["contractorID"] = move_details.get(
+                "contractorID", self.default_mto_ids["contractorID"]
+            )
+            if order_details := move_details.get("moveOrder"):
+                self.default_mto_ids["uploadedOrdersID"] = order_details.get(
+                    "uploadedOrdersID", self.default_mto_ids["uploadedOrdersID"]
+                )
+                self.default_mto_ids["destinationDutyStationID"] = order_details.get(
+                    "destinationDutyStationID", self.default_mto_ids["destinationDutyStationID"]
+                )
+                self.default_mto_ids["originDutyStationID"] = order_details.get(
+                    "originDutyStationID", self.default_mto_ids["originDutyStationID"]
+                )
+
+            # Do we have all the ID values we need? Cool, then stop processing.
+            if all(self.default_mto_ids.values()):
+                logger.info(f"☑️ Set default MTO IDs for createMoveTaskOrder: \n{self.default_mto_ids}")
+                break
 
 
 @tag("prime")
@@ -133,7 +197,11 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @task
     def fetch_mto_updates(self):
         resp = self.client.get(prime_path("/move-task-orders"), **self.user.cert_kwargs)
-        check_response(resp, "fetchMTOUpdates")
+        moves, success = check_response(resp, "fetchMTOUpdates")
+
+        # Use these MTOs to set the ID values we'll need to create more MTOs:
+        if success:
+            self.set_default_mto_ids(moves)
 
     @tag(MTO_SERVICE_ITEM, "createMTOServiceItem")
     @task
@@ -267,7 +335,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if not mto_shipment:
             return
 
-        address_tuple = self.get_random_shipment_address(mto_shipment)  # returns a (field_name, address_dict) tuple
+        address_tuple = self.get_stored_shipment_address(mto_shipment)  # returns a (field_name, address_dict) tuple
         if not address_tuple:
             return  # this shipment didn't have any addresses, we will try again later with a different shipment
 
@@ -426,20 +494,23 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
     @task
     def create_move_task_order(self):
+        # Check that we have all required ID values for this endpoint:
+        if not all(self.default_mto_ids.values()):
+            logger.warning(f"⚠️ Missing createMoveTaskOrder IDs for environment {self.user.env}")
+            return
 
         overrides = {
-            "contractorId": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
-            # Moves that are in DRAFT or CANCELED mode cannot be used by the rest of the
-            # loadtesting
+            "contractorID": self.default_mto_ids["contractorID"],
+            # Moves that are in DRAFT or CANCELED mode cannot be used by the rest of the load testing
             "status": "SUBMITTED",
             # If this date is set here, the status will not properly transition to APPROVED
             "availableToPrimeAt": None,
             "moveOrder": {
                 "status": "APPROVED",
                 # We need these objects to exist
-                "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
-                "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
-                "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
+                "destinationDutyStationID": self.default_mto_ids["destinationDutyStationID"],
+                "originDutyStationID": self.default_mto_ids["originDutyStationID"],
+                "uploadedOrdersID": self.default_mto_ids["uploadedOrdersID"],
                 # To avoid the overrides being inserted into these nested objects...
                 "entitlement": {},
                 "customer": {},
