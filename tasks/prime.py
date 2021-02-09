@@ -117,10 +117,12 @@ class PrimeDataStorageMixin:
         """
         data_list = self.local_store[object_key]
 
-        try:
-            data_list.remove(old_data)
-        except ValueError:
-            pass  # this is fine, we didn't want this value in the list anymore anyway
+        # Remove all instances of the stored object, in case multiples were added erroneously:
+        while True:
+            try:
+                data_list.remove(old_data)
+            except ValueError:
+                break  # this means we finally cleared the list
 
         data_list.append(new_data)
 
