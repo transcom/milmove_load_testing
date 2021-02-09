@@ -2,9 +2,10 @@
 """ Tests tasks/prime.py """
 import pytest
 
+import responses
 from requests import Session
 
-from tasks.prime import PrimeDataStorageMixin
+from tasks.prime import PrimeDataStorageMixin, support_path
 from utils.constants import MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST, ZERO_UUID
 
 
@@ -19,17 +20,11 @@ class TestPrimeDataStorageMixin:
         """ Define and initialize the classes that will be tested. """
         # environment = Environment(events=Events(), catch_exceptions=False)
 
-        class MockSession(Session):
-            def get(self, name, **kwargs):
-                return super().get(**kwargs)
-
         class PrimeStorage1(PrimeDataStorageMixin):
             DATA_LIST_MAX = 3
-            client = MockSession()
 
         class PrimeStorage2(PrimeDataStorageMixin):
             DATA_LIST_MAX = 3
-            client = MockSession()
 
         cls.storage1 = PrimeStorage1()
         cls.storage2 = PrimeStorage2()
@@ -76,23 +71,9 @@ class TestPrimeDataStorageMixin:
     @pytest.mark.parametrize(
         "test_shipment",
         [
-            (
-                {
-                    "pickupAddress": {"id": "1234"},
-                    "destinationAddress": {"id": "5768"},
-                }
-            ),
-            (
-                {
-                    "pickupAddress": {"id": "11111"},
-                    "destinationAddress": {"id": ZERO_UUID},
-                }
-            ),
-            (
-                {
-                    "destinationAddress": {"id": "1357"},
-                }
-            ),
+            ({"pickupAddress": {"id": "1234"}, "destinationAddress": {"id": "5768"}}),
+            ({"pickupAddress": {"id": "11111"}, "destinationAddress": {"id": ZERO_UUID}}),
+            ({"destinationAddress": {"id": "1357"}}),
         ],
     )
     def test_get_stored_shipment_address__given_shipment(self, test_shipment):
@@ -170,5 +151,109 @@ class TestPrimeDataStorageMixin:
         assert old_object not in self.storage2.local_store[object_key]
         assert len(self.storage1.local_store[object_key]) == len(self.storage2.local_store[object_key])
 
-    # def test_set_default_mto_ids(self):
-    #     """TODO MOCKS"""
+    @responses.activate
+    def test_set_default_mto_ids(self):
+        """ TODO """
+
+        def mocked_url(url):
+            return f"http:/{url}"
+
+        test_moves = [
+            {
+                "id": "0",  # the fake move ID
+                "status": 200,
+                "json": {"contractorID": "contractor0"},
+            },
+            {
+                "id": "X",
+                "status": 404,  # should just be skipped, won't interrupt processing
+                "json": {"error": "not found"},  # format doesn't matter, this is a completely fake/mocked response
+            },
+            {
+                "id": "1",
+                "status": 200,
+                "json": {
+                    "moveOrder": {
+                        "uploadedOrdersID": "upload1",
+                        "destinationDutyStationID": "",  # purposefully blank, will not count for end of loop
+                        "originDutyStationID": "origin1",
+                    },
+                },
+            },
+            {
+                "id": "2",
+                "status": 200,
+                "json": {
+                    "moveOrder": {
+                        "destinationDutyStationID": "destination2",
+                        "originDutyStationID": "origin2",
+                    }
+                },
+            },
+            {
+                "id": "3",
+                "status": 200,
+                "json": {
+                    # these values should not be used because they all should have been set previously
+                    "contractorID": "contractor3",
+                    "moveOrder": {
+                        "uploadedOrdersID": "upload3",
+                    },
+                },
+            },
+        ]
+        # Mock the API calls for each of these moves:
+        for test_move in test_moves:
+            responses.add(
+                responses.GET,
+                mocked_url(support_path(f"/move-task-orders/{test_move['id']}")),
+                json=test_move["json"],
+                status=test_move["status"],
+            )
+
+        expected_ids = {
+            "contractorID": "contractor0",
+            "destinationDutyStationID": "destination2",
+            "originDutyStationID": "origin2",
+            "uploadedOrdersID": "upload1",
+        }
+
+        # Random list to use after first run, none of these values will be used after the default IDs are initially set:
+        test_moves_after = [
+            {
+                "contractorID": "contractor4",
+                "moveOrder": {
+                    "uploadedOrdersID": "upload4",
+                    "destinationDutyStationID": "destination4",
+                    "originDutyStationID": "origin4",
+                },
+            }
+        ]
+
+        class MockLocustSession(Session):
+            def get(self, path, **kwargs):
+                return super().get(mocked_url(path))
+
+        class PrimeSessionStorage1(PrimeDataStorageMixin):
+            client = MockLocustSession()
+            cert_kwargs = {}
+
+        class PrimeSessionStorage2(PrimeDataStorageMixin):
+            client = MockLocustSession()
+            cert_kwargs = {}
+
+        session_storage1 = PrimeSessionStorage1()
+        session_storage2 = PrimeSessionStorage2()
+
+        session_storage1.set_default_mto_ids(test_moves)
+
+        assert session_storage1.default_mto_ids == expected_ids
+        assert session_storage1.default_mto_ids == session_storage2.default_mto_ids
+        assert len(responses.calls) == 4
+
+        # Call func again with new list, but all values should stay the same as before:
+        session_storage2.set_default_mto_ids(test_moves_after)
+
+        assert session_storage1.default_mto_ids == expected_ids
+        assert session_storage1.default_mto_ids == session_storage2.default_mto_ids
+        assert len(responses.calls) == 4  # no additional calls
