@@ -4,6 +4,7 @@ import logging
 import json
 import random
 from copy import deepcopy
+from typing import Dict
 
 from locust import tag, task, TaskSet
 
@@ -39,10 +40,10 @@ class PrimeDataStorageMixin:
     This mixin allows storing multiple items of each kind.
     """
 
-    DATA_LIST_MAX = 50
+    DATA_LIST_MAX: int = 50
     # contains the ID values needed when creating moves using createMoveTaskOrder:
-    default_mto_ids = {}
-    local_store = {
+    default_mto_ids: Dict[str, str] = {}
+    local_store: Dict[str, list] = {
         MOVE_TASK_ORDER: [],
         MTO_SHIPMENT: [],
         MTO_SERVICE_ITEM: [],
@@ -136,6 +137,8 @@ class PrimeDataStorageMixin:
         Support API instead. It will go through and hit this endpoint for all of the moves in the list until it finally
         gets a complete set of IDs.
 
+        CAN ONLY be used when subclassed with TaskSet and CertTaskMixin.
+
         Local values we used to default to (before we needed to make this process dynamic for deployed envs):
           "contractorID": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
           "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
@@ -155,7 +158,7 @@ class PrimeDataStorageMixin:
                 support_path(f"/move-task-orders/{move['id']}"),
                 name=support_path("/move-task-orders/{moveTaskOrderID}"),
                 headers=headers,
-                **self.user.cert_kwargs,
+                **self.cert_kwargs,
             )
             move_details, success = check_response(resp, "getMoveTaskOrder")
 

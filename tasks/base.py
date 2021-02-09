@@ -55,6 +55,7 @@ class CertTaskMixin:
     `self.client.get('url', **self.user.cert_kwargs)`
 
     NOTE: MUST BE PLACED BEFORE TaskSet IN MRO INHERITANCE
+    because TaskSet.__init__ does not call super(), which means this logic will not execute if TaskSet resolves first.
     """
 
     def __init__(self, parent):
@@ -63,6 +64,14 @@ class CertTaskMixin:
         # Check that the User class calling these tasks implements cert_kwargs:
         if not hasattr(self.user, "cert_kwargs"):
             setattr(self.user, "cert_kwargs", {})  # set an empty dict to avoid attribute errors later on
+
+    @property
+    def cert_kwargs(self):
+        """
+        Shortcut to the cert_kwargs attribute of this TaskSet's locust.users.User class or subclass of
+        milmove_load_testing.utils.hosts.MilMoveHostMixin.
+        """
+        return self.user.cert_kwargs
 
 
 class ParserTaskMixin:
