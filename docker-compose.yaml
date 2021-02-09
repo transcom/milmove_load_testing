@@ -9,5 +9,5 @@ services:
      - DEVLOCAL_AUTH=true
      - MOVE_MIL_EXP_TLS_CERT
      - MOVE_MIL_EXP_TLS_KEY
-    command: -f /app/locustfiles/prime.py --host exp --tags fetchMTOUpdates
-    # TODO Fix create_move_task_order in experimental so we can remove the --tags flag
+    command: -f /app/locustfiles/prime.py --host exp
+    # TODO Write command for a regular timed load test in experimental
