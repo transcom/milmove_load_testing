@@ -164,7 +164,7 @@ class MilMoveHostMixin:
         cls.cert_kwargs = {"cert": cert_key, "verify": DOD_CA_BUNDLE}
 
     @classmethod
-    def create_deployed_cert_file(cls) -> str:
+    def create_deployed_cert_file(cls) -> Optional[str]:
         """
         Grabs the TLS certificate and key values for this environment from the relevant environment variables (which
         must be set for this function to work), and then creates a new .pem file that contains both the certificate and
