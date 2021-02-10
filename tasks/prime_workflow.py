@@ -55,6 +55,18 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         super().update_post_counseling_information()
         logger.info(f"{self.workflow_title} - Created move and completed counseling {self.current_move['id'][:8]}")
 
+        # Add a shipment and approve it
+        ship = super().create_mto_shipment()
+        print("the stored shipments after create 🛳: ", ship["id"], " ", ship["status"])
+
+        ship = super().update_mto_shipment_status(overrides={"status": "APPROVED"})
+        print("the stored shipments after update 🛳: ", ship["id"], " ", ship["status"])
+        logger.info(f"{self.workflow_title} - Created and approved a shipment {self.current_move['id'][:8]}")
+
+        # Add a service item and approve it
+
+        # Update the shipment
+
     # STORAGE FUNCTIONALITY
 
     def get_stored(self, object_key, object_id=None):
