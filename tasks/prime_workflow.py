@@ -55,17 +55,47 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         super().update_post_counseling_information()
         logger.info(f"{self.workflow_title} - Created move and completed counseling {self.current_move['id'][:8]}")
 
+        self.add_shipment_with_doshut_service()
+        self.update_shipment()
+
+    def add_shipment_with_doshut_service(self):
+        # Get a realistic primeEstimatedWeight
+        estimated_weight = int(98 / 100 * self.current_move["moveOrder"]["entitlement"]["totalWeight"])
+
         # Add a shipment and approve it
-        ship = super().create_mto_shipment()
-        print("the stored shipments after create 🛳: ", ship["id"], " ", ship["status"])
+        overrides = {"primeEstimatedWeight": estimated_weight}
+        ship = super().create_mto_shipment(overrides)
+        overrides = {"id": ship["id"], "status": "APPROVED"}
+        ship = super().update_mto_shipment_status(overrides)
 
-        ship = super().update_mto_shipment_status(overrides={"status": "APPROVED"})
-        print("the stored shipments after update 🛳: ", ship["id"], " ", ship["status"])
-        logger.info(f"{self.workflow_title} - Created and approved a shipment {self.current_move['id'][:8]}")
+        # Add a DOSHUT service item to this shipment and approve it
+        overrides = {"mtoShipmentID": ship["id"], "modelType": "MTOServiceItemShuttle", "reServiceCode": "DOSHUT"}
+        service_items = super().create_mto_service_item(overrides)
 
-        # Add a service item and approve it
+        # DOSHUT should return exactly one service item, which we will approve
+        doshut = service_items[0]
+        overrides = {"id": doshut["id"], "status": "APPROVED"}
+        super().update_mto_service_item_status(overrides)
 
-        # Update the shipment
+        logger.info(
+            f"{self.workflow_title} - Added and approved shipment and DOSHUT service item {self.current_move['id'][:8]}"
+        )
+
+    def update_shipment(self):
+        # Get the shipment from the mto
+        ship = self.get_stored(MTO_SHIPMENT)
+        overrides = {"id": ship["id"]}
+        ship = super().update_mto_shipment(overrides)
+
+        # Update an address
+        overrides = {"mtoShipmentID": ship["id"]}
+        ship = super().update_mto_shipment_address(overrides)
+
+        # Update an agent
+        overrides = {"mtoShipmentID": ship["id"]}
+        ship = super().update_mto_agent(overrides)
+
+        logger.info(f"{self.workflow_title} - Updated shipment and agent {self.current_move['id'][:8]}")
 
     # STORAGE FUNCTIONALITY
 
@@ -92,7 +122,10 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
         # If it's the following object types, we add them into nested array in the MTO
         elif object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
-            self._add_nested_object_to_mto(object_key, object_data)
+            if isinstance(object_data, list):
+                self._add_nested_array_to_mto(object_key, object_data)
+            else:
+                self._add_nested_object_to_mto(object_key, object_data)
 
     def update_stored(self, object_key, old_data, new_data):
         """Replaces the object in old_data with the one in new_data"""
@@ -136,6 +169,10 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         # If not found, we can add the new object
         nested_array.append(object_data)
         self.current_move[array_key] = nested_array
+
+    def _add_nested_array_to_mto(self, object_key, object_data):
+        for item in object_data:
+            self._add_nested_object_to_mto(object_key, item)
 
     @staticmethod
     def _get_nested_array_name(object_key):
