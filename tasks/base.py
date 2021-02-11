@@ -22,7 +22,7 @@ def check_response(response: Response, task_name="Task", request=None):
     :param request: any type, optional data to print for debugging a failed response
     :return: tuple(dict, bool)
     """
-    logger.info(f"ℹ️ {task_name} status code: {response.status_code}")
+    logger.info(f"ℹ️ {task_name} status code: {response.status_code} {response.reason}")
 
     try:
         json_response = json.loads(response.content)
@@ -41,8 +41,6 @@ def check_response(response: Response, task_name="Task", request=None):
                 logger.error(f"Request data:\n{response.request.method} {response.request.url}\n{request}")
 
         return json_response, False
-
-    logger.info(f"ℹ️ {task_name} successfully completed!")
 
     return json_response, True
 
