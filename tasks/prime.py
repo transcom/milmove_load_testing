@@ -48,7 +48,7 @@ class PrimeDataTaskMixin:
         PAYMENT_REQUEST: [],
     }  # data stored will be shared among class instances thanks to mutable dict
 
-    def get_stored(self, object_key):
+    def get_stored(self, object_key, *args, **kwargs):
         """Given an object_key that represents a type of object, returns a object of that type from the list.
 
         :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
@@ -135,8 +135,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         resp = self.client.get(prime_path("/move-task-orders"), **self.user.cert_kwargs)
         check_response(resp, "fetchMTOUpdates")
 
-        return None
-
     @tag(MTO_SERVICE_ITEM, "createMTOServiceItem")
     @task
     def create_mto_service_item(self, overrides=None):
@@ -144,7 +142,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         object_id = overrides.get("mtoShipmentID") if overrides else None
         mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
         if not mto_shipment:
-            logger.error("⛔️ No mto shipment\n")
+            logger.debug("createMTOServiceItem: ⛔️ No mto shipment found")
             return None
 
         overrides_local = {
@@ -168,8 +166,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.add_stored(MTO_SERVICE_ITEM, mto_service_items)
             return mto_service_items
 
-        return None
-
     @tag(MTO_SHIPMENT, "createMTOShipment")
     @task
     def create_mto_shipment(self, overrides=None):
@@ -179,6 +175,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
         move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
         if not move_task_order:
+            logger.debug("createMTOShipment: ⛔️ No moveTaskOrder found")
             return (
                 None  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
             )
@@ -210,8 +207,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.add_stored(MTO_SHIPMENT, mto_shipment)
             return mto_shipment
 
-        return None
-
     @tag(PAYMENT_REQUEST, "createUpload")
     @task
     def create_upload(self, overrides=None):
@@ -233,7 +228,7 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
 
     @tag(PAYMENT_REQUEST, "createPaymentRequest")
     @task
-    def create_payment_request(self, overrides):
+    def create_payment_request(self, overrides=None):
         # If mtoServiceItemID was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("mtoServiceItemID") if overrides else None
         service_item = self.get_stored(MTO_SERVICE_ITEM, object_id)
@@ -255,8 +250,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.add_stored(PAYMENT_REQUEST, payment_request)
             return payment_request
-
-        return None
 
     @tag(MTO_SHIPMENT, "updateMTOShipment")
     @task
@@ -296,11 +289,9 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
             return new_mto_shipment
 
-        return None
-
     @tag(MTO_SHIPMENT, "updateMTOShipmentAddress")
     @task
-    def update_mto_shipment_address(self, overrides):
+    def update_mto_shipment_address(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
         mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
@@ -337,11 +328,9 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.update_stored(MTO_SHIPMENT, mto_shipment, updated_shipment)
             return updated_shipment
 
-        return None
-
     @tag(MTO_AGENT, "updateMTOAgent")
     @task
-    def update_mto_agent(self, overrides):
+    def update_mto_agent(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("mtoShipmentID") if overrides else None
         mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
@@ -370,8 +359,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             new_shipment["agents"][0] = updated_agent
             self.update_stored(MTO_SHIPMENT, mto_shipment, new_shipment)
             return new_shipment
-
-        return None
 
     @tag(MTO_SERVICE_ITEM, "updateMTOServiceItem")
     @task
@@ -412,8 +399,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.update_stored(MTO_SERVICE_ITEM, mto_service_item, updated_service_item)
             return updated_service_item
 
-        return None
-
     @tag(MOVE_TASK_ORDER, "updateMTOPostCounselingInformation")
     @task
     def update_post_counseling_information(self, overrides=None):
@@ -442,8 +427,6 @@ class PrimeTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
             return new_mto
 
-        return None
-
 
 @tag("support")
 class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
@@ -464,6 +447,7 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         object_id = overrides.get("id") if overrides else None
         mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
         if not mto_shipment:
+            logger.debug("updateMTOShipmentStatus: ⛔️ No mtoShipment found.")
             return None  # can't run this task
 
         # Generate fake payload based on the endpoint's required fields
@@ -483,8 +467,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.update_stored(MTO_SHIPMENT, mto_shipment, mto_shipment)
             return mto_shipment
-
-        return None
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
     @task
@@ -535,16 +517,15 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.add_stored(MOVE_TASK_ORDER, new_mto)
             return new_mto
 
-        return None
-
     @tag(MTO_SERVICE_ITEM, "updateMTOServiceItemStatus")
     @task
-    def update_mto_service_item_status(self, overrides):
+    def update_mto_service_item_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
         mto_service_item = self.get_stored(MTO_SERVICE_ITEM, object_id)
         # if we don't have an mto shipment we can't run this task
         if not mto_service_item:
+            logger.debug("updateMTOServiceItemStatus: ⛔️ No mtoServiceItemFound")
             return None
 
         payload = self.fake_request("/mto-service-items/{mtoServiceItemID}/status", "patch", SUPPORT_API_KEY, overrides)
@@ -564,12 +545,12 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
             self.update_stored(MTO_SERVICE_ITEM, mto_service_item, mto_service_item)
             return mto_service_item
 
-        return None
-
     @tag(PAYMENT_REQUEST, "updatePaymentRequestStatus")
     @task
     def update_payment_request_status(self, overrides=None):
-        payment_request = self.get_stored(PAYMENT_REQUEST, object_id=overrides.get("id"))
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        payment_request = self.get_stored(PAYMENT_REQUEST, object_id)
         if not payment_request:
             return
 
@@ -588,8 +569,6 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.update_stored(PAYMENT_REQUEST, payment_request, new_payment_request)
             return new_payment_request
-
-        return None
 
     @tag(MOVE_TASK_ORDER, "getMoveTaskOrder")
     @task
@@ -614,5 +593,3 @@ class SupportTasks(PrimeDataTaskMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
         if success:
             self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
             return new_mto
-
-        return None
