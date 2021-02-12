@@ -51,7 +51,11 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         self.workflow_title = "HHG Move Basic"
 
         # Move steps for this workflow
-        super().create_move_task_order()
+        move = super().create_move_task_order()
+        if not move:
+            logger.debug(f"{self.workflow_title} ⚠️ No move_task_order returned")
+            return
+
         super().update_post_counseling_information()
         logger.info(f"{self.workflow_title} - Created move and completed counseling {self.current_move['id'][:8]}")
 
@@ -82,7 +86,7 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         )
 
     def update_shipment(self):
-        # Get the shipment from the mto
+        # Get the shipment from the mto (this is expecting just one shipment)
         ship = self.get_stored(MTO_SHIPMENT)
         overrides = {"id": ship["id"]}
         ship = super().update_mto_shipment(overrides)

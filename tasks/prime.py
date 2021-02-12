@@ -234,7 +234,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         object_id = overrides.get("mtoShipmentID") if overrides else None
         mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
         if not mto_shipment:
-            logger.debug("createMTOServiceItem: ⛔️ No mto shipment found")
+            logger.debug("createMTOServiceItem: ⚠️ No mto_shipment found")
             return None
 
         overrides_local = {
@@ -267,7 +267,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
 
         move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
         if not move_task_order:
-            logger.debug("createMTOShipment: ⛔️ No moveTaskOrder found")
+            logger.debug("createMTOShipment: ⚠️ No move_task_order found")
             return (
                 None  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
             )
@@ -498,7 +498,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         object_id = overrides.get("id") if overrides else None
         move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
         if not move_task_order:
-            logger.error(f"⛔️ No move_task_order \n{move_task_order}")
+            logger.debug("updateMTOPostCounselingInformation: ⚠️ No move_task_order found")
             return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
 
         payload = self.fake_request("/move-task-orders/{moveTaskOrderID}/post-counseling-info", "patch", PRIME_API_KEY)
@@ -539,7 +539,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         object_id = overrides.get("id") if overrides else None
         mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
         if not mto_shipment:
-            logger.debug("updateMTOShipmentStatus: ⛔️ No mtoShipment found.")
+            logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
             return None  # can't run this task
 
         # Generate fake payload based on the endpoint's required fields
@@ -565,7 +565,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
     def create_move_task_order(self):
         # Check that we have all required ID values for this endpoint:
         if not self.has_all_default_mto_ids():
-            logger.warning(f"⚠️ Missing createMoveTaskOrder IDs for environment {self.user.env}")
+            logger.debug(f"⚠️ Missing createMoveTaskOrder IDs for environment {self.user.env}")
             return
 
         overrides = {
@@ -620,7 +620,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         mto_service_item = self.get_stored(MTO_SERVICE_ITEM, object_id)
         # if we don't have an mto shipment we can't run this task
         if not mto_service_item:
-            logger.debug("updateMTOServiceItemStatus: ⛔️ No mtoServiceItemFound")
+            logger.debug("updateMTOServiceItemStatus: ⚠️ No mto_service_item found")
             return None
 
         payload = self.fake_request("/mto-service-items/{mtoServiceItemID}/status", "patch", SUPPORT_API_KEY, overrides)
@@ -672,7 +672,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         object_id = overrides.get("id") if overrides else None
         move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
         if not move_task_order:
-            logger.error(f"⛔️ No move_task_order \n{move_task_order}")
+            logger.debug("getMoveTaskOrder: ⚠️ No move_task_order found")
             return
 
         headers = {"content-type": "application/json"}
