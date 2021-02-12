@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """ Tests utils/fake_data.py """
-import pytest
+import re
+from datetime import datetime
 
-from utils.fake_data import MilMoveProvider
-from utils.fake_data import MilMoveData
+import pytest
 from faker import Faker
 from faker.generator import Generator
-from datetime import datetime
+
 from utils.constants import DataType
+from utils.fake_data import MilMoveProvider, MilMoveData
 
 
 class TestMilMoveProvider:
@@ -27,6 +28,7 @@ class TestMilMoveProvider:
         assert self.provider.current_name == {"first_name": "", "last_name": ""}
         assert self.provider.first_name_used is True
         assert self.provider.last_name_used is True
+        assert self.provider.safe_data is not None
 
     def test_safe_phone_number(self):
         """
@@ -34,8 +36,7 @@ class TestMilMoveProvider:
         """
         phone_number = self.fake.safe_phone_number()
         assert type(phone_number) is str
-        assert len(phone_number) == 12
-        assert phone_number.index("555") == 4
+        assert re.match("^[2-9]\\d{2}-555-\\d{4}$", phone_number)
 
     def test_time_military(self):
         """
@@ -43,8 +44,7 @@ class TestMilMoveProvider:
         """
         time = self.fake.time_military()
         assert type(time) is str
-        assert len(time) == 5
-        assert time.endswith("Z")
+        assert re.match("^[0-9]{4}Z$", time)
 
     def test_iso_date_time(self):
         """
@@ -72,23 +72,29 @@ class TestMilMoveProvider:
         """
         Tests the first name is a string and does not equal the current first name
         """
-        first_name = self.fake.safe_first_name()
-        assert type(first_name) is str
-        assert first_name != self.provider.current_name["first_name"]
+        fake_name = self.fake.safe_first_name()
+        for name in self.provider.safe_data["names"]:
+            if name["first_name"] == fake_name:
+                found = True
+        assert found
 
     def test_safe_last_name(self):
         """
         Tests the last name is a string and does not equal the current last name
         """
-        last_name = self.fake.safe_first_name()
-        assert type(last_name) is str
-        assert last_name != self.provider.current_name["last_name"]
+        fake_name = self.fake.safe_last_name()
+        for name in self.provider.safe_data["names"]:
+            if name["last_name"] == fake_name:
+                found = True
+        assert found
 
     def test_safe_street_address(self):
         """
         Tests the return address is a string
         """
-        assert type(self.fake.safe_street_address()) is str
+        address = self.fake.safe_street_address()
+        assert type(address) is str
+        assert address in self.provider.safe_data["addresses"]
 
 
 class TestMilMoveData:
@@ -105,14 +111,14 @@ class TestMilMoveData:
         """
         assert isinstance(self.data.fake, Faker)
         assert type(self.data.data_types) is dict
-        assert len(self.data.data_types) == 16
+        assert self.data.data_types is not None
 
     def test_get_random_choice(self):
         """
         Tests that an element is returned from the provided list
         """
-        list = ["string1", 4, True, "string2"]
-        assert self.data.get_random_choice(list) in list
+        random_list = ["string1", 4, True, "string2"]
+        assert self.data.get_random_choice(random_list) in random_list
 
     def test_get_fake_data_for_type(self):
         """
