@@ -447,7 +447,8 @@ class SupportAPIParser(PrimeAPIParser):
 
             move_task_order.pop("moveOrderID", None)  # moveOrderID will be returned on creation
 
-            # Cannot create certain nested objects with this endpoint, instead the caller should pass in an ID (in overrides)
+            # Cannot create certain nested objects with this endpoint, instead the caller should pass in an ID
+            # (in overrides)
             move_orders.pop("uploadedOrders", None)
             move_orders.pop("originDutyStation", None)
             move_orders.pop("destinationDutyStation", None)
