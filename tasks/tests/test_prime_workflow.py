@@ -211,7 +211,7 @@ class TestPrimeWorkflowTasks(LocustTestCase):
         assert shipment["id"] == "56789" or shipment["id"] == "34567"
 
         # Get a specific shipment
-        shipment = self.taskset.get_stored(MTO_SHIPMENT, id="34567")
+        shipment = self.taskset.get_stored(MTO_SHIPMENT, object_id="34567")
         assert shipment["id"] == "34567"
 
         # Scenario: We add a move and no shipments
@@ -227,5 +227,5 @@ class TestPrimeWorkflowTasks(LocustTestCase):
         shipment = self.taskset.get_stored(MTO_SHIPMENT)
         assert shipment is None
 
-        shipment = self.taskset.get_stored(MTO_SHIPMENT, id="34567")
+        shipment = self.taskset.get_stored(MTO_SHIPMENT, object_id="34567")
         assert shipment is None

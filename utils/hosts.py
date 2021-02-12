@@ -164,7 +164,7 @@ class MilMoveHostMixin:
         cls.cert_kwargs = {"cert": cert_key, "verify": DOD_CA_BUNDLE}
 
     @classmethod
-    def create_deployed_cert_file(cls) -> str:
+    def create_deployed_cert_file(cls) -> Optional[str]:
         """
         Grabs the TLS certificate and key values for this environment from the relevant environment variables (which
         must be set for this function to work), and then creates a new .pem file that contains both the certificate and
@@ -219,6 +219,16 @@ class MilMoveHostMixin:
 
         # Finally, clear out all traces of the deployed cert file:
         cls.cert_kwargs = {}
+
+    @property
+    def is_local(self):
+        """ Indicates if this user is using the local environment. """
+        return self.env == MilMoveEnv.LOCAL
+
+    @property
+    def is_deployed(self):
+        """ Indicates if this user is running in a deployed environment. """
+        return self.env != MilMoveEnv.LOCAL
 
 
 def clean_milmove_host_users(locust_env: Environment):
