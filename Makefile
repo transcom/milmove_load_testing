@@ -114,4 +114,9 @@ local_docker_up: ## Run load testing on the Prime API in local using a Docker co
 local_docker_down:  ## Shutdown any active local docker containers with docker-compose
 	docker-compose -f docker-compose.local.yaml down
 
+.PHONY: exp_load_test
+exp_load_test: ## Run load testing against the MilMove Experimental Deployment
+	docker-compose up --build prime-exp-reporting
+	docker cp mmlt_prime_exp_reporting:/app/static/reports static/
+
 default: help
