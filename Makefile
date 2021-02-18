@@ -103,16 +103,21 @@ load_test_prime_workflow: clean ensure_venv  ## Run load testing on the Prime AP
 
 .PHONY: local_docker_build
 local_docker_build: clean  ## Build a Docker container to run load testing locally
-	docker-compose -f docker-compose.local.yaml build
+	docker-compose -f docker-compose.local.yaml build prime
 
 .PHONY: local_docker_up
 local_docker_up: ## Run load testing on the Prime API in local using a Docker container
 	open http://localhost:8089
-	docker-compose -f docker-compose.local.yaml up
+	docker-compose -f docker-compose.local.yaml up prime
 
 .PHONY: local_docker_down
 local_docker_down:  ## Shutdown any active local docker containers with docker-compose
-	docker-compose -f docker-compose.local.yaml down
+	docker-compose -f docker-compose.local.yaml down prime
+
+.PHONY: local_docker_report
+local_docker_report:  ## Shutdown any active local docker containers with docker-compose
+	docker-compose -f docker-compose.local.yaml up --build prime-reporting
+	docker cp mmlt_prime_reporting:/app/static/reports static/local/
 
 .PHONY: exp_load_test
 exp_load_test: ## Run load testing against the MilMove Experimental Deployment

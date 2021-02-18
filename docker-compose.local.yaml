@@ -12,4 +12,16 @@ services:
     # To use local_locust.py, we have to pass the locust flags in as a string that can be split to call the locust
     # command as normal:
     command: "'-f /app/locustfiles/prime.py --host local'"
-
+  prime-reporting:
+    container_name: mmlt_prime_reporting
+    extends:
+      service: prime
+    environment:
+      - LOCUST_LOGLEVEL=warning
+      - LOCUST_LOGFILE=${DOCKER_CSV_PREFIX}_log.txt
+      - LOCUST_CSV=${DOCKER_CSV_PREFIX}
+      - LOCUST_CSV_FULL_HISTORY=1
+      - LOCUST_HEADLESS=1
+      - LOCUST_RUN_TIME=30s
+      - LOCUST_USERS=2
+      - LOCUST_SPAWN_RATE=2
