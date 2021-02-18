@@ -121,6 +121,7 @@ local_docker_report:  ## Shutdown any active local docker containers with docker
 
 .PHONY: exp_load_test
 exp_load_test: ## Run load testing against the MilMove Experimental Deployment
+	mv static/reports/*.csv static/reports/*.txt static/reports/old
 	docker-compose up --build prime-exp-reporting
 	docker cp mmlt_prime_exp_reporting:/app/static/reports static/
 
