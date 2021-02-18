@@ -116,12 +116,13 @@ local_docker_down:  ## Shutdown any active local docker containers with docker-c
 
 .PHONY: local_docker_report
 local_docker_report:  ## Shutdown any active local docker containers with docker-compose
+	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"
 	docker-compose -f docker-compose.local.yaml up --build prime-reporting
 	docker cp mmlt_prime_reporting:/app/static/reports static/local/
 
 .PHONY: exp_load_test
 exp_load_test: ## Run load testing against the MilMove Experimental Deployment
-	mv static/reports/*.csv static/reports/*.txt static/reports/old
+	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"
 	docker-compose up --build prime-exp-reporting
 	docker cp mmlt_prime_exp_reporting:/app/static/reports static/
 
