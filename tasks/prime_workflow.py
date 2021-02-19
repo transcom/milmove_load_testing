@@ -61,6 +61,7 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
         self.add_shipment_with_doshut_service()
         self.update_shipment()
+        self.create_payment_request()
 
     def add_shipment_with_doshut_service(self):
         # Get a realistic primeEstimatedWeight
@@ -101,8 +102,19 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
         logger.info(f"{self.workflow_title} - Updated shipment and agent {self.current_move['id'][:8]}")
 
-    # STORAGE FUNCTIONALITY
+    def create_payment_request(self):
+        # Get service item from the mto and create payment request
+        service_item = self.get_stored(MTO_SERVICE_ITEM)
+        overrides = {"mtoServiceItemID": service_item["id"]}
+        request = super().create_payment_request(overrides)
 
+        # Create upload for payment request
+        overrides = {"id": request["id"]}
+        super().create_upload(overrides)
+
+        logger.info(f"{self.workflow_title} - Created payment request and upload {self.current_move['id'][:8]}")
+
+    # STORAGE FUNCTIONALITY
     def get_stored(self, object_key, object_id=None):
         """
         We only store one current move in the sequential workflow and keep it updated as we move through the workflow.
