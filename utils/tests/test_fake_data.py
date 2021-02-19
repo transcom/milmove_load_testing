@@ -96,6 +96,11 @@ class TestMilMoveProvider:
         assert type(address) is str
         assert address in self.provider.safe_data["addresses"]
 
+    def test_safe_postal_code(self):
+        code = self.fake.safe_postal_code()
+        assert type(code) is str
+        assert re.match("^[0-9]{5}$", code)
+
 
 class TestMilMoveData:
     """ Tests the MilMoveData class and its methods. """
