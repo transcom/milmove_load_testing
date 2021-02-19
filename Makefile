@@ -115,7 +115,7 @@ local_docker_down:  ## Shutdown any active local docker containers with docker-c
 	docker-compose -f docker-compose.local.yaml down prime
 
 .PHONY: local_docker_report
-local_docker_report:  ## Shutdown any active local docker containers with docker-compose
+local_docker_report:  ## Run load testing automatically against a local server and generate reports
 	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"
 	docker-compose -f docker-compose.local.yaml up --build prime-reporting
 	docker cp mmlt_prime_reporting:/app/static/reports static/local/
