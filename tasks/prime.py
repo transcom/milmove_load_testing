@@ -218,14 +218,17 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
     @tag(MOVE_TASK_ORDER, "fetchMTOUpdates")
     @task
     def fetch_mto_updates(self):
-        resp = self.client.get(prime_path("/move-task-orders"), **self.user.cert_kwargs)
+        timeout = {}
+        if self.user.is_local:
+            timeout["timeout"] = 15  # set a timeout of 15sec if we're running locally - just for this endpoint
+
+        resp = self.client.get(prime_path("/move-task-orders"), **self.cert_kwargs, **timeout)
         moves, success = check_response(resp, "fetchMTOUpdates")
 
-        # Use these MTOs to set the ID values we'll need to create more MTOs:
-        if success:
-            self.set_default_mto_ids(moves)
-
-        return None
+        # Use these MTOs to set the ID values we'll need to create more MTOs
+        # (NOTE: we don't care about a failure here because we can set the default IDs instead,
+        # if this is running locally)
+        self.set_default_mto_ids(moves or [])
 
     @tag(MTO_SERVICE_ITEM, "createMTOServiceItem")
     @task
