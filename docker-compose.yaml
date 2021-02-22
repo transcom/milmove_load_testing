@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  prime:
+  prime-exp:
     build: .
     ports:
      - "8089:8089"
@@ -10,4 +10,16 @@ services:
      - MOVE_MIL_EXP_TLS_CERT
      - MOVE_MIL_EXP_TLS_KEY
     command: -f /app/locustfiles/prime.py --host exp
-    # TODO Write command for a regular timed load test in experimental
+  prime-exp-reporting:
+    container_name: mmlt_prime_exp_reporting
+    extends:
+      service: prime-exp
+    environment:
+      - LOCUST_LOGLEVEL=warning
+      - LOCUST_LOGFILE=${DOCKER_CSV_PREFIX}_log.txt
+      - LOCUST_CSV=${DOCKER_CSV_PREFIX}
+      - LOCUST_CSV_FULL_HISTORY=1
+      - LOCUST_HEADLESS=1
+      - LOCUST_RUN_TIME=2h
+      - LOCUST_USERS=1000
+      - LOCUST_SPAWN_RATE=10
