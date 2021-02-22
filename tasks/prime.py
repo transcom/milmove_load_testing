@@ -296,6 +296,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         resp = self.client.post(
             prime_path("/mto-shipments"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
+
         mto_shipment, success = check_response(resp, "createMTOShipment", payload)
 
         if success:
@@ -340,8 +341,8 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         resp = self.client.post(
             prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
-        payment_request, success = check_response(resp, "createPaymentRequest", payload)
 
+        payment_request, success = check_response(resp, "createPaymentRequest", payload)
         if success:
             self.add_stored(PAYMENT_REQUEST, payment_request)
             return payment_request

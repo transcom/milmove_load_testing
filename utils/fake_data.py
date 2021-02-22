@@ -6,13 +6,14 @@ from datetime import datetime
 
 from faker import Faker
 from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
+from faker.providers.address.en_US import Provider as AddressProvider  # extends BaseProvider
 
 from .constants import DataType
 
 logger = logging.getLogger(__name__)
 
 
-class MilMoveProvider(DateProvider):
+class MilMoveProvider(AddressProvider, DateProvider):
     """ Faker Provider class for sending back customized MilMove data. """
 
     def __init__(self, *args, **kwargs):
@@ -85,6 +86,15 @@ class MilMoveProvider(DateProvider):
         """
         return self.random_element(self.safe_data["addresses"])
 
+    def safe_postal_code(self):
+        """
+        Returns a safe postal code as a string.
+        """
+        while True:
+            state = self.state_abbr(include_territories=False)
+            if state != "AK" and state != "HI":
+                return self.postalcode_in_state(state)
+
 
 class MilMoveData:
     """ Base class to return fake data to use in MilMove endpoints. """
@@ -103,7 +113,7 @@ class MilMoveData:
             DataType.STREET_ADDRESS: self.fake.safe_street_address,
             DataType.CITY: self.fake.city,
             DataType.STATE: self.fake.state_abbr,
-            DataType.POSTAL_CODE: self.fake.postalcode,
+            DataType.POSTAL_CODE: self.fake.safe_postal_code,
             DataType.COUNTRY: self.fake.country,
             DataType.DATE: self.fake.date,
             DataType.DATE_TIME: self.fake.iso_date_time,
