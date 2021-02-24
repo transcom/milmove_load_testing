@@ -59,7 +59,7 @@ class TestArrayField:
     @classmethod
     def setup_class(cls):
         """ Initialize the ArrayField that will be tested. """
-        items_field = BaseAPIField(data_type=DataType.PHONE)
+        items_field = BaseAPIField(data_type=DataType.PHONE, name="phoneNumber")
         cls.array_field = ArrayField(name="phoneNumbers", min_items=1, max_items=5, items_field=items_field)
         cls.faker = MilMoveData()
 
@@ -67,6 +67,6 @@ class TestArrayField:
         array1 = self.array_field.generate_fake_data(self.faker)
         assert re.match("^[2-9]\\d{2}-555-\\d{4}$", array1[0])
 
-        overrides = {"phoneNumbers": ["test 1", "test 2", "test 3", "test 4"]}
+        overrides = {"phoneNumbers": [{"phoneNumber": "test 1"}, {"phoneNumber": "test 2"}]}
         array2 = self.array_field.generate_fake_data(self.faker, overrides=overrides)
-        assert array2[0] == overrides["phoneNumbers"][0]
+        assert array2[0] == "test 1"
