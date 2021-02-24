@@ -2,19 +2,18 @@
 """ utils/fake_data.py is for Faker classes and functions to set up test data """
 import logging
 import json
-from typing import Optional
-from copy import deepcopy
 from datetime import datetime
 
 from faker import Faker
 from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
+from faker.providers.address.en_US import Provider as AddressProvider  # extends BaseProvider
 
 from .constants import DataType
 
 logger = logging.getLogger(__name__)
 
 
-class MilMoveProvider(DateProvider):
+class MilMoveProvider(AddressProvider, DateProvider):
     """ Faker Provider class for sending back customized MilMove data. """
 
     def __init__(self, *args, **kwargs):
@@ -87,6 +86,15 @@ class MilMoveProvider(DateProvider):
         """
         return self.random_element(self.safe_data["addresses"])
 
+    def safe_postal_code(self):
+        """
+        Returns a safe postal code as a string.
+        """
+        while True:
+            state = self.state_abbr(include_territories=False)
+            if state != "AK" and state != "HI":
+                return self.postalcode_in_state(state)
+
 
 class MilMoveData:
     """ Base class to return fake data to use in MilMove endpoints. """
@@ -105,7 +113,7 @@ class MilMoveData:
             DataType.STREET_ADDRESS: self.fake.safe_street_address,
             DataType.CITY: self.fake.city,
             DataType.STATE: self.fake.state_abbr,
-            DataType.POSTAL_CODE: self.fake.postalcode,
+            DataType.POSTAL_CODE: self.fake.safe_postal_code,
             DataType.COUNTRY: self.fake.country,
             DataType.DATE: self.fake.date,
             DataType.DATE_TIME: self.fake.iso_date_time,
@@ -127,29 +135,3 @@ class MilMoveData:
         except KeyError:  # data_type isn't in dictionary
             logger.exception(f"An unexpected data type was passed into get_fake_data_for_type: {data_type}")
             return None
-
-    def populate_fake_data(self, fields: dict, overrides: Optional[dict] = None) -> dict:
-        """
-        Takes in a dictionary of field names and their intended data types, returns a dictionary of those field name
-        with fake data populated. Optionally accepts a dictionary of override data to use instead of the fake data for
-        certain fields.
-
-        :param fields: dict, format: [str field_name, enum data_type]
-        :param overrides: optional dict of set values to use
-        :return: data dict, format: [str field_name, value]
-        """
-        data = deepcopy(fields)
-        for field_name, data_type in fields.items():
-            try:
-                data[field_name] = self.data_types[data_type]()
-            except (KeyError, TypeError):  # the data_type isn't in our dict or it's unhashable
-                try:  # assume it was an iterable and try to pick an element from it:
-                    data[field_name] = self.fake.random_element(data_type)
-                except TypeError:
-                    logging.exception(f"No data gen handling for field {field_name} type {data_type}.")
-                    pass  # it wasn't an iterable value, so just leave this field alone
-
-        # Now we're going to use the override data that was passed in instead of any generated fake data for those
-        # fields:
-        data.update(overrides if overrides else {})
-        return data

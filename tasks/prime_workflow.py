@@ -51,12 +51,70 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         self.workflow_title = "HHG Move Basic"
 
         # Move steps for this workflow
-        super().create_move_task_order()
+        move = super().create_move_task_order()
+        if not move:
+            logger.debug(f"{self.workflow_title} ⚠️ No move_task_order returned")
+            return
+
         super().update_post_counseling_information()
         logger.info(f"{self.workflow_title} - Created move and completed counseling {self.current_move['id'][:8]}")
 
-    # STORAGE FUNCTIONALITY
+        self.add_shipment_with_doshut_service()
+        self.update_shipment()
+        self.create_payment_request()
 
+    def add_shipment_with_doshut_service(self):
+        # Get a realistic primeEstimatedWeight
+        estimated_weight = int(98 / 100 * self.current_move["moveOrder"]["entitlement"]["totalWeight"])
+
+        # Add a shipment and approve it
+        overrides = {"primeEstimatedWeight": estimated_weight}
+        ship = super().create_mto_shipment(overrides)
+        overrides = {"id": ship["id"], "status": "APPROVED"}
+        ship = super().update_mto_shipment_status(overrides)
+
+        # Add a DOSHUT service item to this shipment and approve it
+        overrides = {"mtoShipmentID": ship["id"], "modelType": "MTOServiceItemShuttle", "reServiceCode": "DOSHUT"}
+        service_items = super().create_mto_service_item(overrides)
+
+        # DOSHUT should return exactly one service item, which we will approve
+        doshut = service_items[0]
+        overrides = {"id": doshut["id"], "status": "APPROVED"}
+        super().update_mto_service_item_status(overrides)
+
+        logger.info(
+            f"{self.workflow_title} - Added and approved shipment and DOSHUT service item {self.current_move['id'][:8]}"
+        )
+
+    def update_shipment(self):
+        # Get the shipment from the mto (this is expecting just one shipment)
+        ship = self.get_stored(MTO_SHIPMENT)
+        overrides = {"id": ship["id"]}
+        ship = super().update_mto_shipment(overrides)
+
+        # Update an address
+        overrides = {"mtoShipmentID": ship["id"]}
+        ship = super().update_mto_shipment_address(overrides)
+
+        # Update an agent
+        overrides = {"mtoShipmentID": ship["id"]}
+        ship = super().update_mto_agent(overrides)
+
+        logger.info(f"{self.workflow_title} - Updated shipment and agent {self.current_move['id'][:8]}")
+
+    def create_payment_request(self):
+        # Get service item from the mto and create payment request
+        service_item = self.get_stored(MTO_SERVICE_ITEM)
+        overrides = {"mtoServiceItemID": service_item["id"]}
+        request = super().create_payment_request(overrides)
+
+        # Create upload for payment request
+        overrides = {"id": request["id"]}
+        super().create_upload(overrides)
+
+        logger.info(f"{self.workflow_title} - Created payment request and upload {self.current_move['id'][:8]}")
+
+    # STORAGE FUNCTIONALITY
     def get_stored(self, object_key, object_id=None):
         """
         We only store one current move in the sequential workflow and keep it updated as we move through the workflow.
@@ -80,7 +138,10 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
         # If it's the following object types, we add them into nested array in the MTO
         elif object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
-            self._add_nested_object_to_mto(object_key, object_data)
+            if isinstance(object_data, list):
+                self._add_nested_array_to_mto(object_key, object_data)
+            else:
+                self._add_nested_object_to_mto(object_key, object_data)
 
     def update_stored(self, object_key, old_data, new_data):
         """Replaces the object in old_data with the one in new_data"""
@@ -124,6 +185,10 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         # If not found, we can add the new object
         nested_array.append(object_data)
         self.current_move[array_key] = nested_array
+
+    def _add_nested_array_to_mto(self, object_key, object_data):
+        for item in object_data:
+            self._add_nested_object_to_mto(object_key, item)
 
     @staticmethod
     def _get_nested_array_name(object_key):

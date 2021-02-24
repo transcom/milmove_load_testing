@@ -36,6 +36,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Setting up the local environment](#setting-up-the-local-environment)
          * [Running preset tests](#running-preset-tests)
          * [Running custom tests](#running-custom-tests)
+         * [Running Tests for Reporting](#running-tests-for-reporting)
       * [Adding Load Tests](#adding-load-tests)
          * [Starting from scratch](#starting-from-scratch)
          * [Creating TaskSets](#creating-tasksets)
@@ -49,7 +50,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Metrics](#metrics)
       * [References](#references)
 
-<!-- Added by: sandy, at: Fri Jan 15 00:40:16 CST 2021 -->
+<!-- Added by: sandy, at: Fri Feb 19 15:07:42 CST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -225,7 +226,7 @@ It is also possible to run load tests from within a Docker container, eliminatin
 environment. This requires Docker and `docker-compose` to be installed on your machine. Get them here:
 
 * [Get Docker](https://docs.docker.com/get-docker/)
-* [Install Docker Compose](https://docs.docker.com/compose/install/)
+* [Install Docker Compose](https://docs.docker.com/compose/install/) - version `1.27` or later
 
 To get your load testing Docker container up and running for the local environment, use the following commands:
 
@@ -374,6 +375,24 @@ To deactivate your virtual environment once you have completed testing, enter:
 ```sh
 pyenv deactivate
 ```
+
+### Running Tests for Reporting
+
+There are a couple of preset tests that have been set up to generate reports for later analysis. These commands are:
+
+```shell
+make local_docker_report
+```
+
+and:
+
+```shell
+make exp_load_test
+```
+
+**`make exp_load_test` should only be used on a scheduled basis with InfraSec's supervision.**
+
+Both of these commands require a `docker-compose` version of `1.27` or greater to work.
 
 ## Adding Load Tests
 
