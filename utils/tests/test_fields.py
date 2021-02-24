@@ -37,9 +37,8 @@ class TestBaseAPIField:
         """
         Tests if a value generated is the correct type or the override value
         """
-        faker = MilMoveData()
-        assert self.field1.generate_fake_data(faker) in MilMoveProvider(Generator()).safe_data["addresses"]
-        assert self.field1.generate_fake_data(faker, overrides={"streetAddress": "test address"}) == "test address"
+        assert self.field1.generate_fake_data(self.faker) in MilMoveProvider(Generator()).safe_data["addresses"]
+        assert self.field1.generate_fake_data(self.faker, overrides={"streetAddress": "test address"}) == "test address"
 
 
 class TestEnumField:
