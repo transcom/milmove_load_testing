@@ -14,31 +14,31 @@ class TestBaseAPIField:
     @classmethod
     def setup_class(cls):
         """ Initialize the BaseAPIField that will be tested. """
-        cls.field1 = BaseAPIField(DataType.STREET_ADDRESS, name="streetAddress")
+        cls.field = BaseAPIField(DataType.STREET_ADDRESS, name="streetAddress")
         cls.faker = MilMoveData()
 
     def test_add_discriminator_value(self):
         """
         Tests a value is appended to the list of discriminator values.
         """
-        testString = "test value"
-        self.field1.add_discriminator_value(testString)
-        assert testString in self.field1.discriminator_values
+        test_string = "test value"
+        self.field.add_discriminator_value(test_string)
+        assert test_string in self.field.discriminator_values
 
     def test_is_valid_discriminator(self):
         """
         Tests if a value is in the discriminator values list
         """
-        self.field1.add_discriminator_value("test value 3")
-        assert self.field1.is_valid_discriminator("test value 3") is True
-        assert self.field1.is_valid_discriminator("second test value") is False
+        self.field.add_discriminator_value("test value 3")
+        assert self.field.is_valid_discriminator("test value 3") is True
+        assert self.field.is_valid_discriminator("second test value") is False
 
     def test_generate_fake_data(self):
         """
         Tests if a value generated is the correct type or the override value
         """
-        assert self.field1.generate_fake_data(self.faker) in MilMoveProvider(Generator()).safe_data["addresses"]
-        assert self.field1.generate_fake_data(self.faker, overrides={"streetAddress": "test address"}) == "test address"
+        assert self.field.generate_fake_data(self.faker) in MilMoveProvider(Generator()).safe_data["addresses"]
+        assert self.field.generate_fake_data(self.faker, overrides={"streetAddress": "test address"}) == "test address"
 
 
 class TestEnumField:
@@ -68,4 +68,4 @@ class TestArrayField:
 
         overrides = {"phoneNumbers": [{"phoneNumber": "test 1"}, {"phoneNumber": "test 2"}]}
         array2 = self.array_field.generate_fake_data(self.faker, overrides=overrides)
-        assert array2[0] == "test 1"
+        assert array2[0] == "test 1" and array2[1] == "test 2"
