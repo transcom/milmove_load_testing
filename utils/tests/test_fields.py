@@ -80,7 +80,6 @@ class TestObjectField:
     def setup_class(cls):
         """ Initialize the ObjectField that will be tested. """
         cls.object_field = ObjectField()
-        cls.faker = MilMoveData()
 
     def test_init(self):
         """
@@ -174,3 +173,47 @@ class TestObjectField:
 
         with pytest.raises(TypeError):
             self.object_field.combine_fields("field string")
+
+    def test_get_field(self):
+        """ Tests retrieving a given field, by name, from this ObjectField's list of sub-fields. """
+        self.object_field.object_fields = []
+
+        base_field = BaseAPIField(name="baseField", data_type=DataType.INTEGER)
+        self.object_field.add_field(base_field)
+        returned_field = self.object_field.get_field("baseField")
+        assert returned_field == base_field
+
+    def test_update_required_fields(self):
+        """ Tests updating a list of fields to be 'required' """
+        self.object_field.object_fields = []
+
+        required_fields = ["baseField", "randomField", "phoneField", "spaceField"]
+
+        base_field = BaseAPIField(name="baseField", data_type=DataType.INTEGER)
+        random_field = ArrayField(name="randomField")
+        enum_field = EnumField(name="enumField")
+        space_field = ObjectField(name="spaceField")
+
+        self.object_field.add_fields([base_field, random_field, enum_field, space_field])
+
+        assert base_field.required is False
+        assert random_field.required is False
+        assert enum_field.required is False
+        assert space_field.required is False
+
+        self.object_field.update_required_fields(required_fields)
+
+        assert base_field.required is True
+        assert random_field.required is True
+        assert enum_field.required is False
+        assert space_field.required is True
+
+    def test_add_discriminator_value(self):
+        """ Tests adding a discriminator for sub-fields. """
+        # Using the four fields set previous in test_update_required_fields
+        assert len(self.object_field.object_fields) > 0
+
+        discriminator_value = "discriminator"
+        self.object_field.add_discriminator_value(discriminator_value)
+        assert discriminator_value in self.object_field.discriminator_values
+        assert all([discriminator_value in field.discriminator_values for field in self.object_field.object_fields])
