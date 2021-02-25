@@ -3,6 +3,7 @@
 import logging
 from dataclasses import dataclass
 from random import randint
+from typing import List
 
 from .constants import DataType, ARRAY_MIN, ARRAY_MAX
 
@@ -16,14 +17,22 @@ class BaseAPIField:
     required: bool = False
     discriminator_values: list = None
 
+    def __post_init__(self):
+        """
+        If no value was passed in on __init__, initialize the discriminator_values instance attribute to an empty list
+        after the default __init__ method executes.
+
+        This is done to avoid setting a mutable datatype at the class-level, instead keeping it at the instance-level to
+        ensure data integrity.
+        """
+        if not self.discriminator_values:
+            self.discriminator_values = []
+
     def add_discriminator_value(self, value):
         """
         Adds a discriminator value to the current list of discriminator values on this field.
         :param value: str
         """
-        if not self.discriminator_values:
-            self.discriminator_values = []
-
         self.discriminator_values.append(value)
 
     def is_valid_discriminator(self, value):
@@ -35,7 +44,7 @@ class BaseAPIField:
         :param value: str
         :return: bool
         """
-        if value and self.discriminator_values and value not in self.discriminator_values:
+        if value and value not in self.discriminator_values:
             return False
 
         return True  # default assumes the field is not discriminated
@@ -58,6 +67,18 @@ class BaseAPIField:
 class EnumField(BaseAPIField):
     data_type: DataType = DataType.ENUM
     options: list = None
+
+    def __post_init__(self):
+        """
+        If no value was passed in on __init__, initialize the options instance attribute to an empty list after the
+        default __init__ method executes.
+
+        This is done to avoid setting a mutable datatype at the class-level, instead keeping it at the instance-level to
+        ensure data integrity.
+        """
+        super().__post_init__()
+        if not self.options:
+            self.options = []
 
     def generate_fake_data(self, faker, **kwargs):
         """
@@ -114,12 +135,20 @@ class ArrayField(BaseAPIField):
 @dataclass
 class ObjectField(BaseAPIField):
     data_type: DataType = DataType.OBJECT
-    object_fields: list = None  # list of BaseAPIFields
+    object_fields: List[BaseAPIField] = None  # list of the sub-fields in this object
     discriminator: str = ""  # name of the discriminator field, if one exists
 
     def __post_init__(self):
-        """ Initializes the option_fields list as an instance attribute after the default __init__ method. """
-        self.object_fields = []
+        """
+        If no value was passed in on __init__, initialize the object_fields instance attribute to an empty list after
+        the default __init__ method executes.
+
+        This is done to avoid setting a mutable datatype at the class-level, instead keeping it at the instance-level to
+        ensure data integrity.
+        """
+        super().__post_init__()
+        if not self.object_fields:
+            self.object_fields = []
 
     def add_field(self, field, unique=False):
         # We don't want to add duplicate fields if unique is True, so we check for existing fields with this name:
