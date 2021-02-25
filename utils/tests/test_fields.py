@@ -217,3 +217,42 @@ class TestObjectField:
         self.object_field.add_discriminator_value(discriminator_value)
         assert discriminator_value in self.object_field.discriminator_values
         assert all([discriminator_value in field.discriminator_values for field in self.object_field.object_fields])
+
+    def test_generate_discriminator_value(self):
+        """
+        Tests that ObjectField generates the right value for a discriminator field.
+
+        The discriminator is a field in the definition that can be used to filter which of the objects sub-fields should
+        be when generating fake data. The `ObjectField.discriminator` attribute contains a string that indicates the
+        name of the field in `ObjectField.object_fields` that acts as a discriminator.
+
+        This function, `ObjectField.generate_discriminator_value` uses the fake data generator to set a random value for
+        the field indicated by `ObjectField.discriminator`.
+
+        `BaseAPIField.discriminator_values` holds the values for this discriminator that will allow the field to be used
+        in fake data generation.
+        """
+        faker = MilMoveData()
+
+        discriminator_field = EnumField(name="treeTypes", options=["maple", "oak", "pine"])
+
+        # We haven't set a discriminator on the ObjectField yet, so we should get an empty string if we try to generate
+        # a value for nothing:
+        assert self.object_field.generate_discriminator_value(faker) == ""
+
+        self.object_field.discriminator = discriminator_field.name
+
+        # Trying again, we have a discriminator set on the ObjectField, but we haven't added the field yet:
+        assert self.object_field.generate_discriminator_value(faker) == ""
+
+        self.object_field.add_field(discriminator_field)
+
+        # Now we should get data returned that is valid for this field - which in this case, means it must be one of the
+        # enum options:
+        assert self.object_field.generate_discriminator_value(faker) in discriminator_field.options
+
+        # If we pass in an override for this field, it should use that value no matter what:
+        discriminator_value = self.object_field.generate_discriminator_value(
+            faker, overrides={discriminator_field.name: "cedar"}
+        )
+        assert discriminator_value == "cedar"
