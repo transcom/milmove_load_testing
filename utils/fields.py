@@ -44,7 +44,7 @@ class BaseAPIField:
         :param value: str
         :return: bool
         """
-        if value and value not in self.discriminator_values:
+        if value and self.discriminator_values and value not in self.discriminator_values:
             return False
 
         return True  # default assumes the field is not discriminated
