@@ -105,6 +105,13 @@ class TestAPIParser:
         """
         assert self.parser.get_definition(name) == definition
 
+    def test_generate_fake_request(self):
+        """
+
+        :return:
+        """
+        # TODO
+
     @pytest.mark.parametrize("path,method", [("/orchards", "post")])
     def test__process_request_body(self, path, method):
         """

@@ -3,11 +3,15 @@
 import re
 
 import pytest
+
+# from pytest_mock import mocker
 from faker.generator import Generator
 
 from utils.fields import BaseAPIField, ArrayField, EnumField, ObjectField
 from utils.constants import DataType
 from utils.fake_data import MilMoveProvider, MilMoveData
+
+MOCK_FAKE_DATA = {DataType.INTEGER: 112358}
 
 
 class TestBaseAPIField:
@@ -80,6 +84,7 @@ class TestObjectField:
     def setup_class(cls):
         """ Initialize the ObjectField that will be tested. """
         cls.object_field = ObjectField()
+        cls.faker = MilMoveData()
 
     def test_init(self):
         """
@@ -232,27 +237,55 @@ class TestObjectField:
         `BaseAPIField.discriminator_values` holds the values for this discriminator that will allow the field to be used
         in fake data generation.
         """
-        faker = MilMoveData()
-
         discriminator_field = EnumField(name="treeTypes", options=["maple", "oak", "pine"])
 
         # We haven't set a discriminator on the ObjectField yet, so we should get an empty string if we try to generate
         # a value for nothing:
-        assert self.object_field.generate_discriminator_value(faker) == ""
+        assert self.object_field.generate_discriminator_value(self.faker) == ""
 
         self.object_field.discriminator = discriminator_field.name
 
         # Trying again, we have a discriminator set on the ObjectField, but we haven't added the field yet:
-        assert self.object_field.generate_discriminator_value(faker) == ""
+        assert self.object_field.generate_discriminator_value(self.faker) == ""
 
         self.object_field.add_field(discriminator_field)
 
         # Now we should get data returned that is valid for this field - which in this case, means it must be one of the
         # enum options:
-        assert self.object_field.generate_discriminator_value(faker) in discriminator_field.options
+        assert self.object_field.generate_discriminator_value(self.faker) in discriminator_field.options
 
         # If we pass in an override for this field, it should use that value no matter what:
         discriminator_value = self.object_field.generate_discriminator_value(
-            faker, overrides={discriminator_field.name: "cedar"}
+            self.faker, overrides={discriminator_field.name: "cedar"}
         )
         assert discriminator_value == "cedar"
+
+    def test_generate_fake_data(self, mocker):
+        """
+
+        :return:
+        """
+        # We have a 1/3 chance to skip non-required fields normally, so instead let's make it so every non-required
+        # field is skipped unless require_all is used
+        def mock_randint(x, y):
+            """
+            Mock random.randint to always return 0 if that's the floor, otherwise return the ceiling.
+            Done so that non-required fields will NOT be added, but ArrayFields will still have items.
+            """
+            return x if x == 0 else y
+
+        mocker.patch("utils.fields.randint", mock_randint)
+
+        # Mock the Faker data gen functions so that we have consistent, predictable return values:
+        def mock_get_random_choice(_, choices):
+            return choices[0] if choices else None
+
+        def mock_get_fake_data_for_type(_, data_type):
+            return MOCK_FAKE_DATA[data_type]
+
+        mocker.patch.object(MilMoveData, "get_random_choice", mock_get_random_choice)
+        mocker.patch.object(MilMoveData, "get_fake_data_for_type", mock_get_fake_data_for_type)
+
+        # nested_test_object = ObjectField(name="nestedObject")
+
+        self.object_field.generate_fake_data(self.faker)
