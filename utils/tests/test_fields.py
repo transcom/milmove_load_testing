@@ -11,8 +11,6 @@ from utils.fields import BaseAPIField, ArrayField, EnumField, ObjectField
 from utils.constants import DataType
 from utils.fake_data import MilMoveProvider, MilMoveData
 
-MOCK_FAKE_DATA = {DataType.INTEGER: 112358}
-
 
 class TestBaseAPIField:
     """ Tests the BaseAPIField class and its methods """
@@ -83,7 +81,7 @@ class TestObjectField:
     @classmethod
     def setup_class(cls):
         """ Initialize the ObjectField that will be tested. """
-        cls.object_field = ObjectField()
+        cls.object_field = ObjectField(name="objectField")
         cls.faker = MilMoveData()
 
     def test_init(self):
@@ -260,10 +258,58 @@ class TestObjectField:
         )
         assert discriminator_value == "cedar"
 
-    def test_generate_fake_data(self, mocker):
-        """
 
-        :return:
+class TestObjectFieldFaker:
+    """ Tests the ObjectField class' `generate_fake_data` method. """
+
+    MOCK_FAKE_DATA = {
+        DataType.INTEGER: 112358,
+        DataType.SENTENCE: "this is a test",
+        DataType.EMAIL: "test@test.test",
+        DataType.PHONE: "(222) 555-3838",
+        DataType.FIRST_NAME: "Testname",
+    }
+
+    @classmethod
+    def setup_class(cls):
+        """ Init and setup the ObjectField for our fake data generation tests. """
+        cls.faker = MilMoveData()
+        cls.object_field = ObjectField(name="objectField")
+
+        # Set up the ObjectField with sub-fields:
+        nested_object = ObjectField(
+            name="nestedObject",
+            object_fields=[
+                BaseAPIField(name="sentence", data_type=DataType.SENTENCE, required=True),
+                ArrayField(name="emails", items_field=BaseAPIField(data_type=DataType.EMAIL), max_items=2),
+            ],
+        )
+        object_array = ArrayField(
+            name="objectArray",
+            items_field=ObjectField(
+                object_fields=[
+                    BaseAPIField(name="integer", data_type=DataType.INTEGER, required=True),
+                    BaseAPIField(name="name", data_type=DataType.FIRST_NAME),
+                ]
+            ),
+            max_items=2,
+            required=True,
+        )
+        cls.object_field.object_fields = []
+        cls.object_field.add_fields(
+            [
+                nested_object,
+                object_array,
+                BaseAPIField(name="integer", data_type=DataType.INTEGER),
+                BaseAPIField(name="sentence", data_type=DataType.SENTENCE),
+                BaseAPIField(name="phone", data_type=DataType.PHONE, required=True),
+            ]
+        )
+
+    @staticmethod
+    def setup_mocks(mocker):
+        """
+        Set up the mocked functions we need to run these tests. Must be called at the start of each test function.
         """
         # We have a 1/3 chance to skip non-required fields normally, so instead let's make it so every non-required
         # field is skipped unless require_all is used
@@ -281,11 +327,70 @@ class TestObjectField:
             return choices[0] if choices else None
 
         def mock_get_fake_data_for_type(_, data_type):
-            return MOCK_FAKE_DATA[data_type]
+            return TestObjectFieldFaker.MOCK_FAKE_DATA[data_type]
 
         mocker.patch.object(MilMoveData, "get_random_choice", mock_get_random_choice)
         mocker.patch.object(MilMoveData, "get_fake_data_for_type", mock_get_fake_data_for_type)
 
-        # nested_test_object = ObjectField(name="nestedObject")
+    def test_generate_fake_data(self, mocker):
+        """
+        Tests the base version of the generate_fake_data method, with no overrides and require_all=False.
 
-        self.object_field.generate_fake_data(self.faker)
+        Our mocks ensure that only required fields will be returned with require_all=False, but note that there is a
+        2/3rds chance that a non-required/optional field will be added to the fake data with the unmocked function.
+        """
+        self.setup_mocks(mocker)
+
+        # require_all=False, so we should only see required fields:
+        assert self.object_field.generate_fake_data(self.faker) == {
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+        }
+
+    def test_generate_fake_data_required(self, mocker):
+        """
+        Tests the fake data generation when all fields are required.
+        """
+        self.setup_mocks(mocker)
+
+        assert self.object_field.generate_fake_data(self.faker, require_all=True) == {
+            "nestedObject": {
+                "sentence": self.MOCK_FAKE_DATA[DataType.SENTENCE],
+                "emails": [
+                    self.MOCK_FAKE_DATA[DataType.EMAIL],
+                    self.MOCK_FAKE_DATA[DataType.EMAIL],
+                ],
+            },
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": self.MOCK_FAKE_DATA[DataType.FIRST_NAME]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": self.MOCK_FAKE_DATA[DataType.FIRST_NAME]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+            "integer": self.MOCK_FAKE_DATA[DataType.INTEGER],
+            "sentence": self.MOCK_FAKE_DATA[DataType.SENTENCE],
+        }
+
+    def test_generate_fake_data_nested_object_override(self, mocker):
+        """
+        Tests the case where not all fields are required, but we pass in an override for a non-required nested
+        ObjectField. Fake data for this field should also be added to the output, even with require_all=False.
+        """
+        self.setup_mocks(mocker)
+
+        # We're testing without non-required fields, BUT this time we're passing in an empty override for
+        # "nestedObject", which tells the generator that we do want that field in the output:
+        assert self.object_field.generate_fake_data(self.faker, overrides={"nestedObject": {}}) == {
+            "nestedObject": {
+                "sentence": self.MOCK_FAKE_DATA[
+                    DataType.SENTENCE
+                ],  # still only the required fields in the overridden obj
+            },
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+        }
