@@ -268,6 +268,8 @@ class TestObjectFieldFaker:
         DataType.EMAIL: "test@test.test",
         DataType.PHONE: "(222) 555-3838",
         DataType.FIRST_NAME: "Testname",
+        DataType.CITY: "Party Town",
+        DataType.DATE: "2021-02-14",
     }
 
     @classmethod
@@ -448,4 +450,88 @@ class TestObjectFieldFaker:
                 {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},  # still generates data will a blank {} override
             ],
             "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+        }
+
+    def test_generate_fake_data_discriminator(self, mocker):
+        """
+        Tests that generate_fake_data works correctly for an object with a discriminator.
+        """
+        self.setup_mocks(mocker)
+
+        self.object_field.add_field(EnumField(name="petType", options=["dog", "cat", "fish"], required=True))
+        self.object_field.discriminator = "petType"  # now the new field counts as a discriminator for the data
+
+        # create some new sub-objects with fields
+        dog = ObjectField(
+            object_fields=[
+                BaseAPIField(name="averageTailWags", data_type=DataType.INTEGER, required=True),
+                BaseAPIField(name="city", data_type=DataType.CITY),
+            ]
+        )
+        dog.add_discriminator_value("dog")  # all these fields now only apply to the "dog" petType
+        self.object_field.combine_fields(dog)  # now we add the discriminated fields
+
+        cat = ObjectField(
+            object_fields=[
+                BaseAPIField(name="lastHairballDate", data_type=DataType.DATE, required=True),
+                BaseAPIField(name="city", data_type=DataType.CITY),  # dog also has one of these!
+            ]
+        )
+        cat.add_discriminator_value("cat")  # all these fields now only apply to the "cat" petType
+        self.object_field.combine_fields(cat)
+
+        fish = ObjectField(
+            object_fields=[
+                EnumField(name="color", options=["blue", "magenta", "neon orange"], required=True),
+            ]
+        )
+        fish.add_discriminator_value("fish")  # all these fields now only apply to the "fish" petType
+        self.object_field.combine_fields(fish)
+
+        # We should get all the base fields on this object - they have no discriminator values at all, which means all
+        # are fine. And we know this will be a dog because our mock EnumField always gives us the first element:
+        assert self.object_field.generate_fake_data(self.faker) == {
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+            "petType": "dog",
+            "averageTailWags": self.MOCK_FAKE_DATA[DataType.INTEGER],
+        }
+
+        # Use overrides to get the fields for a cat petType:
+        cat_overrides = {
+            "petType": "cat",
+            "city": "anywhere",
+        }
+        assert self.object_field.generate_fake_data(self.faker, overrides=cat_overrides) == {
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+            "petType": "cat",
+            "lastHairballDate": self.MOCK_FAKE_DATA[DataType.DATE],
+            "city": "anywhere",
+        }
+
+        # And a fish!
+        assert self.object_field.generate_fake_data(self.faker, overrides={"petType": "fish"}, require_all=True) == {
+            "nestedObject": {
+                "sentence": self.MOCK_FAKE_DATA[DataType.SENTENCE],
+                "emails": [
+                    self.MOCK_FAKE_DATA[DataType.EMAIL],
+                    self.MOCK_FAKE_DATA[DataType.EMAIL],
+                ],
+            },
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": self.MOCK_FAKE_DATA[DataType.FIRST_NAME]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": self.MOCK_FAKE_DATA[DataType.FIRST_NAME]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+            "integer": self.MOCK_FAKE_DATA[DataType.INTEGER],
+            "sentence": self.MOCK_FAKE_DATA[DataType.SENTENCE],
+            "petType": "fish",
+            "color": "blue",  # the first element in the EnumField
         }
