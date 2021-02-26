@@ -35,17 +35,16 @@ class TestMilMoveHostMixin:
     def setup_class(cls):
         """ Define and initialize classes to be tested """
 
-        class HostLocal(MilMoveHostMixin):
+        class HostUser(MilMoveHostMixin):
             # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove environment:
             local_port = "9443"
             domain = MilMoveDomain.PRIME  # the base domain for the host
             is_api = True  # if True, uses the api base domain in deployed environments
             host = "local"
 
-        """ Initialize the APIParser that will be tested. """
-        cls.TestUser1 = HostLocal()
-        cls.TestUser2 = HostLocal()
-        cls.HostLocalClass = HostLocal
+        cls.TestUser1 = HostUser()
+        cls.TestUser2 = HostUser()
+        cls.HostUserClass = HostUser
 
     def test__init__(self):
         """
@@ -57,15 +56,15 @@ class TestMilMoveHostMixin:
         assert re.search("static/tls/devlocal-mtls.key", self.TestUser1.cert_kwargs["cert"][1])
 
     def test_set_milmove_env(self):
-        self.HostLocalClass.env = None
+        self.HostUserClass.env = None
         self.TestUser1.set_milmove_env("exp")
 
-        assert self.HostLocalClass.env == MilMoveEnv.EXP
+        assert self.HostUserClass.env == MilMoveEnv.EXP
         assert self.TestUser1.env == MilMoveEnv.EXP
         assert self.TestUser2.env == MilMoveEnv.EXP
 
     def test_invalid_set_milmove_env(self):
-        self.HostLocalClass.env = None
+        self.HostUserClass.env = None
 
         with pytest.raises(ImplementationError):
             self.TestUser1.set_milmove_env("test")
@@ -76,8 +75,8 @@ class TestMilMoveHostMixin:
         and be called from a class instance
         """
         # reset all initally set values in class
-        self.HostLocalClass.host = None
-        self.HostLocalClass.env = MilMoveEnv.EXP
+        self.HostUserClass.host = None
+        self.HostUserClass.env = MilMoveEnv.EXP
 
         # host is None due to setting the class host to None above
         assert self.TestUser1.host is None
@@ -90,7 +89,7 @@ class TestMilMoveHostMixin:
     @mock.patch.dict(os.environ, {"MOVE_MIL_EXP_TLS_CERT": "test_cert", "MOVE_MIL_EXP_TLS_KEY": "test_key"})
     def test_set_cert_kwargs(self):
         # Test if the environment is experimental
-        self.HostLocalClass.cert_kwargs = None
+        self.HostUserClass.cert_kwargs = None
         self.TestUser1.set_cert_kwargs()
 
         assert re.search("tls/exp_tls_cert_key.pem", self.TestUser1.cert_kwargs["cert"])
@@ -99,8 +98,8 @@ class TestMilMoveHostMixin:
         assert re.search("tls/dod-ca-60-61-bundle.pem", self.TestUser2.cert_kwargs["verify"])
 
         # Test if the environment is local
-        self.HostLocalClass.cert_kwargs = None
-        self.HostLocalClass.env = MilMoveEnv.LOCAL
+        self.HostUserClass.cert_kwargs = None
+        self.HostUserClass.env = MilMoveEnv.LOCAL
         self.TestUser1.set_cert_kwargs()
 
         assert re.search("tls/devlocal-mtls.cer", self.TestUser1.cert_kwargs["cert"][0])
@@ -109,8 +108,8 @@ class TestMilMoveHostMixin:
         assert re.search("tls/devlocal-mtls.key", self.TestUser2.cert_kwargs["cert"][1])
 
     @mock.patch.dict(os.environ, {"MOVE_MIL_EXP_TLS_CERT": "test_cert", "MOVE_MIL_EXP_TLS_KEY": "test_key"})
-    def test_create_deokoyed_cert_file(self):
-        self.HostLocalClass.env = MilMoveEnv.EXP
+    def test_create_deployed_cert_file(self):
+        self.HostUserClass.env = MilMoveEnv.EXP
         cert_file_path = self.TestUser1.create_deployed_cert_file()
         test_file_contents = "test_cert\ntest_key"
 
@@ -118,33 +117,34 @@ class TestMilMoveHostMixin:
         with open(cert_file_path, "r") as f:
             assert f.read() == test_file_contents
 
-    def test_no_env_variables_create_deokoyed_cert_file(self):
-        self.HostLocalClass.env = MilMoveEnv.EXP
+    @mock.patch.dict(os.environ, {})
+    def test_no_env_variables_create_deployed_cert_file(self):
+        self.HostUserClass.env = MilMoveEnv.EXP
         with pytest.raises(ImplementationError):
             self.TestUser1.create_deployed_cert_file()
 
     @mock.patch.dict(os.environ, {"MOVE_MIL_EXP_TLS_CERT": "test_cert", "MOVE_MIL_EXP_TLS_KEY": "test_key"})
     def test_remove_deployed_cert_file(self):
         # Setup kwargs
-        self.HostLocalClass.env = MilMoveEnv.EXP
-        self.HostLocalClass.cert_kwargs = None
+        self.HostUserClass.env = MilMoveEnv.EXP
+        self.HostUserClass.cert_kwargs = None
         self.TestUser1.set_cert_kwargs()
         cert_kwargs_before = self.TestUser1.cert_kwargs["cert"]
 
         self.TestUser1.remove_deployed_cert_file()
         assert os.path.exists(cert_kwargs_before) is False
         assert self.TestUser1.cert_kwargs == {}
+        assert self.TestUser2.cert_kwargs == {}
 
         # Call function again to make sure it doesn't error
         self.TestUser1.remove_deployed_cert_file()
 
 
-# tasks.base logger for mocking
-logger = logging.getLogger("utils.hosts")
-
-
 @mock.patch.dict(os.environ, {"MOVE_MIL_EXP_TLS_CERT": "test_cert", "MOVE_MIL_EXP_TLS_KEY": "test_key"})
 def test_clean_milmove_host_users(mocker):
+    # tasks.base logger for mocking
+    logger = logging.getLogger("utils.hosts")
+
     class MockUser(MilMoveHostMixin):
         local_port = "9443"
         domain = MilMoveDomain.PRIME
