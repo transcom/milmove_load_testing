@@ -150,6 +150,10 @@ class ObjectField(BaseAPIField):
         if not self.object_fields:
             self.object_fields = []
 
+    def has_field(self, field_name: str):
+        """ Checks if this object contains a field with the provided name in its object_fields property. """
+        return field_name in [f.name for f in self.object_fields]
+
     def add_field(self, field, unique=False):
         # We don't want to add duplicate fields if unique is True, so we check for existing fields with this name:
         if unique and field.name in [existing_field.name for existing_field in self.object_fields]:
@@ -249,19 +253,32 @@ class ObjectField(BaseAPIField):
             overrides[self.discriminator] = d_value
 
         for field in self.object_fields:
-            # First check if we're requiring all fields, if it's required, and if we passed the random chance to add a
-            # non-required field.
-            # Next, check that this field is valid with the current discriminator value.
-            if not (require_all or field.required or randint(0, 3)) or not field.is_valid_discriminator(d_value):
-                continue  # skip this one
+            if self.skip_field(field, discriminator_value=d_value, overrides=overrides, require_all=require_all):
+                continue
 
             fake_data[field.name] = field.generate_fake_data(faker, overrides=overrides, require_all=require_all)
 
-        for field in overrides:
-            if field not in fake_data:
-                fake_data[field] = overrides[field]
+        for field_name in overrides:
+            if field_name not in fake_data and self.has_field(field_name):
+                fake_data[field_name] = overrides[field_name]
 
         return fake_data
+
+    @staticmethod
+    def skip_field(field, **kwargs):
+        """ Evaluate whether or not we should skip this field while generating fake data. """
+        # Check the discriminator above all (for polymorphic API data):
+        if (d_value := kwargs.get("discriminator_value")) and not field.is_valid_discriminator(d_value):
+            return True
+
+        # Check if the field is in the overrides, which indicates that the caller wants to see this field in the output
+        # data:
+        if field.name in kwargs.get("overrides", {}):
+            return False
+
+        # Otherwise, check if we're requiring all fields, if this field is required, and if we passed the random chance
+        # to add a non-required field:
+        return not (field.required or kwargs.get("require_all") or randint(0, 3))
 
 
 @dataclass
