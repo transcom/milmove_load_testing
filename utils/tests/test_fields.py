@@ -190,8 +190,6 @@ class TestObjectField:
         """ Tests updating a list of fields to be 'required' """
         self.object_field.object_fields = []
 
-        required_fields = ["baseField", "randomField", "phoneField", "spaceField"]
-
         base_field = BaseAPIField(name="baseField", data_type=DataType.INTEGER)
         random_field = ArrayField(name="randomField")
         enum_field = EnumField(name="enumField")
@@ -204,7 +202,7 @@ class TestObjectField:
         assert enum_field.required is False
         assert space_field.required is False
 
-        self.object_field.update_required_fields(required_fields)
+        self.object_field.update_required_fields(["baseField", "randomField", "phoneField", "spaceField"])
 
         assert base_field.required is True
         assert random_field.required is True
@@ -310,6 +308,8 @@ class TestObjectFieldFaker:
     def setup_mocks(mocker):
         """
         Set up the mocked functions we need to run these tests. Must be called at the start of each test function.
+
+        :param mocker: the pytest mocker from the test case calling this function
         """
         # We have a 1/3 chance to skip non-required fields normally, so instead let's make it so every non-required
         # field is skipped unless require_all is used
