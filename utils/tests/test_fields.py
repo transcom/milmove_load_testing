@@ -166,13 +166,15 @@ class TestObjectField:
         self.object_field.combine_fields(array_field, unique=True)
         assert len([field for field in self.object_field.object_fields if field.name == "arrayField"]) == 1
 
-        test_object = ObjectField(name="testObject")
-        test_object_subfield = BaseAPIField(name="testSentence", data_type=DataType.SENTENCE)
-        test_object.add_field(test_object_subfield)
+        combine_test = ObjectField(name="testObject")
+        combine_test_subfield = BaseAPIField(name="testSentence", data_type=DataType.SENTENCE)
+        combine_test.add_field(combine_test_subfield)
 
-        self.object_field.combine_fields(test_object)
-        assert test_object not in self.object_field.object_fields
-        assert all([test_field in self.object_field.object_fields for test_field in test_object.object_fields])
+        self.object_field.combine_fields(combine_test)
+
+        # Check that all of the fields in the `combine_test` ObjectField were successfully added to self.object_field:
+        assert all([field in self.object_field.object_fields for field in combine_test.object_fields])
+        assert combine_test not in self.object_field.object_fields
 
         with pytest.raises(TypeError):
             self.object_field.combine_fields("field string")
