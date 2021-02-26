@@ -394,3 +394,56 @@ class TestObjectFieldFaker:
             ],
             "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
         }
+
+    def test_generate_fake_data_array_overrides(self, mocker):
+        """
+        Tests overriding an ArrayField that itself contains ObjectFields.
+        """
+        self.setup_mocks(mocker)
+
+        # - ArrayFields are always lists in the output of our fake data generator.
+        # - However, if we pass in a dictionary as an override to an ArrayField whose items are ObjectFields, we can
+        # override the values of the fields WITHIN this ArrayField.
+        # - These overrides will apply to every item in the array.
+        array_overrides = {"name": "Array Override"}
+        assert self.object_field.generate_fake_data(self.faker, overrides={"objectArray": array_overrides}) == {
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": array_overrides["name"]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": array_overrides["name"]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+        }
+
+        # If we use a list as the override instead of a dictionary, it's our way of explicitly overriding how many items
+        # we get back in the array. Our mocks are set to always return the max, but this call will only return one item:
+        full_list_overrides = [
+            {
+                "name": "Full List Override",
+            }
+        ]
+        assert self.object_field.generate_fake_data(self.faker, overrides={"objectArray": full_list_overrides}) == {
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": full_list_overrides[0]["name"]},
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+        }
+
+        # We can use the full list overrides to push this ArrayField past the max limit too. Notice that fake data will
+        # be generated for any required fields that aren't specified here:
+        over_max_overrides = [
+            {
+                "name": "Over Max",
+            },
+            {
+                "integer": 9,
+            },
+            {},
+        ]
+        assert self.object_field.generate_fake_data(self.faker, overrides={"objectArray": over_max_overrides}) == {
+            "objectArray": [
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER], "name": over_max_overrides[0]["name"]},
+                {"integer": over_max_overrides[1]["integer"]},
+                {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},  # still generates data will a blank {} override
+            ],
+            "phone": self.MOCK_FAKE_DATA[DataType.PHONE],
+        }
