@@ -117,7 +117,7 @@ class TestMilMoveHostMixin:
         with open(cert_file_path, "r") as f:
             assert f.read() == test_file_contents
 
-    @mock.patch.dict(os.environ, {})
+    @mock.patch.dict(os.environ, {"MOVE_MIL_EXP_TLS_CERT": "", "MOVE_MIL_EXP_TLS_KEY": ""})
     def test_no_env_variables_create_deployed_cert_file(self):
         self.HostUserClass.env = MilMoveEnv.EXP
         with pytest.raises(ImplementationError):
