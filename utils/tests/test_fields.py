@@ -91,7 +91,7 @@ class TestObjectField:
         """
         assert self.object_field.object_fields == []
         assert self.object_field.data_type == DataType.OBJECT
-        assert self.object_field.name == ""
+        assert self.object_field.name == "objectField"
         assert self.object_field.discriminator == ""
         assert self.object_field.discriminator_values == []
         assert self.object_field.required is False
