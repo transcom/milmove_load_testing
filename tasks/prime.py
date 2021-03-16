@@ -683,7 +683,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
 
         resp = self.client.get(
             support_path(f"/move-task-orders/{move_task_order['id']}"),
-            name=support_path("move-task-orders/{moveTaskOrderID}"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}"),
             headers=headers,
             **self.user.cert_kwargs,
         )
