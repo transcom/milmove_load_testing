@@ -436,7 +436,7 @@ class SupportAPIParser(PrimeAPIParser):
         if path == "/move-task-orders" and method == "post":
 
             move_task_order = request_data
-            move_orders = request_data["moveOrder"]
+            move_orders = request_data["order"]
             customer = move_orders["customer"]
             entitlement = move_orders["entitlement"]
 
@@ -445,7 +445,7 @@ class SupportAPIParser(PrimeAPIParser):
             move_task_order.pop("paymentRequests", None)
             move_task_order.pop("mtoServiceItems", None)
 
-            move_task_order.pop("moveOrderID", None)  # moveOrderID will be returned on creation
+            move_task_order.pop("orderID", None)  # orderID will be returned on creation
 
             # Cannot create certain nested objects with this endpoint, instead the caller should pass in an ID
             # (in overrides)
