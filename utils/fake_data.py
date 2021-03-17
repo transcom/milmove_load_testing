@@ -95,6 +95,12 @@ class MilMoveProvider(AddressProvider, DateProvider):
             if state != "AK" and state != "HI":
                 return self.postalcode_in_state(state)
 
+    def safe_uuid(self):
+        """
+        Returns an empty uuid as a string.
+        """
+        return "00000000-0000-0000-0000-000000000000"
+
 
 class MilMoveData:
     """ Base class to return fake data to use in MilMove endpoints. """
@@ -121,7 +127,7 @@ class MilMoveData:
             DataType.SENTENCE: self.fake.sentence,
             DataType.BOOLEAN: self.fake.boolean,
             DataType.INTEGER: self.fake.random_number,
-            DataType.UUID: self.fake.uuid4,
+            DataType.UUID: self.fake.safe_uuid,
         }
 
     def get_random_choice(self, choices):
