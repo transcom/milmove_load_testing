@@ -477,8 +477,19 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
                 "[DDDSIT, DOPSIT]"
             )
             return
+
         payload = self.fake_request(
-            "/mto-service-items/{mtoServiceItemID}", "patch", overrides={"id": mto_service_item["id"]}
+            "/mto-service-items/{mtoServiceItemID}",
+            "patch",
+            overrides={
+                "id": mto_service_item["id"],
+                "sitDestinationFinalAddress": {
+                    "id": mto_service_item["sitDestinationFinalAddress"]["id"]
+                    if mto_service_item.get("sitDestinationFinalAddress")
+                    and mto_service_item["sitDestinationFinalAddress"].get("id")
+                    else ZERO_UUID,
+                },
+            },
         )
 
         headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}

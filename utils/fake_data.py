@@ -8,7 +8,7 @@ from faker import Faker
 from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
 from faker.providers.address.en_US import Provider as AddressProvider  # extends BaseProvider
 
-from .constants import DataType
+from .constants import DataType, ZERO_UUID
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +99,7 @@ class MilMoveProvider(AddressProvider, DateProvider):
         """
         Returns an empty uuid as a string.
         """
-        return "00000000-0000-0000-0000-000000000000"
+        return ZERO_UUID
 
 
 class MilMoveData:
