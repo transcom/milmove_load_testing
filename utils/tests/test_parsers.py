@@ -10,7 +10,7 @@ from utils.base import ImplementationError
 from utils.constants import STATIC_FILES, DataType, ARRAY_MIN, ARRAY_MAX
 from utils.fake_data import MilMoveData
 from utils.fields import APIEndpointBody, ObjectField, BaseAPIField, ArrayField, EnumField
-from utils.parsers import APIParser
+from utils.parsers import APIParser, PrimeAPIParser
 from .params_parsers import *
 
 
@@ -246,3 +246,31 @@ class TestAPIParser:
     def test__approximate_str_type(self, field_name, expected_type):
         """ Test that field names are being used to approximate the closest data type. """
         assert self.parser._approximate_str_type(field_name) == expected_type
+
+
+class TestPrimeAPIParser:
+    """ Tests some of the custom methods on the PrimeAPIParser class """
+
+    @classmethod
+    def setup_class(cls):
+        """ Initialize the APIParser that will be tested. """
+        cls.parser = PrimeAPIParser()
+
+    @pytest.mark.parametrize(
+        "input_dimensions,expected_dimensions",
+        [
+            # (input=(item_dim, crate_dim), expected=(item_dim, crate_dim))
+            ((0, 0), (1, 2)),
+            ((-40, 5), (1, 5)),
+            ((20, -15), (20, 21)),
+            ((3, 3), (3, 4)),
+            ((8, 16), (8, 16)),
+        ],
+    )
+    def test_normalize_crate_dimensions(self, input_dimensions, expected_dimensions):
+        """
+        Tests that normalize_crate_dimensions always returns values that are greater than 0, and that the item is
+        smaller than the crate.
+        """
+        output_dimensions = self.parser.normalize_crate_dimensions(*input_dimensions)
+        assert output_dimensions == expected_dimensions
