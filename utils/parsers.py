@@ -435,7 +435,7 @@ class PrimeAPIParser(APIParser):
         :return: tup(item_dim int, crate_dim int)
         """
         if item_dim <= 0:
-            item_dim += 1
+            item_dim = 1
         if item_dim >= crate_dim:
             if crate_dim <= 1:
                 crate_dim = 2
