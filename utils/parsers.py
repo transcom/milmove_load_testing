@@ -413,14 +413,32 @@ class PrimeAPIParser(APIParser):
                 item_details = request_data.get("item")
                 crate_details = request_data.get("crate")
                 if item_details and crate_details:
-                    if item_details["length"] >= crate_details["length"]:
-                        item_details["length"] = crate_details["length"] - 1
+                    item_details["length"], crate_details["length"] = self.normalize_crate_dimensions(
+                        item_details["length"], crate_details["length"]
+                    )
+                    item_details["width"], crate_details["width"] = self.normalize_crate_dimensions(
+                        item_details["width"], crate_details["width"]
+                    )
+                    item_details["height"], crate_details["height"] = self.normalize_crate_dimensions(
+                        item_details["height"], crate_details["height"]
+                    )
 
-                    if item_details["width"] >= crate_details["width"]:
-                        item_details["width"] = crate_details["width"] - 1
+    @staticmethod
+    def normalize_crate_dimensions(item_dim: int, crate_dim: int) -> (int, int):
+        """
+        Check that the item dimensions are always smaller than the crate dimensions (since the item has to fit inside
+        it). Additionally, ensure that both dimensions are greater than 0 so that we don't encounter any errors from
+        MilMove attempting to manipulate zero or negative numbers. Returns the normalized versions of both values.
 
-                    if item_details["height"] >= crate_details["height"]:
-                        item_details["height"] = crate_details["height"] - 1
+        :param item_dim: int
+        :param crate_dim: int
+        :return: tup(item_dim int, crate_dim int)
+        """
+        if item_dim <= 0:
+            item_dim = 1
+        if crate_dim <= item_dim:
+            crate_dim = item_dim + 1
+        return item_dim, crate_dim
 
 
 class SupportAPIParser(PrimeAPIParser):

@@ -101,6 +101,9 @@ class TestMilMoveProvider:
         assert type(code) is str
         assert re.match("^[0-9]{5}$", code)
 
+    def test_safe_uuid(self):
+        assert self.fake.safe_uuid() == "00000000-0000-0000-0000-000000000000"
+
 
 class TestMilMoveData:
     """ Tests the MilMoveData class and its methods. """
