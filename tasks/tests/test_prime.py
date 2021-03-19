@@ -195,7 +195,7 @@ class TestPrimeDataStorageMixin:
                 "id": "1",
                 "status": 200,
                 "json": {
-                    "moveOrder": {
+                    "order": {
                         "uploadedOrdersID": "upload1",
                         "destinationDutyStationID": "",  # purposefully blank, will not count for end of loop
                         "originDutyStationID": "origin1",
@@ -206,7 +206,7 @@ class TestPrimeDataStorageMixin:
                 "id": "2",
                 "status": 200,
                 "json": {
-                    "moveOrder": {
+                    "order": {
                         "destinationDutyStationID": "destination2",
                         "originDutyStationID": "origin2",
                     }
@@ -218,7 +218,7 @@ class TestPrimeDataStorageMixin:
                 "json": {
                     # these values should not be used because they all should have been set previously
                     "contractorID": "contractor3",
-                    "moveOrder": {
+                    "order": {
                         "uploadedOrdersID": "upload3",
                     },
                 },
@@ -245,7 +245,7 @@ class TestPrimeDataStorageMixin:
         test_moves_after = [
             {
                 "contractorID": "contractor4",
-                "moveOrder": {
+                "order": {
                     "uploadedOrdersID": "upload4",
                     "destinationDutyStationID": "destination4",
                     "originDutyStationID": "origin4",

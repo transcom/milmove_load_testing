@@ -174,7 +174,7 @@ class PrimeDataStorageMixin:
             self.default_mto_ids["contractorID"] = move_details.get(
                 "contractorID", self.default_mto_ids["contractorID"]
             )
-            if order_details := move_details.get("moveOrder"):
+            if order_details := move_details.get("order"):
                 self.default_mto_ids["uploadedOrdersID"] = order_details.get(
                     "uploadedOrdersID", self.default_mto_ids["uploadedOrdersID"]
                 )
@@ -589,7 +589,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             "status": "SUBMITTED",
             # If this date is set here, the status will not properly transition to APPROVED
             "availableToPrimeAt": None,
-            "moveOrder": {
+            "order": {
                 "status": "APPROVED",
                 # We need these objects to exist
                 "destinationDutyStationID": self.default_mto_ids["destinationDutyStationID"],
@@ -694,7 +694,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
 
         resp = self.client.get(
             support_path(f"/move-task-orders/{move_task_order['id']}"),
-            name=support_path("move-task-orders/{moveTaskOrderID}"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}"),
             headers=headers,
             **self.user.cert_kwargs,
         )

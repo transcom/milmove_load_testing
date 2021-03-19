@@ -65,7 +65,7 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
 
     def add_shipment_with_doshut_service(self):
         # Get a realistic primeEstimatedWeight
-        estimated_weight = int(98 / 100 * self.current_move["moveOrder"]["entitlement"]["totalWeight"])
+        estimated_weight = int(98 / 100 * self.current_move["order"]["entitlement"]["totalWeight"])
 
         # Add a shipment and approve it
         overrides = {"primeEstimatedWeight": estimated_weight}
