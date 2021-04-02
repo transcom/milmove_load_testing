@@ -591,6 +591,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             "availableToPrimeAt": None,
             "order": {
                 "status": "APPROVED",
+                "tac": "F8J1",
                 # We need these objects to exist
                 "destinationDutyStationID": self.default_mto_ids["destinationDutyStationID"],
                 "originDutyStationID": self.default_mto_ids["originDutyStationID"],
