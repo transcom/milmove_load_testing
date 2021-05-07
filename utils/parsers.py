@@ -476,3 +476,9 @@ class SupportAPIParser(PrimeAPIParser):
 
             customer.pop("currentAddress", None)  # Cannot create currentAddress with this endpoint
             entitlement.pop("id", None)  # id will be returned on creation
+
+
+class GHCAPIParser(APIParser):
+    """ Parser class for the GHC API. """
+
+    api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"
