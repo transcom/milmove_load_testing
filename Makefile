@@ -106,21 +106,21 @@ load_test_prime_workflow: clean ensure_venv  ## Run load testing on the Prime AP
 
 .PHONY: local_docker_build
 local_docker_build: clean  ## Build a Docker container to run load testing locally
-	docker-compose -f docker-compose.local.yaml build prime
+	docker-compose -f docker-compose.local.yaml build locust
 
 .PHONY: local_docker_up
 local_docker_up: ## Run load testing on the Prime API in local using a Docker container
 	open http://localhost:8089
-	LOCUSTFILES=$(PRIME_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up prime
+	LOCUSTFILES=$(PRIME_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up locust
 
 .PHONY: local_docker_down
 local_docker_down:  ## Shutdown any active local docker containers with docker-compose
-	docker-compose -f docker-compose.local.yaml down prime
+	docker-compose -f docker-compose.local.yaml down locust
 
 .PHONY: local_docker_office_up
-local_docker_office_up: ## Run load testing on the Prime API in local using a Docker container
+local_docker_office_up: ## Run load testing on the GHC API in local using a Docker container
 	open http://localhost:8089
-	LOCUSTFILES=$(OFFICE_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up prime
+	LOCUSTFILES=$(OFFICE_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up locust
 
 .PHONY: local_docker_report
 local_docker_report:  ## Run load testing automatically against a local server and generate reports

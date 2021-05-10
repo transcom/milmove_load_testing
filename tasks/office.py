@@ -6,7 +6,6 @@ import json
 from locust import task, tag
 
 from utils.constants import MOVE
-
 from .base import check_response, LoginTaskSet, ParserTaskMixin
 
 logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  prime:
+  locust:
     build:
       context: .
       network: host
@@ -17,7 +17,7 @@ services:
   prime-reporting:
     container_name: mmlt_prime_reporting
     extends:
-      service: prime
+      service: locust
     environment:
       - LOCUST_LOGLEVEL=warning
       - LOCUST_LOGFILE=${DOCKER_CSV_PREFIX}_log.txt
