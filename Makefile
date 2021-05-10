@@ -12,6 +12,9 @@ ifeq ($(VIRTUAL_ENV),$(VENV_DIR))
 	IN_VENV:=true
 endif
 
+PRIME_LOCUSTFILES=/app/locustfiles/prime.py
+OFFICE_LOCUSTFILES=/app/locustfiles/office.py
+
 .PHONY: help
 help:  ## Print the help documentation
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -108,15 +111,20 @@ local_docker_build: clean  ## Build a Docker container to run load testing local
 .PHONY: local_docker_up
 local_docker_up: ## Run load testing on the Prime API in local using a Docker container
 	open http://localhost:8089
-	docker-compose -f docker-compose.local.yaml up prime
+	LOCUSTFILES=$(PRIME_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up prime
 
 .PHONY: local_docker_down
 local_docker_down:  ## Shutdown any active local docker containers with docker-compose
 	docker-compose -f docker-compose.local.yaml down prime
 
+.PHONY: local_docker_office_up
+local_docker_office_up: ## Run load testing on the Prime API in local using a Docker container
+	open http://localhost:8089
+	LOCUSTFILES=$(OFFICE_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up prime
+
 .PHONY: local_docker_report
 local_docker_report:  ## Run load testing automatically against a local server and generate reports
-	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"; docker-compose -f docker-compose.local.yaml up --build prime-reporting
+	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"; LOCUSTFILES=$(PRIME_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up --build prime-reporting
 	docker cp mmlt_prime_reporting:/app/static/reports static/local/
 
 .PHONY: exp_load_test
