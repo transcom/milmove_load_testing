@@ -115,7 +115,7 @@ class LoginTaskSet(TaskSet):
         Pull the CSRF token from the website by hitting the root URL.
         This token is set as a cookie with the name `masked_gorilla_csrf`.
         """
-        self.client.get("/")
+        self.client.get("/devlocal-auth/login")
         self.csrf_token = self.client.cookies.get("masked_gorilla_csrf")
 
     def _create_login(self, user_type, session_token_name):
@@ -125,7 +125,9 @@ class LoginTaskSet(TaskSet):
         :param session_token_name: str
         :return: response
         """
-        resp = self.client.post("/devlocal-auth/create", data={"userType": user_type})
+        resp = self.client.post(
+            "/devlocal-auth/create", data={"userType": user_type, "gorilla.csrf.Token": self.csrf_token}
+        )
         self.session_token = self.client.cookies.get(session_token_name)
 
         return resp

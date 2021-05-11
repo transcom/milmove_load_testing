@@ -3,14 +3,19 @@
 import logging
 import json
 
-from locust import task
+from locust import task, tag
 
-from .base import LoginTaskSet
+from utils.constants import MOVE
+from .base import check_response, LoginTaskSet, ParserTaskMixin
 
 logger = logging.getLogger(__name__)
 
 
-class OfficeTasks(LoginTaskSet):
+def ghc_path(url: str) -> str:
+    return f"/ghc/v1{url}"
+
+
+class OfficeTasks(LoginTaskSet, ParserTaskMixin):
     """
     Set of tasks that can be called for the MilMove Office interface.
     """
@@ -37,3 +42,22 @@ class OfficeTasks(LoginTaskSet):
             logger.exception("Non-JSON response")
         else:
             logger.info(f"ℹ️ User email: {json_body.get('email', 'None')}")
+
+    @tag(MOVE, "getMove")
+    @task
+    def get_move(self, overrides=None):
+        """
+        Fetches a single move
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        locator = overrides.get("locator") if overrides else "COMBOS"
+
+        headers = {"content-type": "application/json"}
+
+        resp = self.client.get(
+            ghc_path(f"/move/{locator}"),
+            name=ghc_path("/move/{locator}"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        new_mto, success = check_response(resp, "getMove")
