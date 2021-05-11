@@ -13,8 +13,7 @@ endif
 # ASDF versions
 # global $HOME/.tool-versions
 # local $PWD/.tool-versions
-### VENV_DIR = $(HOME)/.pyenv/versions/$(PY_VERSION)/envs/$(VENV_NAME)
-### $(HOME)/.asdf/installs/python/$(PY_VERSION)
+# $(HOME)/.asdf/installs/python/$(PY_VERSION)
 VENV_DIR = $(PWD)/$(VENV_NAME)
 
 ifeq ($(VIRTUAL_ENV),$(VENV_DIR))
@@ -27,10 +26,11 @@ help:  ## Print the help documentation
 
 .PHONY: venv
 venv:  ## Setup the local python version and the virtualenv
-	asdf list $(PYTHON) | grep -q "$(PY_VERSION)" || asdf install $(PYTHON) $(PY_VERSION)
+	asdf list $(PYTHON) | grep "$(PY_VERSION)" || asdf install $(PYTHON) $(PY_VERSION)
 	asdf local $(PYTHON) $(PY_VERSION)
 	asdf current $(PYTHON)
 	cmdArgs=($PYTHON '-m' 'venv' $VENV_NAME)
+	"${cmdArgs[@]}"
 	source "$(VENV_NAME)/bin/activate" || echo "Using existing $(VENV_NAME)..."
 ifndef IN_VENV
 	@echo "Activate your virtualenv using the following commands:\n\n  python -m venv $(VENV_NAME)\n  source $(VENV_NAME)/bin/activate\n\n" \
