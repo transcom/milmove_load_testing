@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .office import OfficeTasks  # noqa
+from .office import ServicesCounselorTasks, TOOTasks  # noqa
 from .milmove import MilMoveTasks  # noqa
 from .prime import PrimeTasks, SupportTasks  # noqa
 from .prime_workflow import PrimeWorkflowTasks  # noqa
