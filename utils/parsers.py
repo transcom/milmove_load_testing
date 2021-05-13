@@ -476,3 +476,15 @@ class SupportAPIParser(PrimeAPIParser):
 
             customer.pop("currentAddress", None)  # Cannot create currentAddress with this endpoint
             entitlement.pop("id", None)  # id will be returned on creation
+
+
+class InternalAPIParser(APIParser):
+    """ Parser class for the Internal (Customer/Service member) API. """
+
+    api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/internal.yaml"
+
+    def generate_fake_request(self, path, method, overrides=None, require_all=True):
+        """
+        Overrides method so that require_all defaults to True. TODO remove when API discrepancies are fixed
+        """
+        return super().generate_fake_request(path, method, overrides, True)
