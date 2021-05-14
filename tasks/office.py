@@ -32,7 +32,7 @@ class OfficeDataStorageMixin:
     This mixin allows storing multiple items of each kind.
     """
 
-    DATA_LIST_MAX: int = 50
+    DATA_LIST_MAX: int = 100
     local_store: Dict[str, list] = {
         MOVE_TASK_ORDER: [],
         MTO_SHIPMENT: [],
@@ -45,7 +45,7 @@ class OfficeDataStorageMixin:
         Given an object_key that represents an object type from the MilMove app, returns an object of that type from the
         list.
 
-        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
+        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
         """
         data_list = self.local_store[object_key]
 
@@ -63,10 +63,9 @@ class OfficeDataStorageMixin:
         :return: None
         """
         data_list = self.local_store[object_key]
-        logger.info(f"size of {object_key} {len(data_list)}")
 
         if len(data_list) >= self.DATA_LIST_MAX:
-            num_to_delete = random.randint(1, self.DATA_LIST_MAX)
+            num_to_delete = random.randint(1, len(data_list))
             del data_list[:num_to_delete]
 
         # Some creation endpoint auto-create multiple objects and return an array,
@@ -143,7 +142,6 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             **self.user.cert_kwargs,
         )
         new_mto, success = check_response(resp, "getMove")
-        logger.info(f"getMove {new_mto}")
 
     @tag(QUEUES, "getServicesCounselingQueue")
     @task
@@ -154,14 +152,18 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
 
         headers = {"content-type": "application/json"}
 
+        # Use the default queue sort for now, adding a filter to return service counseling completed moves as well
         resp = self.client.get(
-            ghc_path("/queues/counseling?perPage=50"),
+            ghc_path(
+                "/queues/counseling?page=1&perPage=50&sort=submittedAt&order=asc"
+                "&status=NEEDS SERVICE COUNSELING,SERVICE COUNSELING COMPLETED"
+            ),
             name=ghc_path("/queues/counseling"),
             headers=headers,
             **self.user.cert_kwargs,
         )
         moves, success = check_response(resp, "getServicesCounselingQueue")
-        logger.info(f"found {moves['totalCount']} services counseling moves")
+
         # these are not full move models and will be those in needs counseling status
         self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
 
@@ -213,7 +215,6 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
             **self.user.cert_kwargs,
         )
         new_mto, success = check_response(resp, "getMove")
-        logger.info(f"getMove {new_mto}")
 
     @tag(QUEUES, "getMovesQueue")
     @task
@@ -225,11 +226,11 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         headers = {"content-type": "application/json"}
 
         resp = self.client.get(
-            ghc_path("/queues/moves?perPage=50"),
+            ghc_path("/queues/moves?page=1&perPage=50&sort=status&order=asc"),
             name=ghc_path("/queues/moves"),
             headers=headers,
             **self.user.cert_kwargs,
         )
         moves, success = check_response(resp, "getMovesQueue")
-        logger.info(f"found {moves['totalCount']} TOO moves")
+
         self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
