@@ -356,7 +356,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if not mto_shipment:
             return  # can't run this task
 
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "put", PRIME_API_KEY, overrides)
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "patch", PRIME_API_KEY, overrides)
 
         # Agents and addresses should not be updated by this endpoint, and primeEstimatedWeight cannot be updated after
         # it is initially set (and it is set in create_mto_shipment)
@@ -372,7 +372,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             payload.pop(f, None)
 
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
-        resp = self.client.put(
+        resp = self.client.patch(
             prime_path(f"/mto-shipments/{mto_shipment['id']}"),
             name=prime_path("/mto-shipments/{mtoShipmentID}"),
             data=json.dumps(payload),
