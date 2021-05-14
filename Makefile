@@ -6,7 +6,24 @@ endif
 ifndef VENV_NAME
 	VENV_NAME = locust-venv
 endif
-VENV_DIR = $(HOME)/.pyenv/versions/$(PY_VERSION)/envs/$(VENV_NAME)
+ifndef PYTHON
+    PYTHON = python
+endif
+ifndef USE_ASDF
+		USE_ASDF:=false
+endif
+
+# ASDF versions
+# global $HOME/.tool-versions
+# local $PWD/.tool-versions
+# $(HOME)/.asdf/installs/python/$(PY_VERSION)
+# PYENV versions
+# $(HOME)/.pyenv/versions/$(PY_VERSION)
+ifeq ($(USE_ASDF),true)
+	VENV_DIR = $(PWD)/$(VENV_NAME)
+else
+	VENV_DIR = $(HOME)/.pyenv/versions/$(PY_VERSION)/envs/$(VENV_NAME)
+endif
 
 ifeq ($(VIRTUAL_ENV),$(VENV_DIR))
 	IN_VENV:=true
@@ -18,12 +35,23 @@ help:  ## Print the help documentation
 
 .PHONY: venv
 venv:  ## Setup the local python version and the virtualenv
-	pyenv versions | grep -q "$(PY_VERSION)" || pyenv install -v $(PY_VERSION)
+ifeq ($(USE_ASDF),true)
+	asdf list $(PYTHON) | grep -q $(PY_VERSION) || asdf install $(PYTHON) $(PY_VERSION)
+	asdf local $(PYTHON) $(PY_VERSION)
+	asdf current $(PYTHON)
+	$(PYTHON) -m venv $(VENV_NAME) || echo "Using existing $(VENV_NAME)..."
+else
+	pyenv versions | grep -q $(PY_VERSION) || pyenv install -v $(PY_VERSION)
 	pyenv local $(PY_VERSION)
 	pyenv virtualenv $(PY_VERSION) $(VENV_NAME) || echo "Using existing $(VENV_NAME)..."
+endif
 ifndef IN_VENV
-	@echo "Activate your virtualenv using the following commands:\n\n  pyenv activate $(VENV_NAME)\n\n" \
-	"Alternatively, set the virtualenv to auto-activate with:\n\n  pyenv local $(VENV_NAME)"
+ifeq ($(USE_ASDF),true)
+	@echo "\n>> Activate your virtualenv using the following commands:\n\n source $(VENV_NAME)/bin/activate\n\n"
+else
+	@echo "\n>> Activate your virtualenv using the following commands:\n\n  pyenv activate $(VENV_NAME)\n\n" \
+ "Alternatively, set the virtualenv to auto-activate with:\n\n  pyenv local $(VENV_NAME)"
+endif
 endif
 
 # This target checks that we're in an activated virtualenv for the sake of the following requirements installation:
@@ -31,6 +59,9 @@ endif
 ensure_venv:  ## Ensure that the virtualenv is activated
 ifeq ($(IN_VENV),true)
 	@echo "$(VENV_NAME) has been activated."
+else ifeq ($(USE_ASDF),true)
+	@echo "To proceed, activate your virtualenv using the following command:\n\n  source $(VENV_NAME)/bin/activate\n\n"
+	false
 else
 	@echo "To proceed, activate your virtualenv using the following command:\n\n  pyenv activate $(VENV_NAME)\n"
 	false
@@ -71,7 +102,11 @@ clean:  ## Clean all generated files
 
 .PHONY: teardown
 teardown:  ## Uninstall the virtualenv and remove all files
+ifeq ($(USE_ASDF),true)
+	@echo "To deactivate  and remove your virtualenv using the following command:\n\n  deactivate; rm -fr $(VENV_NAME)\n\n"
+else
 	-pyenv uninstall $(VENV_NAME)
+endif
 
 .PHONY: pretty
 pretty: ensure_venv  ## Prettify the code

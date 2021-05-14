@@ -26,15 +26,12 @@ help:  ## Print the help documentation
 
 .PHONY: venv
 venv:  ## Setup the local python version and the virtualenv
-	asdf list $(PYTHON) | grep "$(PY_VERSION)" || asdf install $(PYTHON) $(PY_VERSION)
+	asdf list $(PYTHON) | grep -q "$(PY_VERSION)" || asdf install $(PYTHON) $(PY_VERSION)
 	asdf local $(PYTHON) $(PY_VERSION)
 	asdf current $(PYTHON)
-	cmdArgs=($PYTHON '-m' 'venv' $VENV_NAME)
-	"${cmdArgs[@]}"
-	source "$(VENV_NAME)/bin/activate" || echo "Using existing $(VENV_NAME)..."
+  $(PYTHON) -m venv $(VENV_NAME) || echo "Using existing $(VENV_NAME)..."
 ifndef IN_VENV
-	@echo "Activate your virtualenv using the following commands:\n\n  python -m venv $(VENV_NAME)\n  source $(VENV_NAME)/bin/activate\n\n" \
-	"Alternatively, set the virtualenv to auto-activate with:\n\n  python -m venv $(VENV_NAME)\n  source $(VENV_NAME)/bin/activate\n\n""
+	@echo "\n>> Activate your virtualenv using the following commands:\n\n source $(VENV_NAME)/bin/activate\n\n"
 endif
 
 # This target checks that we're in an activated virtualenv for the sake of the following requirements installation:
@@ -43,7 +40,7 @@ ensure_venv:  ## Ensure that the virtualenv is activated
 ifeq ($(IN_VENV),true)
 	@echo "$(VENV_NAME) has been activated."
 else
-	@echo "To proceed, activate your virtualenv using the following command:\n\n  python -m venv $(VENV_NAME)\n  source $(VENV_NAME)/bin/activate\n\n"\n"
+	@echo "To proceed, activate your virtualenv using the following command:\n\n  source $(VENV_NAME)/bin/activate\n\n"
 	false
 endif
 
@@ -82,9 +79,7 @@ clean:  ## Clean all generated files
 
 .PHONY: teardown
 teardown:  ## Uninstall the virtualenv and remove all files
-	cmdArgs=($PYTHON, 'deactivate')
-	"${cmdArgs[@]}"
-	rm -fr $(VENV_NAME)
+	@echo "To deactivate  and remove your virtualenv using the following command:\n\n  deactivate; rm -fr $(VENV_NAME)\n\n"
 
 .PHONY: pretty
 pretty: ensure_venv  ## Prettify the code
