@@ -372,7 +372,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             payload.pop(f, None)
 
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
-        resp = self.client.put(
+        resp = self.client.patch(
             prime_path(f"/mto-shipments/{mto_shipment['id']}"),
             name=prime_path("/mto-shipments/{mtoShipmentID}"),
             data=json.dumps(payload),
