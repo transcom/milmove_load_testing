@@ -10,12 +10,6 @@ ifndef USE_ASDF
 		USE_ASDF:=false
 endif
 
-# ASDF versions
-# global $HOME/.tool-versions
-# local $PWD/.tool-versions
-# $(HOME)/.asdf/installs/python/$(PY_VERSION)
-# PYENV versions
-# $(HOME)/.pyenv/versions/$(PY_VERSION)
 ifeq ($(USE_ASDF),true)
 	VENV_DIR = $(PWD)/$(VENV_NAME)
 else

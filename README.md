@@ -127,6 +127,11 @@ This project uses [pyenv](https://github.com/pyenv/pyenv) to manage Python versi
 to contribute without having to spend hours navigating the spiderweb that is Python versions on MacOS (which most of us
 are using).
 
+Alternatives to `pyenv`:
+
+* run using `ASDF`, included below
+* run with Docker, included below
+
 To ensure that you have all the dependencies for `pyenv` installed, first run:
 
 ```shell script
@@ -219,6 +224,53 @@ make teardown
 ```
 
 Remember to recreate your virtual environment with `make venv` before attempting to continue development on the project.
+
+### Alternative Setup: ASDF
+
+It is possible to run with `ASDF` instead of using `pyenv`. The `Makefile` file has been updated to check for the env variable
+`USE_ASDR=true`.
+
+Add `USE_ASDF` to your `.envrc.local` file.
+
+```shell script
+export USE_ASDR=true
+```
+
+Update env locally
+
+```shell script
+direnv allow
+```
+
+Install the prereqs
+
+```shell script
+brew install openssl readline sqlite3 xz zlib
+```
+
+Add python to `ASDF` versioning
+
+```shell script
+asdf plugin add python
+```
+
+Create a new python `venv` and run setup
+
+*Note*: Make sure you added `USE_ASDF` to your `.envrc.local`
+
+```shell script
+make venv
+make setup
+```
+
+Teardown python venv
+
+After you are finished and you would like to remove the `venv`, run the teardown command. This command simply prints
+out the necessary python commands to run to deactivate your env and remove the contents of the `venv`.
+
+```shell script
+make teardown
+```
 
 ### Alternative Setup: Docker
 
