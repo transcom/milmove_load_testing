@@ -257,12 +257,15 @@ asdf plugin add python
 
 Create a new python `venv` and run setup
 
-*Note*: Make sure you added `USE_ASDF` to your `.envrc.local`
-
 ```shell script
 make venv
 make setup
 ```
+
+*Notes*:
+
+* Make sure you added `USE_ASDF` to your `.envrc.local`
+* If install for python fails, you can change the version using `PY_VERSION`. (At least one person had an issue with `3.8.5`, `3.9.5` seems to work better on install at the time.)
 
 Teardown python venv
 
