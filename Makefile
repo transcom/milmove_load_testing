@@ -9,7 +9,9 @@ endif
 ifndef USE_ASDF
 		USE_ASDF:=false
 endif
-
+ifndef PYTHON
+    PYTHON = python
+endif
 ifeq ($(USE_ASDF),true)
 	VENV_DIR = $(PWD)/$(VENV_NAME)
 else
