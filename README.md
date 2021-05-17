@@ -229,12 +229,12 @@ Remember to recreate your virtual environment with `make venv` before attempting
 ### Alternative Setup: ASDF
 
 It is possible to run with `ASDF` instead of using `pyenv`. The `Makefile` file has been updated to check for the env variable
-`USE_ASDR=true`.
+`USE_ASDF=true`.
 
 Add `USE_ASDF` to your `.envrc.local` file.
 
 ```shell script
-export USE_ASDR=true
+export USE_ASDF=true
 ```
 
 Update `env` locally
