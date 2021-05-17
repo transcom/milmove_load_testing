@@ -29,6 +29,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
          * [Setup: pre-commit](#setup-pre-commit)
          * [Setup: pyenv](#setup-pyenv)
          * [Setup: virtualenv](#setup-virtualenv)
+         * [Alternative Setup: ASDF](#alternative-setup-asdf)
          * [Alternative Setup: Docker](#alternative-setup-docker)
          * [Troubleshooting](#troubleshooting)
          * [Testing](#testing)
@@ -129,8 +130,8 @@ are using).
 
 Alternatives to `pyenv`:
 
-* run using `ASDF`, included below
-* run with Docker, included below
+* run using [`ASDF`](#alternative-setup-asdf)
+* run with [Docker](#alternative-setup-docker)
 
 To ensure that you have all the dependencies for `pyenv` installed, first run:
 
