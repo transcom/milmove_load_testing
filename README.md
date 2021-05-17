@@ -237,7 +237,7 @@ Add `USE_ASDF` to your `.envrc.local` file.
 export USE_ASDR=true
 ```
 
-Update env locally
+Update `env` locally
 
 ```shell script
 direnv allow
@@ -267,7 +267,7 @@ make setup
 * Make sure you added `USE_ASDF` to your `.envrc.local`
 * If install for python fails, you can change the version using `PY_VERSION`. (At least one person had an issue with `3.8.5`, `3.9.5` seems to work better on install at the time.)
 
-Teardown python venv
+Teardown python `venv`
 
 After you are finished and you would like to remove the `venv`, run the teardown command. This command simply prints
 out the necessary python commands to run to deactivate your env and remove the contents of the `venv`.
