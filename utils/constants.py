@@ -28,6 +28,7 @@ MTO_AGENT = "mtoAgent"
 MTO_SHIPMENT = "mtoShipment"
 MTO_SERVICE_ITEM = "mtoServiceItem"
 PAYMENT_REQUEST = "paymentRequest"
+QUEUES = "queues"
 
 
 class DataType(ValueEnum):
