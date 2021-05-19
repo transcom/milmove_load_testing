@@ -12,6 +12,7 @@ from utils.constants import (
     MOVE_TASK_ORDER,
     MTO_SERVICE_ITEM,
     MTO_SHIPMENT,
+    ORDER,
     QUEUES,
     PAYMENT_REQUEST,
 )
@@ -33,11 +34,12 @@ class OfficeDataStorageMixin:
     """
 
     DATA_LIST_MAX: int = 100
-    local_store: Dict[str, list] = {
-        MOVE_TASK_ORDER: [],
-        MTO_SHIPMENT: [],
-        MTO_SERVICE_ITEM: [],
-        PAYMENT_REQUEST: [],
+    local_store: Dict[str, Dict[str, Dict]] = {
+        MOVE_TASK_ORDER: {},
+        MTO_SHIPMENT: {},
+        MTO_SERVICE_ITEM: {},
+        ORDER: {},
+        PAYMENT_REQUEST: {},
     }  # data stored will be shared among class instances thanks to mutable dict
 
     def get_stored(self, object_key, *args, **kwargs):
@@ -45,18 +47,24 @@ class OfficeDataStorageMixin:
         Given an object_key that represents an object type from the MilMove app, returns an object of that type from the
         list.
 
-        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
+        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_SERVICE_ITEM, ORDER, PAYMENT_REQUEST]
+        :param args: str uuid of a single object item key to lookup
         """
-        data_list = self.local_store[object_key]
+        if args[0]:
+            data_item = self.local_store[object_key][args[0]]
+            if data_item is not None:
+                return data_item
 
-        if len(data_list) > 0:  # otherwise we return None
-            return random.choice(data_list)
+        data_list = self.local_store[object_key]
+        if len(data_list) > 0:
+            return random.choice(list(data_list.values()))
 
     def add_stored(self, object_key, object_data):
         """
-        Adds data to the list for the object key provided. Also checks if the list is already at the max number of
-        elements, and if so, it randomly removes 1 to MAX number of elements so that the cycle can start again (and so
-        we don't hog too much memory).
+        Adds data to the dict for the object key provided. Also checks if the dict is already at the max number of
+        elements, and if so, it randomly removes 1 to the size of elements in the dict so that the cycle can start again
+        (and so we don't hog too much memory).  Entries are keyed by the id value of the object data, a list will not
+        overwrite existing keys as they may have been individually updated.
 
         :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
         :param object_data: JSON/dict
@@ -71,29 +79,10 @@ class OfficeDataStorageMixin:
         # Some creation endpoint auto-create multiple objects and return an array,
         # but each object in the array should still be considered individually here:
         if isinstance(object_data, list):
-            data_list.extend(object_data)
+            normalized = {value["id"]: value for value in object_data}
+            self.local_store[object_key] = {**normalized, **data_list}
         else:
-            data_list.append(object_data)
-
-    def update_stored(self, object_key, old_data, new_data):
-        """
-        Given an object key, replaces a stored object in the local store with a new updated object.
-
-        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
-        :param old_data: JSON/dict
-        :param new_data: JSON/dict
-        :return: None
-        """
-        data_list = self.local_store[object_key]
-
-        # Remove all instances of the stored object, in case multiples were added erroneously:
-        while True:
-            try:
-                data_list.remove(old_data)
-            except ValueError:
-                break  # this means we finally cleared the list
-
-        data_list.append(new_data)
+            data_list[object_data["id"]] = object_data
 
 
 class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
@@ -133,6 +122,9 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if move is None:
+            return
+
         headers = {"content-type": "application/json"}
 
         resp = self.client.get(
@@ -142,6 +134,9 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             **self.user.cert_kwargs,
         )
         new_mto, success = check_response(resp, "getMove")
+        if success:
+            self.add_stored(MOVE_TASK_ORDER, new_mto)
+        return new_mto
 
     @tag(QUEUES, "getServicesCounselingQueue")
     @task
@@ -163,9 +158,57 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             **self.user.cert_kwargs,
         )
         moves, success = check_response(resp, "getServicesCounselingQueue")
+        if success:
+            # these are not full move models and will be those in needs counseling status
+            self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
 
-        # these are not full move models and will be those in needs counseling status
-        self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
+    @tag(ORDER, "getOrder")
+    @task
+    def get_orders(self, overrides=None):
+        """
+        Fetches a single service member's orders
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        move = self.get_stored(MOVE_TASK_ORDER, object_id)
+
+        orders_id = move.get("ordersId")
+        if orders_id is None:
+            move = self.get_move({"id": move["id"]})
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            ghc_path(f"/orders/{move['ordersId']}"),
+            name=ghc_path("/orders/{ordersId}"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        order, success = check_response(resp, "getOrder")
+        if success:
+            self.add_stored(ORDER, order)
+
+    @tag(MTO_SHIPMENT, "listMTOShipments")
+    @task
+    def get_shipments(self, overrides=None):
+        """
+        Fetches all of the shipments for a given move id
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        move = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if move is None:
+            return
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            ghc_path(f"/move_task_orders/{move['id']}/mto_shipments"),
+            name=ghc_path("/move_task_orders/{moveId}/mto_shipments"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        shipments, success = check_response(resp, "listMTOShipments")
+        if success:
+            self.add_stored(MTO_SHIPMENT, shipments)
 
 
 class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
@@ -205,6 +248,8 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if move is None:
+            return
 
         headers = {"content-type": "application/json"}
 
@@ -215,6 +260,9 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
             **self.user.cert_kwargs,
         )
         new_mto, success = check_response(resp, "getMove")
+        if success:
+            self.add_stored(MOVE_TASK_ORDER, new_mto)
+        return new_mto
 
     @tag(QUEUES, "getMovesQueue")
     @task
@@ -232,5 +280,76 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
             **self.user.cert_kwargs,
         )
         moves, success = check_response(resp, "getMovesQueue")
+        if success:
+            self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
 
-        self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
+    @tag(ORDER, "getOrder")
+    @task
+    def get_orders(self, overrides=None):
+        """
+        Fetches a single service member's orders
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        move = self.get_stored(MOVE_TASK_ORDER, object_id)
+
+        orders_id = move.get("ordersId")
+        if orders_id is None:
+            move = self.get_move({"id": move["id"]})
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            ghc_path(f"/orders/{move['ordersId']}"),
+            name=ghc_path("/orders/{ordersId}"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        order, success = check_response(resp, "getOrder")
+        if success:
+            self.add_stored(ORDER, order)
+
+    @tag(MTO_SHIPMENT, "listMTOShipments")
+    @task
+    def get_shipments(self, overrides=None):
+        """
+        Fetches all of the shipments for a given move id
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        move = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if move is None:
+            return
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            ghc_path(f"/move_task_orders/{move['id']}/mto_shipments"),
+            name=ghc_path("/move_task_orders/{moveId}/mto_shipments"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        shipments, success = check_response(resp, "listMTOShipments")
+        if success:
+            self.add_stored(MTO_SHIPMENT, shipments)
+
+    @tag(MTO_SERVICE_ITEM, "listMTOServiceItems")
+    @task
+    def get_service_items(self, overrides=None):
+        """
+        Fetches all of the mto service items for a given move id
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        move = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if move is None:
+            return
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            ghc_path(f"/move_task_orders/{move['id']}/mto_service_items"),
+            name=ghc_path("/move_task_orders/{moveId}/mto_service_items"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        service_items, success = check_response(resp, "listMTOServiceItems")
+        if success:
+            self.add_stored(MTO_SERVICE_ITEM, service_items)
