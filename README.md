@@ -405,32 +405,7 @@ Ex:
 locust -f locustfiles/prime.py --host local
 ```
 
-To run the test without the web interface, add the `--headless` tag and some guidelines for the test (such as number of
-users, their hatch rate, and the time limit for the test):
-
-```sh
-locust -f locustfiles/prime.py --headless --host local --users 50 --hatch-rate 5 --run-time 60s
-```
-
-To control which tasks run during the test, you can filter using tags:
-
-```sh
-locust -f locustfiles/prime.py --tags prime --exclude-tags support
-```
-
-To specify which `User` classes are spawned from locustfile, add the class name to the end of the command:
-
-```sh
-locust -f locustfiles/prime.py PrimeUser
-```
-
-For more CLI config options, refer to the Locust docs for [Configuration](https://docs.locust.io/en/stable/configuration.html).
-
-To deactivate your virtual environment once you have completed testing, enter:
-
-```sh
-pyenv deactivate
-```
+For mor information on running custom tests, refer to the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
 
 ### Running Tests for Reporting
 
