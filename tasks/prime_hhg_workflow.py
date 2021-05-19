@@ -31,13 +31,13 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
     # workflow_title is a descriptor that can be used in logging anywhere in the workflow
     workflow_title = None
 
-    # def on_start(self):
-    #     """
-    #     Runs on instantiation of each taskset.
-    #     We need to set up this task set with the list of tasks/workflows we want to run. If we don't define this, all
-    #     the tasks in PrimeTasks and SupportTasks will all be run independently and will likely have errors.
-    #     """
-    #     self.tasks = [self.hhg_move, self.fetch_mto_updates]
+    def on_start(self):
+        """
+        Runs on instantiation of each taskset.
+        We need to set up this task set with the list of tasks/workflows we want to run. If we don't define this, all
+        the tasks in PrimeTasks and SupportTasks will all be run independently and will likely have errors.
+        """
+        self.tasks = [self.hhg_move, self.fetch_mto_updates]
 
     # WORKFLOWS
     @tag("hhgMove")

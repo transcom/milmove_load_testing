@@ -3,7 +3,7 @@ from locust import HttpUser, between
 
 from utils.hosts import MilMoveHostMixin, MilMoveDomain
 from utils.constants import PRIME_API_KEY, SUPPORT_API_KEY
-from tasks import PrimeWorkflowTasks
+from tasks.prime_hhg_workflow import PrimeWorkflowTasks
 from tasks.prime_endpoint_workflows import PrimeEndpointWorkflowsTasks
 from utils.parsers import SupportAPIParser, PrimeAPIParser
 
