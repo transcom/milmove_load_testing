@@ -9,11 +9,10 @@ from utils.constants import MOVE_TASK_ORDER
 logger = logging.getLogger(__name__)
 
 
-@tag("endpointWorkflows")
+@tag("workflow")
 class PrimeEndpointWorkflowsTasks(PrimeTasks, SupportTasks):
     """Workflow Task Set
-    Each task is a workflow from start to finish. Each workflow acts on only one MTO from start to finish.
-    There are multiple workflows for different scenarios such as a single shipment HHG move, or an HHG move with a SIT.
+    Each task is a workflow from start to finish.
     Multiple instances of the tasks will run during load testing and will interleave their hits to the server.
     However they will run in sequence and should all complete without any errors.
     """
