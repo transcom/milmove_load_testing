@@ -266,7 +266,6 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
     def create_mto_shipment(self, overrides=None):
         # If moveTaskOrderID was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("moveTaskOrderID") if overrides else None
-        mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
 
         move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
         if not move_task_order:
