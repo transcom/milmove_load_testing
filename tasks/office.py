@@ -42,20 +42,19 @@ class OfficeDataStorageMixin:
         PAYMENT_REQUEST: {},
     }  # data stored will be shared among class instances thanks to mutable dict
 
-    def get_stored(self, object_key, *args, **kwargs):
+    def get_stored(self, object_key, object_id=None, *args, **kwargs):
         """
         Given an object_key that represents an object type from the MilMove app, returns an object of that type from the
         list.
 
         :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_SERVICE_ITEM, ORDER, PAYMENT_REQUEST]
-        :param args: str uuid of a single object item key to lookup
+        :param object_id: str uuid of a single object item key to return
         """
-        if args[0]:
-            data_item = self.local_store[object_key][args[0]]
-            if data_item is not None:
-                return data_item
-
         data_list = self.local_store[object_key]
+        data_item = data_list.get("object_id")
+        if data_item is not None:
+            return data_item
+
         if len(data_list) > 0:
             return random.choice(list(data_list.values()))
 
@@ -74,7 +73,8 @@ class OfficeDataStorageMixin:
 
         if len(data_list) >= self.DATA_LIST_MAX:
             num_to_delete = random.randint(1, len(data_list))
-            del data_list[:num_to_delete]
+            # Convert a dict to a list so we can take a slice by insertion order fifo
+            self.local_store[object_key] = dict(list(data_list.items())[num_to_delete:])
 
         # Some creation endpoint auto-create multiple objects and return an array,
         # but each object in the array should still be considered individually here:
@@ -123,6 +123,7 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
         if move is None:
+            logger.info("Skipping get move none are stored yet")
             return
 
         headers = {"content-type": "application/json"}
@@ -171,6 +172,9 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if move is None:
+            logger.info("Skipping get orders no move is stored yet")
+            return
 
         orders_id = move.get("ordersId")
         if orders_id is None:
@@ -197,6 +201,7 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
         if move is None:
+            logger.info("Skipping get shipments no moves are stored yet")
             return
 
         headers = {"content-type": "application/json"}
@@ -249,6 +254,7 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
         if move is None:
+            logger.info("Skipping get move none are stored yet")
             return
 
         headers = {"content-type": "application/json"}
@@ -292,6 +298,9 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if move is None:
+            logger.info("Skipping get orders no move is stored yet")
+            return
 
         orders_id = move.get("ordersId")
         if orders_id is None:
@@ -318,6 +327,7 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
         if move is None:
+            logger.info("Skipping get shipments no moves are stored yet")
             return
 
         headers = {"content-type": "application/json"}
@@ -341,6 +351,7 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         object_id = overrides.get("id") if overrides else None
         move = self.get_stored(MOVE_TASK_ORDER, object_id)
         if move is None:
+            logger.info("Skipping get service items no moves are stored yet")
             return
 
         headers = {"content-type": "application/json"}
