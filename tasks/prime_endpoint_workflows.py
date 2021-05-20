@@ -9,7 +9,7 @@ from utils.constants import MOVE_TASK_ORDER
 logger = logging.getLogger(__name__)
 
 
-@tag("workflow")
+@tag("endpointWorkflow")
 class PrimeEndpointWorkflowsTasks(PrimeTasks, SupportTasks):
     """Workflow Task Set
     Each task is a workflow from start to finish.
@@ -35,15 +35,15 @@ class PrimeEndpointWorkflowsTasks(PrimeTasks, SupportTasks):
 
         # Set shipment type to HHG, so there can be multiple shipments on the same move
         overrides = {"shipmentType": "HHG"}
-        shipment = super().create_mto_shipment(overrides)
+        shipment = self.create_mto_shipment(overrides)
         logger.info(f"{self.workflow_title} - Created shipment {shipment['id'][:8]}")
 
     def _get_move(self):
-        move_task_order = super().get_stored(MOVE_TASK_ORDER)
+        move_task_order = self.get_stored(MOVE_TASK_ORDER)
         if not move_task_order:
             if not self.has_all_default_mto_ids():
-                super().fetch_mto_updates()
-            move_task_order = super().create_move_task_order()
+                self.fetch_mto_updates()
+            move_task_order = self.create_move_task_order()
         if not move_task_order:
             logger.debug(f"{self.workflow_title} ⚠️ No move_task_order returned or created")
             return None
