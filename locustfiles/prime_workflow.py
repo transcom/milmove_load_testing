@@ -3,7 +3,8 @@ from locust import HttpUser, between
 
 from utils.hosts import MilMoveHostMixin, MilMoveDomain
 from utils.constants import PRIME_API_KEY, SUPPORT_API_KEY
-from tasks import PrimeWorkflowTasks
+from tasks.prime_hhg_workflow import PrimeWorkflowTasks
+from tasks.prime_endpoint_workflows import PrimeEndpointWorkflowsTasks
 from utils.parsers import SupportAPIParser, PrimeAPIParser
 
 support_api = SupportAPIParser()
@@ -24,5 +25,5 @@ class PrimeWorkflowUser(MilMoveHostMixin, HttpUser):
     parser = {PRIME_API_KEY: prime_api, SUPPORT_API_KEY: support_api}
 
     # For the tasks, we can define all the workflow tasksets we have set up:
-    tasks = {PrimeWorkflowTasks: 1}
+    tasks = {PrimeWorkflowTasks: 1, PrimeEndpointWorkflowsTasks: 1}
     weight = 1
