@@ -51,7 +51,7 @@ class OfficeDataStorageMixin:
         :param object_id: str uuid of a single object item key to return
         """
         data_list = self.local_store[object_key]
-        data_item = data_list.get("object_id")
+        data_item = data_list.get(object_id)
         if data_item is not None:
             return data_item
 
@@ -72,14 +72,16 @@ class OfficeDataStorageMixin:
         data_list = self.local_store[object_key]
 
         if len(data_list) >= self.DATA_LIST_MAX:
-            num_to_delete = random.randint(1, len(data_list))
+            num_to_delete = random.randint(1, len(data_list) - 1)
             # Convert a dict to a list so we can take a slice by insertion order fifo
-            self.local_store[object_key] = dict(list(data_list.items())[num_to_delete:])
+            self.local_store[object_key] = dict(list(data_list.items())[(num_to_delete):])
 
         # Some creation endpoint auto-create multiple objects and return an array,
         # but each object in the array should still be considered individually here:
         if isinstance(object_data, list):
+            # transforms a list of objects with ids into a dictionary keyed by their id values
             normalized = {value["id"]: value for value in object_data}
+            # merge the new data being added with the existing objects, not overwriting existing keys
             self.local_store[object_key] = {**normalized, **data_list}
         else:
             data_list[object_data["id"]] = object_data
