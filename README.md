@@ -100,6 +100,9 @@ This folder is for static files (certificates, PDFs, etc.) that will be used dur
 * `pre-commit`
 * [`pyenv`](https://github.com/pyenv/pyenv) or Docker + `docker-compose` (See: [Alternative Setup: Docker](#alternative-setup-docker))
 
+See [Setup: Nix](#setup-nix) for an experiment with a possibly simpler
+way to install all the developer dependencies
+
 *Note: These instructions include the relevant commands for MacOS only. Please keep this in mind and be prepared to
 search for alternatives if you are running a different OS.*
 
@@ -274,6 +277,29 @@ out the necessary python commands to run to deactivate your env and remove the c
 
 ```shell script
 make teardown
+### Setup: Nix
+
+NOTE: Nix is an experiment. If you are setting things up with Nix you
+do not need to follow the instructions above about homebrew,
+pre-commit, or pyenv
+
+NOTE: Nix as an experiment means you ask for help in the `#code-nix`
+slack channel. It's not an officially supported development environment.
+
+1. First read the overview in the [Truss Engineering Playbook](https://github.com/trussworks/Engineering-Playbook/tree/main/developing/nix).
+1. Follow the [macOS installation instructions](https://nixos.org/manual/nix/stable/#sect-macos-installation).
+1. Ensure you have `direnv` and a modern `bash` installed. To install
+   globally with nix, run `nix-env -i direnv bash`
+1. Ensure you have run `direnv allow` to set up the appropriate nix
+   environment variables.
+1. Make sure you have disabled any `nodeenv`, `asdf` or any other
+   version switchers.
+1. Run `./nix/update.sh`
+
+If the nix dependencies change, you should see a warning from direnv:
+
+```text
+direnv: WARNING: nix packages out of date. Run nix/update.sh
 ```
 
 ### Alternative Setup: Docker
