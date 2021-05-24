@@ -27,6 +27,7 @@ MOVE_TASK_ORDER = "mto"
 MTO_AGENT = "mtoAgent"
 MTO_SHIPMENT = "mtoShipment"
 MTO_SERVICE_ITEM = "mtoServiceItem"
+ORDER = "order"
 PAYMENT_REQUEST = "paymentRequest"
 QUEUES = "queues"
 
