@@ -481,7 +481,8 @@ class SupportAPIParser(PrimeAPIParser):
 class InternalAPIParser(APIParser):
     """ Parser class for the Internal (Customer/Service member) API. """
 
-    api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/internal.yaml"
+    # api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/internal.yaml"
+    api_file = "https://raw.githubusercontent.com/transcom/mymove/d42d1ecd68004884bcc0c241014e6647efa3350a/swagger/internal.yaml"
 
     def generate_fake_request(self, path, method, overrides=None, require_all=True):
         """
