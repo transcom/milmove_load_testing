@@ -277,6 +277,8 @@ out the necessary python commands to run to deactivate your env and remove the c
 
 ```shell script
 make teardown
+```
+
 ### Setup: Nix
 
 NOTE: Nix is an experiment. If you are setting things up with Nix you
@@ -300,6 +302,18 @@ If the nix dependencies change, you should see a warning from direnv:
 
 ```text
 direnv: WARNING: nix packages out of date. Run nix/update.sh
+```
+
+Install python dependencies:
+
+```shell script
+make install
+```
+
+Run tests:
+
+```shell script
+pytest
 ```
 
 ### Alternative Setup: Docker
