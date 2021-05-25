@@ -60,3 +60,73 @@ class TestOfficeDataStorageMixin:
 
         assert self.storage1.get_stored("empty_list") is None
         assert self.storage2.get_stored("empty_list") is None
+
+    @pytest.mark.parametrize(
+        "object_key, object_data, test_store",
+        [
+            (MOVE_TASK_ORDER, {"id": "2"}, {"1": {"id": "1"}}),
+        ],
+    )
+    def test_add_stored__new_item(self, object_key, object_data, test_store):
+        """ Test retrieving a random object from the local_store dictionary lists. """
+        self.storage1.local_store[object_key] = test_store
+        self.storage1.add_stored(object_key, object_data)
+
+        assert self.storage1.get_stored(object_key, object_data["id"]) == object_data
+
+    @pytest.mark.parametrize(
+        "object_key, object_data, test_store",
+        [
+            (MOVE_TASK_ORDER, [{"id": "2"}, {"id": "3"}], {"1": {"id": "1"}}),
+        ],
+    )
+    def test_add_stored__items_list(self, object_key, object_data, test_store):
+        """ Test retrieving a random object from the local_store dictionary lists. """
+        self.storage1.local_store[object_key] = test_store
+        self.storage1.add_stored(object_key, object_data)
+
+        for item in object_data:
+            assert self.storage1.get_stored(object_key, item["id"]) == item
+
+    @pytest.mark.parametrize(
+        "object_key, object_data, test_store",
+        [
+            (MOVE_TASK_ORDER, {"id": "1", "orderId": "2"}, {"1": {"id": "1"}}),
+        ],
+    )
+    def test_add_stored__updates_existing(self, object_key, object_data, test_store):
+        """ Test retrieving a random object from the local_store dictionary lists. """
+        self.storage1.local_store[object_key] = test_store
+        self.storage1.add_stored(object_key, object_data)
+
+        assert self.storage1.get_stored(object_key, object_data["id"]) == object_data
+
+    @pytest.mark.parametrize(
+        "object_key, object_data, test_store",
+        [
+            (MOVE_TASK_ORDER, [{"id": "1", "ordersId": "2"}, {"id": "2"}], {"1": {"id": "1"}}),
+        ],
+    )
+    def test_add_stored__list_does_not_overwrite(self, object_key, object_data, test_store):
+        """ Test retrieving a random object from the local_store dictionary lists. """
+        self.storage1.local_store[object_key] = test_store
+        self.storage1.add_stored(object_key, object_data)
+
+        assert self.storage1.get_stored(object_key, "1") == {"id": "1"}
+        assert self.storage1.get_stored(object_key, "2") == {"id": "2"}
+
+    @pytest.mark.parametrize(
+        "object_key, object_data, test_store",
+        [
+            (MOVE_TASK_ORDER, {"id": "4"}, {"1": {"id": "1"}, "2": {"id": "2"}, "3": {"id": "3"}}),
+        ],
+    )
+    def test_add_stored__max_capacity(self, object_key, object_data, test_store):
+        """ Test retrieving a random object from the local_store dictionary lists. """
+        self.storage1.local_store[object_key] = test_store
+        assert len(self.storage1.local_store[object_key]) == self.storage1.DATA_LIST_MAX
+
+        self.storage1.add_stored(object_key, object_data)
+
+        assert len(self.storage1.local_store[object_key]) <= self.storage1.DATA_LIST_MAX
+        assert self.storage1.get_stored(object_key, object_data["id"]) == object_data

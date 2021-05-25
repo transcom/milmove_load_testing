@@ -72,9 +72,11 @@ class OfficeDataStorageMixin:
         data_dict = self.local_store[object_key]
 
         if len(data_dict) >= self.DATA_LIST_MAX:
+            print("removing item from local store")
             num_to_delete = random.randint(1, len(data_dict) - 1)
+            print(f"num to delete {num_to_delete}")
             # Convert a dict to a list so we can take a slice by insertion order fifo
-            self.local_store[object_key] = dict(list(data_dict.items())[(num_to_delete):])
+            self.local_store[object_key] = dict(list(data_dict.items())[num_to_delete:])
 
         # Some creation endpoint auto-create multiple objects and return an array,
         # but each object in the array should still be considered individually here:
@@ -84,7 +86,7 @@ class OfficeDataStorageMixin:
             # merge the new data being added with the existing objects, not overwriting existing keys
             self.local_store[object_key] = {**normalized, **data_dict}
         else:
-            data_dict[object_data["id"]] = object_data
+            self.local_store[object_key][object_data["id"]] = object_data
 
 
 class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
