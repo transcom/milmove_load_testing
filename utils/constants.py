@@ -22,6 +22,7 @@ ARRAY_MAX = 5
 
 ZERO_UUID = "00000000-0000-0000-0000-000000000000"
 
+CUSTOMER = "customer"
 MOVE = "move"
 MOVE_TASK_ORDER = "mto"
 MTO_AGENT = "mtoAgent"
@@ -43,6 +44,7 @@ class DataType(ValueEnum):
     CITY = "city"
     STATE = "state"
     POSTAL_CODE = "postalCode"
+    POSTAL_CODE_VARIANT = "postal_code"
     COUNTRY = "country"
     DATE = "date"
     DATE_TIME = "date-time"  # inconsistent, but matches the swagger format name
@@ -51,6 +53,7 @@ class DataType(ValueEnum):
     BOOLEAN = "boolean"
     INTEGER = "integer"
     UUID = "uuid"
+    TAC = "tac"
 
     # These data type options are structural:
     ENUM = "enum"

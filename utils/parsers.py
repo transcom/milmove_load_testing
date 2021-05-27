@@ -180,7 +180,7 @@ class APIParser:
             parsed_field = EnumField(name=name, options=definition[DataType.ENUM.value])
 
         elif definition.get("type") and definition["type"] not in [DataType.ARRAY.value, DataType.OBJECT.value]:
-            parsed_field = self._parse_typed_field(name, definition["type"], definition.get("format", ""))
+            parsed_field = self._parse_typed_field(name, definition["type"], definition.get("format", ""), definition)
 
         elif definition.get("type") and definition["type"] == DataType.ARRAY.value:
             parsed_field = self._parse_array_field(name, definition)
@@ -303,7 +303,7 @@ class APIParser:
 
         return array_field
 
-    def _parse_typed_field(self, name, field_type, field_format):
+    def _parse_typed_field(self, name, field_type, field_format, definition):
         """
         Determines the data type and creates a BaseAPIField instance for a field, given its name, swagger type, and
         swagger format. May return None if the info cannot be parsed using the default rules.
@@ -327,7 +327,7 @@ class APIParser:
             data_type = self._approximate_str_type(name)
 
         if data_type:
-            return BaseAPIField(data_type=data_type, name=name)
+            return BaseAPIField(data_type=data_type, name=name, definition=definition)
 
         return None
 
@@ -452,7 +452,6 @@ class SupportAPIParser(PrimeAPIParser):
         modified, and therefore doesn't need to be returned.
         """
         if path == "/move-task-orders" and method == "post":
-
             move_task_order = request_data
             move_orders = request_data["order"]
             customer = move_orders["customer"]
@@ -481,4 +480,7 @@ class SupportAPIParser(PrimeAPIParser):
 class GHCAPIParser(APIParser):
     """ Parser class for the GHC API. """
 
-    api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"
+    # api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"
+    api_file = (
+        "https://raw.githubusercontent.com/transcom/mymove/9145b2bed0444b51b72d26fccac2f1d97defbd06/swagger" "/ghc.yaml"
+    )
