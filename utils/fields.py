@@ -16,6 +16,7 @@ class BaseAPIField:
     name: str = ""
     required: bool = False
     discriminator_values: list = None
+    definition: dict = None
 
     def __post_init__(self):
         """
@@ -60,7 +61,13 @@ class BaseAPIField:
         if (overrides := kwargs.get("overrides")) and self.name in overrides:
             return overrides[self.name]
 
-        return faker.get_fake_data_for_type(self.data_type)
+        params = (
+            [self.definition.get("minimum", 0), self.definition.get("maximum", 9999)]
+            if self.data_type == DataType.INTEGER
+            else []
+        )
+
+        return faker.get_fake_data_for_type(self.data_type, params)
 
 
 @dataclass

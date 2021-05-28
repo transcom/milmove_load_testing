@@ -2,6 +2,7 @@
 """ utils/fake_data.py is for Faker classes and functions to set up test data """
 import logging
 import json
+import string
 from datetime import datetime
 
 from faker import Faker
@@ -101,6 +102,13 @@ class MilMoveProvider(AddressProvider, DateProvider):
         """
         return ZERO_UUID
 
+    def tac(self):
+        """
+        Returns an uppercase alphanumeric transportation accounting code 4 chars in length, there is no guarantee these
+        correspond to the stored list of validated TACs in the database
+        """
+        return "".join(self.random_elements(string.ascii_uppercase + string.digits, 4))
+
 
 class MilMoveData:
     """ Base class to return fake data to use in MilMove endpoints. """
@@ -120,24 +128,26 @@ class MilMoveData:
             DataType.CITY: self.fake.city,
             DataType.STATE: self.fake.state_abbr,
             DataType.POSTAL_CODE: self.fake.safe_postal_code,
+            DataType.POSTAL_CODE_VARIANT: self.fake.safe_postal_code,
             DataType.COUNTRY: self.fake.country,
             DataType.DATE: self.fake.date,
             DataType.DATE_TIME: self.fake.iso_date_time,
             DataType.TIME_MILITARY: self.fake.time_military,
             DataType.SENTENCE: self.fake.sentence,
             DataType.BOOLEAN: self.fake.boolean,
-            DataType.INTEGER: self.fake.random_number,
+            DataType.INTEGER: self.fake.random_int,
             DataType.UUID: self.fake.safe_uuid,
+            DataType.TAC: self.fake.tac,
         }
 
     def get_random_choice(self, choices):
         """ Given a list of random choices, returns one of them. """
         return self.fake.random_element(choices)
 
-    def get_fake_data_for_type(self, data_type):
+    def get_fake_data_for_type(self, data_type, params=None):
         """ Given a specific data type, returns faker data for that type (if a mapping exists). """
         try:
-            return self.data_types[data_type]()
+            return self.data_types[data_type](*params)
         except KeyError:  # data_type isn't in dictionary
             logger.exception(f"An unexpected data type was passed into get_fake_data_for_type: {data_type}")
             return None

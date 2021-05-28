@@ -3,11 +3,12 @@
 import logging
 import json
 import random
-from typing import Dict
+from typing import Dict, Set
 
 from locust import task, tag
 
 from utils.constants import (
+    CUSTOMER,
     MOVE,
     MOVE_TASK_ORDER,
     MTO_SERVICE_ITEM,
@@ -34,7 +35,12 @@ class OfficeDataStorageMixin:
     """
 
     DATA_LIST_MAX: int = 100
+    default_mto_ids: Dict[str, Set] = {
+        "destinationDutyStationID": set(),
+        "originDutyStationID": set(),
+    }
     local_store: Dict[str, Dict[str, Dict]] = {
+        CUSTOMER: {},
         MOVE_TASK_ORDER: {},
         MTO_SHIPMENT: {},
         MTO_SERVICE_ITEM: {},
@@ -74,7 +80,7 @@ class OfficeDataStorageMixin:
         if len(data_dict) >= self.DATA_LIST_MAX:
             num_to_delete = random.randint(1, len(data_dict) - 1)
             # Convert a dict to a list so we can take a slice by insertion order fifo
-            self.local_store[object_key] = dict(list(data_dict.items())[(num_to_delete):])
+            self.local_store[object_key] = dict(list(data_dict.items())[num_to_delete:])
 
         # Some creation endpoint auto-create multiple objects and return an array,
         # but each object in the array should still be considered individually here:
@@ -84,7 +90,7 @@ class OfficeDataStorageMixin:
             # merge the new data being added with the existing objects, not overwriting existing keys
             self.local_store[object_key] = {**normalized, **data_dict}
         else:
-            data_dict[object_data["id"]] = object_data
+            self.local_store[object_key][object_data["id"]] = object_data
 
 
 class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
@@ -185,13 +191,37 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         headers = {"content-type": "application/json"}
         resp = self.client.get(
             ghc_path(f"/orders/{move['ordersId']}"),
-            name=ghc_path("/orders/{ordersId}"),
+            name=ghc_path("/orders/{orderId}"),
             headers=headers,
             **self.user.cert_kwargs,
         )
         order, success = check_response(resp, "getOrder")
         if success:
             self.add_stored(ORDER, order)
+
+    @tag(CUSTOMER, "getCustomer")
+    @task
+    def get_customer(self, overrides=None):
+        """
+        Fetches a single service member's orders
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        order = self.get_stored(ORDER, object_id)
+        if order is None:
+            logger.info("Skipping get customer no order is stored yet")
+            return
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            ghc_path(f"/customer/{order['customerID']}"),
+            name=ghc_path("/customer/{customerId}"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        customer, success = check_response(resp, "getCustomer")
+        if success:
+            self.add_stored(CUSTOMER, customer)
 
     @tag(MTO_SHIPMENT, "listMTOShipments")
     @task
@@ -216,6 +246,110 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         shipments, success = check_response(resp, "listMTOShipments")
         if success:
             self.add_stored(MTO_SHIPMENT, shipments)
+
+    @tag(ORDER, "updateOrder")
+    @task
+    def update_orders(self, overrides=None):
+        """
+        Updates an existing order of a move as a Services Counselor.
+        :return:
+        """
+        object_id = overrides.get("id") if overrides else None
+        order = self.get_stored(ORDER, object_id)
+        order = self.get_orders() if order is None else order
+        if order is None:
+            logger.info("skipping update order, no moves exist yet")
+            return
+
+        payload = self.fake_request("/orders/{orderID}", "patch")
+
+        payload = {key: payload[key] for key in ["issueDate", "reportByDate", "ordersType"]}
+        if self.default_mto_ids.get("originDutyStationID"):
+            payload["originDutyStationId"] = random.choice(list(self.default_mto_ids["originDutyStationID"]))
+        else:
+            payload["originDutyStationId"] = order["originDutyStation"]["id"]
+
+        if self.default_mto_ids.get("destinationDutyStationID"):
+            payload["newDutyStationId"] = random.choice(list(self.default_mto_ids["destinationDutyStationID"]))
+        else:
+            payload["newDutyStationId"] = order["destinationDutyStation"]["id"]
+
+        # The request may result in validation errors if the underlying move is no longer in needs counseling status
+        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
+        resp = self.client.patch(
+            ghc_path(f"/orders/{order['id']}"),
+            name=ghc_path("/orders/{orderId}"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+
+        new_order, success = check_response(resp, "updateOrder", payload)
+        if success:
+            self.add_stored(ORDER, new_order)
+            self.add_stored(CUSTOMER, new_order["customer"])
+
+    @tag(ORDER, "updateAllowance")
+    @task
+    def update_allowance(self, overrides=None):
+        """
+        Updates the existing entitlements of an order as a Services Counselor.
+        :return:
+        """
+        object_id = overrides.get("id") if overrides else None
+        order = self.get_stored(ORDER, object_id)
+        order = self.get_orders() if order is None else order
+        if order is None:
+            logger.info("skipping update allowance, no moves exist yet")
+            return
+
+        payload = self.fake_request("/orders/{orderID}/allowances", "patch")
+
+        # update allowances handler expects the orders eTag because it also updates parents order fields
+        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
+        resp = self.client.patch(
+            ghc_path(f"/orders/{order['id']}/allowances"),
+            name=ghc_path("/orders/{orderId}/allowances"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        new_order, success = check_response(resp, "updateAllowance", payload)
+        if success:
+            self.add_stored(ORDER, new_order)
+            self.add_stored(CUSTOMER, new_order["customer"])
+
+    @tag(CUSTOMER, "updateCustomer")
+    @task
+    def update_customer(self, overrides=None):
+        """
+        Updates the existing service member of an order as a Services Counselor.
+        :return:
+        """
+        object_id = overrides.get("id") if overrides else None
+        customer = self.get_stored(CUSTOMER, object_id) or self.get_customer()
+        if customer is None:
+            logger.info("skipping update customer, no orders exist yet")
+            return
+
+        payload = self.fake_request(
+            "/customer/{customerID}",
+            "patch",
+            overrides={"current_address": {"id": customer["current_address"]["id"]}},
+            require_all=True,
+        )
+
+        headers = {"content-type": "application/json", "If-Match": customer["eTag"]}
+        resp = self.client.patch(
+            ghc_path(f"/customer/{customer['id']}"),
+            name=ghc_path("/customer/{customerID}"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        new_customer, success = check_response(resp, "updateCustomer", payload)
+        if success:
+            self.add_stored(CUSTOMER, new_customer)
 
 
 class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
@@ -291,6 +425,10 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         if success:
             self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
 
+            # destination duty stations don't have to be in the office user's GBLOC
+            destination_duty_station_ids = [move["destinationDutyStation"]["id"] for move in moves["queueMoves"]]
+            self.default_mto_ids["destinationDutyStationID"].update(destination_duty_station_ids)
+
     @tag(ORDER, "getOrder")
     @task
     def get_orders(self, overrides=None):
@@ -311,13 +449,16 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         headers = {"content-type": "application/json"}
         resp = self.client.get(
             ghc_path(f"/orders/{move['ordersId']}"),
-            name=ghc_path("/orders/{ordersId}"),
+            name=ghc_path("/orders/{orderId}"),
             headers=headers,
             **self.user.cert_kwargs,
         )
         order, success = check_response(resp, "getOrder")
         if success:
             self.add_stored(ORDER, order)
+            # the origin duty station is not in the queue response and we can't use the destination
+            # because they could be outside of the office user's GBLOC
+            self.default_mto_ids["originDutyStationID"].add(order["originDutyStation"]["id"])
 
     @tag(MTO_SHIPMENT, "listMTOShipments")
     @task
@@ -363,6 +504,102 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
             headers=headers,
             **self.user.cert_kwargs,
         )
+
         service_items, success = check_response(resp, "listMTOServiceItems")
         if success:
             self.add_stored(MTO_SERVICE_ITEM, service_items)
+
+    @tag(CUSTOMER, "getCustomer")
+    @task
+    def get_customer(self, overrides=None):
+        """
+        Fetches a single service member's orders
+        """
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        order = self.get_stored(ORDER, object_id)
+        if order is None:
+            logger.info("Skipping get customer no order is stored yet")
+            return
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            ghc_path(f"/customer/{order['customerID']}"),
+            name=ghc_path("/customer/{customerId}"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+
+        customer, success = check_response(resp, "getCustomer")
+        if success:
+            self.add_stored(CUSTOMER, customer)
+
+    @tag(ORDER, "updateOrder")
+    @task
+    def update_orders(self, overrides=None):
+        """
+        Updates an existing order of a move as a TOO
+        :return:
+        """
+        object_id = overrides.get("id") if overrides else None
+        order = self.get_stored(ORDER, object_id)
+        order = self.get_orders() if order is None else order
+        if order is None:
+            logger.info("skipping update order, no moves exist yet")
+            return
+
+        # require all optional fields otherwise nullable fields will be omitted
+        payload = self.fake_request("/orders/{orderID}", "patch", None, None, True)
+
+        if self.default_mto_ids.get("originDutyStationID"):
+            payload["originDutyStationId"] = random.choice(list(self.default_mto_ids["originDutyStationID"]))
+        else:
+            payload["originDutyStationId"] = order["originDutyStation"]["id"]
+
+        if self.default_mto_ids.get("destinationDutyStationID"):
+            payload["newDutyStationId"] = random.choice(list(self.default_mto_ids["destinationDutyStationID"]))
+        else:
+            payload["newDutyStationId"] = order["destinationDutyStation"]["id"]
+
+        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
+        resp = self.client.patch(
+            ghc_path(f"/orders/{order['id']}"),
+            name=ghc_path("/orders/{orderId}"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        new_order, success = check_response(resp, "updateOrder", payload)
+        if success:
+            self.add_stored(ORDER, new_order)
+            self.add_stored(CUSTOMER, new_order["customer"])
+
+    @tag(ORDER, "updateAllowance")
+    @task
+    def update_allowance(self, overrides=None):
+        """
+        Updates the existing entitlements of an order as a TOO
+        :return:
+        """
+        object_id = overrides.get("id") if overrides else None
+        order = self.get_stored(ORDER, object_id)
+        order = self.get_orders() if order is None else order
+        if order is None:
+            logger.info("skipping update allowance, no moves exist yet")
+            return
+
+        payload = self.fake_request("/orders/{orderID}/allowances", "patch")
+
+        # update allowances handler expects the orders eTag because it also updates parents order fields
+        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
+        resp = self.client.patch(
+            ghc_path(f"/orders/{order['id']}/allowances"),
+            name=ghc_path("/orders/{orderId}/allowances"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        new_order, success = check_response(resp, "updateAllowance", payload)
+        if success:
+            self.add_stored(ORDER, new_order)
+            self.add_stored(CUSTOMER, new_order["customer"])
