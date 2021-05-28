@@ -19,3 +19,5 @@ __pycache__
 .envrc.chamber
 .envrc.local*
 exp_*.pem
+/.direnv
+/.nix-hash

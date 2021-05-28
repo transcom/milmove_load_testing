@@ -1,10 +1,16 @@
 #! /usr/bin/make
 
+PRE_COMMIT:=/usr/local/bin/pre-commit
+
 ifndef PY_VERSION
 	PY_VERSION = 3.8.3
 endif
 ifndef VENV_NAME
 	VENV_NAME = locust-venv
+endif
+ifdef NIX_PROFILE
+	USE_NIX:=true
+	PRE_COMMIT:=$(NIX_PROFILE)/bin/pre-commit
 endif
 ifndef USE_ASDF
 		USE_ASDF:=false
@@ -14,6 +20,8 @@ ifndef PYTHON
 endif
 ifeq ($(USE_ASDF),true)
 	VENV_DIR = $(PWD)/$(VENV_NAME)
+else ifeq ($(USE_NIX),true)
+	VENV_DIR = $(VIRTUAL_ENV)
 else
 	VENV_DIR = $(HOME)/.pyenv/versions/$(PY_VERSION)/envs/$(VENV_NAME)
 endif
@@ -36,6 +44,8 @@ ifeq ($(USE_ASDF),true)
 	asdf local $(PYTHON) $(PY_VERSION)
 	asdf current $(PYTHON)
 	$(PYTHON) -m venv $(VENV_NAME) || echo "Using existing $(VENV_NAME)..."
+else ifeq ($(USE_NIX),true)
+	@echo "Using nix"
 else
 	pyenv versions | grep -q $(PY_VERSION) || pyenv install -v $(PY_VERSION)
 	pyenv local $(PY_VERSION)
@@ -54,7 +64,11 @@ endif
 .PHONY: ensure_venv
 ensure_venv:  ## Ensure that the virtualenv is activated
 ifeq ($(IN_VENV),true)
+ifeq ($(USE_NIX),true)
+	@echo "Using nix"
+else
 	@echo "$(VENV_NAME) has been activated."
+endif
 else ifeq ($(USE_ASDF),true)
 	@echo "To proceed, activate your virtualenv using the following command:\n\n  source $(VENV_NAME)/bin/activate\n\n"
 	false
@@ -65,14 +79,18 @@ endif
 
 .PHONY: install
 install: ensure_venv requirements.txt requirements-dev.txt  ## Install all requirements
+ifeq ($(USE_NIX),true)
+	@echo "Using nix"
+else
 	brew list libev || brew install libev
+endif
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 
 # This target ensures that the pre-commit hook is installed and kept up to date if pre-commit updates.
 .PHONY: ensure_pre_commit
 ensure_pre_commit: .git/hooks/pre-commit  ## Ensure pre-commit is installed
-.git/hooks/pre-commit: /usr/local/bin/pre-commit
+.git/hooks/pre-commit: $(PRE_COMMIT)
 	pre-commit install
 	pre-commit install-hooks
 
@@ -100,6 +118,8 @@ clean:  ## Clean all generated files
 teardown:  ## Uninstall the virtualenv and remove all files
 ifeq ($(USE_ASDF),true)
 	@echo "To deactivate  and remove your virtualenv using the following command:\n\n  deactivate; rm -fr $(VENV_NAME)\n\n"
+else ifeq ($(USE_NIX),true)
+	@echo "Not tearing down nix"
 else
 	-pyenv uninstall $(VENV_NAME)
 endif
