@@ -1,0 +1,7 @@
+version: 0.2
+
+phases:
+  build:
+    on-failure: ABORT
+    commands:
+      - ./scripts/codebuild
