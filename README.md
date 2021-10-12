@@ -366,7 +366,7 @@ your virtual environment and use the command:
 pytest
 ```
 
-To see verbose output and any print statments in the tests, use:
+To see verbose output and any print statements in the tests, use:
 
 ```shell
 pytest -v -s
@@ -446,7 +446,7 @@ Ex:
 locust -f locustfiles/prime.py --host local
 ```
 
-For mor information on running custom tests, refer to the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
+For more information on running custom tests, refer to the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
 
 ### Running Tests for Reporting
 
@@ -624,7 +624,7 @@ in this repo. If you need to do something different, however, Locust's documenta
 
 ### Adding tasks to existing load tests
 
-Adding a task to an existing load test is thankfully a fairly straight-forward processs that requires just a bit of
+Adding a task to an existing load test is thankfully a fairly straight-forward process that requires just a bit of
 research and just a bit of coding. Here are the general steps:
 
 * Locate the locust file your test needs to be run from.
