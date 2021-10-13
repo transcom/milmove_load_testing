@@ -1,0 +1,72 @@
+{
+  "containerDefinitions": [
+    {
+      "command": [
+        "-f",
+        "/app/locustfiles/prime.py",
+        "--host",
+        "exp",
+        "--web-port",
+        "4000"
+      ],
+      "essential": true,
+      "image": "__ACCOUNTID__.dkr.ecr.__REGION__.amazonaws.com/loadtesting:exp",
+      "readonlyRootFilesystem": false,
+      "linuxParameters": {
+        "initProcessEnabled": true
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group" : "/ecs/loadtesting/exp-web",
+          "awslogs-region": "__REGION__",
+          "awslogs-stream-prefix": "exp-web"
+        }
+      },
+      "name": "exp-web-loadtesting",
+      "portMappings": [
+        {
+          "containerPort": 4000,
+          "hostPort": 4000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "DEVLOCAL_AUTH",
+          "value": "true"
+        },
+        {
+          "name": "STATIC_TLS_FILE_PATH",
+          "value": "/tmp"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "MOVE_MIL_EXP_TLS_CERT",
+          "valueFrom": "arn:__PARTITION__:ssm:__REGION__:__ACCOUNTID__:parameter/load-testing/exp-tls-cert"
+        },
+        {
+          "name": "MOVE_MIL_EXP_TLS_KEY",
+          "valueFrom": "arn:__PARTITION__:ssm:__REGION__:__ACCOUNTID__:parameter/load-testing/exp-tls-key"
+        }
+      ],
+      "ulimits": [
+        {
+          "name":"nofile",
+          "softLimit": 10000,
+          "hardLimit": 10000
+        }
+      ]
+    }
+  ],
+  "cpu": "256",
+  "taskRoleArn": "arn:__PARTITION__:iam::__ACCOUNTID__:role/ecs-task-role-exp-web-loadtesting",
+  "executionRoleArn": "arn:__PARTITION__:iam::__ACCOUNTID__:role/ecs-task-execution-role-exp-web-loadtesting",
+  "family": "exp-web-loadtesting",
+  "memory": "512",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ]
+}

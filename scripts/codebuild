@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+set -x
+
+echo "${DOCKER_PASSWORD}" | \
+  docker login --username "${DOCKER_USERNAME}" --password-stdin
+
+docker build -t "${ECR_REPO}:exp" .
+
+aws ecr get-login-password --region $AWS_REGION \
+  | docker login --username AWS --password-stdin "${ECR_REPO}"
+
+docker push "${ECR_REPO}:exp"
+
+aws ecs update-service \
+    --cluster loadtesting \
+    --service exp-web \
+    --task-definition exp-web-loadtesting:3 \
+    --desired-count 1
+
+exit 0
