@@ -36,6 +36,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Testing](#testing)
    * [Running Load Tests](#running-load-tests)
       * [Setting up the local environment](#setting-up-the-local-environment)
+      * [Setting up Tests in AWS](#setting-up-tests-in-aws)
       * [Running preset tests](#running-preset-tests)
       * [Running custom tests](#running-custom-tests)
       * [Running Tests for Reporting](#running-tests-for-reporting)
@@ -52,7 +53,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Metrics](#metrics)
    * [References](#references)
 
-<!-- Added by: ahobson, at: Tue May 25 17:17:04 EDT 2021 -->
+<!-- Added by: ronak, at: Wed Oct 13 10:47:58 EDT 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -366,7 +367,7 @@ your virtual environment and use the command:
 pytest
 ```
 
-To see verbose output and any print statments in the tests, use:
+To see verbose output and any print statements in the tests, use:
 
 ```shell
 pytest -v -s
@@ -405,6 +406,22 @@ Back in `milmove_load_testing`, make sure you activate your virtual environment 
 ```shell script
 pyenv activate locust-venv
 ```
+
+### Setting up Tests in AWS
+
+Run the port-forwarding script.
+
+  ```sh
+  aws-vault exec $AWS_PROFILE -- ./scripts/aws-session-port-forward.py
+  ```
+
+You may see the following error:
+
+* `SessionManagerPlugin is not found`. If you do please follow the link and the instructions to install the Session Manager plugin or reference [this](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos) directly.
+
+* You may see an error mentioning `credentials missing` and an additional reference to a specific profile. If this is the case please add the corresponding entry from [this template](https://dp3.atlassian.net/wiki/spaces/MT/pages/1348927493/AWS+GovCloud+Config+Templates) to your `~/.aws/config` file. If you only see an error mentioning `credentials missing` without an additional reference to a specific profile, please ensure that your $AWS_PROFILE variable is not blank. This can be set by running `direnv allow`.
+
+You can then visit <http://localhost:4000> and run tests from AWS.
 
 ### Running preset tests
 
@@ -446,7 +463,7 @@ Ex:
 locust -f locustfiles/prime.py --host local
 ```
 
-For mor information on running custom tests, refer to the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
+For more information on running custom tests, refer to the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
 
 ### Running Tests for Reporting
 
@@ -624,7 +641,7 @@ in this repo. If you need to do something different, however, Locust's documenta
 
 ### Adding tasks to existing load tests
 
-Adding a task to an existing load test is thankfully a fairly straight-forward processs that requires just a bit of
+Adding a task to an existing load test is thankfully a fairly straight-forward process that requires just a bit of
 research and just a bit of coding. Here are the general steps:
 
 * Locate the locust file your test needs to be run from.
