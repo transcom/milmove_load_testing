@@ -419,7 +419,7 @@ You may see the following error:
 
 * `SessionManagerPlugin is not found`. If you do please follow the link and the instructions to install the Session Manager plugin or reference [this](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos) directly.
 
-* You may see an error mentioning `credentials missing` and an additional reference to a specific profile. If this is the case please add the corresponding entry from [this template](https://dp3.atlassian.net/wiki/spaces/MT/pages/1348927493/AWS+GovCloud+Config+Templates) to your `~/.aws/config` file.
+* You may see an error mentioning `credentials missing` and an additional reference to a specific profile. If this is the case please add the corresponding entry from [this template](https://dp3.atlassian.net/wiki/spaces/MT/pages/1348927493/AWS+GovCloud+Config+Templates) to your `~/.aws/config` file. If you only see an error mentioning `credentials missing` without an additional reference to a specific profile, please ensure that your $AWS_PROFILE variable is not blank. This can be set by running `direnv allow`.
 
 You can then visit <http://localhost:4000> and run tests from AWS.
 
