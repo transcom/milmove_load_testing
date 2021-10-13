@@ -36,6 +36,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Testing](#testing)
    * [Running Load Tests](#running-load-tests)
       * [Setting up the local environment](#setting-up-the-local-environment)
+      * [Setting up Tests in AWS](#setting-up-tests-in-aws)
       * [Running preset tests](#running-preset-tests)
       * [Running custom tests](#running-custom-tests)
       * [Running Tests for Reporting](#running-tests-for-reporting)
@@ -52,7 +53,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Metrics](#metrics)
    * [References](#references)
 
-<!-- Added by: ahobson, at: Tue May 25 17:17:04 EDT 2021 -->
+<!-- Added by: ronak, at: Wed Oct 13 10:47:58 EDT 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
