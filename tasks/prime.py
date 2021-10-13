@@ -215,15 +215,15 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
     tags where appropriate to make filtering for custom tests easier.
     """
 
-    @tag(MOVE_TASK_ORDER, "fetchMTOUpdates")
+    @tag(MOVE_TASK_ORDER, "listMoves")
     @task
-    def fetch_mto_updates(self):
+    def list_moves(self):
         timeout = {}
         if self.user.is_local:
             timeout["timeout"] = 15  # set a timeout of 15sec if we're running locally - just for this endpoint
 
-        resp = self.client.get(prime_path("/move-task-orders"), **self.cert_kwargs, **timeout)
-        moves, success = check_response(resp, "fetchMTOUpdates")
+        resp = self.client.get(prime_path("/moves"), **self.cert_kwargs, **timeout)
+        moves, success = check_response(resp, "listMoves")
 
         # Use these MTOs to set the ID values we'll need to create more MTOs
         # (NOTE: we don't care about a failure here because we can set the default IDs instead,
