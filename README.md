@@ -44,6 +44,10 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Starting from scratch](#starting-from-scratch)
       * [Creating TaskSets](#creating-tasksets)
       * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
+   * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
+      * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
+      * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
+      * [Deploying New Tests](#deploying-new-tests)
    * [Fake Data Generation](#fake-data-generation)
       * [Creating a custom parser](#creating-a-custom-parser)
    * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
@@ -53,7 +57,7 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Metrics](#metrics)
    * [References](#references)
 
-<!-- Added by: ronak, at: Wed Oct 13 10:47:58 EDT 2021 -->
+<!-- Added by: ronak, at: Wed Oct 20 10:24:39 EDT 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -659,6 +663,20 @@ research and just a bit of coding. Here are the general steps:
   above or below the `@task` decorator.
 * Run the load test and check that your task is working properly.
   * If it is, you're good to go!
+
+## AWS Deployed Environment Setup
+
+### Deploying to the Load Testing Environment
+
+Refer to these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1470922798/How+to+deploy+to+Experimental+or+Demo+or+Loadest)
+
+### Resetting the DB After a Load Test
+
+Refer to these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1469284356/Atlantis+Restore+Post-Load+Testing)
+
+### Deploying New Tests
+
+Refer to these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1512603655/Deploying+load-tests+to+AWS#Instructions)
 
 ## Fake Data Generation
 
