@@ -16,46 +16,46 @@ in the [LICENSE.txt](./LICENSE.txt) file in this repository.
 <!-- Uses gh-md-toc to generate Table of Contents: https://github.com/ekalinin/github-markdown-toc -->
 <!-- markdownlint-disable -->
 <!--ts-->
+
 * [MilMove Load Testing](#milmove-load-testing)
-   * [License Information](#license-information)
-   * [Table of Contents](#table-of-contents)
-   * [Overview](#overview)
-      * [locustfiles/](#locustfiles)
-      * [tasks/](#tasks)
-      * [utils/](#utils)
-      * [static/](#static)
-   * [Getting Started](#getting-started)
-      * [Requirements](#requirements)
-      * [Setup: pre-commit](#setup-pre-commit)
-      * [Setup: pyenv](#setup-pyenv)
-      * [Setup: virtualenv](#setup-virtualenv)
-      * [Alternative Setup: ASDF](#alternative-setup-asdf)
+  * [License Information](#license-information)
+  * [Table of Contents](#table-of-contents)
+  * [Overview](#overview)
+    * [locustfiles/](#locustfiles)
+    * [tasks/](#tasks)
+    * [utils/](#utils)
+    * [static/](#static)
+  * [Getting Started](#getting-started)
+    * [Base Installation](#base-installation)
+      * [Setup: Pyenv](#setup-pyenv)
       * [Setup: Nix](#setup-nix)
+    * [Installing Python Dependencies and Pre-commit Hooks](#installing-python-dependencies-and-pre-commit-hooks)
+    * [Unsupported Setup](#unsupported-setup)
       * [Alternative Setup: Docker](#alternative-setup-docker)
-      * [Troubleshooting](#troubleshooting)
-      * [Testing](#testing)
-   * [Running Load Tests](#running-load-tests)
-      * [Setting up the local environment](#setting-up-the-local-environment)
-      * [Setting up Tests in AWS](#setting-up-tests-in-aws)
-      * [Running preset tests](#running-preset-tests)
-      * [Running custom tests](#running-custom-tests)
-      * [Running Tests for Reporting](#running-tests-for-reporting)
-   * [Adding Load Tests](#adding-load-tests)
-      * [Starting from scratch](#starting-from-scratch)
-      * [Creating TaskSets](#creating-tasksets)
-      * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
-   * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
-      * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
-      * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
-      * [Deploying New Tests](#deploying-new-tests)
-   * [Fake Data Generation](#fake-data-generation)
-      * [Creating a custom parser](#creating-a-custom-parser)
-   * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
-      * [Prime API](#prime-api)
-      * [MilMove/Office domains](#milmoveoffice-domains)
-      * [Handling Rate Limiting](#handling-rate-limiting)
-      * [Metrics](#metrics)
-   * [References](#references)
+    * [Troubleshooting](#troubleshooting)
+    * [Testing](#testing)
+  * [Running Load Tests](#running-load-tests)
+    * [Setting up the local environment](#setting-up-the-local-environment)
+    * [Setting up Tests in AWS](#setting-up-tests-in-aws)
+    * [Running preset tests](#running-preset-tests)
+    * [Running custom tests](#running-custom-tests)
+    * [Running Tests for Reporting](#running-tests-for-reporting)
+  * [Adding Load Tests](#adding-load-tests)
+    * [Starting from scratch](#starting-from-scratch)
+    * [Creating TaskSets](#creating-tasksets)
+    * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
+  * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
+    * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
+    * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
+    * [Deploying New Tests](#deploying-new-tests)
+  * [Fake Data Generation](#fake-data-generation)
+    * [Creating a custom parser](#creating-a-custom-parser)
+  * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
+    * [Prime API](#prime-api)
+    * [MilMove/Office domains](#milmoveoffice-domains)
+    * [Handling Rate Limiting](#handling-rate-limiting)
+    * [Metrics](#metrics)
+  * [References](#references)
 
 <!-- Added by: ronak, at: Wed Oct 20 10:24:39 EDT 2021 -->
 
@@ -98,211 +98,38 @@ This folder is for static files (certificates, PDFs, etc.) that will be used dur
 
 ## Getting Started
 
-### Requirements
-
-* [Homebrew](https://brew.sh)
-  * Install with:
-  `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-* `pre-commit`
-* [`pyenv`](https://github.com/pyenv/pyenv) or Docker + `docker-compose` (See: [Alternative Setup: Docker](#alternative-setup-docker))
-
-See [Setup: Nix](#setup-nix) for an experiment with a possibly simpler
-way to install all the developer dependencies
-
 *Note: These instructions include the relevant commands for MacOS only. Please keep this in mind and be prepared to
 search for alternatives if you are running a different OS.*
 
-### Setup: `pre-commit`
+### Base Installation
 
-Once you have successfully installed Homebrew, you can install `pre-commit` with the command: `brew install pre-commit`.
+We have two supported installation methods, `pyenv` and `nix`. Pick which you prefer and proceed to that section.
 
-If you complete the rest of the project's setup as written, installing the required pre-commit hooks and hook libraries
-will happen for you automatically. To manually install and test them, you can use the project's Makefile commands:
+#### Setup: Pyenv
 
-```shell script
-make ensure_pre_commit pre_commit_tests
-```
+* Run
 
-You may also run the equivalent `pre-commit` commands yourself:
+  ```shell
+  make install_tools
+  ```
 
-```shell script
-pre-commit install
-pre-commit install-hooks
-pre-commit run --all-files
-```
+  This will install `pyenv` along with other tools like `pyenv-virtualenv` and `pre-commit`.
 
-### Setup: `pyenv`
+If the base dependencies change, you can always re-run this command.
 
-This project uses [pyenv](https://github.com/pyenv/pyenv) to manage Python versions. This makes it much easier for devs
-to contribute without having to spend hours navigating the spiderweb that is Python versions on MacOS (which most of us
-are using).
+#### Setup: Nix
 
-Alternatives to `pyenv`:
+If you need help with this setup, you can ask for help in the
+[Truss slack #code-nix channel](https://trussworks.slack.com/archives/C01KTH6HP7D).
 
-* run using [`ASDF`](#alternative-setup-asdf)
-* run with [Docker](#alternative-setup-docker)
-
-To ensure that you have all the dependencies for `pyenv` installed, first run:
-
-```shell script
-brew install openssl readline sqlite3 xz zlib
-```
-
-Once that has completed, you may download and install `pyenv` with the command:
-
-```shell script
-curl https://pyenv.run | bash
-```
-
-In order to enable `pyenv` to switch which version of Python you are using at any given time (and to enable other neat features),
-you will need to paste the following code to your shell's profile file (`~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, etc):
-
-```bash
-export PATH="$HOME/.pyenv/bin:$PATH"
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-```
-
-Once you have modified and saved your profile file, you will need to resource your profile:
-
-```shell script
-source <profile_file>  # Or just restart your terminal
-```
-
-Don't worry about installing or setting specific Python versions at this point - our Makefile commands will do that for
-you in the next section.
-
-### Setup: `virtualenv`
-
-To run load testing, you must create and activate a Python virtual environment with all the relevant dependencies installed.
-We have several `make` commands that aim to simplify this process for you, but you will need to activate your virtual
-environment manually so that the changes are properly pushed to the shell.
-
-First, install and set our required Python version (currently 3.8.3), and create the virtual environment using:
-
-```shell script
-make venv
-```
-
-You should only need to run this command once. After the initial set up, you should only need to activate your virtual
-environment to run any of the other commands for the app. To activate the virtual environment, run:
-
-```shell script
-pyenv activate locust-venv
-```
-
-Or, to make the virtual environment auto-activate whenever you `cd` into the project folder:
-
-```shell script
-pyenv local locust-venv
-```
-
-Our default name for the virtual environment is `locust-venv`. You may change this by setting the environment variable
-`VENV_NAME` to any name of your choice prior to running `make venv`. Ex:
-
-```shell script
-export VENV_NAME=myenv
-make venv
-pyenv activate myenv
-```
-
-Once you have activated your virtual environment using the method of your choice, install requirements and complete the
-rest of the setup using:
-
-```shell script
-make setup
-```
-
-*Note: The requirements are indicated in the `requirements.txt` and `requirements-dev.txt` files. `requirements.txt`
-contains the pip-installed requirements needed to run the project. `requirements-dev.txt` contains the requirements to
-lint and format our code if you wish to contribute - they are not functional requirements to run the code.*
-
-Once you are done with your virtual environment, you may deactivate it using:
-
-```shell script
-pyenv deactivate
-```
-
-You do not need to worry about this step if you set your virtual environment as default with `pyenv local`.
-
-If you ever feel the need to completely teardown your virtual environment (uninstalling requirements and deleting all
-its files), you may run:
-
-```sh
-make teardown
-```
-
-Remember to recreate your virtual environment with `make venv` before attempting to continue development on the project.
-
-### Alternative Setup: ASDF
-
-It is possible to run with `ASDF` instead of using `pyenv`. The `Makefile` file has been updated to check for the env variable
-`USE_ASDF=true`.
-
-Add `USE_ASDF` to your `.envrc.local` file.
-
-```shell script
-export USE_ASDF=true
-```
-
-Update `env` locally
-
-```shell script
-direnv allow
-```
-
-Install the prereqs
-
-```shell script
-brew install openssl readline sqlite3 xz zlib
-```
-
-Add python to `ASDF` versioning
-
-```shell script
-asdf plugin add python
-```
-
-Create a new python `venv` and run setup
-
-```shell script
-make venv
-make setup
-```
-
-*Notes*:
-
-* Make sure you added `USE_ASDF` to your `.envrc.local`
-* If install for python fails, you can change the version using `PY_VERSION`. (At least one person had an issue with `3.8.5`, `3.9.5` seems to work better on install at the time.)
-
-Teardown python `venv`
-
-After you are finished and you would like to remove the `venv`, run the teardown command. This command simply prints
-out the necessary python commands to run to deactivate your env and remove the contents of the `venv`.
-
-```shell script
-make teardown
-```
-
-### Setup: Nix
-
-NOTE: Nix is an experiment. If you are setting things up with Nix you
-do not need to follow the instructions above about homebrew,
-pre-commit, or pyenv
-
-NOTE: Nix as an experiment means you ask for help in the `#code-nix`
-slack channel. It's not an officially supported development environment.
-
-1. First read the overview in the [Truss Engineering Playbook](https://github.com/trussworks/Engineering-Playbook/tree/main/developing/nix).
-1. Follow the [macOS installation instructions](https://nixos.org/manual/nix/stable/#sect-macos-installation).
-1. Ensure you have `direnv` and a modern `bash` installed. To install
+1. First read the overview in the
+   [Truss Engineering Playbook](https://github.com/trussworks/Engineering-Playbook/tree/main/developing/nix).
+2. Follow the installation instructions in the playbook.
+3. Ensure you have `direnv` and a modern `bash` installed. To install
    globally with nix, run `nix-env -i direnv bash`
-1. Ensure you have run `direnv allow` to set up the appropriate nix
+4. Ensure you have run `direnv allow` to set up the appropriate nix
    environment variables.
-1. Make sure you have disabled any `nodeenv`, `asdf` or any other
-   version switchers.
-1. Run `./nix/update.sh`
+5. Run `./nix/update.sh`
 
 If the nix dependencies change, you should see a warning from direnv:
 
@@ -310,19 +137,27 @@ If the nix dependencies change, you should see a warning from direnv:
 direnv: WARNING: nix packages out of date. Run nix/update.sh
 ```
 
-Install python dependencies:
+### Installing Python Dependencies and Pre-commit Hooks
 
-```shell script
-make install
-```
+* Run
 
-Run tests:
+  ```shell script
+  make setup
+  ```
 
-```shell script
-pytest
-```
+  This will install all the `python` dependencies in `requirements.txt` and `requirements-dev.txt`. It will also install
+  the `pre-commit` hooks.
 
-### Alternative Setup: Docker
+*Note: The requirements are indicated in the `requirements.txt` and `requirements-dev.txt` files. `requirements.txt`
+contains the pip-installed requirements needed to run the project. `requirements-dev.txt` contains the requirements to
+lint and format our code if you wish to contribute - they are not functional requirements to run the code.*
+
+### Unsupported Setup
+
+This is a setup that existed previously but will no longer be kept up to date or supported. It will possibly be removed
+entirely at a future date.
+
+#### Alternative Setup: Docker
 
 It is also possible to run load tests from within a Docker container, eliminating the need to set up a valid python
 environment. This requires Docker and `docker-compose` to be installed on your machine. Get them here:
@@ -348,13 +183,6 @@ You can also use the Makefile equivalents of these commands:
 As long as your local MilMove server is up and running, you are ready to run your tests!
 
 ### Troubleshooting
-
-If you already had `pyenv` installed on your machine with Homebrew, you may find that your installation doesn't include
-the `pyenv-virtualenv` plugin. To fix this, try:
-
-```shell script
-brew install pyenv-virtualenv
-```
 
 If you encounter compiler issues while installing the required Python version, try:
 
