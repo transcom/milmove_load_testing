@@ -13,7 +13,6 @@ gh-md-toc
 .venv
 __pycache__
 /venv/*
-.python-version
 
 # Envrc
 .envrc.chamber
