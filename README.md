@@ -137,6 +137,9 @@ If the nix dependencies change, you should see a warning from direnv:
 direnv: WARNING: nix packages out of date. Run nix/update.sh
 ```
 
+Note that if you would like to disable `nix` for this repo, you can do so by creating a `.nix-disable` file at the top
+level of this repo and reload your shell.
+
 ### Installing Python Dependencies and Pre-commit Hooks
 
 * Run
