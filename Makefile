@@ -45,7 +45,7 @@ pre_commit_tests:  ## Run pre-commit tests
 	pre-commit run --all-files
 
 .PHONY: setup
-setup: install_python_deps ensure_pre_commit
+setup: install_python_deps ensure_pre_commit  ## Installs python dependencies and preps pre-commit
 
 .PHONY: clean
 clean:  ## Clean all generated files
