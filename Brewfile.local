@@ -1,0 +1,9 @@
+brew 'awscli'
+brew 'chamber'
+brew 'direnv'
+brew 'libev'
+brew 'pre-commit'
+brew 'pyenv'
+brew 'pyenv-virtualenv'
+
+cask 'aws-vault'

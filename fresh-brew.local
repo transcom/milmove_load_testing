@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+python_version="3.9.6"
+
+# This file is named a bit confusingly when using virtualenvs...
+venv_name="$(cat < ".python-version")"
+
+##### START OF HELPER FUNCTIONS #####
+
+# If this breaks, you can look at the config instructions on their README
+# https://github.com/pyenv/pyenv#homebrew-in-macos
+configure_shell_file_for_pyenv() {
+  # This env var isn't really well documented, but essentially there's a prompt that comes
+  # up if you don't have this set letting you know that the pyenv venv prompt will change
+  # in the future.
+  append_to_file "$shell_file" "export PYENV_VIRTUALENV_DISABLE_PROMPT=1"
+
+  if [[ $SHELL == *fish ]]; then
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'set -Ux PYENV_ROOT $HOME/.pyenv'
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'set -U fish_user_paths $PYENV_ROOT/bin $fish_user_paths'
+    append_to_file "$shell_file" 'status is-login; and pyenv init --path | source'
+    append_to_file "$shell_file" 'status --is-interactive; and source (pyenv init - | psub)'
+
+  elif [[ $SHELL == *zsh ]]; then
+    # shellcheck disable=SC2016
+    echo 'eval "$(pyenv init --path)"' >> ~/.zprofile
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'eval "$(pyenv init -)"'
+
+  elif [[ $SHELL == *bash ]]; then
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'export PYENV_ROOT="$HOME/.pyenv"'
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'export PATH="$PYENV_ROOT/bin:$PATH"'
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'eval "$(pyenv init --path)"'
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'eval "$(pyenv init -)"'
+  fi
+}
+
+# If this breaks, you can see the config instructions on their README
+# https://github.com/pyenv/pyenv-virtualenv#installing-with-homebrew-for-macos-users
+configure_shell_file_for_pyenv_virtualenv() {
+  if [[ $SHELL == *fish ]]; then
+    append_to_file "$shell_file" 'status --is-interactive; and source (pyenv virtualenv-init - | psub)'
+  else
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'eval "$(pyenv virtualenv-init -)"'
+  fi
+}
+
+install_python_with_pyenv() {
+  fancy_echo "Installing python $python_version ..."
+
+  if pyenv versions | grep -q "$python_version"; then
+    fancy_echo "python $python_version already installed."
+  else
+    pyenv install "$python_version"
+  fi
+}
+
+create_virtualenv() {
+  fancy_echo "Setting up virtualenv"
+  pyenv virtualenv "$python_version" "$venv_name" || fancy_echo "Using existing $venv_name..."
+}
+
+# If direnv stops working, it might be because the setup commands changed.
+# Check the documentation:
+# https://github.com/direnv/direnv/blob/master/docs/hook.md
+configure_shell_file_for_direnv() {
+  if [[ $SHELL == *fish ]]; then
+    append_to_file "$shell_file" "direnv hook fish | source"
+  elif [[ $SHELL == *zsh ]]; then
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'eval "$(direnv hook zsh)"'
+  elif [[ $SHELL == *bash ]]; then
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'eval "$(direnv hook bash)"'
+  fi
+}
+
+set_up_markdown_toc() {
+  curl https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc -o gh-md-toc
+  chmod a+x gh-md-toc
+}
+
+##### END OF HELPER FUNCTIONS #####
+
+fancy_echo "Running your customizations from fresh-brew.local ..."
+
+if [ -f "Brewfile.local" ]; then
+  if brew bundle --file="Brewfile.local"; then
+    fancy_echo "All items in Brewfile.local were installed successfully."
+  else
+    fancy_echo "Some items in Brewfile.local were not installed successfully."
+  fi
+fi
+
+configure_shell_file_for_pyenv
+configure_shell_file_for_pyenv_virtualenv
+
+# make sure that any functions that write to the shell file appear before this
+# direnv function below because the direnv line has to be at the very end of the
+# shell file.
+configure_shell_file_for_direnv
+
+install_python_with_pyenv
+create_virtualenv
+set_up_markdown_toc
+
+fancy_echo "******* IMPORTANT **************************************"
+fancy_echo "If you get errors below, quit and restart your terminal,"
+fancy_echo "or open a new tab, and run 'make setup' again."
+fancy_echo "********************************************************"

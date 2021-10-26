@@ -2,32 +2,9 @@
 
 PRE_COMMIT:=/usr/local/bin/pre-commit
 
-ifndef PY_VERSION
-	PY_VERSION = 3.8.3
-endif
-ifndef VENV_NAME
-	VENV_NAME = locust-venv
-endif
 ifdef NIX_PROFILE
 	USE_NIX:=true
 	PRE_COMMIT:=$(NIX_PROFILE)/bin/pre-commit
-endif
-ifndef USE_ASDF
-		USE_ASDF:=false
-endif
-ifndef PYTHON
-    PYTHON = python
-endif
-ifeq ($(USE_ASDF),true)
-	VENV_DIR = $(PWD)/$(VENV_NAME)
-else ifeq ($(USE_NIX),true)
-	VENV_DIR = $(VIRTUAL_ENV)
-else
-	VENV_DIR = $(HOME)/.pyenv/versions/$(PY_VERSION)/envs/$(VENV_NAME)
-endif
-
-ifeq ($(VIRTUAL_ENV),$(VENV_DIR))
-	IN_VENV:=true
 endif
 
 PRIME_LOCUSTFILES=/app/locustfiles/prime.py
@@ -37,57 +14,22 @@ OFFICE_LOCUSTFILES=/app/locustfiles/office.py
 help:  ## Print the help documentation
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: venv
-venv:  ## Setup the local python version and the virtualenv
-ifeq ($(USE_ASDF),true)
-	asdf list $(PYTHON) | grep -q $(PY_VERSION) || asdf install $(PYTHON) $(PY_VERSION)
-	asdf local $(PYTHON) $(PY_VERSION)
-	asdf current $(PYTHON)
-	$(PYTHON) -m venv $(VENV_NAME) || echo "Using existing $(VENV_NAME)..."
-else ifeq ($(USE_NIX),true)
-	@echo "Using nix"
-else
-	pyenv versions | grep -q $(PY_VERSION) || pyenv install -v $(PY_VERSION)
-	pyenv local $(PY_VERSION)
-	pyenv virtualenv $(PY_VERSION) $(VENV_NAME) || echo "Using existing $(VENV_NAME)..."
-endif
-ifndef IN_VENV
-ifeq ($(USE_ASDF),true)
-	@echo "\n>> Activate your virtualenv using the following commands:\n\n source $(VENV_NAME)/bin/activate\n\n"
-else
-	@echo "\n>> Activate your virtualenv using the following commands:\n\n  pyenv activate $(VENV_NAME)\n\n" \
- "Alternatively, set the virtualenv to auto-activate with:\n\n  pyenv local $(VENV_NAME)"
-endif
-endif
+.PHONY: install_tools
+install_tools:  ## Install tools needed for project.
+	scripts/install_tools
 
-# This target checks that we're in an activated virtualenv for the sake of the following requirements installation:
 .PHONY: ensure_venv
-ensure_venv:  ## Ensure that the virtualenv is activated
-ifeq ($(IN_VENV),true)
-ifeq ($(USE_NIX),true)
-	@echo "Using nix"
-else
-	@echo "$(VENV_NAME) has been activated."
-endif
-else ifeq ($(USE_ASDF),true)
-	@echo "To proceed, activate your virtualenv using the following command:\n\n  source $(VENV_NAME)/bin/activate\n\n"
-	false
-else
-	@echo "To proceed, activate your virtualenv using the following command:\n\n  pyenv activate $(VENV_NAME)\n"
+ensure_venv:  ## Ensure that the virtualenv is activated.
+ifndef VIRTUAL_ENV
+	@echo "Virtual env not defined. If you are using nix, make sure it's not disabled. If you aren't using nix, run 'make setup'."
 	false
 endif
 
-.PHONY: install
-install: ensure_venv requirements.txt requirements-dev.txt  ## Install all requirements
-ifeq ($(USE_NIX),true)
-	@echo "Using nix"
-else
-	brew list libev || brew install libev
-endif
+.PHONY: install_python_deps
+install_python_deps: ensure_venv ## Install all python dependencies/requirements
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 
-# This target ensures that the pre-commit hook is installed and kept up to date if pre-commit updates.
 .PHONY: ensure_pre_commit
 ensure_pre_commit: .git/hooks/pre-commit  ## Ensure pre-commit is installed
 .git/hooks/pre-commit: $(PRE_COMMIT)
@@ -98,31 +40,18 @@ ensure_pre_commit: .git/hooks/pre-commit  ## Ensure pre-commit is installed
 pre_commit_update_deps:  ## Update pre-commit dependencies
 	pre-commit autoupdate
 
-# Alias/shortcut for pre_commit_update_deps:
-.PHONY: update_deps
-update_deps: pre_commit_update_deps
-
 .PHONY: pre_commit_tests
 pre_commit_tests:  ## Run pre-commit tests
 	pre-commit run --all-files
 
 .PHONY: setup
-setup: install ensure_pre_commit
+setup: install_python_deps ensure_pre_commit  ## Installs python dependencies and preps pre-commit
 
 .PHONY: clean
 clean:  ## Clean all generated files
 	find ./ -type d -name '__pycache__' -delete
 	find ./ -type f -name '*.pyc' -delete
 
-.PHONY: teardown
-teardown:  ## Uninstall the virtualenv and remove all files
-ifeq ($(USE_ASDF),true)
-	@echo "To deactivate  and remove your virtualenv using the following command:\n\n  deactivate; rm -fr $(VENV_NAME)\n\n"
-else ifeq ($(USE_NIX),true)
-	@echo "Not tearing down nix"
-else
-	-pyenv uninstall $(VENV_NAME)
-endif
 .PHONY: pretty
 pretty: ensure_venv  ## Prettify the code
 	black .
@@ -130,6 +59,10 @@ pretty: ensure_venv  ## Prettify the code
 .PHONY: lint
 lint: ensure_venv  ## Run linting tests
 	flake8 .
+
+.PHONY: generate_readme_toc
+generate_readme_toc:  ## Re-generates and re-places the table of contents for the README.md
+	./gh-md-toc --insert README.md
 
 .PHONY: load_test_prime
 load_test_prime: clean ensure_venv  ## Run load testing on the Prime API

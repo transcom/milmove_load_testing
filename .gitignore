@@ -4,7 +4,6 @@
 .vscode
 *.swp
 *.sublime-*
-gh-md-toc
 
 # Makefile
 *.stamp
@@ -13,7 +12,6 @@ gh-md-toc
 .venv
 __pycache__
 /venv/*
-.python-version
 
 # Envrc
 .envrc.chamber
@@ -21,3 +19,19 @@ __pycache__
 exp_*.pem
 /.direnv
 /.nix-hash
+
+# fresh-brew
+# The first two files are meant to be updated in the trussworks/fresh-brew repo
+# The lock files can be helpful to troubleshoot homebrew issues. They will
+# represent the last known good state.
+Brewfile
+pour.sh
+Brewfile.local.lock.json
+Brewfile.lock.json
+
+# nix
+.nix-disable
+
+# gh-md-toc
+gh-md-toc
+README.md.*
