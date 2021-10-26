@@ -4,7 +4,6 @@
 .vscode
 *.swp
 *.sublime-*
-gh-md-toc
 
 # Makefile
 *.stamp
@@ -29,3 +28,10 @@ Brewfile
 pour.sh
 Brewfile.local.lock.json
 Brewfile.lock.json
+
+# nix
+.nix-disable
+
+# gh-md-toc
+gh-md-toc
+README.md.*
