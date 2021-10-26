@@ -21,7 +21,7 @@ configure_shell_file_for_pyenv() {
     # shellcheck disable=SC2016
     append_to_file "$shell_file" 'set -U fish_user_paths $PYENV_ROOT/bin $fish_user_paths'
     append_to_file "$shell_file" 'status is-login; and pyenv init --path | source'
-    append_to_file "$shell_file" 'status is-interactive; and pyenv init - | source'
+    append_to_file "$shell_file" 'status --is-interactive; and source (pyenv init - | psub)'
 
   elif [[ $SHELL == *zsh ]]; then
     # shellcheck disable=SC2016
@@ -44,8 +44,12 @@ configure_shell_file_for_pyenv() {
 # If this breaks, you can see the config instructions on their README
 # https://github.com/pyenv/pyenv-virtualenv#installing-with-homebrew-for-macos-users
 configure_shell_file_for_pyenv_virtualenv() {
-  # shellcheck disable=SC2016
-  append_to_file "$shell_file" 'eval "$(pyenv virtualenv-init -)"'
+  if [[ $SHELL == *fish ]]; then
+    append_to_file "$shell_file" 'status --is-interactive; and source (pyenv virtualenv-init - | psub)'
+  else
+    # shellcheck disable=SC2016
+    append_to_file "$shell_file" 'eval "$(pyenv virtualenv-init -)"'
+  fi
 }
 
 install_python_with_pyenv() {
