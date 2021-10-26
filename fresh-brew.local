@@ -82,6 +82,11 @@ configure_shell_file_for_direnv() {
   fi
 }
 
+set_up_markdown_toc() {
+  curl https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc -o gh-md-toc
+  chmod a+x gh-md-toc
+}
+
 ##### END OF HELPER FUNCTIONS #####
 
 fancy_echo "Running your customizations from fresh-brew.local ..."
@@ -104,6 +109,7 @@ configure_shell_file_for_direnv
 
 install_python_with_pyenv
 create_virtualenv
+set_up_markdown_toc
 
 fancy_echo "******* IMPORTANT **************************************"
 fancy_echo "If you get errors below, quit and restart your terminal,"

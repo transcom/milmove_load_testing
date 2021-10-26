@@ -60,6 +60,10 @@ pretty: ensure_venv  ## Prettify the code
 lint: ensure_venv  ## Run linting tests
 	flake8 .
 
+.PHONY: generate_readme_toc
+generate_readme_toc:  ## Re-generates and re-places the table of contents for the README.md
+	./gh-md-toc --insert README.md
+
 .PHONY: load_test_prime
 load_test_prime: clean ensure_venv  ## Run load testing on the Prime API
 	open http://localhost:8089
