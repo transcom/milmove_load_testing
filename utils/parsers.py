@@ -480,4 +480,4 @@ class SupportAPIParser(PrimeAPIParser):
 class GHCAPIParser(APIParser):
     """ Parser class for the GHC API. """
 
-    api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"
+    api_file = "https://raw.githubusercontent.com/transcom/mymove/bc17d5884d87b62c66fe23b07a4766e9191bd349/swagger/ghc.yaml"

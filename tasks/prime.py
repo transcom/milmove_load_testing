@@ -218,7 +218,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
     @tag(MOVE_TASK_ORDER, "listMoves")
     @task
     def list_moves(self):
-        timeout = {}
+        timeout = {"timeout": 15}
         if self.user.is_local:
             timeout["timeout"] = 15  # set a timeout of 15sec if we're running locally - just for this endpoint
 

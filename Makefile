@@ -110,6 +110,6 @@ local_docker_report:  ## Run load testing automatically against a local server a
 .PHONY: exp_load_test
 exp_load_test: ## Run load testing against the MilMove Experimental Deployment
 	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"; docker-compose up --build prime-exp-reporting
-	docker cp mmlt_prime_exp_reporting:/app/static/reports static/
+	docker cp mmlt_prime_dod_reporting:/app/static/reports static/
 
 default: help

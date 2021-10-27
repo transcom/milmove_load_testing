@@ -7,11 +7,11 @@ services:
      - "8089:8089"
     environment:
      - DEVLOCAL_AUTH=true
-     - MOVE_MIL_EXP_TLS_CERT
-     - MOVE_MIL_EXP_TLS_KEY
-    command: -f /app/locustfiles/prime.py --host exp
+     - MOVE_MIL_DOD_TLS_CERT
+     - MOVE_MIL_DOD_TLS_KEY
+    command: -f /app/locustfiles/prime.py --host loadtest
   prime-exp-reporting:
-    container_name: mmlt_prime_exp_reporting
+    container_name: mmlt_prime_dod_reporting
     extends:
       service: prime-exp
     environment:
