@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class MilMoveEnv(ValueEnum):
     LOCAL = "local"
     EXP = "exp"
-    LOAD_TEST = "dod"
+    DOD = "dod"
 
 
 class MilMoveDomain(ValueEnum):
@@ -35,6 +35,7 @@ class MilMoveDomain(ValueEnum):
         return self.value
 
     def host_name(self, env, is_api=False, port="0000", protocol="https"):
+        
         """
         Returns the host name for this domain based on the environment, whether or not it is in the API domain, and the
         port and protocol (for local envs).
@@ -58,7 +59,7 @@ class MilMoveDomain(ValueEnum):
             return f"{protocol}://{self.local_value}:{port}"
 
         # NOTE: deployed protocol is always https
-        return f"https://{'api' if is_api else self.deployed_value}.{env}.move.mil"
+        return f"https://{'api' if is_api else self.deployed_value}.loadtest.move.mil"
 
 
 class MilMoveHostMixin:
