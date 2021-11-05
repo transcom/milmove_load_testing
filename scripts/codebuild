@@ -16,7 +16,7 @@ docker push "${ECR_REPO}:exp"
 aws ecs update-service \
     --cluster loadtesting \
     --service exp-web \
-    --task-definition exp-web-loadtesting:3 \
+    --task-definition exp-web-loadtesting:5 \
     --desired-count 1
 
 exit 0
