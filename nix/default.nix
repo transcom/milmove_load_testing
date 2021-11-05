@@ -32,10 +32,10 @@ in buildEnv {
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
-      name = "pre-commit-2.13.0";
+      name = "pre-commit-2.15.0";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "f62847d5655a6954fc946e5d9c81424171cc281e";
+      rev = "8112bb92f9df718eaa077ec77109eecc60240a72";
     }) {}).pre-commit
 
     (import (builtins.fetchGit {
@@ -54,5 +54,12 @@ in buildEnv {
       rev = "14b0f20fa1f56438b74100513c9b1f7c072cf789";
     }) {}).awscli2
 
+    (import (builtins.fetchGit {
+      # Descriptive name to make the store path easier to identify
+      name = "chamber-2.10.2";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
+    }) {}).chamber
 ];
 }
