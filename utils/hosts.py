@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 class MilMoveEnv(ValueEnum):
     LOCAL = "local"
     EXP = "exp"
+    DOD = "dod"
+    DP3 = "dp3"
 
 
 class MilMoveDomain(ValueEnum):
@@ -34,6 +36,7 @@ class MilMoveDomain(ValueEnum):
         return self.value
 
     def host_name(self, env, is_api=False, port="0000", protocol="https"):
+
         """
         Returns the host name for this domain based on the environment, whether or not it is in the API domain, and the
         port and protocol (for local envs).
@@ -56,8 +59,10 @@ class MilMoveDomain(ValueEnum):
 
             return f"{protocol}://{self.local_value}:{port}"
 
+        # allow us to point to another domain if we need to
+        base_domain = os.getenv("BASE_DOMAIN", "loadtest.dp3.us")
         # NOTE: deployed protocol is always https
-        return f"https://{'api' if is_api else self.deployed_value}.{env}.move.mil"
+        return f"https://{'api' if is_api else self.deployed_value}.{base_domain}"
 
 
 class MilMoveHostMixin:
@@ -160,8 +165,14 @@ class MilMoveHostMixin:
         # We now know we're in a deployed environment, so let's make a deployed cert/key file:
         cert_key = cls.create_deployed_cert_file()
 
+        verify_path = DOD_CA_BUNDLE
+        # DP3 certs are issued by CAs that are well known and so we
+        # don't need any special verification
+        if cls.env == MilMoveEnv.DP3:
+            verify_path = None
+
         # We also need to use the DoD's specific CA bundle for SSL verification in deployed envs:
-        cls.cert_kwargs = {"cert": cert_key, "verify": DOD_CA_BUNDLE}
+        cls.cert_kwargs = {"cert": cert_key, "verify": verify_path}
 
     @classmethod
     def create_deployed_cert_file(cls) -> Optional[str]:
@@ -175,8 +186,8 @@ class MilMoveHostMixin:
         if cls.env == MilMoveEnv.LOCAL:
             return  # can't complete this logic with local certs
 
-        deployed_tls_cert = os.getenv(f"MOVE_MIL_{cls.env.value.upper()}_TLS_CERT")
-        deployed_tls_key = os.getenv(f"MOVE_MIL_{cls.env.value.upper()}_TLS_KEY")
+        deployed_tls_cert = os.environ.get(f"MOVE_MIL_{cls.env.value.upper()}_TLS_CERT")
+        deployed_tls_key = os.environ.get(f"MOVE_MIL_{cls.env.value.upper()}_TLS_KEY")
 
         if not (deployed_tls_cert and deployed_tls_key):
             logger.debug(f"Unable to find cert and key values for environment: {cls.env.value}")
