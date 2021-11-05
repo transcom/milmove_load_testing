@@ -13,10 +13,17 @@ aws ecr get-login-password --region $AWS_REGION \
 
 docker push "${ECR_REPO}:exp"
 
+current_task_definition=$(aws ecs describe-services \
+                              --cluster loadtesting \
+                              --service exp-web | \
+                            jq  '.services[0].taskDefinition' | \
+                            cut -d/ -f 2 | \
+                            tr -d '"')
+
 aws ecs update-service \
     --cluster loadtesting \
     --service exp-web \
-    --task-definition exp-web-loadtesting:3 \
+    --task-definition "${current_task_definition}" \
     --desired-count 1
 
 exit 0
