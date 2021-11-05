@@ -3,7 +3,7 @@
     {
       "command": [
         "-f",
-        "/app/locustfiles/prime.py",
+        "${LOCUSTFILE}",
         "--host",
         "exp",
         "--web-port",
@@ -39,6 +39,10 @@
         {
           "name": "STATIC_TLS_FILE_PATH",
           "value": "/tmp"
+        },
+        {
+          "name": "LOCUSTFILE",
+          "value": "/app/locustfiles/prime.py"
         }
       ],
       "secrets": [
