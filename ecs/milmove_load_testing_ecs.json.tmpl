@@ -2,6 +2,9 @@
   "containerDefinitions": [
     {
       "command": [
+        "sh",
+        "-c",
+        "locust"
         "-f",
         "${LOCUSTFILE}",
         "--host",
