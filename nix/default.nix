@@ -61,5 +61,14 @@ in buildEnv {
       ref = "refs/heads/nixpkgs-unstable";
       rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
     }) {}).chamber
+
+    (import (builtins.fetchGit {
+      # Descriptive name to make the store path easier to identify
+      name = "jq-1.6";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
+    }) {}).jq
+
 ];
 }
