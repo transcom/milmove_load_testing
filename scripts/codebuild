@@ -6,7 +6,7 @@ set -x
 echo "${DOCKER_PASSWORD}" | \
   docker login --username "${DOCKER_USERNAME}" --password-stdin
 
-docker build -t "${ECR_REPO}:exp" --build-arg locustfile="${LOCUSTFILE}".
+docker build -t "${ECR_REPO}:exp" --build-arg locustfile="${LOCUSTFILE}" .
 
 aws ecr get-login-password --region $AWS_REGION \
   | docker login --username AWS --password-stdin "${ECR_REPO}"
