@@ -18,17 +18,9 @@ help:  ## Print the help documentation
 install_tools:  ## Install tools needed for project.
 	scripts/install_tools
 
-.PHONY: ensure_venv
-ensure_venv:  ## Ensure that the virtualenv is activated.
-ifndef VIRTUAL_ENV
-	@echo "Virtual env not defined. If you are using nix, make sure it's not disabled. If you aren't using nix, run 'make setup'."
-	false
-endif
-
 .PHONY: install_python_deps
-install_python_deps: ensure_venv ## Install all python dependencies/requirements
-	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
+install_python_deps: ## Install all python dependencies/requirements
+	pipenv install
 
 .PHONY: ensure_pre_commit
 ensure_pre_commit: .git/hooks/pre-commit  ## Ensure pre-commit is installed
@@ -53,11 +45,11 @@ clean:  ## Clean all generated files
 	find ./ -type f -name '*.pyc' -delete
 
 .PHONY: pretty
-pretty: ensure_venv  ## Prettify the code
+pretty: ## Prettify the code
 	black .
 
 .PHONY: lint
-lint: ensure_venv  ## Run linting tests
+lint: ## Run linting tests
 	flake8 .
 
 .PHONY: generate_readme_toc

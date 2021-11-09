@@ -122,15 +122,21 @@ search for alternatives if you are running a different OS.*
 
 We have two supported installation methods, `pyenv` and `nix`. Pick which you prefer and proceed to that section.
 
-#### Setup: Pyenv
+#### Setup: Pyenv and Pipenv
 
-* Run
+When setting up for the first time, before you run `direnv allow`, run
 
   ```shell
   make install_tools
   ```
 
-  This will install `pyenv` along with other tools like `pyenv-virtualenv` and `pre-commit`.
+This will install `pyenv` and `pipenv` along with other tools like `pre-commit`. Now run
+
+  ```shell
+  direnv allow
+  ```
+
+This should install the dependencies via `pipenv` automatically.
 
 If the base dependencies change, you can always re-run this command.
 
@@ -166,9 +172,7 @@ level of this repo and reload your shell.
   This will install all the `python` dependencies in `requirements.txt` and `requirements-dev.txt`. It will also install
   the `pre-commit` hooks.
 
-*Note: The requirements are indicated in the `requirements.txt` and `requirements-dev.txt` files. `requirements.txt`
-contains the pip-installed requirements needed to run the project. `requirements-dev.txt` contains the requirements to
-lint and format our code if you wish to contribute - they are not functional requirements to run the code.*
+*Note: The requirements are indicated in the `Pipenv` file.
 
 ### Unsupported Setup
 

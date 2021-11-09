@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = ">=2.22.0"
+locust = ">=1"
+prance = {version = "==0.19.0", extras = ["cli", "osv"]}
+Faker = "*"
+
+[dev-packages]
+# pipenv doesn't resolve pre-release versions, so manually pin
+black = "==21.10b0"
+flake8 = "*"
+pytest = "*"
+pytest-mock = "*"
+python-language-server = "*"
+
+[requires]
+python_version = "3.9"
