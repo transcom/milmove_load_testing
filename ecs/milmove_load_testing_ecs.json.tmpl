@@ -1,16 +1,9 @@
 {
   "containerDefinitions": [
     {
+      "entryPoint": ["sh", "-c"],
       "command": [
-        "sh",
-        "-c",
-        "locust"
-        "-f",
-        "${LOCUSTFILE}",
-        "--host",
-        "exp",
-        "--web-port",
-        "4000"
+        "locust -f ${LOCUSTFILE} --host dp3 --web-port 4000"
       ],
       "essential": true,
       "image": "__ACCOUNTID__.dkr.ecr.__REGION__.amazonaws.com/loadtesting:exp",

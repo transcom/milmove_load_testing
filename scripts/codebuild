@@ -23,8 +23,7 @@ current_task_definition=$(aws ecs describe-services \
 aws ecs update-service \
     --cluster loadtesting \
     --service exp-web \
-    --task-definition exp-web-loadtesting:6 \
-    --desired-count 1 \
-    --force-new-deployment
+    --task-definition "${current_task_definition}" \
+    --desired-count 1
 
 exit 0
