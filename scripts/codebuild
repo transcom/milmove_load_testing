@@ -24,6 +24,7 @@ aws ecs update-service \
     --cluster loadtesting \
     --service exp-web \
     --task-definition "${current_task_definition}" \
-    --desired-count 1
+    --desired-count 1 \
+    --force-new-deployment
 
 exit 0
