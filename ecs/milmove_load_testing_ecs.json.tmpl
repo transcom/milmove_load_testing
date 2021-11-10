@@ -1,13 +1,9 @@
 {
   "containerDefinitions": [
     {
+      "entryPoint": ["sh", "-c"],
       "command": [
-        "-f",
-        "/app/locustfiles/prime.py",
-        "--host",
-        "exp",
-        "--web-port",
-        "4000"
+        "locust -f ${LOCUSTFILE} --host dp3 --web-port 4000"
       ],
       "essential": true,
       "image": "__ACCOUNTID__.dkr.ecr.__REGION__.amazonaws.com/loadtesting:exp",

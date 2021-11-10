@@ -6,13 +6,16 @@ set -x
 echo "${DOCKER_PASSWORD}" | \
   docker login --username "${DOCKER_USERNAME}" --password-stdin
 
-docker build -t "${ECR_REPO}:exp" .
+#LOCUSTFILE can be set in the build overrides of the CodeBuild config
+docker build -t "${ECR_REPO}:exp" --build-arg locustfile="${LOCUSTFILE}" .
 
 aws ecr get-login-password --region $AWS_REGION \
   | docker login --username AWS --password-stdin "${ECR_REPO}"
 
 docker push "${ECR_REPO}:exp"
 
+#This will return an inactive task definition if a new one has been published
+#In that scenario you can specify the new revision manually in update-service
 current_task_definition=$(aws ecs describe-services \
                               --cluster loadtesting \
                               --service exp-web | \
@@ -20,10 +23,14 @@ current_task_definition=$(aws ecs describe-services \
                             cut -d/ -f 2 | \
                             tr -d '"')
 
+#This has not been replacing the current service so you may need to stop the
+#previous deployment until we can figure out why --force-new-deployment is
+#required for the same task definition revision.
 aws ecs update-service \
     --cluster loadtesting \
     --service exp-web \
     --task-definition "${current_task_definition}" \
-    --desired-count 1
+    --desired-count 1 \
+    --force-new-deployment
 
 exit 0

@@ -97,6 +97,22 @@ constants are located here.
 
 This folder is for static files (certificates, PDFs, etc.) that will be used during load testing.
 
+### `ecs`
+
+This directory contains a representation of the task definition for running the docker container in AWS.  To make changes
+to the task definition will require changing the terraform in
+`transcom/transcom-infrasec-gov-nonato/transcom-gov-dev/app-dev/loadtesting.tf`.  This file is updated manually to
+reflect the current state.
+
+### `scripts`
+
+`aws-session-port-forward.py` - This is the script used to access the deployed locust load testing container and forward
+to your local port 4000 accessible at [http://localhost:4000](http://localhost:4000).
+
+`codebuild` - This script is invoked when making a new build/deployment using the AWS CodeBuild service.  It builds a
+new docker image and publishes it to ECR so the service can pull down the new image.  It also controls updating the
+service if there is a new task definition from updating the Terraform code.
+
 ## Getting Started
 
 *Note: These instructions include the relevant commands for MacOS only. Please keep this in mind and be prepared to

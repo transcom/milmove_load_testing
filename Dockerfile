@@ -3,6 +3,11 @@ FROM python:3.9.6
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+ARG locustfile
+ENV LOCUSTFILE=$locustfile
+
+RUN echo $LOCUSTFILE
+
 WORKDIR /app
 
 # Copy over and install requirements:
