@@ -208,15 +208,15 @@ class TestAPIParser:
     @pytest.mark.parametrize(
         "typed_field_args,expected_type",
         [
-            (("firstName", "string", ""), DataType.FIRST_NAME),
-            (("postalCode", "string", "zip"), DataType.POSTAL_CODE),
-            (("contact", "string", "email"), DataType.EMAIL),
-            (("bestDateForDancing", "string", "date-time"), DataType.DATE_TIME),
-            (("randomThought", "string", ""), DataType.SENTENCE),
-            (("numRandomThoughts", "integer", ""), DataType.INTEGER),
-            (("numRandomThoughts", "integer", ""), DataType.INTEGER),
-            (("randomThing", "badType", "badFormat"), None),
-            (("", "", ""), None),
+            (("firstName", "string", "", None), DataType.FIRST_NAME),
+            (("postalCode", "string", "zip", None), DataType.POSTAL_CODE),
+            (("contact", "string", "email", None), DataType.EMAIL),
+            (("bestDateForDancing", "string", "date-time", None), DataType.DATE_TIME),
+            (("randomThought", "string", "", None), DataType.SENTENCE),
+            (("numRandomThoughts", "integer", "", None), DataType.INTEGER),
+            (("numRandomThoughts", "integer", "", None), DataType.INTEGER),
+            (("randomThing", "badType", "badFormat", None), None),
+            (("", "", "", None), None),
         ],
     )
     def test__parse_typed_field(self, typed_field_args, expected_type):
