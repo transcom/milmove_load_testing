@@ -15,6 +15,8 @@ executors:
     resource_class: small
     docker:
       - image: milmove/circleci-docker:86f3163991b707d1351cc01d2c9cdc2dbaae4e93
+    environment:
+      PIPENV_VENV_IN_PROJECT: true
 
 jobs:
 
@@ -28,14 +30,30 @@ jobs:
       - restore_cache:
           keys:
             - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+      - restore_cache:  # ensure this step occurs *before* installing dependencies
+          key: v1-pipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run: pre-commit install-hooks
       - run:
           name: Run pre-commit tests
           command: pre-commit run --all-files
+      - run:
+          name: install dependencies
+          command: |  # use pipenv to install dependencies
+            pipenv sync -d
+      # The tests are not passing right now!!!
+      # - run:
+      #     name: run tests
+      #     command: |
+      #       pipenv run pytest --junit-xml=junit/report.xml
+
       - save_cache:
           key: v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
           paths:
             - ~/.cache/pre-commit
+      - save_cache:
+          key: v1-pipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
 
 workflows:
   version: 2
