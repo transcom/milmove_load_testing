@@ -385,7 +385,7 @@ class APIParser:
 
 
 class PrimeAPIParser(APIParser):
-    """ Parser class for the Prime API. """
+    """Parser class for the Prime API."""
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml"
 
@@ -442,7 +442,7 @@ class PrimeAPIParser(APIParser):
 
 
 class SupportAPIParser(PrimeAPIParser):
-    """ Parser class for the Support API. """
+    """Parser class for the Support API."""
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/support.yaml"
 
@@ -478,6 +478,6 @@ class SupportAPIParser(PrimeAPIParser):
 
 
 class GHCAPIParser(APIParser):
-    """ Parser class for the GHC API. """
+    """Parser class for the GHC API."""
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"

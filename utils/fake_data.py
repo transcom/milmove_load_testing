@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class MilMoveProvider(AddressProvider, DateProvider):
-    """ Faker Provider class for sending back customized MilMove data. """
+    """Faker Provider class for sending back customized MilMove data."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -111,7 +111,7 @@ class MilMoveProvider(AddressProvider, DateProvider):
 
 
 class MilMoveData:
-    """ Base class to return fake data to use in MilMove endpoints. """
+    """Base class to return fake data to use in MilMove endpoints."""
 
     def __init__(self):
         """
@@ -141,11 +141,11 @@ class MilMoveData:
         }
 
     def get_random_choice(self, choices):
-        """ Given a list of random choices, returns one of them. """
+        """Given a list of random choices, returns one of them."""
         return self.fake.random_element(choices)
 
     def get_fake_data_for_type(self, data_type, params=None):
-        """ Given a specific data type, returns faker data for that type (if a mapping exists). """
+        """Given a specific data type, returns faker data for that type (if a mapping exists)."""
         try:
             return self.data_types[data_type](*params)
         except KeyError:  # data_type isn't in dictionary

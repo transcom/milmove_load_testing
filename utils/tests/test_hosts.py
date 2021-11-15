@@ -13,7 +13,7 @@ from utils.base import ImplementationError
 
 
 class TestMilMoveDomain:
-    """ Tests the MilMoveDomain class and its methods. """
+    """Tests the MilMoveDomain class and its methods."""
 
     def test_host_name(self):
         assert (
@@ -29,11 +29,11 @@ class TestMilMoveDomain:
 
 
 class TestMilMoveHostMixin:
-    """ Tests the MilMoveHostMixin class and its methods. """
+    """Tests the MilMoveHostMixin class and its methods."""
 
     @classmethod
     def setup_class(cls):
-        """ Define and initialize classes to be tested """
+        """Define and initialize classes to be tested"""
 
         class HostUser(MilMoveHostMixin):
             # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove environment:

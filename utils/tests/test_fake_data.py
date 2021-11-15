@@ -12,11 +12,11 @@ from utils.fake_data import MilMoveProvider, MilMoveData
 
 
 class TestMilMoveProvider:
-    """ Tests the MilMoveProvide class and its methods. """
+    """Tests the MilMoveProvide class and its methods."""
 
     @classmethod
     def setup_class(cls):
-        """ Initialize the MilMoveProvide that will be tested. """
+        """Initialize the MilMoveProvide that will be tested."""
         cls.fake = Faker()
         cls.fake.add_provider(MilMoveProvider)
         cls.provider = MilMoveProvider(Generator())
@@ -106,11 +106,11 @@ class TestMilMoveProvider:
 
 
 class TestMilMoveData:
-    """ Tests the MilMoveData class and its methods. """
+    """Tests the MilMoveData class and its methods."""
 
     @classmethod
     def setup_class(cls):
-        """ Initialize the MilMoveData that will be tested. """
+        """Initialize the MilMoveData that will be tested."""
         cls.data = MilMoveData()
 
     def test_init(self):

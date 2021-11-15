@@ -15,13 +15,13 @@ from .params_parsers import *
 
 
 class TestAPIParser:
-    """ Tests the APIParser class and its methods. """
+    """Tests the APIParser class and its methods."""
 
     TEST_API = os.path.join(STATIC_FILES, "test_api.yaml")
 
     @classmethod
     def setup_class(cls):
-        """ Initialize the APIParser that will be tested. """
+        """Initialize the APIParser that will be tested."""
         cls.parser = APIParser(api_file=cls.TEST_API)
 
     def test_init(self):
@@ -145,7 +145,7 @@ class TestAPIParser:
         ],
     )
     def test__parse_definition(self, name, definition, expected_type):
-        """ Tests that _parse_definition returns the correct field type. """
+        """Tests that _parse_definition returns the correct field type."""
         field = self.parser._parse_definition(name, definition)
 
         assert field is not None
@@ -161,7 +161,7 @@ class TestAPIParser:
         ],
     )
     def test__parse_object_field(self, object_name, object_def, num_fields_expected):
-        """ Tests that an ObjectField with the correct properties is returned. """
+        """Tests that an ObjectField with the correct properties is returned."""
         field = self.parser._parse_object_field(object_name, object_def)
 
         assert field.name == object_name
@@ -169,7 +169,7 @@ class TestAPIParser:
         assert len(field.object_fields) == num_fields_expected
 
     def test__parse_discriminator(self):
-        """ Tests that a polymorphic API definition is parsed correctly. """
+        """Tests that a polymorphic API definition is parsed correctly."""
         object_field = ObjectField(name="trees")
         object_field = self.parser._parse_discriminator(object_field, TREE_DEF)
 
@@ -195,7 +195,7 @@ class TestAPIParser:
         "array_name,array_def", [("AppleTrees", APPLE_TREES_DEF), ("trees", ORCHARD_DEF["properties"]["trees"])]
     )
     def test__parse_array_field(self, array_name, array_def):
-        """ Tests that the correct ArrayField object is returned from _parse_array_field. """
+        """Tests that the correct ArrayField object is returned from _parse_array_field."""
         array_field = self.parser._parse_array_field(array_name, array_def)
 
         assert array_field is not None
@@ -220,7 +220,7 @@ class TestAPIParser:
         ],
     )
     def test__parse_typed_field(self, typed_field_args, expected_type):
-        """ Tests that the correct BaseAPIField is generated for a given field name, type, and format. """
+        """Tests that the correct BaseAPIField is generated for a given field name, type, and format."""
         if not expected_type:
             assert self.parser._parse_typed_field(*typed_field_args) is None
             return  # done with this test
@@ -244,16 +244,16 @@ class TestAPIParser:
         ],
     )
     def test__approximate_str_type(self, field_name, expected_type):
-        """ Test that field names are being used to approximate the closest data type. """
+        """Test that field names are being used to approximate the closest data type."""
         assert self.parser._approximate_str_type(field_name) == expected_type
 
 
 class TestPrimeAPIParser:
-    """ Tests some of the custom methods on the PrimeAPIParser class """
+    """Tests some of the custom methods on the PrimeAPIParser class"""
 
     @classmethod
     def setup_class(cls):
-        """ Initialize the APIParser that will be tested. """
+        """Initialize the APIParser that will be tested."""
         cls.parser = PrimeAPIParser()
 
     @pytest.mark.parametrize(

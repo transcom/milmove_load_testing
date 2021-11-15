@@ -13,11 +13,11 @@ from utils.fake_data import MilMoveProvider, MilMoveData
 
 
 class TestBaseAPIField:
-    """ Tests the BaseAPIField class and its methods """
+    """Tests the BaseAPIField class and its methods"""
 
     @classmethod
     def setup_class(cls):
-        """ Initialize the BaseAPIField that will be tested. """
+        """Initialize the BaseAPIField that will be tested."""
         cls.field = BaseAPIField(DataType.STREET_ADDRESS, name="streetAddress")
         cls.faker = MilMoveData()
 
@@ -48,7 +48,7 @@ class TestBaseAPIField:
 class TestEnumField:
     @classmethod
     def setup_class(cls):
-        """ Initialize the EnumField that will be tested. """
+        """Initialize the EnumField that will be tested."""
         cls.options = ["PERMANENT_CHANGE_OF_STATION", "RETIREMENT", "SEPARATION", "GHC", "NTS"]
         cls.enum_field = EnumField(name="ordersType", options=cls.options)
         cls.faker = MilMoveData()
@@ -61,7 +61,7 @@ class TestEnumField:
 class TestArrayField:
     @classmethod
     def setup_class(cls):
-        """ Initialize the ArrayField that will be tested. """
+        """Initialize the ArrayField that will be tested."""
         items_field = BaseAPIField(data_type=DataType.PHONE, name="phoneNumber")
         cls.array_field = ArrayField(name="phoneNumbers", min_items=1, max_items=5, items_field=items_field)
         cls.faker = MilMoveData()
@@ -76,11 +76,11 @@ class TestArrayField:
 
 
 class TestObjectField:
-    """ Tests the ObjectField class and its methods. """
+    """Tests the ObjectField class and its methods."""
 
     @classmethod
     def setup_class(cls):
-        """ Initialize the ObjectField that will be tested. """
+        """Initialize the ObjectField that will be tested."""
         cls.object_field = ObjectField(name="objectField")
         cls.faker = MilMoveData()
 
@@ -97,7 +97,7 @@ class TestObjectField:
         assert self.object_field.required is False
 
     def test_add_field(self):
-        """ Tests adding one field to the ObjectField instance's list of sub-fields. """
+        """Tests adding one field to the ObjectField instance's list of sub-fields."""
         self.object_field.object_fields = []
 
         test_field = BaseAPIField(name="baseField", data_type=DataType.INTEGER)
@@ -126,7 +126,7 @@ class TestObjectField:
         assert test_object in self.object_field.object_fields
 
     def test_add_fields(self):
-        """ Tests adding multiple fields at once to the the ObjectField's list of sub-fields. Calls add_field. """
+        """Tests adding multiple fields at once to the the ObjectField's list of sub-fields. Calls add_field."""
         self.object_field.object_fields = []
 
         field_list = [
@@ -180,7 +180,7 @@ class TestObjectField:
             self.object_field.combine_fields("field string")
 
     def test_get_field(self):
-        """ Tests retrieving a given field, by name, from this ObjectField's list of sub-fields. """
+        """Tests retrieving a given field, by name, from this ObjectField's list of sub-fields."""
         self.object_field.object_fields = []
 
         base_field = BaseAPIField(name="baseField", data_type=DataType.INTEGER)
@@ -189,7 +189,7 @@ class TestObjectField:
         assert returned_field == base_field
 
     def test_update_required_fields(self):
-        """ Tests updating a list of fields to be 'required' """
+        """Tests updating a list of fields to be 'required'"""
         self.object_field.object_fields = []
 
         base_field = BaseAPIField(name="baseField", data_type=DataType.INTEGER)
@@ -212,7 +212,7 @@ class TestObjectField:
         assert space_field.required is True
 
     def test_add_discriminator_value(self):
-        """ Tests adding a discriminator for sub-fields. """
+        """Tests adding a discriminator for sub-fields."""
         # Using the four fields set previous in test_update_required_fields
         assert len(self.object_field.object_fields) > 0
 
@@ -260,7 +260,7 @@ class TestObjectField:
 
 
 class TestObjectFieldFaker:
-    """ Tests the ObjectField class' `generate_fake_data` method. """
+    """Tests the ObjectField class' `generate_fake_data` method."""
 
     MOCK_FAKE_DATA = {
         DataType.INTEGER: 112358,
@@ -274,7 +274,7 @@ class TestObjectFieldFaker:
 
     @classmethod
     def setup_class(cls):
-        """ Init and setup the ObjectField for our fake data generation tests. """
+        """Init and setup the ObjectField for our fake data generation tests."""
         cls.faker = MilMoveData()
         cls.object_field = ObjectField(name="objectField")
 
