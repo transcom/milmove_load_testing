@@ -15,9 +15,9 @@ black = "==21.10b0"
 flake8 = "*"
 pytest = "*"
 pytest-mock = "*"
-python-language-server = "*"
 cryptography = "*"
 responses = "*"
+python-lsp-server = "*"
 
 [requires]
 python_version = "3.9"
