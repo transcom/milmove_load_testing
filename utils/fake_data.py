@@ -146,6 +146,8 @@ class MilMoveData:
 
     def get_fake_data_for_type(self, data_type, params=None):
         """Given a specific data type, returns faker data for that type (if a mapping exists)."""
+        if not params:
+            params = []
         try:
             return self.data_types[data_type](*params)
         except KeyError:  # data_type isn't in dictionary
