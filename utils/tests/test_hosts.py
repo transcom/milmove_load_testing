@@ -19,7 +19,7 @@ class TestMilMoveDomain:
         assert (
             MilMoveDomain.match(MilMoveDomain.PRIME).host_name("local", True, 1111, "http") == "http://primelocal:1111"
         )
-        assert MilMoveDomain.match(MilMoveDomain.PRIME).host_name("exp") == "https://prime.exp.move.mil"
+        assert MilMoveDomain.match(MilMoveDomain.PRIME).host_name("exp") == "https://prime.loadtest.dp3.us"
 
         with pytest.raises(ImplementationError):
             MilMoveDomain.match(MilMoveDomain.PRIME).host_name("local", True, 11111)
@@ -83,8 +83,8 @@ class TestMilMoveHostMixin:
         assert self.TestUser2.host is None
 
         self.TestUser1.set_host_name()
-        assert self.TestUser1.host == "https://api.exp.move.mil"
-        assert self.TestUser2.host == "https://api.exp.move.mil"
+        assert self.TestUser1.host == "https://api.loadtest.dp3.us"
+        assert self.TestUser2.host == "https://api.loadtest.dp3.us"
 
     @mock.patch.dict(os.environ, {"MOVE_MIL_EXP_TLS_CERT": "test_cert", "MOVE_MIL_EXP_TLS_KEY": "test_key"})
     def test_set_cert_kwargs(self):
@@ -151,6 +151,7 @@ def test_clean_milmove_host_users(mocker):
         is_api = True
         host = "exp"
         tasks = {}
+        weight = 1
 
     env = Environment(user_classes=[MockUser])
     TestUser = MockUser()
