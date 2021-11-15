@@ -29,3 +29,9 @@ repos:
     hooks:
       - id: markdownlint
         entry: markdownlint --ignore .github/*.md
+
+  - repo: git://github.com/detailyang/pre-commit-shell
+    rev: 1.0.5
+    hooks:
+      - id: shell-lint
+        args: [-x]
