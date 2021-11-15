@@ -16,6 +16,8 @@ flake8 = "*"
 pytest = "*"
 pytest-mock = "*"
 python-language-server = "*"
+cryptography = "*"
+responses = "*"
 
 [requires]
 python_version = "3.9"
