@@ -330,7 +330,7 @@ class TestObjectFieldFaker:
         def mock_get_random_choice(_, choices):
             return choices[0] if choices else None
 
-        def mock_get_fake_data_for_type(_, data_type):
+        def mock_get_fake_data_for_type(_, data_type, params=None):
             return TestObjectFieldFaker.MOCK_FAKE_DATA[data_type]
 
         mocker.patch.object(MilMoveData, "get_random_choice", mock_get_random_choice)
@@ -345,8 +345,10 @@ class TestObjectFieldFaker:
         """
         self.setup_mocks(mocker)
 
+        fake_data = self.object_field.generate_fake_data(self.faker)
+
         # require_all=False, so we should only see required fields:
-        assert self.object_field.generate_fake_data(self.faker) == {
+        assert fake_data == {
             "objectArray": [
                 {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},
                 {"integer": self.MOCK_FAKE_DATA[DataType.INTEGER]},

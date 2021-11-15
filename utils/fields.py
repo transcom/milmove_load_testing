@@ -29,6 +29,9 @@ class BaseAPIField:
         if not self.discriminator_values:
             self.discriminator_values = []
 
+        if not self.definition:
+            self.definition = {}
+
     def add_discriminator_value(self, value):
         """
         Adds a discriminator value to the current list of discriminator values on this field.
