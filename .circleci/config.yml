@@ -43,9 +43,12 @@ jobs:
       - run:
           name: run tests
           command: |
-            pipenv run pytest --junit-xml=junit/report.xml
+            pipenv run pytest --junit-xml=junit/report.xml --cov-report html:coverage_html --cov=utils --cov=tasks
       - store_test_results:
           path: ~/project/junit/report.xml
+      - store_artifacts:
+          path: ~/project/coverage_html
+          destination: coverage_html
       - save_cache:
           key: v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
           paths:
