@@ -18,7 +18,8 @@ RUN pip install pipenv
 # outside of virtualenv
 COPY Pipfile Pipfile.lock /app/
 RUN set -x \
-    && pipenv lock --keep-outdated --requirements | pip install -r /dev/stdin
+    && pipenv install --system --deploy --site-packages \
+    && rm -rf /root/.local/share/virtualenv /root/.local/share/virtualenvs
 
 # Copy over everything else for the app:
 COPY docker.__init__.py /app/__init__.py
