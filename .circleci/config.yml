@@ -31,7 +31,7 @@ jobs:
           keys:
             - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
       - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: v1-pipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
       - run: pre-commit install-hooks
       - run:
           name: Run pre-commit tests
@@ -54,7 +54,7 @@ jobs:
           paths:
             - ~/.cache/pre-commit
       - save_cache:
-          key: v1-pipenv-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
           paths:
             - ".venv"
 
