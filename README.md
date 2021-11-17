@@ -172,7 +172,7 @@ level of this repo and reload your shell.
   This will install all the `python` dependencies in `requirements.txt` and `requirements-dev.txt`. It will also install
   the `pre-commit` hooks.
 
-*Note: The requirements are indicated in the `Pipenv` file.
+*Note: The requirements are indicated in the `Pipfile`.
 
 ### Unsupported Setup
 
