@@ -16,7 +16,6 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
 <!-- Uses gh-md-toc to generate Table of Contents: https://github.com/ekalinin/github-markdown-toc -->
 <!-- markdownlint-disable -->
 <!--ts-->
-
 * [MilMove Load Testing](#milmove-load-testing)
   * [License Information](#license-information)
   * [Table of Contents](#table-of-contents)
@@ -25,9 +24,11 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [tasks/](#tasks)
     * [utils/](#utils)
     * [static/](#static)
+    * [ecs](#ecs)
+    * [scripts](#scripts)
   * [Getting Started](#getting-started)
     * [Base Installation](#base-installation)
-      * [Setup: Pyenv](#setup-pyenv)
+      * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
       * [Setup: Nix](#setup-nix)
     * [Installing Python Dependencies and Pre-commit Hooks](#installing-python-dependencies-and-pre-commit-hooks)
     * [Unsupported Setup](#unsupported-setup)
@@ -50,14 +51,14 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Deploying New Tests](#deploying-new-tests)
   * [Fake Data Generation](#fake-data-generation)
     * [Creating a custom parser](#creating-a-custom-parser)
-  * [Load Testing against AWS Loadtest Environment](#load-testing-against-aws-loatest-environment)
+  * [Load Testing against AWS Loadtest Environment](#load-testing-against-aws-loadtest-environment)
     * [Prime API](#prime-api)
     * [MilMove/Office domains](#milmoveoffice-domains)
     * [Handling Rate Limiting](#handling-rate-limiting)
     * [Metrics](#metrics)
   * [References](#references)
 
-<!-- Added by: felipe, at: Tue Oct 26 12:32:37 PDT 2021 -->
+<!-- Added by: felipe, at: Wed Nov 17 15:44:25 PST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -254,12 +255,6 @@ local environment:
 ```shell script
 make db_dev_e2e_populate  ## populates the development database with test data
 make server_run
-```
-
-Back in `milmove_load_testing`, make sure you activate your virtual environment before attempting to run tests:
-
-```shell script
-pyenv activate locust-venv
 ```
 
 ### Setting up Tests in AWS

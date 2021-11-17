@@ -2,9 +2,6 @@
 
 python_version="3.9.6"
 
-# This file is named a bit confusingly when using virtualenvs...
-venv_name="$(cat < ".python-version")"
-
 ##### START OF HELPER FUNCTIONS #####
 
 # If this breaks, you can look at the config instructions on their README
@@ -25,8 +22,6 @@ configure_shell_file_for_pyenv() {
 
   elif [[ $SHELL == *zsh ]]; then
     # shellcheck disable=SC2016
-    echo 'eval "$(pyenv init --path)"' >> ~/.zprofile
-    # shellcheck disable=SC2016
     append_to_file "$shell_file" 'eval "$(pyenv init -)"'
 
   elif [[ $SHELL == *bash ]]; then
@@ -41,17 +36,6 @@ configure_shell_file_for_pyenv() {
   fi
 }
 
-# If this breaks, you can see the config instructions on their README
-# https://github.com/pyenv/pyenv-virtualenv#installing-with-homebrew-for-macos-users
-configure_shell_file_for_pyenv_virtualenv() {
-  if [[ $SHELL == *fish ]]; then
-    append_to_file "$shell_file" 'status --is-interactive; and source (pyenv virtualenv-init - | psub)'
-  else
-    # shellcheck disable=SC2016
-    append_to_file "$shell_file" 'eval "$(pyenv virtualenv-init -)"'
-  fi
-}
-
 install_python_with_pyenv() {
   fancy_echo "Installing python $python_version ..."
 
@@ -60,11 +44,6 @@ install_python_with_pyenv() {
   else
     pyenv install "$python_version"
   fi
-}
-
-create_virtualenv() {
-  fancy_echo "Setting up virtualenv"
-  pyenv virtualenv "$python_version" "$venv_name" || fancy_echo "Using existing $venv_name..."
 }
 
 # If direnv stops working, it might be because the setup commands changed.
@@ -100,7 +79,6 @@ if [ -f "Brewfile.local" ]; then
 fi
 
 configure_shell_file_for_pyenv
-configure_shell_file_for_pyenv_virtualenv
 
 # make sure that any functions that write to the shell file appear before this
 # direnv function below because the direnv line has to be at the very end of the
@@ -108,7 +86,6 @@ configure_shell_file_for_pyenv_virtualenv
 configure_shell_file_for_direnv
 
 install_python_with_pyenv
-create_virtualenv
 set_up_markdown_toc
 
 fancy_echo "******* IMPORTANT **************************************"
