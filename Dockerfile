@@ -5,11 +5,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # we do not want pipenv to create a virtualenv inside the container
 ENV PIPENV_SITE_PACKAGES 1
 
-ARG locustfile
-ENV LOCUSTFILE=$locustfile
-
-RUN echo $LOCUSTFILE
-
 WORKDIR /app
 
 RUN pip install pipenv
