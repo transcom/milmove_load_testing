@@ -1,6 +1,0 @@
-black>=19.3b0
-cryptography
-flake8
-pytest
-pytest-mock
-responses

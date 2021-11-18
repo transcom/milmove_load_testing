@@ -204,7 +204,7 @@ class PrimeDataStorageMixin:
             )
 
     def has_all_default_mto_ids(self) -> bool:
-        """ Boolean indicating that we have all the values we need for creating new MTOs. """
+        """Boolean indicating that we have all the values we need for creating new MTOs."""
         return self.default_mto_ids and all(self.default_mto_ids.values())
 
 

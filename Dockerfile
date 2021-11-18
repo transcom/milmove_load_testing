@@ -2,6 +2,8 @@ FROM python:3.9.6
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
+# we do not want pipenv to create a virtualenv inside the container
+ENV PIPENV_SITE_PACKAGES 1
 
 ARG locustfile
 ENV LOCUSTFILE=$locustfile
@@ -10,9 +12,14 @@ RUN echo $LOCUSTFILE
 
 WORKDIR /app
 
-# Copy over and install requirements:
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+RUN pip install pipenv
+
+# Copy over and install Pipfiles and use pip to install requirements
+# outside of virtualenv
+COPY Pipfile Pipfile.lock /app/
+RUN set -x \
+    && pipenv install --system --deploy --site-packages \
+    && rm -rf /root/.local/share/virtualenv /root/.local/share/virtualenvs
 
 # Copy over everything else for the app:
 COPY docker.__init__.py /app/__init__.py

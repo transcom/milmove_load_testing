@@ -4,7 +4,7 @@ from enum import Enum
 
 
 class ImplementationError(Exception):
-    """ Base exception when a util hasn't been implemented correctly. """
+    """Base exception when a util hasn't been implemented correctly."""
 
 
 class ValueEnum(Enum):
@@ -22,5 +22,5 @@ class ValueEnum(Enum):
 
     @classmethod
     def match(cls, value):
-        """ Returns the first literal that matches the value - throws an IndexError if not found. """
+        """Returns the first literal that matches the value - throws an IndexError if not found."""
         return [c for c in cls if c == value or c.value == value][0]

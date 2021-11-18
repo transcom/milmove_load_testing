@@ -14,7 +14,9 @@ executors:
   primary:
     resource_class: small
     docker:
-      - image: trussworks/circleci-docker-primary:c3a4d876a5681cceef9f927392732c259308d158
+      - image: milmove/circleci-docker:86f3163991b707d1351cc01d2c9cdc2dbaae4e93
+    environment:
+      PIPENV_VENV_IN_PROJECT: true
 
 jobs:
 
@@ -28,14 +30,33 @@ jobs:
       - restore_cache:
           keys:
             - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+      - restore_cache:  # ensure this step occurs *before* installing dependencies
+          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
       - run: pre-commit install-hooks
       - run:
           name: Run pre-commit tests
           command: pre-commit run --all-files
+      - run:
+          name: install dependencies
+          command: |  # use pipenv to install dependencies
+            pipenv sync -d
+      - run:
+          name: run tests
+          command: |
+            pipenv run pytest --junit-xml=junit/report.xml --cov-report html:coverage_html --cov=utils --cov=tasks
+      - store_test_results:
+          path: ~/project/junit/report.xml
+      - store_artifacts:
+          path: ~/project/coverage_html
+          destination: coverage_html
       - save_cache:
           key: v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
           paths:
             - ~/.cache/pre-commit
+      - save_cache:
+          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
 
 workflows:
   version: 2

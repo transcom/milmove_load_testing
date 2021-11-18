@@ -34,7 +34,7 @@ QUEUES = "queues"
 
 
 class DataType(ValueEnum):
-    """ Swagger data types that we expect to deal with. Uses camelcase in values to match. """
+    """Swagger data types that we expect to deal with. Uses camelcase in values to match."""
 
     FIRST_NAME = "firstName"
     LAST_NAME = "lastName"
