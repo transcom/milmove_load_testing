@@ -49,9 +49,16 @@ raw_task_definition=$(aws ecs describe-task-definition \
 
 # LOCUSTFILE can be set in the build overrides of the CodeBuild config
 : "${LOCUSTFILE:=/app/locustfiles/prime.py}"
+
+# See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
+cpu="1024"
+memory="2048"
+
 # update with new settings (e.g. image)
 new_task_definition=$(
   echo "${raw_task_definition}" | \
+    jq ".cpu = \"${cpu}\"" | \
+    jq ".memory = \"${memory}\"" | \
     jq ".containerDefinitions[0].image = \"${image}\"" | \
     jq ".containerDefinitions[0].entryPoint = [\"locust\"]" | \
     jq ".containerDefinitions[0].command = [\"-f\", \"${LOCUSTFILE}\", \"--host\", \"dp3\", \"--web-port\", \"4000\"]" \
