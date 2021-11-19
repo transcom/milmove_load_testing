@@ -52,7 +52,7 @@ raw_task_definition=$(aws ecs describe-task-definition \
 
 # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
 cpu="1024"
-memory="2048"
+memory="8192"
 
 container_def_len=$(echo "${raw_task_definition}" |\
                       jq '.containerDefinitions | length')
