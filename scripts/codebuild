@@ -54,6 +54,40 @@ raw_task_definition=$(aws ecs describe-task-definition \
 cpu="1024"
 memory="2048"
 
+container_def_len=$(echo "${raw_task_definition}" |\
+                      jq '.containerDefinitions | length')
+
+if [[ "1" == "${container_def_len}" ]]; then
+  # we need to add the aws otel collector sidecar so we can get
+  # performance metrics about how locust is running
+  container_name=$(echo "${raw_task_definition}" | \
+                     jq -r '.containerDefinitions[0].name')
+  jq_log_config='.containerDefinitions[0].logConfiguration'
+  orig_log_config=$(echo "${raw_task_definition}" | \
+                      jq "${jq_log_config}")
+  jq_stream_prefix='.options."awslogs-stream-prefix"'
+  orig_stream_prefix=$(echo "${orig_log_config}" | \
+                 jq -r "${jq_stream_prefix}")
+  log_config=$(echo "${orig_log_config}" | \
+                 jq "${jq_stream_prefix} = \"otel-${orig_stream_prefix}\""
+                 )
+aws_otel_collector="\
+{ \
+  \"name\": \"otel-${container_name}\", \
+  \"image\": \"amazon/aws-otel-collector:v0.14.0\", \
+  \"essential\": true, \
+  \"command\": [ \
+    \"--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml\" \
+  ], \
+  \"logConfiguration\": $log_config \
+}"
+
+  raw_task_definition=$(
+    echo "${raw_task_definition}" | \
+      jq ".containerDefinitions[.containerDefinitions | length] |= . + ${aws_otel_collector}"
+                     )
+fi
+
 # update with new settings (e.g. image)
 new_task_definition=$(
   echo "${raw_task_definition}" | \
