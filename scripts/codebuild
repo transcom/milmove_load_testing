@@ -6,6 +6,7 @@ set -x
 echo "${DOCKER_PASSWORD}" | \
   docker login --username "${DOCKER_USERNAME}" --password-stdin
 
+# CODEBUILD_RESOLVED_SOURCE_VERSION is the git sha
 tag=${CODEBUILD_RESOLVED_SOURCE_VERSION:-exp}
 image="${ECR_REPO}:${tag}"
 
@@ -48,6 +49,8 @@ raw_task_definition=$(aws ecs describe-task-definition \
                         jq "${jq_filter}")
 
 # LOCUSTFILE can be set in the build overrides of the CodeBuild config
+# The leading colon indicates this line only modifies the LOCUSTFILE
+# environment variable and has no other effects
 : "${LOCUSTFILE:=/app/locustfiles/prime.py}"
 
 # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
