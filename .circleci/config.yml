@@ -35,7 +35,7 @@ jobs:
           name: install dependencies
           command: |  # use pipenv to install dependencies
             pipenv sync -d
-      - run: pre-commit install --install-hooks
+      - run: pipenv run pre-commit install --install-hooks
       - run:
           name: Run pre-commit tests
           command: pipenv run pre-commit run --all-files
