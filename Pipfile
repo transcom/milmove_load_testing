@@ -17,6 +17,7 @@ pytest = "*"
 pytest-mock = "*"
 cryptography = "*"
 responses = "*"
+pre-commit = "*"
 python-lsp-server = "*"
 pytest-cov = "*"
 

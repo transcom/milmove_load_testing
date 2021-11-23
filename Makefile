@@ -1,10 +1,7 @@
 #! /usr/bin/make
 
-PRE_COMMIT:=/usr/local/bin/pre-commit
-
 ifdef NIX_PROFILE
 	USE_NIX:=true
-	PRE_COMMIT:=$(NIX_PROFILE)/bin/pre-commit
 endif
 
 PRIME_LOCUSTFILES=/app/locustfiles/prime.py
@@ -24,9 +21,8 @@ install_python_deps: ## Install all python dependencies/requirements
 
 .PHONY: ensure_pre_commit
 ensure_pre_commit: .git/hooks/pre-commit  ## Ensure pre-commit is installed
-.git/hooks/pre-commit: $(PRE_COMMIT)
-	pre-commit install
-	pre-commit install-hooks
+.git/hooks/pre-commit: $(shell which pre-commit)
+	pre-commit install --install-hooks
 
 .PHONY: pre_commit_update_deps
 pre_commit_update_deps:  ## Update pre-commit dependencies
