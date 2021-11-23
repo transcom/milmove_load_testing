@@ -38,7 +38,7 @@ jobs:
       - run: pre-commit install --install-hooks
       - run:
           name: Run pre-commit tests
-          command: pre-commit run --all-files
+          command: pipenv run pre-commit run --all-files
       - run:
           name: run tests
           command: |
