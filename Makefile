@@ -53,22 +53,22 @@ generate_readme_toc:  ## Re-generates and re-places the table of contents for th
 	./gh-md-toc --insert README.md
 
 .PHONY: load_test_prime
-load_test_prime: clean ensure_venv  ## Run load testing on the Prime API
+load_test_prime: clean  ## Run load testing on the Prime API
 	open http://localhost:8089
 	locust -f locustfiles/prime.py --host local
 
 .PHONY: load_test_office
-load_test_office: clean ensure_venv  ## Run load testing on the Office app
+load_test_office: clean  ## Run load testing on the Office app
 	open http://localhost:8089
 	locust -f locustfiles/office.py --host local
 
 .PHONY: load_test_milmove
-load_test_milmove: clean ensure_venv  ## Run load testing on the MilMove app
+load_test_milmove: clean  ## Run load testing on the MilMove app
 	open http://localhost:8089
 	locust -f locustfiles/milmove.py --host local
 
 .PHONY: load_test_prime_workflow
-load_test_prime_workflow: clean ensure_venv  ## Run load testing on the Prime API
+load_test_prime_workflow: clean  ## Run load testing on the Prime API
 	open http://localhost:8089
 	locust -f locustfiles/prime_workflow.py --host local
 
