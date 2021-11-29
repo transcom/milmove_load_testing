@@ -8,11 +8,11 @@ PRIME_LOCUSTFILES=/app/locustfiles/prime.py
 OFFICE_LOCUSTFILES=/app/locustfiles/office.py
 
 .PHONY: help
-help:  ## Print the help documentation
+help: ## Print the help documentation
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: install_tools
-install_tools:  ## Install tools needed for project.
+install_tools: ## Install tools needed for project.
 	scripts/install_tools
 
 .PHONY: install_python_deps
@@ -20,23 +20,23 @@ install_python_deps: ## Install all python dependencies/requirements
 	pipenv install
 
 .PHONY: ensure_pre_commit
-ensure_pre_commit: .git/hooks/pre-commit  ## Ensure pre-commit is installed
+ensure_pre_commit: .git/hooks/pre-commit ## Ensure pre-commit is installed
 .git/hooks/pre-commit: $(shell which pre-commit)
 	pre-commit install --install-hooks
 
 .PHONY: pre_commit_update_deps
-pre_commit_update_deps:  ## Update pre-commit dependencies
+pre_commit_update_deps: ## Update pre-commit dependencies
 	pre-commit autoupdate
 
 .PHONY: pre_commit_tests
-pre_commit_tests:  ## Run pre-commit tests
+pre_commit_tests: ## Run pre-commit tests
 	pre-commit run --all-files
 
 .PHONY: setup
-setup: install_python_deps ensure_pre_commit  ## Installs python dependencies and preps pre-commit
+setup: install_python_deps ensure_pre_commit ## Installs python dependencies and preps pre-commit
 
 .PHONY: clean
-clean:  ## Clean all generated files
+clean: ## Clean all generated files
 	find ./ -type d -name '__pycache__' -delete
 	find ./ -type f -name '*.pyc' -delete
 
@@ -49,31 +49,31 @@ lint: ## Run linting tests
 	flake8 .
 
 .PHONY: generate_readme_toc
-generate_readme_toc:  ## Re-generates and re-places the table of contents for the README.md
+generate_readme_toc: ## Re-generates and re-places the table of contents for the README.md
 	./gh-md-toc --insert README.md
 
 .PHONY: load_test_prime
-load_test_prime: clean ensure_venv  ## Run load testing on the Prime API
+load_test_prime: clean ## Run load testing on the Prime API
 	open http://localhost:8089
 	locust -f locustfiles/prime.py --host local
 
 .PHONY: load_test_office
-load_test_office: clean ensure_venv  ## Run load testing on the Office app
+load_test_office: clean ## Run load testing on the Office app
 	open http://localhost:8089
 	locust -f locustfiles/office.py --host local
 
 .PHONY: load_test_milmove
-load_test_milmove: clean ensure_venv  ## Run load testing on the MilMove app
+load_test_milmove: clean ## Run load testing on the MilMove app
 	open http://localhost:8089
 	locust -f locustfiles/milmove.py --host local
 
 .PHONY: load_test_prime_workflow
-load_test_prime_workflow: clean ensure_venv  ## Run load testing on the Prime API
+load_test_prime_workflow: clean ## Run load testing on the Prime API
 	open http://localhost:8089
 	locust -f locustfiles/prime_workflow.py --host local
 
 .PHONY: local_docker_build
-local_docker_build: clean  ## Build a Docker container to run load testing locally
+local_docker_build: clean ## Build a Docker container to run load testing locally
 	docker-compose -f docker-compose.local.yaml build locust
 
 .PHONY: local_docker_up
@@ -82,7 +82,7 @@ local_docker_up: ## Run load testing on the Prime API in local using a Docker co
 	LOCUSTFILES=$(PRIME_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up locust
 
 .PHONY: local_docker_down
-local_docker_down:  ## Shutdown any active local docker containers with docker-compose
+local_docker_down: ## Shutdown any active local docker containers with docker-compose
 	docker-compose -f docker-compose.local.yaml down locust
 
 .PHONY: local_docker_office_up
@@ -91,7 +91,7 @@ local_docker_office_up: ## Run load testing on the GHC API in local using a Dock
 	LOCUSTFILES=$(OFFICE_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up locust
 
 .PHONY: local_docker_report
-local_docker_report:  ## Run load testing automatically against a local server and generate reports
+local_docker_report: ## Run load testing automatically against a local server and generate reports
 	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"; LOCUSTFILES=$(PRIME_LOCUSTFILES) docker-compose -f docker-compose.local.yaml up --build prime-reporting
 	docker cp mmlt_prime_reporting:/app/static/reports static/local/
 
