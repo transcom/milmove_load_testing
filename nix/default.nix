@@ -40,6 +40,14 @@ in buildEnv {
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
+      name = "shellcheck-0.7.2";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = "8e1eab9eae4278c9bb1dcae426848a581943db5a";
+    }) {}).shellcheck
+
+    (import (builtins.fetchGit {
+      # Descriptive name to make the store path easier to identify
       name = "aws-vault-6.3.1";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
