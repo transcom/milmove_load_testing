@@ -4,5 +4,6 @@ brew 'direnv'
 brew 'libev'
 brew 'pyenv'
 brew 'pipenv'
+brew 'shellcheck'
 
 cask 'aws-vault'
