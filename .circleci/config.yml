@@ -10,11 +10,10 @@
 version: "2.1"
 
 executors:
-  # `main` uses the `trussworks/circleci-docker-primary` docker image with a checkout of the mymove code
   primary:
     resource_class: small
     docker:
-      - image: milmove/circleci-docker:86f3163991b707d1351cc01d2c9cdc2dbaae4e93
+      - image: cimg/python:3.9.6
     environment:
       PIPENV_VENV_IN_PROJECT: true
 
@@ -32,14 +31,14 @@ jobs:
             - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
       - restore_cache:  # ensure this step occurs *before* installing dependencies
           key: v1-pipenv-{{ checksum "Pipfile.lock" }}
-      - run: pre-commit install-hooks
-      - run:
-          name: Run pre-commit tests
-          command: pre-commit run --all-files
       - run:
           name: install dependencies
           command: |  # use pipenv to install dependencies
             pipenv sync -d
+      - run: pipenv run pre-commit install --install-hooks
+      - run:
+          name: Run pre-commit tests
+          command: pipenv run pre-commit run --all-files
       - run:
           name: run tests
           command: |

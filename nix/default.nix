@@ -40,14 +40,6 @@ in buildEnv {
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
-      name = "pre-commit-2.15.0";
-      url = "https://github.com/NixOS/nixpkgs/";
-      ref = "refs/heads/nixpkgs-unstable";
-      rev = "8112bb92f9df718eaa077ec77109eecc60240a72";
-    }) {}).pre-commit
-
-    (import (builtins.fetchGit {
-      # Descriptive name to make the store path easier to identify
       name = "aws-vault-6.3.1";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";

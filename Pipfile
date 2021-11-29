@@ -17,8 +17,9 @@ pytest = "*"
 pytest-mock = "*"
 cryptography = "*"
 responses = "*"
+pre-commit = "*"
 python-lsp-server = "*"
 pytest-cov = "*"
 
 [requires]
-python_version = "3.9"
+python_full_version = "3.9.6"
