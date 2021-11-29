@@ -6,7 +6,6 @@ from utils.hosts import MilMoveHostMixin, MilMoveDomain, clean_milmove_host_user
 from utils.parsers import GHCAPIParser, PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks, ServicesCounselorTasks, TOOTasks
 
-# from flask import make_response, redirect
 from gevent.pool import Group
 
 
