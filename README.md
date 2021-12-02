@@ -32,7 +32,6 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Setup: Nix](#setup-nix)
     * [Installing Python Dependencies and Pre-commit Hooks](#installing-python-dependencies-and-pre-commit-hooks)
     * [Unsupported Setup](#unsupported-setup)
-      * [Alternative Setup: Docker](#alternative-setup-docker)
     * [Troubleshooting](#troubleshooting)
     * [Testing](#testing)
   * [Running Load Tests](#running-load-tests)
@@ -58,7 +57,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Metrics](#metrics)
   * [References](#references)
 
-<!-- Added by: felipe, at: Wed Nov 17 15:44:25 PST 2021 -->
+<!-- Added by: felipe, at: Thu Dec  2 15:46:48 PST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -177,42 +176,25 @@ level of this repo and reload your shell.
 
 ### Unsupported Setup
 
-This is a setup that existed previously but will no longer be kept up to date or supported. It will possibly be removed
-entirely at a future date.
+Maintaining many ways to set up locally can be time-consuming, which is why we removed the `asdf` and docker setups.
 
-#### Alternative Setup: Docker
+The `asdf` end set-up was similar to the `pyenv` setup, but required many commands to have tweaks to work the same as
+the `pyenv` commands which made them harder to maintain.
 
-It might be possible to run load tests from within a docker container, though given recent updates this seems to not be
-fully functional. Rather than fix the local docker setup following those changes though, we have decided that we no
-longer support this setup for a few reasons, primarily these:
+As for docker, we had a few reasons for dropping support:
 
-* Locust is a tool that needs to reach the target host and running it from inside docker makes it harder to reach a server that is managed outside of docker.
-* Docker adds yet another layer for possible issues. We've experienced some problems in the past with docker network problems that were masked as locust errors. Errors like this are a pain to debug.
-* Our current setup using `direnv` and `pipenv` is fairly quick to set up using either `nix` or the `make install_tools` command, decreasing the "quick setup" case for using docker.
-* Maintaining many ways to set up locally can be time-consuming, which is why we removed the `asdf` setup and deprecated
-the docker setup.
+* Locust is a tool that needs to reach the target host and running it from inside docker makes it harder to reach a
+server that is managed outside of docker.
+* Docker adds yet another layer for possible issues. We've experienced some problems in the past with docker network
+problems that were masked as locust errors. Errors like this are a pain to debug.
+* Our current setup using `direnv` and `pipenv` is fairly quick to set up using either `nix` or the `make install_tools`
+command, decreasing the "quick setup" case for using docker.
 
-This requires Docker and `docker-compose` to be installed on your machine. Get them here:
+Setups were removed in the following PRs:
 
-* [Get Docker](https://docs.docker.com/get-docker/)
-* [Install Docker Compose](https://docs.docker.com/compose/install/) - version `1.27` or later
-
-To get your load testing Docker container up and running for the local environment, use the following commands:
-
-* `docker-compose -f docker-compose.local.yaml build`
-* `docker-compose -f docker-compose.local.yaml up`
-
-And when you are done with testing:
-
-* `docker-compose -f docker-compose.local.yaml build`
-
-You can also use the Makefile equivalents of these commands:
-
-* `make local_docker_build`
-* `make local_docker_up`
-* `make local_docker_down`
-
-As long as your local MilMove server is up and running, you are ready to run your tests!
+* [PR #74](https://github.com/transcom/milmove_load_testing/pull/74)
+* [PR #78](https://github.com/transcom/milmove_load_testing/pull/78)
+* [PR #89](https://github.com/transcom/milmove_load_testing/pull/89)
 
 ### Troubleshooting
 
