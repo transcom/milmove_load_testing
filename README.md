@@ -182,8 +182,17 @@ entirely at a future date.
 
 #### Alternative Setup: Docker
 
-It is also possible to run load tests from within a Docker container, eliminating the need to set up a valid python
-environment. This requires Docker and `docker-compose` to be installed on your machine. Get them here:
+It might be possible to run load tests from within a docker container, though given recent updates this seems to not be
+fully functional. Rather than fix the local docker setup following those changes though, we have decided that we no
+longer support this setup for a few reasons, primarily these:
+
+* Locust is a tool that needs to reach the target host and running it from inside docker makes it harder to reach a server that is managed outside of docker.
+* Docker adds yet another layer for possible issues. We've experienced some problems in the past with docker network problems that were masked as locust errors. Errors like this are a pain to debug.
+* Our current setup using `direnv` and `pipenv` is fairly quick to set up using either `nix` or the `make install_tools` command, decreasing the "quick setup" case for using docker.
+* Maintaining many ways to set up locally can be time-consuming, which is why we removed the `asdf` setup and deprecated
+the docker setup.
+
+This requires Docker and `docker-compose` to be installed on your machine. Get them here:
 
 * [Get Docker](https://docs.docker.com/get-docker/)
 * [Install Docker Compose](https://docs.docker.com/compose/install/) - version `1.27` or later
