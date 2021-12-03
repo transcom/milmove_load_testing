@@ -327,6 +327,8 @@ the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Te
 
 ### Running Tests for Reporting
 
+_NOTE_: THESE COMMANDS ARE DEPRECATED AND NOT WORKING AS OF 2021-11-17
+
 There are a couple of preset tests that have been set up to generate reports for later analysis. These commands are:
 
 ```shell
@@ -688,11 +690,11 @@ GHCTaskSet(ParserTaskMixin, ...):
         print(response.status_code, response.content)
 ```
 
-## Load Testing against AWS Experimental Environment
+## Load Testing against the AWS Loadtest Environment
 
 ### Prime API
 
-To load test against the Prime API in experimental, you will need to install and set up `direnv`, `chamber`, and
+To load test against the Prime API in the load test environment, you will need to install and set up `direnv`, `chamber`, and
 `aws-vault`. If you have already set up these tools in order to run the `mymove` project, you do not need to repeat
 these steps. Otherwise, please follow the instructions in the `mymove` repo to complete this setup:
 
@@ -700,8 +702,8 @@ these steps. Otherwise, please follow the instructions in the `mymove` repo to c
 * [Setup: AWS credentials and `aws-vault`](https://github.com/transcom/mymove#setup-aws-services-optional)
 
 Once you have loaded the secrets from `chamber`, which will include the experimental certificate and private key, you
-may run your load tests using "exp" as the host value. It is strongly recommended that you set up your `User` classes to
-subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "exp."
+may run your load tests using "dp3" as the host value. It is strongly recommended that you set up your `User` classes to
+subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "dp3"
 
 ### Handling Rate Limiting
 
