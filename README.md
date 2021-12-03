@@ -703,18 +703,6 @@ Once you have loaded the secrets from `chamber`, which will include the experime
 may run your load tests using "exp" as the host value. It is strongly recommended that you set up your `User` classes to
 subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "exp."
 
-### MilMove/Office domains
-
-To load test against the AWS Experimental Environment you must modify the
-[`DEVLOCAL_AUTH` environment variable](https://github.com/transcom/mymove/blob/master/config/env/exp.app.env#L8)
-and [deploy the code to the experimental environment](https://github.com/transcom/mymove/wiki/deploy-to-experimental).
-
-Then, if you have `User` classes that take advantage of the `MilMoveHostMixin` class, you may run your load tests using
-"exp" as the host value. If not, make sure to use the experimental domains as your host:
-
-* [https://my.exp.move.mil](https://my.exp.move.mil)
-* [https://office.exp.move.mil](https://office.exp.move.mil)
-
 ### Handling Rate Limiting
 
 Each environment is set to limit the number of requests from a single IP in a 5 minute period. The limit for the load testing environment is 2000.
