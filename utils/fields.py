@@ -29,6 +29,9 @@ class BaseAPIField:
         if not self.discriminator_values:
             self.discriminator_values = []
 
+        if not self.definition:
+            self.definition = {}
+
     def add_discriminator_value(self, value):
         """
         Adds a discriminator value to the current list of discriminator values on this field.
@@ -158,7 +161,7 @@ class ObjectField(BaseAPIField):
             self.object_fields = []
 
     def has_field(self, field_name: str):
-        """ Checks if this object contains a field with the provided name in its object_fields property. """
+        """Checks if this object contains a field with the provided name in its object_fields property."""
         return field_name in [f.name for f in self.object_fields]
 
     def add_field(self, field, unique=False):
@@ -273,7 +276,7 @@ class ObjectField(BaseAPIField):
 
     @staticmethod
     def skip_field(field, **kwargs):
-        """ Evaluate whether or not we should skip this field while generating fake data. """
+        """Evaluate whether or not we should skip this field while generating fake data."""
         # Check the discriminator above all (for polymorphic API data):
         if (d_value := kwargs.get("discriminator_value")) and not field.is_valid_discriminator(d_value):
             return True

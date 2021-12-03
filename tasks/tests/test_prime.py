@@ -17,7 +17,7 @@ class TestPrimeDataStorageMixin:
 
     @classmethod
     def setup_class(cls):
-        """ Define and initialize the classes that will be tested. """
+        """Define and initialize the classes that will be tested."""
 
         class PrimeStorage1(PrimeDataStorageMixin):
             DATA_LIST_MAX = 3
@@ -36,7 +36,7 @@ class TestPrimeDataStorageMixin:
         ],
     )
     def test_get_stored(self, object_key, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
 
         assert self.storage1.get_stored(object_key) in test_store
@@ -44,7 +44,7 @@ class TestPrimeDataStorageMixin:
         assert len(self.storage1.local_store[object_key]) == len(self.storage2.local_store[object_key])
 
     def test_get_stored__empty(self):
-        """ Test the get_stored() method with an empty list of data. """
+        """Test the get_stored() method with an empty list of data."""
         empty_list = "empty"
         self.storage1.local_store[empty_list] = []
 
@@ -59,7 +59,7 @@ class TestPrimeDataStorageMixin:
         ],
     )
     def test_get_stored_shipment_address(self, shipment_test_store):
-        """ Test the process of getting a random address from the MTO_SHIPMENT local store. """
+        """Test the process of getting a random address from the MTO_SHIPMENT local store."""
         self.storage1.local_store[MTO_SHIPMENT] = shipment_test_store
         field, address = self.storage1.get_stored_shipment_address()
 
@@ -76,7 +76,7 @@ class TestPrimeDataStorageMixin:
         ],
     )
     def test_get_stored_shipment_address__given_shipment(self, test_shipment):
-        """ Test the process of getting a random address from an MTO_SHIPMENT object passed in as an argument. """
+        """Test the process of getting a random address from an MTO_SHIPMENT object passed in as an argument."""
         test_shipment = {"pickupAddress": {"id": "1234"}, "destinationAddress": {"id": "5768"}}
         field, address = self.storage1.get_stored_shipment_address(test_shipment)
 
@@ -93,7 +93,7 @@ class TestPrimeDataStorageMixin:
         ],
     )
     def test_get_stored_shipment_address__none_found(self, test_store):
-        """ Test get_stored_shipment_address when there are no valid addresses. """
+        """Test get_stored_shipment_address when there are no valid addresses."""
         self.storage1.local_store[MTO_SHIPMENT] = test_store
         with pytest.raises(TypeError):
             _field, _address = self.storage1.get_stored_shipment_address()
@@ -110,7 +110,7 @@ class TestPrimeDataStorageMixin:
         ],
     )
     def test_add_stored(self, object_key, new_object, test_store):
-        """ Test adding an object to local storage. """
+        """Test adding an object to local storage."""
         self.storage1.local_store[object_key] = test_store
         self.storage1.add_stored(object_key, new_object)
 
@@ -119,7 +119,7 @@ class TestPrimeDataStorageMixin:
         assert len(self.storage1.local_store[object_key]) == len(self.storage2.local_store[object_key])
 
     def test_add_stored__list(self):
-        """ Test adding a list of objects to local storage. """
+        """Test adding a list of objects to local storage."""
         new_data = ["multiple", "new", "objects"]
         self.storage1.local_store[PAYMENT_REQUEST] = ["payment"]
         self.storage1.add_stored(PAYMENT_REQUEST, new_data)
@@ -140,7 +140,7 @@ class TestPrimeDataStorageMixin:
         ],
     )
     def test_update_stored(self, object_key, old_object, new_object, test_store):
-        """ Test updating an object that is already in the local storage. """
+        """Test updating an object that is already in the local storage."""
         self.storage1.local_store[object_key] = test_store
         self.storage1.update_stored(object_key, old_object, new_object)
 

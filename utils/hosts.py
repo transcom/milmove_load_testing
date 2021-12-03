@@ -233,12 +233,12 @@ class MilMoveHostMixin:
 
     @property
     def is_local(self):
-        """ Indicates if this user is using the local environment. """
+        """Indicates if this user is using the local environment."""
         return self.env == MilMoveEnv.LOCAL
 
     @property
     def is_deployed(self):
-        """ Indicates if this user is running in a deployed environment. """
+        """Indicates if this user is running in a deployed environment."""
         return self.env != MilMoveEnv.LOCAL
 
 

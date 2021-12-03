@@ -6,30 +6,111 @@ set -x
 echo "${DOCKER_PASSWORD}" | \
   docker login --username "${DOCKER_USERNAME}" --password-stdin
 
-#LOCUSTFILE can be set in the build overrides of the CodeBuild config
-docker build -t "${ECR_REPO}:exp" --build-arg locustfile="${LOCUSTFILE}" .
+# CODEBUILD_RESOLVED_SOURCE_VERSION is the git sha
+tag=${CODEBUILD_RESOLVED_SOURCE_VERSION:-exp}
+image="${ECR_REPO}:${tag}"
 
-aws ecr get-login-password --region $AWS_REGION \
+docker build -t "${image}" .
+
+aws ecr get-login-password --region "${AWS_REGION}" \
   | docker login --username AWS --password-stdin "${ECR_REPO}"
 
-docker push "${ECR_REPO}:exp"
+docker push "${ECR_REPO}:${tag}"
 
 #This will return an inactive task definition if a new one has been published
 #In that scenario you can specify the new revision manually in update-service
 current_task_definition=$(aws ecs describe-services \
                               --cluster loadtesting \
-                              --service exp-web | \
+                              --service exp-web)
+
+task_definition_name=$(echo "${current_task_definition}" | \
                             jq  '.services[0].taskDefinition' | \
                             cut -d/ -f 2 | \
                             tr -d '"')
 
-#This has not been replacing the current service so you may need to stop the
-#previous deployment until we can figure out why --force-new-deployment is
-#required for the same task definition revision.
+taskDefinitionKeys=(containerDefinitions
+                    family
+                    taskRoleArn
+                    executionRoleArn
+                    networkMode
+                    volumes
+                    placementConstraints
+                    cpu
+                    memory)
+
+joinedKeys=$(printf ",%s" "${taskDefinitionKeys[@]}")
+# remove leading comma
+joinedKeys=${joinedKeys:1}
+
+jq_filter=".taskDefinition | {${joinedKeys}}"
+
+raw_task_definition=$(aws ecs describe-task-definition \
+                          --task-definition "${task_definition_name}" | \
+                        jq "${jq_filter}")
+
+# LOCUSTFILE can be set in the build overrides of the CodeBuild config
+# The leading colon indicates this line only modifies the LOCUSTFILE
+# environment variable and has no other effects
+: "${LOCUSTFILE:=/app/locustfiles/prime.py}"
+
+# See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
+cpu="1024"
+memory="8192"
+
+container_def_len=$(echo "${raw_task_definition}" |\
+                      jq '.containerDefinitions | length')
+
+if [[ "1" == "${container_def_len}" ]]; then
+  # we need to add the aws otel collector sidecar so we can get
+  # performance metrics about how locust is running
+  container_name=$(echo "${raw_task_definition}" | \
+                     jq -r '.containerDefinitions[0].name')
+  jq_log_config='.containerDefinitions[0].logConfiguration'
+  orig_log_config=$(echo "${raw_task_definition}" | \
+                      jq "${jq_log_config}")
+  jq_stream_prefix='.options."awslogs-stream-prefix"'
+  orig_stream_prefix=$(echo "${orig_log_config}" | \
+                 jq -r "${jq_stream_prefix}")
+  log_config=$(echo "${orig_log_config}" | \
+                 jq "${jq_stream_prefix} = \"otel-${orig_stream_prefix}\""
+                 )
+aws_otel_collector="\
+{ \
+  \"name\": \"otel-${container_name}\", \
+  \"image\": \"amazon/aws-otel-collector:v0.14.0\", \
+  \"essential\": true, \
+  \"command\": [ \
+    \"--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml\" \
+  ], \
+  \"logConfiguration\": $log_config \
+}"
+
+  raw_task_definition=$(
+    echo "${raw_task_definition}" | \
+      jq ".containerDefinitions[.containerDefinitions | length] |= . + ${aws_otel_collector}"
+                     )
+fi
+
+# update with new settings (e.g. image)
+new_task_definition=$(
+  echo "${raw_task_definition}" | \
+    jq ".cpu = \"${cpu}\"" | \
+    jq ".memory = \"${memory}\"" | \
+    jq ".containerDefinitions[0].image = \"${image}\"" | \
+    jq ".containerDefinitions[0].entryPoint = [\"locust\"]" | \
+    jq ".containerDefinitions[0].command = [\"-f\", \"${LOCUSTFILE}\", \"--host\", \"dp3\", \"--web-port\", \"4000\"]" \
+                   )
+new_task_definition_name=$(aws ecs register-task-definition --cli-input-json "${new_task_definition}" | \
+                             jq '.taskDefinition.taskDefinitionArn' | \
+                             cut -d/ -f 2 | \
+                             tr -d '"')
+
+# use force-new-deployment in case we are re-running the build and the
+# image isn't changing
 aws ecs update-service \
     --cluster loadtesting \
     --service exp-web \
-    --task-definition "${current_task_definition}" \
+    --task-definition "${new_task_definition_name}" \
     --desired-count 1 \
     --force-new-deployment
 

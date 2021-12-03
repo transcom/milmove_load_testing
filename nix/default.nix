@@ -32,11 +32,19 @@ in buildEnv {
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
-      name = "pre-commit-2.15.0";
+      name = "pipenv-2021.5.29";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "8112bb92f9df718eaa077ec77109eecc60240a72";
-    }) {}).pre-commit
+      rev = "fe296b79b4c803fec51410a987a11f077715a845";
+    }) {}).pipenv
+
+    (import (builtins.fetchGit {
+      # Descriptive name to make the store path easier to identify
+      name = "shellcheck-0.7.2";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = "8e1eab9eae4278c9bb1dcae426848a581943db5a";
+    }) {}).shellcheck
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify

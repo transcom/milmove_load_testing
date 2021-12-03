@@ -16,7 +16,6 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
 <!-- Uses gh-md-toc to generate Table of Contents: https://github.com/ekalinin/github-markdown-toc -->
 <!-- markdownlint-disable -->
 <!--ts-->
-
 * [MilMove Load Testing](#milmove-load-testing)
   * [License Information](#license-information)
   * [Table of Contents](#table-of-contents)
@@ -25,9 +24,11 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [tasks/](#tasks)
     * [utils/](#utils)
     * [static/](#static)
+    * [ecs](#ecs)
+    * [scripts](#scripts)
   * [Getting Started](#getting-started)
     * [Base Installation](#base-installation)
-      * [Setup: Pyenv](#setup-pyenv)
+      * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
       * [Setup: Nix](#setup-nix)
     * [Installing Python Dependencies and Pre-commit Hooks](#installing-python-dependencies-and-pre-commit-hooks)
     * [Unsupported Setup](#unsupported-setup)
@@ -50,14 +51,14 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Deploying New Tests](#deploying-new-tests)
   * [Fake Data Generation](#fake-data-generation)
     * [Creating a custom parser](#creating-a-custom-parser)
-  * [Load Testing against AWS Experimental Environment](#load-testing-against-aws-experimental-environment)
+  * [Load Testing against AWS Loadtest Environment](#load-testing-against-aws-loadtest-environment)
     * [Prime API](#prime-api)
     * [MilMove/Office domains](#milmoveoffice-domains)
     * [Handling Rate Limiting](#handling-rate-limiting)
     * [Metrics](#metrics)
   * [References](#references)
 
-<!-- Added by: felipe, at: Tue Oct 26 12:32:37 PDT 2021 -->
+<!-- Added by: felipe, at: Wed Nov 17 15:44:25 PST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -122,15 +123,21 @@ search for alternatives if you are running a different OS.*
 
 We have two supported installation methods, `pyenv` and `nix`. Pick which you prefer and proceed to that section.
 
-#### Setup: Pyenv
+#### Setup: Pyenv and Pipenv
 
-* Run
+When setting up for the first time, before you run `direnv allow`, run
 
   ```shell
   make install_tools
   ```
 
-  This will install `pyenv` along with other tools like `pyenv-virtualenv` and `pre-commit`.
+This will install `pyenv` and `pipenv` along with other tools like `pre-commit`. Now run
+
+  ```shell
+  direnv allow
+  ```
+
+This should install the dependencies via `pipenv` automatically.
 
 If the base dependencies change, you can always re-run this command.
 
@@ -166,9 +173,7 @@ level of this repo and reload your shell.
   This will install all the `python` dependencies in `requirements.txt` and `requirements-dev.txt`. It will also install
   the `pre-commit` hooks.
 
-*Note: The requirements are indicated in the `requirements.txt` and `requirements-dev.txt` files. `requirements.txt`
-contains the pip-installed requirements needed to run the project. `requirements-dev.txt` contains the requirements to
-lint and format our code if you wish to contribute - they are not functional requirements to run the code.*
+*Note: The requirements are indicated in the `Pipfile`.
 
 ### Unsupported Setup
 
@@ -252,12 +257,6 @@ make db_dev_e2e_populate  ## populates the development database with test data
 make server_run
 ```
 
-Back in `milmove_load_testing`, make sure you activate your virtual environment before attempting to run tests:
-
-```shell script
-pyenv activate locust-venv
-```
-
 ### Setting up Tests in AWS
 
 Run the port-forwarding script.
@@ -302,10 +301,10 @@ commands include:
 Each of these commands opens the Locust interface for initiating and monitoring the tests, set
 to [http://localhost:8089](http://localhost:8089). Using this interface, you can set the number of users to simulate and
 their hatch rate, then start and stop the test at will. For the host, you can enter a full URL address, or you can
-simply enter "local" or "exp" (for experimental), and let the system set the URL as appropriate.
+simply enter "local" or "dp3" (for loadtest), and let the system set the URL as appropriate.
 
-**NOTE: Currently the system only functions in the local environment. You may try the other settings for fun, but don't
-expect them to work.**
+**NOTE: Currently the system only functions in the local or dp3
+environment. You may try the other settings for fun, but don't expect them to work.**
 
 ### Running custom tests
 
@@ -313,7 +312,7 @@ If you need more control over the parameters for a load test, you will need to r
 look something like:
 
 ```sh
-locust -f locustfiles/<file_to_test>.py --host <local/exp>
+locust -f locustfiles/<file_to_test>.py --host <local/dp3>
 ```
 
 Ex:
@@ -327,7 +326,7 @@ the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Te
 
 ### Running Tests for Reporting
 
-_NOTE_: THESE COMMANDS ARE DEPRECATED AND NOT WORKING AS OF 2021-11-17
+*NOTE*: THESE COMMANDS ARE DEPRECATED AND NOT WORKING AS OF 2021-11-17
 
 There are a couple of preset tests that have been set up to generate reports for later analysis. These commands are:
 
@@ -360,7 +359,7 @@ from locust import HttpUser, between
 from utils.hosts import MilMoveHostMixin, MilMoveDomain
 
 
-# Use MilMoveHostMixin to easily switch between local and experimental environments
+# Use MilMoveHostMixin to easily switch between local and dp3 environments
 # HttpUser is the Locust user class we want to use to hit endpoint paths
 class MyUser(MilMoveHostMixin, HttpUser):
   """ Here's a short description of what my user does. """

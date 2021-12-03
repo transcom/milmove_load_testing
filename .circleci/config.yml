@@ -10,11 +10,12 @@
 version: "2.1"
 
 executors:
-  # `main` uses the `trussworks/circleci-docker-primary` docker image with a checkout of the mymove code
   primary:
     resource_class: small
     docker:
-      - image: trussworks/circleci-docker-primary:c3a4d876a5681cceef9f927392732c259308d158
+      - image: cimg/python:3.9.6
+    environment:
+      PIPENV_VENV_IN_PROJECT: true
 
 jobs:
 
@@ -28,14 +29,47 @@ jobs:
       - restore_cache:
           keys:
             - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
-      - run: pre-commit install-hooks
+      - restore_cache:  # ensure this step occurs *before* installing dependencies
+          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
+      - restore_cache:
+          key: v1-local-bin-{{ checksum "Brewfile.local" }}
+      - run:
+          name: install shellcheck if needed
+          command: |
+            [ -x ~/.local/bin/shellcheck ] ||
+            (sudo apt-get update -y &&
+            sudo apt-get install -y shellcheck &&
+            mkdir -p ~/.local/bin &&
+            cp /usr/bin/shellcheck ~/.local/bin)
+      - run:
+          name: install dependencies
+          command: |  # use pipenv to install dependencies
+            pipenv sync -d
+      - run: pipenv run pre-commit install --install-hooks
       - run:
           name: Run pre-commit tests
-          command: pre-commit run --all-files
+          command: pipenv run pre-commit run --all-files
+      - run:
+          name: run tests
+          command: |
+            pipenv run pytest --junit-xml=junit/report.xml --cov-report html:coverage_html --cov=utils --cov=tasks
+      - store_test_results:
+          path: ~/project/junit/report.xml
+      - store_artifacts:
+          path: ~/project/coverage_html
+          destination: coverage_html
       - save_cache:
           key: v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
           paths:
             - ~/.cache/pre-commit
+      - save_cache:
+          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
+      - save_cache:
+          key: v1-local-bin-{{ checksum "Brewfile.local" }}
+          paths:
+            - ~/.local/bin
 
 workflows:
   version: 2

@@ -48,9 +48,9 @@ if "containers" not in task or len(task["containers"]) == 0:
     print("Cannot find containers for taskArn: {}", task_arn, file=sys.stderr)
     sys.exit(1)
 
-if len(task["containers"]) != 1:
-    print("More than one container for taskArn: {}", task_arn, file=sys.stderr)
-    sys.exit(1)
+# if len(task["containers"]) != 1:
+#     print("More than one container for taskArn: {}", task_arn, file=sys.stderr)
+#     sys.exit(1)
 
 container = task["containers"][0]
 

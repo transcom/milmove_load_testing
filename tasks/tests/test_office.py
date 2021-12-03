@@ -14,7 +14,7 @@ class TestOfficeDataStorageMixin:
 
     @classmethod
     def setup_class(cls):
-        """ Define and initialize the classes that will be tested. """
+        """Define and initialize the classes that will be tested."""
 
         class OfficeStorage1(OfficeDataStorageMixin):
             DATA_LIST_MAX = 3
@@ -33,7 +33,7 @@ class TestOfficeDataStorageMixin:
         ],
     )
     def test_get_stored__random(self, object_key, object_id, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
 
         assert self.storage1.get_stored(object_key) in test_store.values()
@@ -48,14 +48,14 @@ class TestOfficeDataStorageMixin:
         ],
     )
     def test_get_stored__by_id(self, object_key, object_id, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
 
         assert self.storage1.get_stored(object_key, object_id) == test_store[object_id]
         assert self.storage2.get_stored(object_key, object_id) == test_store[object_id]
 
     def test_get_stored__empty(self):
-        """ Test the get_stored() method with an empty list of data. """
+        """Test the get_stored() method with an empty list of data."""
         self.storage1.local_store["empty_list"] = {}
 
         assert self.storage1.get_stored("empty_list") is None
@@ -68,7 +68,7 @@ class TestOfficeDataStorageMixin:
         ],
     )
     def test_add_stored__new_item(self, object_key, object_data, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
         self.storage1.add_stored(object_key, object_data)
 
@@ -81,7 +81,7 @@ class TestOfficeDataStorageMixin:
         ],
     )
     def test_add_stored__items_list(self, object_key, object_data, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
         self.storage1.add_stored(object_key, object_data)
 
@@ -95,7 +95,7 @@ class TestOfficeDataStorageMixin:
         ],
     )
     def test_add_stored__updates_existing(self, object_key, object_data, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
         self.storage1.add_stored(object_key, object_data)
 
@@ -108,7 +108,7 @@ class TestOfficeDataStorageMixin:
         ],
     )
     def test_add_stored__list_does_not_overwrite(self, object_key, object_data, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
         self.storage1.add_stored(object_key, object_data)
 
@@ -122,7 +122,7 @@ class TestOfficeDataStorageMixin:
         ],
     )
     def test_add_stored__max_capacity(self, object_key, object_data, test_store):
-        """ Test retrieving a random object from the local_store dictionary lists. """
+        """Test retrieving a random object from the local_store dictionary lists."""
         self.storage1.local_store[object_key] = test_store
         assert len(self.storage1.local_store[object_key]) == self.storage1.DATA_LIST_MAX
 
