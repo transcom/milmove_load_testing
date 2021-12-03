@@ -737,10 +737,17 @@ index 4ef1a29..bac3cf7 100644
 
 ### Metrics
 
-You will want to see metrics from your runs:
+To view metrics in AWS:
 
-* [app-experimental cluster metrics](https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/clusters/app-experimental/services/app/metrics)
-* [app-experimental CloudWatch dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=mil-experimental)
+1. Clone the infra [non-ato repo](https://github.com/transcom/transcom-infrasec-gov-nonato)
+
+2. CD into the /transcom-gov-milmove-loadtest directory
+
+3. Sign into AWS by inputting `aws-vault login $AWS_PROFILE` into the terminal
+
+4. To view load test dashboards: Cloudwatch -> Dashboards -> mil-loadtest
+
+5. To view load test metrics: Cloudwatch -> Metrics
 
 ## References
 
