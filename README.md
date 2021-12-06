@@ -39,7 +39,6 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Setting up Tests in AWS](#setting-up-tests-in-aws)
     * [Running preset tests](#running-preset-tests)
     * [Running custom tests](#running-custom-tests)
-    * [Running Tests for Reporting](#running-tests-for-reporting)
   * [Adding Load Tests](#adding-load-tests)
     * [Starting from scratch](#starting-from-scratch)
     * [Creating TaskSets](#creating-tasksets)
@@ -57,7 +56,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Metrics](#metrics)
   * [References](#references)
 
-<!-- Added by: felipe, at: Thu Dec  2 15:46:48 PST 2021 -->
+<!-- Added by: felipe, at: Mon Dec  6 13:16:19 PST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -314,26 +313,6 @@ locust -f locustfiles/prime.py --host local
 
 For more information on running custom tests, refer to
 the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
-
-### Running Tests for Reporting
-
-*NOTE*: THESE COMMAND ARE DEPRECATED AND NOT WORKING AS OF 2021-11-17
-
-There are a couple of preset tests that have been set up to generate reports for later analysis. These commands are:
-
-```shell
-make local_docker_report
-```
-
-and:
-
-```shell
-make exp_load_test
-```
-
-**`make exp_load_test` should only be used on a scheduled basis with InfraSec's supervision.**
-
-Both of these commands require a `docker-compose` version of `1.27` or greater to work.
 
 ## Adding Load Tests
 

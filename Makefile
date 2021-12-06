@@ -72,9 +72,4 @@ load_test_prime_workflow: clean ## Run load testing on the Prime API
 	open http://localhost:8089
 	locust -f locustfiles/prime_workflow.py --host local
 
-.PHONY: exp_load_test
-exp_load_test: ## Run load testing against the MilMove Experimental Deployment
-	export DOCKER_CSV_PREFIX="${DOCKER_CSV_DIR}/$(shell date +'%Y-%m-%d-%H%M%S')"; docker-compose up --build prime-exp-reporting
-	docker cp mmlt_prime_exp_reporting:/app/static/reports static/
-
 default: help
