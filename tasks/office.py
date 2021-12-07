@@ -261,7 +261,7 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             logger.info("skipping update order, no moves exist yet")
             return
 
-        payload = self.fake_request("/orders/{orderID}", "patch")
+        payload = self.fake_request("/counseling/orders/{orderID}", "patch")
 
         payload = {key: payload[key] for key in ["issueDate", "reportByDate", "ordersType"]}
         if self.default_mto_ids.get("originDutyStationID"):
@@ -277,8 +277,8 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         # The request may result in validation errors if the underlying move is no longer in needs counseling status
         headers = {"content-type": "application/json", "If-Match": order["eTag"]}
         resp = self.client.patch(
-            ghc_path(f"/orders/{order['id']}"),
-            name=ghc_path("/orders/{orderId}"),
+            ghc_path(f"/counseling/orders/{order['id']}"),
+            name=ghc_path("/counseling/orders/{orderId}"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -287,7 +287,6 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         new_order, success = check_response(resp, "updateOrder", payload)
         if success:
             self.add_stored(ORDER, new_order)
-            self.add_stored(CUSTOMER, new_order["customer"])
 
     @tag(ORDER, "updateAllowance")
     @task
@@ -303,13 +302,13 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             logger.info("skipping update allowance, no moves exist yet")
             return
 
-        payload = self.fake_request("/orders/{orderID}/allowances", "patch")
+        payload = self.fake_request("/counseling/orders/{orderID}/allowances", "patch")
 
         # update allowances handler expects the orders eTag because it also updates parents order fields
         headers = {"content-type": "application/json", "If-Match": order["eTag"]}
         resp = self.client.patch(
-            ghc_path(f"/orders/{order['id']}/allowances"),
-            name=ghc_path("/orders/{orderId}/allowances"),
+            ghc_path(f"/counseling/orders/{order['id']}/allowances"),
+            name=ghc_path("/counseling/orders/{orderId}/allowances"),
             data=json.dumps(payload),
             headers=headers,
             **self.user.cert_kwargs,
@@ -330,6 +329,10 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
         customer = self.get_stored(CUSTOMER, object_id) or self.get_customer()
         if customer is None:
             logger.info("skipping update customer, no orders exist yet")
+            return
+
+        if not customer.get("current_address"):
+            logger.info("Skipping update customer as no current address exists")
             return
 
         payload = self.fake_request(
@@ -546,6 +549,11 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
         order = self.get_orders() if order is None else order
         if order is None:
             logger.info("skipping update order, no moves exist yet")
+            return
+
+        move = self.get_stored(MOVE_TASK_ORDER, order["moveTaskOrderID"])
+        if move and move["status"] == "NEEDS SERVICE COUNSELING":
+            logger.info("Skipping update orders as TOO, move is still in services counseling")
             return
 
         # require all optional fields otherwise nullable fields will be omitted
