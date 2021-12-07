@@ -176,33 +176,25 @@ level of this repo and reload your shell.
 
 ### Unsupported Setup
 
-This is a setup that existed previously but will no longer be kept up to date or supported. It will possibly be removed
-entirely at a future date.
+Maintaining many ways to set up locally can be time-consuming, which is why we removed the `asdf` and docker setups.
 
-#### Alternative Setup: Docker
+The `asdf` end set-up was similar to the `pyenv` setup, but required many commands to have tweaks to work the same as
+the `pyenv` commands which made them harder to maintain.
 
-It is also possible to run load tests from within a Docker container, eliminating the need to set up a valid python
-environment. This requires Docker and `docker-compose` to be installed on your machine. Get them here:
+As for docker, we had a few reasons for dropping support:
 
-* [Get Docker](https://docs.docker.com/get-docker/)
-* [Install Docker Compose](https://docs.docker.com/compose/install/) - version `1.27` or later
+* Locust is a tool that needs to reach the target host and running it from inside docker makes it harder to reach a
+server that is managed outside of docker.
+* Docker adds yet another layer for possible issues. We've experienced some problems in the past with docker network
+problems that were masked as locust errors. Errors like this are a pain to debug.
+* Our current setup using `direnv` and `pipenv` is fairly quick to set up using either `nix` or the `make install_tools`
+command, decreasing the "quick setup" case for using docker.
 
-To get your load testing Docker container up and running for the local environment, use the following commands:
+Setups were removed in the following PRs:
 
-* `docker-compose -f docker-compose.local.yaml build`
-* `docker-compose -f docker-compose.local.yaml up`
-
-And when you are done with testing:
-
-* `docker-compose -f docker-compose.local.yaml build`
-
-You can also use the Makefile equivalents of these commands:
-
-* `make local_docker_build`
-* `make local_docker_up`
-* `make local_docker_down`
-
-As long as your local MilMove server is up and running, you are ready to run your tests!
+* [PR #74](https://github.com/transcom/milmove_load_testing/pull/74)
+* [PR #78](https://github.com/transcom/milmove_load_testing/pull/78)
+* [PR #89](https://github.com/transcom/milmove_load_testing/pull/89)
 
 ### Troubleshooting
 
@@ -322,26 +314,6 @@ locust -f locustfiles/prime.py --host local
 
 For more information on running custom tests, refer to
 the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
-
-### Running Tests for Reporting
-
-*NOTE*: THESE COMMANDS ARE DEPRECATED AND NOT WORKING AS OF 2021-11-17
-
-There are a couple of preset tests that have been set up to generate reports for later analysis. These commands are:
-
-```shell
-make local_docker_report
-```
-
-and:
-
-```shell
-make exp_load_test
-```
-
-**`make exp_load_test` should only be used on a scheduled basis with InfraSec's supervision.**
-
-Both of these commands require a `docker-compose` version of `1.27` or greater to work.
 
 ## Adding Load Tests
 
