@@ -715,7 +715,7 @@ The limit is set in [transcom-infrasec-gov-nonato/transcom-gov-milmove-loadtest/
 
 ### Metrics
 
-To view metrics follow documentation for [Viewing OTel logs in Load Test Environment](https://www.halfbakedharvest.com/homemade-holidays-lets-make-house-smell-like-christmas/)
+To view metrics follow documentation for [Viewing OTel logs in Load Test Environment](https://dp3.atlassian.net/wiki/spaces/MT/pages/1520533505/Viewing+Otel+Logs+in+Load+Testing+Environment)
 
 ## References
 
