@@ -700,7 +700,7 @@ these steps. Otherwise, please follow the instructions in the `mymove` repo to c
 * [Setup: `direnv` and `chamber`](https://github.com/transcom/mymove#setup-direnv)
 * [Setup: AWS credentials and `aws-vault`](https://github.com/transcom/mymove#setup-aws-services-optional)
 
-Once you have loaded the secrets from `chamber`, which will include the experimental certificate and private key, you
+Once you have loaded the secrets from `chamber`, which will include the dp3 certificate and private key, you
 may run your load tests using "dp3" as the host value. It is strongly recommended that you set up your `User` classes to
 subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "dp3"
 
@@ -716,17 +716,7 @@ The limit is set in [transcom-infrasec-gov-nonato/transcom-gov-milmove-loadtest/
 
 ### Metrics
 
-To view metrics in AWS:
-
-1. Clone the infra [non-ato repo](https://github.com/transcom/transcom-infrasec-gov-nonato)
-
-2. CD into the /transcom-gov-milmove-loadtest directory
-
-3. Sign into AWS by inputting `aws-vault login $AWS_PROFILE` into the terminal
-
-4. To view load test dashboards: Cloudwatch -> Dashboards -> mil-loadtest
-
-5. To view load test metrics: Cloudwatch -> Metrics
+To view metrics follow documentation for [Viewing OTel logs in Load Test Environment](https://www.halfbakedharvest.com/homemade-holidays-lets-make-house-smell-like-christmas/)
 
 ## References
 
