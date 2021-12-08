@@ -17,48 +17,47 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
 <!-- markdownlint-disable -->
 <!--ts-->
 * [MilMove Load Testing](#milmove-load-testing)
-  * [License Information](#license-information)
-  * [Table of Contents](#table-of-contents)
-  * [Overview](#overview)
-    * [locustfiles/](#locustfiles)
-    * [tasks/](#tasks)
-    * [utils/](#utils)
-    * [static/](#static)
-    * [ecs](#ecs)
-    * [scripts](#scripts)
-  * [Getting Started](#getting-started)
-    * [Base Installation](#base-installation)
-      * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
-      * [Setup: Nix](#setup-nix)
-    * [Installing Python Dependencies and Pre-commit Hooks](#installing-python-dependencies-and-pre-commit-hooks)
-    * [Unsupported Setup](#unsupported-setup)
-      * [Alternative Setup: Docker](#alternative-setup-docker)
-    * [Troubleshooting](#troubleshooting)
-    * [Testing](#testing)
-  * [Running Load Tests](#running-load-tests)
-    * [Setting up the local environment](#setting-up-the-local-environment)
-    * [Setting up Tests in AWS](#setting-up-tests-in-aws)
-    * [Running preset tests](#running-preset-tests)
-    * [Running custom tests](#running-custom-tests)
-    * [Running Tests for Reporting](#running-tests-for-reporting)
-  * [Adding Load Tests](#adding-load-tests)
-    * [Starting from scratch](#starting-from-scratch)
-    * [Creating TaskSets](#creating-tasksets)
-    * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
-  * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
-    * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
-    * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
-    * [Deploying New Tests](#deploying-new-tests)
-  * [Fake Data Generation](#fake-data-generation)
-    * [Creating a custom parser](#creating-a-custom-parser)
-  * [Load Testing against AWS Loadtest Environment](#load-testing-against-aws-loadtest-environment)
-    * [Prime API](#prime-api)
-    * [MilMove/Office domains](#milmoveoffice-domains)
-    * [Handling Rate Limiting](#handling-rate-limiting)
-    * [Metrics](#metrics)
-  * [References](#references)
+   * [License Information](#license-information)
+   * [Table of Contents](#table-of-contents)
+   * [Overview](#overview)
+      * [locustfiles/](#locustfiles)
+      * [tasks/](#tasks)
+      * [utils/](#utils)
+      * [static/](#static)
+      * [ecs](#ecs)
+      * [scripts](#scripts)
+   * [Getting Started](#getting-started)
+      * [Base Installation](#base-installation)
+         * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
+         * [Setup: Nix](#setup-nix)
+      * [Installing Python Dependencies and Pre-commit Hooks](#installing-python-dependencies-and-pre-commit-hooks)
+      * [Unsupported Setup](#unsupported-setup)
+         * [Alternative Setup: Docker](#alternative-setup-docker)
+      * [Troubleshooting](#troubleshooting)
+      * [Testing](#testing)
+   * [Running Load Tests](#running-load-tests)
+      * [Setting up the local environment](#setting-up-the-local-environment)
+      * [Setting up Tests in AWS](#setting-up-tests-in-aws)
+      * [Running preset tests](#running-preset-tests)
+      * [Running custom tests](#running-custom-tests)
+      * [Running Tests for Reporting](#running-tests-for-reporting)
+   * [Adding Load Tests](#adding-load-tests)
+      * [Starting from scratch](#starting-from-scratch)
+      * [Creating TaskSets](#creating-tasksets)
+      * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
+   * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
+      * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
+      * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
+      * [Deploying New Tests](#deploying-new-tests)
+   * [Fake Data Generation](#fake-data-generation)
+      * [Creating a custom parser](#creating-a-custom-parser)
+   * [Load Testing against the AWS Loadtest Environment](#load-testing-against-the-aws-loadtest-environment)
+      * [Prime API](#prime-api)
+      * [Handling Rate Limiting](#handling-rate-limiting)
+      * [Metrics](#metrics)
+   * [References](#references)
 
-<!-- Added by: felipe, at: Wed Nov 17 15:44:25 PST 2021 -->
+<!-- Added by: pearl, at: Tue Dec  7 10:03:58 EST 2021 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -177,33 +176,25 @@ level of this repo and reload your shell.
 
 ### Unsupported Setup
 
-This is a setup that existed previously but will no longer be kept up to date or supported. It will possibly be removed
-entirely at a future date.
+Maintaining many ways to set up locally can be time-consuming, which is why we removed the `asdf` and docker setups.
 
-#### Alternative Setup: Docker
+The `asdf` end set-up was similar to the `pyenv` setup, but required many commands to have tweaks to work the same as
+the `pyenv` commands which made them harder to maintain.
 
-It is also possible to run load tests from within a Docker container, eliminating the need to set up a valid python
-environment. This requires Docker and `docker-compose` to be installed on your machine. Get them here:
+As for docker, we had a few reasons for dropping support:
 
-* [Get Docker](https://docs.docker.com/get-docker/)
-* [Install Docker Compose](https://docs.docker.com/compose/install/) - version `1.27` or later
+* Locust is a tool that needs to reach the target host and running it from inside docker makes it harder to reach a
+server that is managed outside of docker.
+* Docker adds yet another layer for possible issues. We've experienced some problems in the past with docker network
+problems that were masked as locust errors. Errors like this are a pain to debug.
+* Our current setup using `direnv` and `pipenv` is fairly quick to set up using either `nix` or the `make install_tools`
+command, decreasing the "quick setup" case for using docker.
 
-To get your load testing Docker container up and running for the local environment, use the following commands:
+Setups were removed in the following PRs:
 
-* `docker-compose -f docker-compose.local.yaml build`
-* `docker-compose -f docker-compose.local.yaml up`
-
-And when you are done with testing:
-
-* `docker-compose -f docker-compose.local.yaml build`
-
-You can also use the Makefile equivalents of these commands:
-
-* `make local_docker_build`
-* `make local_docker_up`
-* `make local_docker_down`
-
-As long as your local MilMove server is up and running, you are ready to run your tests!
+* [PR #74](https://github.com/transcom/milmove_load_testing/pull/74)
+* [PR #78](https://github.com/transcom/milmove_load_testing/pull/78)
+* [PR #89](https://github.com/transcom/milmove_load_testing/pull/89)
 
 ### Troubleshooting
 
@@ -323,26 +314,6 @@ locust -f locustfiles/prime.py --host local
 
 For more information on running custom tests, refer to
 the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
-
-### Running Tests for Reporting
-
-*NOTE*: THESE COMMAND ARE DEPRECATED AND NOT WORKING AS OF 2021-11-17
-
-There are a couple of preset tests that have been set up to generate reports for later analysis. These commands are:
-
-```shell
-make local_docker_report
-```
-
-and:
-
-```shell
-make exp_load_test
-```
-
-**`make exp_load_test` should only be used on a scheduled basis with InfraSec's supervision.**
-
-Both of these commands require a `docker-compose` version of `1.27` or greater to work.
 
 ## Adding Load Tests
 
@@ -689,64 +660,38 @@ GHCTaskSet(ParserTaskMixin, ...):
         print(response.status_code, response.content)
 ```
 
-## Load Testing against AWS Loadtest Environment
+## Load Testing against the AWS Loadtest Environment
 
 ### Prime API
 
-To load test against the Prime API in experimental, you will need to install and set up `direnv`, `chamber`, and
+To load test against the Prime API in the load test environment, you will need to install and set up `direnv`, `chamber`, and
 `aws-vault`. If you have already set up these tools in order to run the `mymove` project, you do not need to repeat
 these steps. Otherwise, please follow the instructions in the `mymove` repo to complete this setup:
 
 * [Setup: `direnv` and `chamber`](https://github.com/transcom/mymove#setup-direnv)
 * [Setup: AWS credentials and `aws-vault`](https://github.com/transcom/mymove#setup-aws-services-optional)
 
-Once you have loaded the secrets from `chamber`, which will include the experimental certificate and private key, you
+Once you have loaded the secrets from `chamber`, which will include the dp3 certificate and private key, you
 may run your load tests using "dp3" as the host value. It is strongly recommended that you set up your `User` classes to
-subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "exp."
-
-### MilMove/Office domains
-
-To load test against the AWS Experimental Environment you must modify the
-[`DEVLOCAL_AUTH` environment variable](https://github.com/transcom/mymove/blob/master/config/env/exp.app.env#L8)
-and [deploy the code to the experimental environment](https://github.com/transcom/mymove/wiki/deploy-to-experimental).
-
-Then, if you have `User` classes that take advantage of the `MilMoveHostMixin` class, you may run your load tests using
-"dp3" as the host value. If not, make sure to use the loadtest domains as your host:
-
-* [https://my.loadtest.dp3.us](https://my.loadtest.dp3.us)
-* [https://office.loadtest.dp3.us](https://office.loadtest.dp3.us)
+subclass `MilMoveHostMixin` so that your TLS settings are automatically updated when you switch from "local" to "dp3"
 
 ### Handling Rate Limiting
 
-Each environment is set to limit the number of requests from a single IP in a 5 minute period. That limit is usually
-2000. For load testing it's likely you'll want a much higher limit, perhaps even 10 times as high. Work with
-infrastructure to modify the limit. Here is the diff to apply (but
-you'll want to do this against the loadtest config:
+Each environment is set to limit the number of requests from a single IP in a 5 minute period. The limit for the load testing environment is 2000.
+If this ever needs to be updated, work with infrastructure to modify the limit.
+The limit is set in [transcom-infrasec-gov-nonato/transcom-gov-milmove-loadtest/app-loadtest/main.tf](https://github.com/transcom/transcom-infrasec-gov-nonato/blob/main/transcom-gov-milmove-loadtest/app-loadtest/main.tf) by this code:
 
-```diff
-diff --git a/transcom-ppp/app-experimental/main.tf b/transcom-ppp/app-experimental/main.tf
-index 4ef1a29..bac3cf7 100644
---- a/transcom-ppp/app-experimental/main.tf
-+++ b/transcom-ppp/app-experimental/main.tf
-@@ -65,6 +65,7 @@ module "app" {
-
-   waf_regex_path_disallow_pattern_strings = []
-   waf_regex_host_allow_pattern_strings    = [".move.mil$", ".dp3.us$", "^mymove-experimental.sddc.army.mil$"]
-+  waf_ip_rate_limit                       = 20000
-   wafregional_rule_id                     = "d0ad0bb7-434b-4112-bde0-b5e84b718733"
- }
+```sh
+ waf_ip_rate_limit   = 20000
 ```
 
 ### Metrics
 
-You will want to see metrics from your runs:
-
-* [app-experimental cluster metrics](https://console.amazonaws-us-gov.com/cloudwatch/home?region=us-gov-west-1#cw:dashboard=ECS)
-* [app-experimental CloudWatch dashboard](https://console.amazonaws-us-gov.com/cloudwatch/home?region=us-gov-west-1#dashboards:name=CloudWatch-Default)
+To view metrics follow documentation for [Viewing OTel logs in Load Test Environment](https://dp3.atlassian.net/wiki/spaces/MT/pages/1520533505/Viewing+Otel+Logs+in+Load+Testing+Environment)
 
 ## References
 
 * [Locust Documentation](https://docs.locust.io/en/stable/index.html)
-* [Prance Documentation](https://jfinkhaeuser.github.io/prance/index.html#)
+* [Prance Documentation](https://pypi.org/project/prance/)
 * [Faker Documentation](https://faker.readthedocs.io/en/stable/index.html)
 * [Original Load Testing PR](https://github.com/transcom/mymove/pull/1597)
