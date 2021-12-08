@@ -35,7 +35,9 @@ QUEUES = "queues"
 
 
 class DataType(ValueEnum):
-    """Swagger data types that we expect to deal with. Uses camelcase in values to match."""
+    """
+    Swagger data types that we expect to deal with. The latest pattern uses camelCase, while the older pattern uses snake_case.
+    """
 
     FIRST_NAME = "firstName"
     FIRST_NAME_VARIANT = "first_name"  # matches older swagger format

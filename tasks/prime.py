@@ -267,7 +267,6 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         payload = self.fake_request(
             "/service_members/{serviceMemberId}/backup_contacts", "post", INTERNAL_API_KEY, overrides
         )
-        print(payload)
         self.client.post(
             self.customer_path(f"/internal/service_members/{service_member_id}/backup_contacts"),
             name="/internal/service_members/{serviceMemberId}/backup_contacts",
