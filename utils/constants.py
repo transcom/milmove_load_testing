@@ -16,6 +16,7 @@ LOCAL_TLS_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": Fa
 
 PRIME_API_KEY = "prime"
 SUPPORT_API_KEY = "support"
+INTERNAL_API_KEY = "internal"
 
 ARRAY_MIN = 1
 ARRAY_MAX = 5
@@ -37,7 +38,9 @@ class DataType(ValueEnum):
     """Swagger data types that we expect to deal with. Uses camelcase in values to match."""
 
     FIRST_NAME = "firstName"
+    FIRST_NAME_VARIANT = "first_name"  # matches older swagger format
     LAST_NAME = "lastName"
+    LAST_NAME_VARIANT = "last_name"  # matches older swagger format
     PHONE = "phone"
     EMAIL = "email"
     STREET_ADDRESS = "streetAddress"

@@ -90,6 +90,9 @@ class MilMoveHostMixin:
     # {"cert": <cert/key file path(s)>, "verify": <False or the CA bundle file path>}
     cert_kwargs: Optional[dict] = None
 
+    # domain name for the MILMOVE/customer portion of the app
+    alternative_host = None
+
     def __init__(self, *args, **kwargs):
         """
         Sets the Users' host based on environment value from --host flag in command. Note that the self.host value is
@@ -140,6 +143,7 @@ class MilMoveHostMixin:
             cls.host = MilMoveDomain.match(cls.domain).host_name(
                 cls.env.value, cls.is_api, cls.local_port, cls.local_protocol
             )
+            cls.alternative_host = MilMoveDomain.MILMOVE.host_name(cls.env.value, False, "8080", "http")
         except IndexError:  # means MilMoveDomain could not find a match for the value passed in
             logger.debug(f"Bad domain value: {cls.domain}")
             raise ImplementationError("Domain for MilMoveHostMixin must match one of the values in MilMoveDomain.")

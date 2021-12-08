@@ -9,6 +9,7 @@ from typing import Dict
 from locust import tag, task, TaskSet
 
 from utils.constants import (
+    INTERNAL_API_KEY,
     TEST_PDF,
     ZERO_UUID,
     PRIME_API_KEY,
@@ -214,6 +215,66 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
     Set of the tasks that can be called on the Prime API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier.
     """
+
+    def __init__(self, parent):
+        self.csrf_token = None
+        self.session_token = None
+        super().__init__(parent)
+
+    def customer_path(self, url: str) -> str:
+        return f"{self.user.alternative_host}{url}"
+
+    def on_start(self):
+        self.client.get(self.customer_path("/devlocal-auth/login"))
+        self.csrf_token = self.client.cookies.get("masked_gorilla_csrf")
+        self.client.headers.update({"x-csrf-token": self.csrf_token})
+        resp = self.client.post(
+            self.customer_path("/devlocal-auth/create"),
+            data={"userType": "milmove", "gorilla.csrf.Token": self.csrf_token},
+        )
+        self.session_token = self.client.cookies.get("mil_session_token")
+        if resp.status_code != 200:
+            self.interrupt()
+
+        logged_in_user = self.client.get(self.customer_path("/internal/users/logged_in"))
+        json_resp = logged_in_user.json()
+        service_member_id = json_resp["service_member"]["id"]
+        email = json_resp["email"]
+        user_id = json_resp["id"]
+
+        origin_duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=29"))
+        current_station_id = origin_duty_stations.json()[0]["id"]
+
+        overrides = {
+            "id": service_member_id,
+            "user_id": user_id,
+            "edipi": "9999999999",
+            "personal_email": email,
+            "email_is_preferred": True,
+            "current_station_id": current_station_id,
+        }
+
+        payload = self.fake_request("/service_members/{serviceMemberId}", "patch", INTERNAL_API_KEY, overrides, True)
+        self.client.patch(
+            self.customer_path(f"/internal/service_members/{service_member_id}"),
+            name="/internal/service_members/{serviceMemberId}",
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
+            **self.user.cert_kwargs,
+        )
+
+        overrides = {"permission": "NONE"}
+        payload = self.fake_request(
+            "/service_members/{serviceMemberId}/backup_contacts", "post", INTERNAL_API_KEY, overrides
+        )
+        print(payload)
+        self.client.post(
+            self.customer_path(f"/internal/service_members/{service_member_id}/backup_contacts"),
+            name="/internal/service_members/{serviceMemberId}/backup_contacts",
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
+            **self.user.cert_kwargs,
+        )
 
     @tag(MOVE_TASK_ORDER, "listMoves")
     @task
