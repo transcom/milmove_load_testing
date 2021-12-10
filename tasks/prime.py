@@ -558,6 +558,11 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
 
         # Generate fake payload based on the endpoint's required fields
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides)
+        # if payload status is diversion requested or cancellation requested than the shipment status needs to be APPROVED
+        # if payload status is submit the mto shipment must be DRAFT
+        # if payload.status is Rejeft the mto shipment must be SUBMITTED
+        # if payload.status is Cancel the mto shipment must be CANCELLATIONREQUESTED
+        # if payload.status is Approve the MOVE status must be APPROVED or APPROVALS_REQUESTED
 
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
 
