@@ -563,6 +563,18 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         # if payload.status is Rejeft the mto shipment must be SUBMITTED
         # if payload.status is Cancel the mto shipment must be CANCELLATIONREQUESTED
         # if payload.status is Approve the MOVE status must be APPROVED or APPROVALS_REQUESTED
+        if payload.status == "DIVERSION_REQUESTED": 
+            mto_shipment.status = "APPROVED"
+        elif payload.status == "CANCELLATION_REQUESTED": 
+            mto_shipment.status = "APPROVED"
+        elif payload.status == "SUBMITTED": 
+            mto_shipment.status = "DRAFT"
+        elif payload.status == "REJECTED": 
+            mto_shipment.status = "SUBMITTED"
+        elif payload.status == "CANCELED": 
+            mto_shipment.status = "CANCELLATION_REQUESTED"
+        elif payload.status == "APPROVED": 
+            mto_shipment.move_task_order.status = "APPROVED"
 
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
 
