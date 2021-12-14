@@ -324,6 +324,12 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
     @tag(MTO_SHIPMENT, "createMTOShipment")
     @task
     def create_mto_shipment(self, overrides=None):
+        def guarantee_unique_agent_type(agents):
+            agent_types = {agent["agentType"] for agent in agents}
+            if len(agents) >= 2 and len(agent_types) < 2:
+                possible_types = {"RELEASING_AGENT", "RECEIVING_AGENT"}
+                agents[1]["agentType"] = (possible_types - agent_types).pop()
+
         # If moveTaskOrderID was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("moveTaskOrderID") if overrides else None
 
@@ -350,6 +356,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if overrides:
             overrides_local.update(overrides)
         payload = self.fake_request("/mto-shipments", "post", PRIME_API_KEY, overrides=overrides_local)
+        guarantee_unique_agent_type(payload["agents"])
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
