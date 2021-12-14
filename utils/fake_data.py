@@ -130,7 +130,7 @@ class MilMoveData:
             DataType.POSTAL_CODE: self.fake.safe_postal_code,
             DataType.POSTAL_CODE_VARIANT: self.fake.safe_postal_code,
             DataType.COUNTRY: self.fake.country,
-            DataType.DATE: self.fake.date,
+            DataType.DATE: self.fake.date_between,
             DataType.DATE_TIME: self.fake.iso_date_time,
             DataType.TIME_MILITARY: self.fake.time_military,
             DataType.SENTENCE: self.fake.sentence,
