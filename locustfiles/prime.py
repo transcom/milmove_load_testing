@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 """ Locust test for the Prime & Support APIs """
 from locust import HttpUser, between, events
+from utils.constants import INTERNAL_API_KEY, PRIME_API_KEY
 
 from utils.hosts import MilMoveHostMixin, MilMoveDomain, clean_milmove_host_users
-from utils.parsers import PrimeAPIParser, SupportAPIParser
+from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks
 
 # init these classes just once because we don't need to parse the API over and over:
 prime_api = PrimeAPIParser()
 support_api = SupportAPIParser()
+internal_api = InternalAPIParser()
 
 
 class PrimeUser(MilMoveHostMixin, HttpUser):
@@ -22,7 +24,7 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
     is_api = True  # if True, uses the api base domain in deployed environments
 
     # This attribute is used for generating fake requests when hitting the Prime API:
-    parser = prime_api
+    parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}
 
     # These are locust HttpUser attributes that help define and shape the load test:
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)

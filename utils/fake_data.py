@@ -121,7 +121,9 @@ class MilMoveData:
         self.fake.add_provider(MilMoveProvider)
         self.data_types = {
             DataType.FIRST_NAME: self.fake.safe_first_name,
+            DataType.FIRST_NAME_VARIANT: self.fake.safe_first_name,
             DataType.LAST_NAME: self.fake.safe_last_name,
+            DataType.LAST_NAME_VARIANT: self.fake.safe_last_name,
             DataType.PHONE: self.fake.safe_phone_number,
             DataType.EMAIL: self.fake.safe_email,
             DataType.STREET_ADDRESS: self.fake.safe_street_address,
