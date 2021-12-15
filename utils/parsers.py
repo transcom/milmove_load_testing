@@ -475,6 +475,7 @@ class SupportAPIParser(PrimeAPIParser):
 
             customer.pop("currentAddress", None)  # Cannot create currentAddress with this endpoint
             entitlement.pop("id", None)  # id will be returned on creation
+        
 
 
 class GHCAPIParser(APIParser):

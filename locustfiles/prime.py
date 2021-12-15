@@ -41,7 +41,7 @@ class SupportUser(MilMoveHostMixin, HttpUser):
     parser = support_api
 
     wait_time = between(0.25, 9)
-    tasks = {SupportTasks: 1}
+    tasks = {SupportTasks: 10}
 
 
 @events.test_stop.add_listener
