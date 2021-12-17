@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """ utils/fields.py is for class representations of API fields """
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from random import randint
 from typing import List
 
-from .constants import DataType, ARRAY_MIN, ARRAY_MAX
+from .constants import ARRAY_MAX, ARRAY_MIN, DataType
 
 logger = logging.getLogger(__name__)
 
@@ -15,22 +15,8 @@ class BaseAPIField:
     data_type: DataType
     name: str = ""
     required: bool = False
-    discriminator_values: list = None
-    definition: dict = None
-
-    def __post_init__(self):
-        """
-        If no value was passed in on __init__, initialize the discriminator_values instance attribute to an empty list
-        after the default __init__ method executes.
-
-        This is done to avoid setting a mutable datatype at the class-level, instead keeping it at the instance-level to
-        ensure data integrity.
-        """
-        if not self.discriminator_values:
-            self.discriminator_values = []
-
-        if not self.definition:
-            self.definition = {}
+    discriminator_values: list = field(default_factory=list)
+    definition: dict = field(default_factory=dict)
 
     def add_discriminator_value(self, value):
         """
@@ -76,19 +62,7 @@ class BaseAPIField:
 @dataclass
 class EnumField(BaseAPIField):
     data_type: DataType = DataType.ENUM
-    options: list = None
-
-    def __post_init__(self):
-        """
-        If no value was passed in on __init__, initialize the options instance attribute to an empty list after the
-        default __init__ method executes.
-
-        This is done to avoid setting a mutable datatype at the class-level, instead keeping it at the instance-level to
-        ensure data integrity.
-        """
-        super().__post_init__()
-        if not self.options:
-            self.options = []
+    options: list = field(default_factory=list)
 
     def generate_fake_data(self, faker, **kwargs):
         """
@@ -145,20 +119,8 @@ class ArrayField(BaseAPIField):
 @dataclass
 class ObjectField(BaseAPIField):
     data_type: DataType = DataType.OBJECT
-    object_fields: List[BaseAPIField] = None  # list of the sub-fields in this object
+    object_fields: List[BaseAPIField] = field(default_factory=list)  # list of the sub-fields in this object
     discriminator: str = ""  # name of the discriminator field, if one exists
-
-    def __post_init__(self):
-        """
-        If no value was passed in on __init__, initialize the object_fields instance attribute to an empty list after
-        the default __init__ method executes.
-
-        This is done to avoid setting a mutable datatype at the class-level, instead keeping it at the instance-level to
-        ensure data integrity.
-        """
-        super().__post_init__()
-        if not self.object_fields:
-            self.object_fields = []
 
     def has_field(self, field_name: str):
         """Checks if this object contains a field with the provided name in its object_fields property."""
@@ -171,8 +133,8 @@ class ObjectField(BaseAPIField):
         self.object_fields.append(field)
 
     def add_fields(self, fields_list, unique=False):
-        for field in fields_list:
-            self.add_field(field, unique)
+        for field_to_add in fields_list:
+            self.add_field(field_to_add, unique)
 
     def combine_fields(self, field: BaseAPIField, unique=False):
         """
@@ -199,9 +161,9 @@ class ObjectField(BaseAPIField):
         :param field_name: str
         :return: BaseAPIField or None
         """
-        for field in self.object_fields:
-            if field.name == field_name:
-                return field
+        for obj_field in self.object_fields:
+            if obj_field.name == field_name:
+                return obj_field
 
         return None
 
@@ -210,16 +172,16 @@ class ObjectField(BaseAPIField):
         Takes in a list of required fields for the object and updates the `required` attribute for each of them.
         :param required_fields: list
         """
-        for field in self.object_fields:
-            field.required = field.name in required_fields
+        for field_to_update in self.object_fields:
+            field_to_update.required = field_to_update.name in required_fields
 
     def add_discriminator_value(self, value):
         """
         Adds a discriminator value for all of the fields currently in the object.
         :param value: str
         """
-        for field in self.object_fields:
-            field.add_discriminator_value(value)
+        for obj_field in self.object_fields:
+            obj_field.add_discriminator_value(value)
 
         super().add_discriminator_value(value)
 
@@ -262,11 +224,13 @@ class ObjectField(BaseAPIField):
         if self.discriminator and d_value:
             overrides[self.discriminator] = d_value
 
-        for field in self.object_fields:
-            if self.skip_field(field, discriminator_value=d_value, overrides=overrides, require_all=require_all):
+        for obj_field in self.object_fields:
+            if self.skip_field(obj_field, discriminator_value=d_value, overrides=overrides, require_all=require_all):
                 continue
 
-            fake_data[field.name] = field.generate_fake_data(faker, overrides=overrides, require_all=require_all)
+            fake_data[obj_field.name] = obj_field.generate_fake_data(
+                faker, overrides=overrides, require_all=require_all
+            )
 
         for field_name in overrides:
             if field_name not in fake_data and self.has_field(field_name):
