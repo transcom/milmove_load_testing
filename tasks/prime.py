@@ -54,6 +54,9 @@ class PrimeDataStorageMixin:
         MTO_SERVICE_ITEM: [],
         PAYMENT_REQUEST: [],
     }  # data stored will be shared among class instances thanks to mutable dict
+    
+    # The id for the move we are fetching
+    current_move_id = None
 
     def get_stored(self, object_key, *args, **kwargs):
         """
@@ -98,6 +101,9 @@ class PrimeDataStorageMixin:
         :param object_data: JSON/dict
         :return: None
         """
+        if object_key == MOVE_TASK_ORDER:
+            self.current_move_id = object_data["id"]
+        
         data_list = self.local_store[object_key]
 
         if len(data_list) >= self.DATA_LIST_MAX:
@@ -120,16 +126,17 @@ class PrimeDataStorageMixin:
         :param new_data: JSON/dict
         :return: None
         """
-        data_list = self.local_store[object_key]
+        pass
+        # data_list = self.local_store[object_key]
 
-        # Remove all instances of the stored object, in case multiples were added erroneously:
-        while True:
-            try:
-                data_list.remove(old_data)
-            except ValueError:
-                break  # this means we finally cleared the list
+        # # Remove all instances of the stored object, in case multiples were added erroneously:
+        # while True:
+        #     try:
+        #         data_list.remove(old_data)
+        #     except ValueError:
+        #         break  # this means we finally cleared the list
 
-        data_list.append(new_data)
+        # data_list.append(new_data)
 
     def set_default_mto_ids(self, moves):
         """
@@ -192,20 +199,31 @@ class PrimeDataStorageMixin:
 
         # If we're in the local environment, and we have gone through the entire list without getting a full set of IDs,
         # set our hardcoded IDs as the default:
-        if not self.has_all_default_mto_ids() and self.user.is_local:
-            logger.warning("⚠️ Using hardcoded MTO IDs for LOCAL env")
-            self.default_mto_ids.update(
-                {
-                    "contractorID": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
-                    "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
-                    "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
-                    "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
-                }
-            )
+        # if not self.has_all_default_mto_ids() and self.user.is_local:
+        #     logger.warning("⚠️ Using hardcoded MTO IDs for LOCAL env")
+        #     self.default_mto_ids.update(
+        #         {
+        #             "contractorID": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
+        #             "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
+        #             "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
+        #             "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
+        #         }
+        #     )
 
     def has_all_default_mto_ids(self) -> bool:
         """Boolean indicating that we have all the values we need for creating new MTOs."""
         return self.default_mto_ids and all(self.default_mto_ids.values())
+    
+    @property
+    def current_move(self):
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            prime_path(f"/move-task-orders/{self.current_move_id}"),
+            name=prime_path("/move-task-orders/{moveID}"),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        return resp.content
 
 
 @tag("prime")
@@ -555,14 +573,6 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         if not mto_shipment:
             logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
             return None  # can't run this task
-        # mto_shipment["status"] = "APPROVED"
-        # if mto_shipment["status"] != "APPROVED":
-        #     return None
-        # overrides_local = {
-        #     "id": mto_shipment["id"],
-        #     "status": "DIVERSION_REQUESTED",
-        # }
-        # overrides_local.update(overrides or {})
        
         # Generate fake payload based on the endpoint's required fields
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides)
@@ -576,8 +586,6 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         elif mto_shipment["status"] in ["DRAFT", "REJECTED", "CANCELED"]:
             return None
         
-        print("VVVVV ============================= \n" + "payload status: " + payload["status"] + "\n ======= shipment status:===" + mto_shipment["status"])
-
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
 
         resp = self.client.patch(
