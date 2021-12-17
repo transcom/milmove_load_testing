@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """ Locust test for the Prime & Support APIs """
 from locust import HttpUser, between, events
-from utils.constants import INTERNAL_API_KEY, PRIME_API_KEY
+from locust.env import Environment
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain, clean_milmove_host_users
-from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks
+from utils.base import ImplementationError
+from utils.constants import INTERNAL_API_KEY, LOCUST_RUNNER_TYPE, PRIME_API_KEY
+from utils.hosts import MilMoveDomain, MilMoveHostMixin, remove_certs, set_up_certs
+from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
 
 # init these classes just once because we don't need to parse the API over and over:
 prime_api = PrimeAPIParser()
@@ -46,9 +48,36 @@ class SupportUser(MilMoveHostMixin, HttpUser):
     tasks = {SupportTasks: 1}
 
 
-@events.test_stop.add_listener
-def on_test_stop(**kwargs):
+@events.init.add_listener
+def on_init(environment: Environment, runner: LOCUST_RUNNER_TYPE, **_kwargs) -> None:
     """
-    Clean up steps to run when the load test stops. Removes any cert files that may have been created during the setup.
+    Event hook that gets run after the locust environment has been set up. See docs for more info:
+    https://docs.locust.io/en/stable/api.html?#locust.event.Events.init
+
+    In our case, we're setting up certs.
+    :param environment: locust environment.
+    :param runner: locust runner that can be used to shut down the test run.
+    :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+    :return: None
     """
-    clean_milmove_host_users(locust_env=kwargs["environment"])
+    try:
+        set_up_certs(host=environment.host)
+    except ImplementationError as err:
+        # For some reason exceptions don't stop the runner automatically, so we have to do it
+        # ourselves.
+        runner.quit()
+
+        raise err
+
+
+@events.quitting.add_listener
+def on_quitting(environment: Environment, **_kwargs):
+    """
+    Event hook that gets run when locust is shutting down.
+
+    We're using it to clean up certs that were created during setup.
+    :param environment: locust environment.
+    :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+    :return: None
+    """
+    remove_certs(host=environment.host)

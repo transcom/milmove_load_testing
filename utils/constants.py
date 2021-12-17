@@ -1,18 +1,25 @@
 # -*- coding: utf-8 -*-
 """ utils/constants.py is for constant values useful throughout the codebase. """
-import os
+from pathlib import Path
+from typing import Type, TypeVar
+
+from locust.runners import Runner
 
 from .base import ValueEnum
 
-STATIC_FILES = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "static")
-TEST_PDF = os.path.join(STATIC_FILES, "test_upload.pdf")
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_FILES = BASE_DIR / "static"
 
-STATIC_TLS_FILES = os.path.join(STATIC_FILES, "tls")
-DOD_CA_BUNDLE = os.path.join(STATIC_TLS_FILES, "dod-ca-60-61-bundle.pem")
-LOCAL_MTLS_CERT = os.path.join(STATIC_TLS_FILES, "devlocal-mtls.cer")
-LOCAL_MTLS_KEY = os.path.join(STATIC_TLS_FILES, "devlocal-mtls.key")
+TEST_PDF = STATIC_FILES / "test_upload.pdf"
 
-LOCAL_TLS_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
+STATIC_TLS_FILES = STATIC_FILES / "tls"
+
+DOD_CA_BUNDLE = STATIC_TLS_FILES / "dod-ca-60-61-bundle.pem"
+
+LOCAL_MTLS_CERT = STATIC_TLS_FILES / "devlocal-mtls.cer"
+LOCAL_MTLS_KEY = STATIC_TLS_FILES / "devlocal-mtls.key"
+
+LOCAL_TLS_CERT_KWARGS = {"cert": (str(LOCAL_MTLS_CERT), str(LOCAL_MTLS_KEY)), "verify": False}
 
 PRIME_API_KEY = "prime"
 SUPPORT_API_KEY = "support"
@@ -32,6 +39,12 @@ MTO_SERVICE_ITEM = "mtoServiceItem"
 ORDER = "order"
 PAYMENT_REQUEST = "paymentRequest"
 QUEUES = "queues"
+
+# We can get different subclasses of the Runner class depending on how we run things so to indicate
+# that, we use this variable (R) with `Type`, e.g. Type[R]
+R = TypeVar("R", bound=Runner)
+
+LOCUST_RUNNER_TYPE = Type[R]
 
 
 class DataType(ValueEnum):

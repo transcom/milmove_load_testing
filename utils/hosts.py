@@ -2,20 +2,17 @@
 """ utils/hosts.py is for the tools that handle setting the MilMove hostnames and setting up TLS certs. """
 import logging
 import os
+from copy import deepcopy
 from typing import Optional
 
-from locust.env import Environment
-
 from .base import ImplementationError, ValueEnum
-from .constants import LOCAL_MTLS_CERT, LOCAL_MTLS_KEY, DOD_CA_BUNDLE, STATIC_TLS_FILES
+from .constants import DOD_CA_BUNDLE, LOCAL_TLS_CERT_KWARGS, STATIC_TLS_FILES
 
 logger = logging.getLogger(__name__)
 
 
 class MilMoveEnv(ValueEnum):
     LOCAL = "local"
-    EXP = "exp"
-    DOD = "dod"
     DP3 = "dp3"
 
 
@@ -163,11 +160,11 @@ class MilMoveHostMixin:
             return
 
         if cls.env == MilMoveEnv.LOCAL:
-            cls.cert_kwargs = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
+            cls.cert_kwargs = deepcopy(LOCAL_TLS_CERT_KWARGS)
             return
 
         # We now know we're in a deployed environment, so let's make a deployed cert/key file:
-        cert_key = cls.create_deployed_cert_file()
+        cert_key = get_tls_cert_pem_path(host=cls.env.value)
 
         verify_path = DOD_CA_BUNDLE
         # DP3 certs are issued by CAs that are well known and so we
@@ -177,63 +174,6 @@ class MilMoveHostMixin:
 
         # We also need to use the DoD's specific CA bundle for SSL verification in deployed envs:
         cls.cert_kwargs = {"cert": cert_key, "verify": verify_path}
-
-    @classmethod
-    def create_deployed_cert_file(cls) -> Optional[str]:
-        """
-        Grabs the TLS certificate and key values for this environment from the relevant environment variables (which
-        must be set for this function to work), and then creates a new .pem file that contains both the certificate and
-        the key for request validation. This is only called for deployed MilMove environments.
-
-        :return: str, the path to the newly created cert file
-        """
-        if cls.env == MilMoveEnv.LOCAL:
-            return  # can't complete this logic with local certs
-
-        deployed_tls_cert = os.environ.get(f"MOVE_MIL_{cls.env.value.upper()}_TLS_CERT")
-        deployed_tls_key = os.environ.get(f"MOVE_MIL_{cls.env.value.upper()}_TLS_KEY")
-
-        if not (deployed_tls_cert and deployed_tls_key):
-            logger.debug(f"Unable to find cert and key values for environment: {cls.env.value}")
-            raise ImplementationError(
-                "Cannot run load testing in a deployed environment without the matching certificate and key."
-            )
-
-        cert_key_file = os.path.join(STATIC_TLS_FILES, f"{cls.env.value}_tls_cert_key.pem")
-        with open(cert_key_file, "w") as f:
-            f.write(deployed_tls_cert)
-            f.write("\n")
-            f.write(deployed_tls_key)
-
-        return cert_key_file
-
-    @classmethod
-    def remove_deployed_cert_file(cls):
-        """
-        Removes the .pem cert/key file that was created for running load tests against a deployed environment.
-        """
-        if cls.env == MilMoveEnv.LOCAL:
-            return  # can't complete this logic with local certs
-
-        try:
-            os.remove(cls.cert_kwargs["cert"])
-        except (KeyError, TypeError, FileNotFoundError):
-            # KeyError means "cert" wasn't in the cert_kwargs dict - it may have been cleared out.
-            # TypeError means self.cert_kwargs["cert"] did not resolve to a string - also means we may have already
-            # removed this file.
-            # FileNotFoundError means whatever path was in the "cert" kwarg was incorrect or the file was already
-            # removed.
-
-            # In any case, let's try again to remove the file using the custom filename to be extra sure we're
-            # cleaning up after ourselves:
-            try:
-                os.remove(os.path.join(STATIC_TLS_FILES, f"{cls.env.value if cls.env else ''}_tls_cert_key.pem"))
-            except FileNotFoundError:
-                # The file is gone, huzzah!
-                pass
-
-        # Finally, clear out all traces of the deployed cert file:
-        cls.cert_kwargs = {}
 
     @property
     def is_local(self):
@@ -246,16 +186,57 @@ class MilMoveHostMixin:
         return self.env != MilMoveEnv.LOCAL
 
 
-def clean_milmove_host_users(locust_env: Environment):
+def set_up_certs(host: str) -> None:
     """
-    Cleans up the Users' cert/key settings if the User is a subclass of MilMoveHostMixin. This should be called in the
-    "test_stop" event for a locustfile/load test.
+    Sets up certs for making requests to the mymove server
+    :param host: host that the target server is running in, e.g. dp3
+    :return: None
     """
-    if locust_env.host == MilMoveEnv.LOCAL.value:
-        return  # we don't need to remove any cert files for a local test run
+    if host == MilMoveEnv.LOCAL.value:
+        return  # We don't need to set up certs for a local run because they already exist
 
-    for user_class in locust_env.user_classes:
-        if issubclass(user_class, MilMoveHostMixin):
-            user_class.remove_deployed_cert_file()
+    host_upper = host.upper()
 
-    logger.info("Cleaned up User SSL/TLS certificates.")
+    try:
+        deployed_tls_cert = os.environ[f"MOVE_MIL_{host_upper}_TLS_CERT"]
+        deployed_tls_key = os.environ[f"MOVE_MIL_{host_upper}_TLS_KEY"]
+    except KeyError:
+        logger.debug(f"Unable to find cert and key values for environment: {host}")
+
+        raise ImplementationError(
+            "Cannot run load testing in a deployed environment without the matching certificate and key."
+        ) from None
+
+    cert_pem_file = get_tls_cert_pem_path(host)
+
+    with open(cert_pem_file, "w") as f:
+        f.write(deployed_tls_cert)
+        f.write("\n")
+        f.write(deployed_tls_key)
+
+
+def remove_certs(host: str) -> None:
+    """
+    Removes certs that were set up for making requests to the mymove server
+    :param host: host that the target server is running in, e.g. dp3
+    :return: None
+    """
+    if host == MilMoveEnv.LOCAL.value:
+        return  # We don't need to delete local certs since they're part of the repo
+
+    cert_pem_file = get_tls_cert_pem_path(host)
+
+    try:
+        os.remove(cert_pem_file)
+    except FileNotFoundError:
+        # FileNotFoundError means the file was already removed.
+        pass
+
+
+def get_tls_cert_pem_path(host: str) -> str:
+    """
+    Determines the path to the TLS pem path based on environment
+    :param host: host that the target server is running in, e.g. dp3
+    :return: tls cert pem path as a string
+    """
+    return str(STATIC_TLS_FILES / f"{host}_tls_cert_key.pem")

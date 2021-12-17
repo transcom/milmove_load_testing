@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """ Tests utils/parsers.py """
-import os
 import pytest
-
 from prance import ResolvingParser
 from prance.util.url import ResolutionError
 
 from utils.base import ImplementationError
-from utils.constants import STATIC_FILES, DataType, ARRAY_MIN, ARRAY_MAX
+from utils.constants import ARRAY_MAX, ARRAY_MIN, DataType, STATIC_FILES
 from utils.fake_data import MilMoveData
-from utils.fields import APIEndpointBody, ObjectField, BaseAPIField, ArrayField, EnumField
+from utils.fields import APIEndpointBody, ArrayField, BaseAPIField, EnumField, ObjectField
 from utils.parsers import APIParser, PrimeAPIParser
 from .params_parsers import *
 
@@ -17,7 +15,7 @@ from .params_parsers import *
 class TestAPIParser:
     """Tests the APIParser class and its methods."""
 
-    TEST_API = os.path.join(STATIC_FILES, "test_api.yaml")
+    TEST_API = str(STATIC_FILES / "test_api.yaml")
 
     @classmethod
     def setup_class(cls):

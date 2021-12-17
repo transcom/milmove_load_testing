@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """ Tests utils/hosts.py """
-import re
-import pytest
 import os
+import re
 from unittest import mock
-import logging
 
-from locust.env import Environment
+import pytest
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain, MilMoveEnv, clean_milmove_host_users
 from utils.base import ImplementationError
+from utils.hosts import MilMoveDomain, MilMoveEnv, MilMoveHostMixin
 
 
 class TestMilMoveDomain:
@@ -108,58 +106,3 @@ class TestMilMoveHostMixin:
         assert re.search("tls/devlocal-mtls.key", self.TestUser1.cert_kwargs["cert"][1])
         assert re.search("tls/devlocal-mtls.cer", self.TestUser2.cert_kwargs["cert"][0])
         assert re.search("tls/devlocal-mtls.key", self.TestUser2.cert_kwargs["cert"][1])
-
-    @mock.patch.dict(os.environ, {"MOVE_MIL_DP3_TLS_CERT": "test_cert", "MOVE_MIL_DP3_TLS_KEY": "test_key"})
-    def test_create_deployed_cert_file(self):
-        self.HostUserClass.env = MilMoveEnv.DP3
-        cert_file_path = self.TestUser1.create_deployed_cert_file()
-        test_file_contents = "test_cert\ntest_key"
-
-        assert re.search("tls/dp3_tls_cert_key.pem", cert_file_path)
-        with open(cert_file_path, "r") as f:
-            assert f.read() == test_file_contents
-
-    @mock.patch.dict(os.environ, {"MOVE_MIL_DP3_TLS_CERT": "", "MOVE_MIL_DP3_TLS_KEY": ""})
-    def test_no_env_variables_create_deployed_cert_file(self):
-        self.HostUserClass.env = MilMoveEnv.DP3
-        with pytest.raises(ImplementationError):
-            self.TestUser1.create_deployed_cert_file()
-
-    @mock.patch.dict(os.environ, {"MOVE_MIL_DP3_TLS_CERT": "test_cert", "MOVE_MIL_DP3_TLS_KEY": "test_key"})
-    def test_remove_deployed_cert_file(self):
-        # Setup kwargs
-        self.HostUserClass.env = MilMoveEnv.DP3
-        self.HostUserClass.cert_kwargs = None
-        self.TestUser1.set_cert_kwargs()
-        cert_kwargs_before = self.TestUser1.cert_kwargs["cert"]
-
-        self.TestUser1.remove_deployed_cert_file()
-        assert os.path.exists(cert_kwargs_before) is False
-        assert self.TestUser1.cert_kwargs == {}
-        assert self.TestUser2.cert_kwargs == {}
-
-        # Call function again to make sure it doesn't error
-        self.TestUser1.remove_deployed_cert_file()
-
-
-@mock.patch.dict(os.environ, {"MOVE_MIL_DP3_TLS_CERT": "test_cert", "MOVE_MIL_DP3_TLS_KEY": "test_key"})
-def test_clean_milmove_host_users(mocker):
-    # tasks.base logger for mocking
-    logger = logging.getLogger("utils.hosts")
-
-    class MockUser(MilMoveHostMixin):
-        local_port = "9443"
-        domain = MilMoveDomain.PRIME
-        is_api = True
-        host = "dp3"
-        tasks = {}
-        weight = 1
-
-    env = Environment(user_classes=[MockUser])
-    TestUser = MockUser()
-    TestUser.create_deployed_cert_file()
-
-    mocker.patch.object(logger, "info")
-    clean_milmove_host_users(locust_env=env)
-    assert TestUser.cert_kwargs == {}
-    logger.info.assert_called_once_with("Cleaned up User SSL/TLS certificates.")

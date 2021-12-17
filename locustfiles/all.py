@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """ Locust test for all APIs """
+from gevent.pool import Group
 from locust import events
+from locust.env import Environment
 
-from utils.hosts import clean_milmove_host_users
-from utils.parsers import GHCAPIParser, PrimeAPIParser, SupportAPIParser
-
+from office import ServicesCounselorUser, TOOUser
 from prime import PrimeUser, SupportUser
 from prime_workflow import PrimeWorkflowUser
-from office import ServicesCounselorUser, TOOUser
-
-from gevent.pool import Group
+from utils.base import ImplementationError
+from utils.constants import LOCUST_RUNNER_TYPE
+from utils.hosts import remove_certs, set_up_certs
+from utils.parsers import GHCAPIParser, PrimeAPIParser, SupportAPIParser
 
 ########################################################################
 #
@@ -29,12 +30,39 @@ support_api = SupportAPIParser()
 ghc_api = GHCAPIParser()
 
 
-@events.test_stop.add_listener
-def on_test_stop(**kwargs):
+@events.init.add_listener
+def on_init(environment: Environment, runner: LOCUST_RUNNER_TYPE, **_kwargs) -> None:
     """
-    Clean up steps to run when the load test stops. Removes any cert files that may have been created during the setup.
+    Event hook that gets run after the locust environment has been set up. See docs for more info:
+    https://docs.locust.io/en/stable/api.html?#locust.event.Events.init
+
+    In our case, we're setting up certs.
+    :param environment: locust environment.
+    :param runner: locust runner that can be used to shut down the test run.
+    :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+    :return: None
     """
-    clean_milmove_host_users(locust_env=kwargs["environment"])
+    try:
+        set_up_certs(host=environment.host)
+    except ImplementationError as err:
+        # For some reason exceptions don't stop the runner automatically, so we have to do it
+        # ourselves.
+        runner.quit()
+
+        raise err
+
+
+@events.quitting.add_listener
+def on_quitting(environment: Environment, **_kwargs):
+    """
+    Event hook that gets run when locust is shutting down.
+
+    We're using it to clean up certs that were created during setup.
+    :param environment: locust environment.
+    :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+    :return: None
+    """
+    remove_certs(host=environment.host)
 
 
 @events.init_command_line_parser.add_listener
