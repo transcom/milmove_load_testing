@@ -409,7 +409,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             headers=headers,
             **self.user.cert_kwargs,
         )
-        check_response(resp, "createMTOShipment", payload)
+        check_response(resp, "createMTOShipmentFailure", payload, "422")
 
     @tag(PAYMENT_REQUEST, "createUpload")
     @task
