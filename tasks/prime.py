@@ -58,17 +58,37 @@ class PrimeDataStorageMixin:
     # The id for the move we are fetching
     current_move_id = None
 
-    def get_stored(self, object_key, *args, **kwargs):
+    def get_stored(self, object_key, object_id=None):
         """
-        Given an object_key that represents an object type from the MilMove app, returns an object of that type from the
-        list.
-
-        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
+        We only store one current move in the sequential workflow and keep it updated as we move through the workflow.
+        These functions override functions in the PrimeDataTaskMixin and will get automatically called by the tasks
+        in PrimeTasks and SupportTasks.
         """
-        data_list = self.local_store[object_key]
 
-        if len(data_list) > 0:  # otherwise we return None
-            return random.choice(data_list)
+        # Return whichever part of the move was requested - such as a shipment:
+        if object_key == MOVE_TASK_ORDER:
+            return self.current_move
+
+        if object_key in [MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]:
+            return self._get_nested_object_from_mto(object_key, object_id)
+    
+    def add_stored(self, object_key, object_data):
+        """Adds the object to the main move."""
+        if object_key == MOVE_TASK_ORDER:
+            self.current_move_id = object_data["id"]
+    
+    def _get_nested_object_from_mto(self, object_key, object_id):
+        """Return object of type requested. If no id is provided return a random element.
+        If id is provided, return the specific element or raise error
+        """
+
+        # Get the nested array from the current move, or None if it doesn't exist
+        array_key = self._get_nested_array_name(object_key)
+        nested_array = self.current_move.get(array_key)
+
+        # If nested array does not exist or is empty, return None
+        if not nested_array:
+            return None
 
     def get_stored_shipment_address(self, mto_shipment=None):
         """
@@ -91,52 +111,7 @@ class PrimeDataStorageMixin:
         if len(valid_addresses) > 0:  # otherwise we return None
             return random.choice(valid_addresses)
 
-    def add_stored(self, object_key, object_data):
-        """
-        Adds data to the list for the object key provided. Also checks if the list is already at the max number of
-        elements, and if so, it randomly removes 1 to MAX number of elements so that the cycle can start again (and so
-        we don't hog too much memory).
 
-        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
-        :param object_data: JSON/dict
-        :return: None
-        """
-        if object_key == MOVE_TASK_ORDER:
-            self.current_move_id = object_data["id"]
-        
-        data_list = self.local_store[object_key]
-
-        if len(data_list) >= self.DATA_LIST_MAX:
-            num_to_delete = random.randint(1, self.DATA_LIST_MAX)
-            del data_list[:num_to_delete]
-
-        # Some creation endpoint auto-create multiple objects and return an array,
-        # but each object in the array should still be considered individually here:
-        if isinstance(object_data, list):
-            data_list.extend(object_data)
-        else:
-            data_list.append(object_data)
-
-    def update_stored(self, object_key, old_data, new_data):
-        """
-        Given an object key, replaces a stored object in the local store with a new updated object.
-
-        :param object_key: str in [MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_AGENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST]
-        :param old_data: JSON/dict
-        :param new_data: JSON/dict
-        :return: None
-        """
-        pass
-        # data_list = self.local_store[object_key]
-
-        # # Remove all instances of the stored object, in case multiples were added erroneously:
-        # while True:
-        #     try:
-        #         data_list.remove(old_data)
-        #     except ValueError:
-        #         break  # this means we finally cleared the list
-
-        # data_list.append(new_data)
 
     def set_default_mto_ids(self, moves):
         """
@@ -218,8 +193,8 @@ class PrimeDataStorageMixin:
     def current_move(self):
         headers = {"content-type": "application/json"}
         resp = self.client.get(
-            prime_path(f"/move-task-orders/{self.current_move_id}"),
-            name=prime_path("/move-task-orders/{moveID}"),
+            support_path(f"/move-task-orders/{self.current_move_id}"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}"),
             headers=headers,
             **self.user.cert_kwargs,
         )
@@ -285,12 +260,15 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         # If moveTaskOrderID was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("moveTaskOrderID") if overrides else None
 
-        move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
+        move_task_order = self.current_move
         if not move_task_order:
             logger.debug("createMTOShipment: ⚠️ No move_task_order found")
             return (
                 None  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
             )
+        
+        logger.error(f"⛔️ =============  object id =========== \n{object_id}")
+        logger.error(f"⛔️ ============= self.current_move =========== \n{self.current_move}")
 
         overrides_local = {
             # Override moveTaskorderID because we don't want a random one
@@ -709,26 +687,26 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
     #         self.update_stored(PAYMENT_REQUEST, payment_request, new_payment_request)
     #         return new_payment_request
 
-    @tag(MOVE_TASK_ORDER, "getMoveTaskOrder")
-    @task
-    def get_move_task_order(self, overrides=None):
-        # If id was provided, get that specific one. Else get any stored one.
-        object_id = overrides.get("id") if overrides else None
-        move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
-        if not move_task_order:
-            logger.debug("getMoveTaskOrder: ⚠️ No move_task_order found")
-            return
+    # @tag(MOVE_TASK_ORDER, "getMoveTaskOrder")
+    # @task
+    # def get_move_task_order(self, overrides=None):
+    #     # If id was provided, get that specific one. Else get any stored one.
+    #     object_id = overrides.get("id") if overrides else None
+    #     move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
+    #     if not move_task_order:
+    #         logger.debug("getMoveTaskOrder: ⚠️ No move_task_order found")
+    #         return
 
-        headers = {"content-type": "application/json"}
+    #     headers = {"content-type": "application/json"}
 
-        resp = self.client.get(
-            support_path(f"/move-task-orders/{move_task_order['id']}"),
-            name=support_path("/move-task-orders/{moveTaskOrderID}"),
-            headers=headers,
-            **self.user.cert_kwargs,
-        )
-        new_mto, success = check_response(resp, "getMoveTaskOrder")
+    #     resp = self.client.get(
+    #         support_path(f"/move-task-orders/{move_task_order['id']}"),
+    #         name=support_path("/move-task-orders/{moveTaskOrderID}"),
+    #         headers=headers,
+    #         **self.user.cert_kwargs,
+    #     )
+    #     new_mto, success = check_response(resp, "getMoveTaskOrder")
 
-        if success:
-            self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
-            return new_mto
+    #     if success:
+    #         self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
+    #         return new_mto
