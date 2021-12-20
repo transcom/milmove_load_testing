@@ -99,6 +99,17 @@ class MilMoveProvider(AddressProvider, DateProvider):
             if state != "AK" and state != "HI":
                 return random.choice(zipcodes.filter_by(state=state)).get("zip_code")
 
+    def safe_city_state_zip(self):
+        """
+        Returns a combination of a valid city, state, and postal code.
+        :return: tuple
+        """
+        while True:
+            state = self.state_abbr(include_territories=False)
+            if state != "AK" and state != "HI":
+                location = random.choice(zipcodes.filter_by(state=state))
+                return {"city": location["city"], "state": location["state"], "postalCode": location["zip_code"]}
+
     def safe_country(self):
         """
         Returns a safe country as a string. Currently restricting to US based CONUS locations not including territories
@@ -142,6 +153,7 @@ class MilMoveData:
             DataType.POSTAL_CODE: self.fake.safe_postal_code,
             DataType.POSTAL_CODE_VARIANT: self.fake.safe_postal_code,
             DataType.COUNTRY: self.fake.safe_country,
+            DataType.CITY_STATE_ZIP: self.fake.safe_city_state_zip,
             DataType.DATE: self.fake.date,
             DataType.DATE_TIME: self.fake.iso_date_time,
             DataType.TIME_MILITARY: self.fake.time_military,
