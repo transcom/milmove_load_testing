@@ -482,3 +482,9 @@ class GHCAPIParser(APIParser):
     """Parser class for the GHC API."""
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"
+
+
+class InternalAPIParser(APIParser):
+    """Parser class for the Internal API."""
+
+    api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/internal.yaml"
