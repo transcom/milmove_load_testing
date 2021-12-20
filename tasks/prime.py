@@ -617,8 +617,8 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             return None  # can't run this task
         # To avoid issues with the mto shipment being stale
         # retrieve the move associated with the shipment
-        # and then use the newly fetched move to the find most up to date version of the shipment 
-        move_id = mto_shipment['moveTaskOrderID']
+        # and then use the newly fetched move to the find most up to date version of the shipment
+        move_id = mto_shipment["moveTaskOrderID"]
         headers = {"content-type": "application/json"}
         resp = self.client.get(
             support_path(f"/move-task-orders/{move_id}"),
@@ -630,15 +630,20 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         if not move_details:
             logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
             return None  # can't run this task
-        for fetched_mto_shipment in move_details['mtoShipments']:
-            if fetched_mto_shipment['id'] == mto_shipment['id']:
-       
+        for fetched_mto_shipment in move_details["mtoShipments"]:
+            if fetched_mto_shipment["id"] == mto_shipment["id"]:
+
                 # Generate fake payload based on the endpoint's required fields
-                payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides)
-                
-                if fetched_mto_shipment["status"] == "CANCELLATION_REQUESTED" and payload["status"] != "CANCELED" : 
+                payload = self.fake_request(
+                    "/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides
+                )
+
+                if fetched_mto_shipment["status"] == "CANCELLATION_REQUESTED" and payload["status"] != "CANCELED":
                     return None
-                elif fetched_mto_shipment["status"] == "SUBMITTED" and payload["status"] not in ["APPROVED", "REJECTED"]:
+                elif fetched_mto_shipment["status"] == "SUBMITTED" and payload["status"] not in [
+                    "APPROVED",
+                    "REJECTED",
+                ]:
                     return None
                 elif fetched_mto_shipment["status"] == "DIVERSION_REQUESTED" and payload["status"] != "APPROVED":
                     return None
@@ -646,7 +651,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
                     return None
                 elif fetched_mto_shipment["status"] in ["DRAFT", "REJECTED", "CANCELED"]:
                     return None
-                
+
                 headers = {"content-type": "application/json", "If-Match": fetched_mto_shipment["eTag"]}
 
                 resp = self.client.patch(
