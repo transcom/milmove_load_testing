@@ -46,6 +46,8 @@ R = TypeVar("R", bound=Runner)
 
 LOCUST_RUNNER_TYPE = Type[R]
 
+E = TypeVar("E", bound=BaseException)
+
 
 class DataType(ValueEnum):
     """
