@@ -666,10 +666,10 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
                 if success:
                     self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
                     return mto_shipment
-     
+
     @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
     @task
-    def update_mto_shipment_status(self, overrides=None):
+    def update_mto_shipment_with_invalid_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
         mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
@@ -677,18 +677,17 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
             return None  # can't run this task
 
-        overrides_local = {
-            "status": "DRAFT"
-        }
+        overrides_local = {"status": "DRAFT"}
 
         # Merge local overrides with passed-in overrides
         if overrides:
-            overrides_local.update(overrides)   
+            overrides_local.update(overrides)
         # Generate fake payload based on the endpoint's required fields
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides_local)
 
         payload["status"] = "DRAFT"
-              
+        headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
+
         resp = self.client.patch(
             support_path(f"/mto-shipments/{mto_shipment['id']}/status"),
             name=support_path("/mto-shipments/{mtoShipmentID}/status -- expected failure"),
@@ -696,11 +695,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             headers=headers,
             **self.user.cert_kwargs,
         )
-        new_mto_shipment, success = check_response(resp, "updateMTOShipmentStatus", payload)
-
-        if success:
-            self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
-            return mto_shipment
+        check_response(resp, "updateMTOShipmentStatusFailure", payload)
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
     @task
