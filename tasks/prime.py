@@ -377,7 +377,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
 
         move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
         if not move_task_order:
-            logger.debug("createMTOShipment: ⚠️ No move_task_order found")
+            logger.debug("createMTOShipment — expected failure: ⚠️ No move_task_order found")
             return (
                 None  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
             )
