@@ -18,7 +18,6 @@ class PrimeWorkflowUser(MilMoveHostMixin, HttpUser):
 
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host
-    is_api = True  # if True, uses the api base domain in deployed environments
 
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
     weight = 1
@@ -26,4 +25,3 @@ class PrimeWorkflowUser(MilMoveHostMixin, HttpUser):
 
     # For the tasks, we can define all the workflow tasksets we have set up:
     tasks = {PrimeWorkflowTasks: 1, PrimeEndpointWorkflowsTasks: 1}
-    weight = 1

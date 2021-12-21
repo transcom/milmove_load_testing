@@ -15,15 +15,17 @@ class TestMilMoveDomain:
 
     def test_host_name(self):
         assert (
-            MilMoveDomain.match(MilMoveDomain.PRIME).host_name("local", True, 1111, "http") == "http://primelocal:1111"
+            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="local", port=1111, protocol="http")
+            == "http://primelocal:1111"
         )
-        assert MilMoveDomain.match(MilMoveDomain.PRIME).host_name("dp3") == "https://prime.loadtest.dp3.us"
+
+        assert MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="dp3") == "https://api.loadtest.dp3.us"
 
         with pytest.raises(ImplementationError):
-            MilMoveDomain.match(MilMoveDomain.PRIME).host_name("local", True, 11111)
+            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="local", port=11111)
 
         with pytest.raises(ImplementationError):
-            MilMoveDomain.match(MilMoveDomain.PRIME).host_name("test")
+            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="test")
 
 
 class TestMilMoveHostMixin:
@@ -37,7 +39,6 @@ class TestMilMoveHostMixin:
             # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove environment:
             local_port = "9443"
             domain = MilMoveDomain.PRIME  # the base domain for the host
-            is_api = True  # if True, uses the api base domain in deployed environments
             host = "local"
 
         cls.TestUser1 = HostUser()

@@ -23,7 +23,6 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
     # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove environment:
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host
-    is_api = True  # if True, uses the api base domain in deployed environments
 
     # This attribute is used for generating fake requests when hitting the Prime API:
     parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}
@@ -40,7 +39,6 @@ class SupportUser(MilMoveHostMixin, HttpUser):
 
     local_port = "9443"
     domain = MilMoveDomain.PRIME
-    is_api = True
 
     parser = support_api
 

@@ -26,7 +26,6 @@ class PrimeUser(MilMoveHostMixin, RestHttpUser):
     # environment:
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host
-    is_api = True  # if True, uses the api base domain in deployed environments
 
     # This attribute is used for generating fake requests when hitting the Prime API:
     parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}

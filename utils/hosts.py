@@ -22,26 +22,17 @@ class MilMoveDomain(ValueEnum):
     MILMOVE = "milmove"
 
     @property
-    def local_value(self):
+    def local_value(self) -> str:
         return f"{self.value}local"
 
-    @property
-    def deployed_value(self):
-        if self.value == self.MILMOVE.value:
-            return "my"
-
-        return self.value
-
-    def host_name(self, env, is_api=False, port="0000", protocol="https"):
-
+    def host_name(self, env: str, port: str = "0000", protocol: str = "https") -> str:
         """
-        Returns the host name for this domain based on the environment, whether or not it is in the API domain, and the
-        port and protocol (for local envs).
-        :param env: str MilMoveEnv
-        :param is_api: bool
-        :param port: str containing 4 digits
-        :param protocol: str "https" or "http"
-        :return: str host
+        Returns the host name for this domain based on the environment, port, and protocol
+         (for local envs).
+        :param env: MilMoveEnv, e.g. local
+        :param port: 4 digit port to point at
+        :param protocol: "https" or "http"
+        :return: host, e.g. https://api.loadtest.dp3.us
         """
         if isinstance(env, MilMoveEnv):
             env = env.value  # ensure that we're using the value string instead of the Enum literal
@@ -59,7 +50,7 @@ class MilMoveDomain(ValueEnum):
         # allow us to point to another domain if we need to
         base_domain = os.getenv("BASE_DOMAIN", "loadtest.dp3.us")
         # NOTE: deployed protocol is always https
-        return f"https://{'api' if is_api else self.deployed_value}.{base_domain}"
+        return f"https://api.{base_domain}"
 
 
 class MilMoveHostMixin:
@@ -77,11 +68,6 @@ class MilMoveHostMixin:
     # The HTTP protocol and port used for a local host:
     local_protocol: str = "https"
     local_port: str = "0000"
-
-    # A boolean indicating whether or not the host belongs to an API on the server.
-    # For deployed environments only, this will change the host to use api.<env>.move.mil instead of the standard
-    # domain name.
-    is_api: bool = False
 
     # The set of kwargs that will be used to authenticate an HTTP request, in the format:
     # {"cert": <cert/key file path(s)>, "verify": <False or the CA bundle file path>}
@@ -138,9 +124,9 @@ class MilMoveHostMixin:
 
         try:
             cls.host = MilMoveDomain.match(cls.domain).host_name(
-                cls.env.value, cls.is_api, cls.local_port, cls.local_protocol
+                env=cls.env.value, port=cls.local_port, protocol=cls.local_protocol
             )
-            cls.alternative_host = MilMoveDomain.MILMOVE.host_name(cls.env.value, False, "8080", "http")
+            cls.alternative_host = MilMoveDomain.MILMOVE.host_name(env=cls.env.value, port="8080", protocol="http")
         except IndexError:  # means MilMoveDomain could not find a match for the value passed in
             logger.debug(f"Bad domain value: {cls.domain}")
             raise ImplementationError("Domain for MilMoveHostMixin must match one of the values in MilMoveDomain.")

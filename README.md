@@ -353,9 +353,6 @@ class MyUser(MilMoveHostMixin, HttpUser):
   # NOTE: The domain corresponds to whatever you use in local - so <domain>local
   domain = MilMoveDomain.OFFICE
 
-  # Are you testing an API endpoint or path in the interface? This changes the host:
-  is_api = True
-
   # If not using MilMoveHostMixin:
   # You can set the host on the class directly. Useful if it never changes based on env.
   host = "https://primelocal:9443"
