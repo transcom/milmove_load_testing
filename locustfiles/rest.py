@@ -4,10 +4,9 @@
 from locust import between, events, tag, task
 from locust.env import Environment
 
-from tasks.prime import prime_path
 from utils.base import ImplementationError
 from utils.constants import INTERNAL_API_KEY, LOCUST_RUNNER_TYPE, MOVE_TASK_ORDER, PRIME_API_KEY
-from utils.hosts import MilMoveDomain, MilMoveHostMixin, remove_certs, set_up_certs
+from utils.hosts import MilMoveRequestMixin, remove_certs, set_up_certs
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
 from utils.users import RestHttpUser, RestResponseContextManager
 
@@ -17,15 +16,15 @@ support_api = SupportAPIParser()
 internal_api = InternalAPIParser()
 
 
-class PrimeUser(MilMoveHostMixin, RestHttpUser):
+class PrimeUser(MilMoveRequestMixin, RestHttpUser):
     """
     A user that can test the Prime API
     """
 
-    # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove
+    # These attributes are used in MilMoveRequestMixin to set up the proper hostname for any MilMove
     # environment:
     local_port = "9443"
-    domain = MilMoveDomain.PRIME  # the base domain for the host
+    local_protocol = "https"
 
     # This attribute is used for generating fake requests when hitting the Prime API:
     parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}
@@ -38,7 +37,7 @@ class PrimeUser(MilMoveHostMixin, RestHttpUser):
     @tag(MOVE_TASK_ORDER, "listMoves")
     @task
     def list_moves(self) -> None:
-        with self.rest("GET", prime_path("/moves"), **self.cert_kwargs) as resp:
+        with self.rest("GET", self.get_prime_path("/moves"), **self.cert_kwargs) as resp:
             resp: RestResponseContextManager
             print(f"\n\n{resp.js=}\n\n")
 
