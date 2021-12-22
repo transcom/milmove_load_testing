@@ -8,7 +8,7 @@ from typing import NoReturn, Optional
 from unittest.mock import patch
 
 from utils.constants import E
-from utils.users import format_failure_msg_from_exception, parse_response_to_dict
+from utils.users import format_failure_msg_from_exception, parse_response_json
 
 
 class TestFormatTraceBackToErrorMessage:
@@ -105,7 +105,7 @@ class TestFormatTraceBackToErrorMessage:
 @patch("utils.users.RestResponseContextManager", autospec=True)
 class TestParseResponseToDict:
     """
-    Tests for parse_response_to_dict
+    Tests for parse_response_json
     """
 
     def test_returns_proper_error_message_if_response_text_is_none(self, mock_response):
@@ -120,7 +120,7 @@ class TestParseResponseToDict:
         response_status_code = 500
         mock_response.status_code = response_status_code
 
-        parsed_json, error_message = parse_response_to_dict(mock_response)
+        parsed_json, error_message = parse_response_json(mock_response)
 
         assert not parsed_json
 
@@ -132,7 +132,7 @@ class TestParseResponseToDict:
     def test_returns_empty_dict_and_err_msg_if_no_error_and_no_text(self, mock_response):
         mock_response.text = ""
 
-        parsed_json, error_message = parse_response_to_dict(mock_response)
+        parsed_json, error_message = parse_response_json(mock_response)
 
         assert not parsed_json
         assert not error_message
@@ -151,7 +151,7 @@ class TestParseResponseToDict:
             exc = e
 
         mock_response.json.side_effect = exc
-        parsed_json, error_message = parse_response_to_dict(mock_response)
+        parsed_json, error_message = parse_response_json(mock_response)
 
         assert not parsed_json
 

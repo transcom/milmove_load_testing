@@ -79,7 +79,7 @@ class RestResponseContextManager(ResponseContextManager):
     request_meta: Dict[str, Any] = None
 
 
-def parse_response_to_dict(response: RestResponseContextManager) -> Tuple[Dict[str, Any], str]:
+def parse_response_json(response: RestResponseContextManager) -> Tuple[Dict[str, Any], str]:
     """
     Takes a response object and tries to parse its text content into a dictionary. Returns a tuple
     with the first item being the parsed response text as a dictionary (defaults to an empty dict)
@@ -151,7 +151,7 @@ class RestHttpUser(HttpUser):
         with self.client.request(method, url, catch_response=True, headers=headers, **kwargs) as resp:
             resp: RestResponseContextManager
 
-            parsed_json, error_msg = parse_response_to_dict(response=resp)
+            parsed_json, error_msg = parse_response_json(response=resp)
 
             if error_msg:
                 resp.failure(error_msg)
