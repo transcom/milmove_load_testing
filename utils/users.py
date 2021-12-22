@@ -15,7 +15,7 @@ from typing import Any, Dict, Tuple
 from locust import HttpUser
 from locust.clients import ResponseContextManager
 
-from utils.constants import E
+from utils.constants import E, get_json_headers
 
 
 def format_failure_msg_from_exception(exc: E, response_text: str = "") -> str:
@@ -145,7 +145,7 @@ class RestHttpUser(HttpUser):
         :return: a context manager that can be used ot examine the response data or to mark the
             test as a success or failure.
         """
-        default_headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        default_headers = get_json_headers()
         headers = kwargs.pop("headers", default_headers)
 
         with self.client.request(method, url, catch_response=True, headers=headers, **kwargs) as resp:

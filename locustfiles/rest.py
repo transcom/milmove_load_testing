@@ -4,9 +4,20 @@
 from locust import between, events, tag, task
 from locust.env import Environment
 
+from tasks.prime import get_prime_moves
 from utils.base import ImplementationError
 from utils.constants import INTERNAL_API_KEY, LOCUST_RUNNER_TYPE, MOVE_TASK_ORDER, PRIME_API_KEY
-from utils.hosts import MilMoveRequestMixin, remove_certs, set_up_certs
+from utils.hosts import (
+    MilMoveEnv,
+    MilMoveRequestMixin,
+    MilMoveSubdomain,
+    convert_host_string_to_milmove_env,
+    form_base_domain,
+    get_cert_kwargs,
+    is_local,
+    remove_certs,
+    set_up_certs,
+)
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
 from utils.users import RestHttpUser, RestResponseContextManager
 
@@ -39,7 +50,31 @@ class PrimeUser(MilMoveRequestMixin, RestHttpUser):
     def list_moves(self) -> None:
         with self.rest("GET", self.get_prime_path("/moves"), **self.cert_kwargs) as resp:
             resp: RestResponseContextManager
-            print(f"\n\n{resp.js=}\n\n")
+
+            if isinstance(resp.js, list) and resp.js:
+                print(f"\n{resp.js[0]=}\n")
+            else:
+                print("No moves found.")
+
+
+def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
+    local_run = is_local(env=env)
+
+    base_domain = form_base_domain(
+        running_against_local=local_run,
+        local_protocol=PrimeUser.local_protocol,
+        local_subdomain=MilMoveSubdomain.PRIME,
+        local_port=PrimeUser.local_port,
+    )
+
+    cert_kwargs = get_cert_kwargs(env=env)
+
+    moves = get_prime_moves(base_domain=base_domain, cert_kwargs=cert_kwargs)
+
+    if moves:
+        print(f"\n{moves[0]=}\n")
+    else:
+        print("No moves found.")
 
 
 @events.init.add_listener
@@ -59,6 +94,20 @@ def on_init(environment: Environment, runner: LOCUST_RUNNER_TYPE, **_kwargs) -> 
     except ImplementationError as err:
         # For some reason exceptions don't stop the runner automatically, so we have to do it
         # ourselves.
+        runner.quit()
+
+        raise err
+
+    try:
+        milmove_env = convert_host_string_to_milmove_env(host=environment.host)
+    except ImplementationError as err:
+        runner.quit()
+
+        raise err
+
+    try:
+        set_up_for_prime_load_tests(env=milmove_env)
+    except Exception as err:
         runner.quit()
 
         raise err

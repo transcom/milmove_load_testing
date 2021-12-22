@@ -220,7 +220,7 @@ class MilMoveRequestMixin:
         :return: base domain to use for requests.
         """
         return form_base_domain(
-            running_against_local=self.is_local,
+            running_against_local=is_local(env=self.env),
             local_protocol=self.local_protocol,
             local_subdomain=local_subdomain,
             local_port=self.local_port,
@@ -274,14 +274,6 @@ class MilMoveRequestMixin:
         """
         return get_cert_kwargs(env=self.env)
 
-    @property
-    def is_local(self) -> bool:
-        """
-        Indicates if this user is using the local environment.
-        :return: bool indicating if we are running in the local env or not
-        """
-        return self.env == MilMoveEnv.LOCAL
-
 
 def set_up_certs(host: str) -> None:
     """
@@ -324,6 +316,25 @@ def remove_certs(host: str) -> None:
     except FileNotFoundError:
         # FileNotFoundError means the file was already removed.
         pass
+
+
+def convert_host_string_to_milmove_env(host: str) -> MilMoveEnv:
+    try:
+        return MilMoveEnv.match(host)
+    except IndexError:  # means MilMoveEnv could not find a match for the value passed in
+        logger.debug(f"Bad host value: {host}")
+
+        raise ImplementationError(
+            "Environment for MilMoveHostMixin must match one of the values in MilMoveEnv."
+        ) from None
+
+
+def is_local(env: MilMoveEnv) -> bool:
+    """
+    Indicates if this user is using the local environment.
+    :return: bool indicating if we are running in the local env or not
+    """
+    return env == MilMoveEnv.LOCAL
 
 
 def get_cert_kwargs(env: MilMoveEnv) -> dict[str, Union[str, bool]]:

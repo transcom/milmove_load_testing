@@ -1,26 +1,29 @@
 # -*- coding: utf-8 -*-
 """ TaskSets and tasks for the Prime & Support APIs """
-import logging
 import json
+import logging
 import random
 from copy import deepcopy
-from typing import Dict
+from typing import Any, Dict, Union
 
-from locust import tag, task, TaskSet
+import requests
+from locust import TaskSet, tag, task
 
 from utils.constants import (
     INTERNAL_API_KEY,
-    TEST_PDF,
-    ZERO_UUID,
-    PRIME_API_KEY,
-    SUPPORT_API_KEY,
     MOVE_TASK_ORDER,
-    MTO_SHIPMENT,
     MTO_AGENT,
     MTO_SERVICE_ITEM,
+    MTO_SHIPMENT,
     PAYMENT_REQUEST,
+    PRIME_API_KEY,
+    SUPPORT_API_KEY,
+    TEST_PDF,
+    ZERO_UUID,
+    get_json_headers,
 )
-from .base import check_response, CertTaskMixin, ParserTaskMixin
+from utils.hosts import form_prime_path
+from .base import CertTaskMixin, ParserTaskMixin, check_response
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +34,14 @@ def prime_path(url: str) -> str:
 
 def support_path(url: str) -> str:
     return f"/support/v1{url}"
+
+
+def get_prime_moves(base_domain: str, cert_kwargs: dict[str, Union[str, bool]]) -> list[dict[str, Any]]:
+    moves_path = form_prime_path(base_domain=base_domain, endpoint="/moves")
+    response = requests.get(url=moves_path, headers=get_json_headers(), **cert_kwargs)
+    # You would likely need to do some error handling in case the request messes up, but for now
+    # I'll leave it out.
+    return response.json()
 
 
 class PrimeDataStorageMixin:
