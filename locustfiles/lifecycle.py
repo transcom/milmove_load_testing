@@ -23,6 +23,7 @@ import datetime
 
 import requests
 from locust import HttpUser, events, task
+from locust.env import Environment
 from locust.runners import MasterRunner
 from locust.user.wait_time import constant
 
@@ -44,22 +45,23 @@ test_run_specific_data = None
 
 
 @events.init.add_listener
-def _(environment, **_kwargs):
-    print(
-        f"2. Initializing locust, happens after parsing the locustfile but before test start\n{environment=}\n{_kwargs=}"
-    )
+def _(environment: Environment, **_kwargs):
+    print("2. Initializing locust, happens after parsing the locustfile but before test start.")
+    print(f"\n{environment.__dict__=}\n{_kwargs=}\n")
 
 
 @events.quitting.add_listener
-def _(environment, **_kwargs):
+def _(environment: Environment, **_kwargs):
     print("8. locust is shutting down")
+    print(f"\n{environment.__dict__=}\n{_kwargs=}\n")
 
 
 @events.test_start.add_listener
-def _(environment, **_kwargs):
+def _(environment: Environment, **_kwargs):
     # happens only once in headless runs, but can happen multiple times in web ui-runs
     global test_run_specific_data
     print("3. Starting test run")
+    print(f"\n{environment.__dict__=}\n{_kwargs=}\n")
     # in a distributed run, the master does not typically need any test data
     if not isinstance(environment.runner, MasterRunner):
         test_run_specific_data = requests.post(
@@ -69,8 +71,9 @@ def _(environment, **_kwargs):
 
 
 @events.test_stop.add_listener
-def _(environment, **_kwargs):
+def _(environment: Environment, **_kwargs):
     print("7. stopping test run")
+    print(f"\n{environment.__dict__=}\n{_kwargs=}\n")
 
 
 class MyUser(HttpUser):
