@@ -6,7 +6,7 @@ from copy import deepcopy
 from typing import Optional
 
 from .base import ImplementationError, ValueEnum
-from .constants import DOD_CA_BUNDLE, LOCAL_TLS_CERT_KWARGS, STATIC_TLS_FILES
+from .constants import DOD_CA_BUNDLE, DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 
 logger = logging.getLogger(__name__)
 
@@ -149,9 +149,6 @@ class MilMoveHostMixin:
             cls.cert_kwargs = deepcopy(LOCAL_TLS_CERT_KWARGS)
             return
 
-        # We now know we're in a deployed environment, so let's make a deployed cert/key file:
-        cert_key = get_tls_cert_pem_path(host=cls.env.value)
-
         verify_path = DOD_CA_BUNDLE
         # DP3 certs are issued by CAs that are well known and so we
         # don't need any special verification
@@ -159,7 +156,7 @@ class MilMoveHostMixin:
             verify_path = None
 
         # We also need to use the DoD's specific CA bundle for SSL verification in deployed envs:
-        cls.cert_kwargs = {"cert": cert_key, "verify": verify_path}
+        cls.cert_kwargs = {"cert": DP3_CERT_KEY_PEM, "verify": verify_path}
 
     @property
     def is_local(self):
@@ -193,9 +190,7 @@ def set_up_certs(host: str) -> None:
             "Cannot run load testing in a deployed environment without the matching certificate and key."
         ) from None
 
-    cert_pem_file = get_tls_cert_pem_path(host)
-
-    with open(cert_pem_file, "w") as f:
+    with open(DP3_CERT_KEY_PEM, "w") as f:
         f.write(deployed_tls_cert)
         f.write("\n")
         f.write(deployed_tls_key)
@@ -210,19 +205,8 @@ def remove_certs(host: str) -> None:
     if host == MilMoveEnv.LOCAL.value:
         return  # We don't need to delete local certs since they're part of the repo
 
-    cert_pem_file = get_tls_cert_pem_path(host)
-
     try:
-        os.remove(cert_pem_file)
+        os.remove(DP3_CERT_KEY_PEM)
     except FileNotFoundError:
         # FileNotFoundError means the file was already removed.
         pass
-
-
-def get_tls_cert_pem_path(host: str) -> str:
-    """
-    Determines the path to the TLS pem path based on environment
-    :param host: host that the target server is running in, e.g. dp3
-    :return: tls cert pem path as a string
-    """
-    return str(STATIC_TLS_FILES / f"{host}_tls_cert_key.pem")

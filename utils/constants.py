@@ -16,10 +16,13 @@ STATIC_TLS_FILES = STATIC_FILES / "tls"
 
 DOD_CA_BUNDLE = STATIC_TLS_FILES / "dod-ca-60-61-bundle.pem"
 
-LOCAL_MTLS_CERT = STATIC_TLS_FILES / "devlocal-mtls.cer"
-LOCAL_MTLS_KEY = STATIC_TLS_FILES / "devlocal-mtls.key"
+LOCAL_MTLS_CERT = str(STATIC_TLS_FILES / "devlocal-mtls.cer")
+LOCAL_MTLS_KEY = str(STATIC_TLS_FILES / "devlocal-mtls.key")
 
-LOCAL_TLS_CERT_KWARGS = {"cert": (str(LOCAL_MTLS_CERT), str(LOCAL_MTLS_KEY)), "verify": False}
+LOCAL_TLS_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
+
+DP3_CERT_KEY_PEM_FILENAME = "dp3_tls_cert_key.pem"
+DP3_CERT_KEY_PEM = str(STATIC_TLS_FILES / DP3_CERT_KEY_PEM_FILENAME)
 
 PRIME_API_KEY = "prime"
 SUPPORT_API_KEY = "support"
