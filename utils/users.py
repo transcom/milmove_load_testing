@@ -15,10 +15,11 @@ from typing import Any, Dict, Tuple
 from locust import HttpUser
 from locust.clients import ResponseContextManager
 
-from utils.constants import E, get_json_headers
+from utils.constants import get_json_headers
+from utils.types import ExceptionType
 
 
-def format_failure_msg_from_exception(exc: E, response_text: str = "") -> str:
+def format_failure_msg_from_exception(exc: ExceptionType, response_text: str = "") -> str:
     """
     Takes a traceback as a string and formats it into a shorter error message. This is useful for
     creating a message that can be used to report a task failure.
@@ -74,7 +75,7 @@ class RestResponseContextManager(ResponseContextManager):
     the class.
     """
 
-    error: E = None
+    error: ExceptionType = None
     js: Dict[str, Any] = None
     request_meta: Dict[str, Any] = None
 

@@ -7,7 +7,7 @@ from json import JSONDecodeError
 from typing import NoReturn, Optional
 from unittest.mock import patch
 
-from utils.constants import E
+from utils.types import ExceptionType
 from utils.users import format_failure_msg_from_exception, parse_response_json
 
 
@@ -17,7 +17,7 @@ class TestFormatTraceBackToErrorMessage:
     """
 
     def test_puts_exception_class_in_msg(self) -> None:
-        exc: E
+        exc: ExceptionType
 
         try:
             raise AttributeError("Task has no attribute 'run'")
@@ -31,7 +31,7 @@ class TestFormatTraceBackToErrorMessage:
     def test_puts_exception_message_in_msg(self) -> None:
         error_text = "Task has no attribute 'run'"
 
-        exc: E
+        exc: ExceptionType
 
         try:
             raise AttributeError("Task has no attribute 'run'")
@@ -43,7 +43,7 @@ class TestFormatTraceBackToErrorMessage:
         assert error_text in formatted_message
 
     def test_puts_traceback_info_in_msg(self) -> None:
-        exc: E
+        exc: ExceptionType
 
         try:
             raise AttributeError("Task has no attribute 'run'")
@@ -67,7 +67,7 @@ class TestFormatTraceBackToErrorMessage:
         # Initializing it in this one so that the IDE doesn't think we might reference it before it
         # is set. For some reason, the IDE doesn't know that the nested_func always raises an
         # exception...
-        exc: E = AttributeError("This should be overwritten by the exception raised later...")
+        exc: ExceptionType = AttributeError("This should be overwritten by the exception raised later...")
 
         try:
             nested_func()
@@ -90,7 +90,7 @@ class TestFormatTraceBackToErrorMessage:
     def test_puts_some_response_text_in_msg(self) -> None:
         response_text = "Server Error"
 
-        exc: E
+        exc: ExceptionType
 
         try:
             raise AttributeError("Task has no attribute 'run'")

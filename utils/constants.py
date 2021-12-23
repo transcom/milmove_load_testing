@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """ utils/constants.py is for constant values useful throughout the codebase. """
 from pathlib import Path
-from typing import Type, TypeVar
-
-from locust.runners import Runner
 
 from .base import ValueEnum
 
@@ -42,14 +39,6 @@ MTO_SERVICE_ITEM = "mtoServiceItem"
 ORDER = "order"
 PAYMENT_REQUEST = "paymentRequest"
 QUEUES = "queues"
-
-# We can get different subclasses of the Runner class depending on how we run things so to indicate
-# that, we use this variable (R) with `Type`, e.g. Type[R]
-R = TypeVar("R", bound=Runner)
-
-LOCUST_RUNNER_TYPE = Type[R]
-
-E = TypeVar("E", bound=BaseException)
 
 
 def get_json_headers() -> dict[str, str]:

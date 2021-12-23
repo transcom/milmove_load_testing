@@ -6,7 +6,7 @@ from locust.env import Environment
 
 from tasks.prime import get_prime_moves
 from utils.base import ImplementationError
-from utils.constants import INTERNAL_API_KEY, LOCUST_RUNNER_TYPE, MOVE_TASK_ORDER, PRIME_API_KEY
+from utils.constants import INTERNAL_API_KEY, MOVE_TASK_ORDER, PRIME_API_KEY
 from utils.hosts import (
     MilMoveEnv,
     MilMoveRequestMixin,
@@ -19,6 +19,7 @@ from utils.hosts import (
     set_up_certs,
 )
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
+from utils.types import LOCUST_RUNNER_TYPE
 from utils.users import RestHttpUser, RestResponseContextManager
 
 # init these classes just once because we don't need to parse the API over and over:

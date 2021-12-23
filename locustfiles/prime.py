@@ -5,9 +5,10 @@ from locust.env import Environment
 
 from tasks import PrimeTasks, SupportTasks
 from utils.base import ImplementationError
-from utils.constants import INTERNAL_API_KEY, LOCUST_RUNNER_TYPE, PRIME_API_KEY
+from utils.constants import INTERNAL_API_KEY, PRIME_API_KEY
 from utils.hosts import MilMoveDomain, MilMoveHostMixin, remove_certs, set_up_certs
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
+from utils.types import LOCUST_RUNNER_TYPE
 
 # init these classes just once because we don't need to parse the API over and over:
 prime_api = PrimeAPIParser()
