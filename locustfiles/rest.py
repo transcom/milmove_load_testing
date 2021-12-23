@@ -19,8 +19,9 @@ from utils.hosts import (
     set_up_certs,
 )
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
+from utils.rest import RestResponseContextManager
 from utils.types import LOCUST_RUNNER_TYPE
-from utils.users import RestHttpUser, RestResponseContextManager
+from utils.users import RestHttpUser
 
 # init these classes just once because we don't need to parse the API over and over:
 prime_api = PrimeAPIParser()

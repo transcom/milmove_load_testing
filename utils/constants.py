@@ -41,10 +41,6 @@ PAYMENT_REQUEST = "paymentRequest"
 QUEUES = "queues"
 
 
-def get_json_headers() -> dict[str, str]:
-    return {"Content-Type": "application/json", "Accept": "application/json"}
-
-
 class DataType(ValueEnum):
     """
     Swagger data types that we expect to deal with. The latest pattern uses camelCase, while the older pattern uses snake_case.
