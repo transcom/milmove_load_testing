@@ -16,7 +16,7 @@ from locust import HttpUser
 from locust.clients import ResponseContextManager
 
 from utils.constants import get_json_headers
-from utils.types import ExceptionType
+from utils.types import ExceptionType, JSONType
 
 
 def format_failure_msg_from_exception(exc: ExceptionType, response_text: str = "") -> str:
@@ -76,11 +76,11 @@ class RestResponseContextManager(ResponseContextManager):
     """
 
     error: ExceptionType = None
-    js: Dict[str, Any] = None
+    js: JSONType = None
     request_meta: Dict[str, Any] = None
 
 
-def parse_response_json(response: RestResponseContextManager) -> Tuple[Dict[str, Any], str]:
+def parse_response_json(response: RestResponseContextManager) -> Tuple[JSONType, str]:
     """
     Takes a response object and tries to parse its text content into a dictionary. Returns a tuple
     with the first item being the parsed response text as a dictionary (defaults to an empty dict)

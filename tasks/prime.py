@@ -4,7 +4,7 @@ import json
 import logging
 import random
 from copy import deepcopy
-from typing import Any, Dict, Union
+from typing import Dict, Union
 
 import requests
 from locust import TaskSet, tag, task
@@ -23,6 +23,7 @@ from utils.constants import (
     get_json_headers,
 )
 from utils.hosts import form_prime_path
+from utils.types import JSONType
 from .base import CertTaskMixin, ParserTaskMixin, check_response
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ def support_path(url: str) -> str:
     return f"/support/v1{url}"
 
 
-def get_prime_moves(base_domain: str, cert_kwargs: dict[str, Union[str, bool]]) -> list[dict[str, Any]]:
+def get_prime_moves(base_domain: str, cert_kwargs: dict[str, Union[str, bool]]) -> JSONType:
     moves_path = form_prime_path(base_domain=base_domain, endpoint="/moves")
     response = requests.get(url=moves_path, headers=get_json_headers(), **cert_kwargs)
     # You would likely need to do some error handling in case the request messes up, but for now
