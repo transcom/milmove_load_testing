@@ -51,7 +51,7 @@ class RestMixin:
                 it in a field called `js` in the response object
             * catches any exceptions thrown in your with-block and fails the sample
         :param method: method for request, e.g. "GET"
-        :param url: url to make request to, e.g. /prime/v1/moves
+        :param url: url to make request to, e.g. https://primelocal:9443/prime/v1/moves
         :param kwargs: other kwargs to pass on to `self.client.request`,
             e.g. name="prime/v1/mto-service-items/{mtoServiceItemID}"
         :return: a context manager that can be used ot examine the response data or to mark the

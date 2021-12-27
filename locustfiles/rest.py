@@ -9,7 +9,6 @@ from utils.base import ImplementationError
 from utils.constants import INTERNAL_API_KEY, MOVE_TASK_ORDER, PRIME_API_KEY
 from utils.hosts import (
     MilMoveEnv,
-    MilMoveRequestMixin,
     MilMoveSubdomain,
     convert_host_string_to_milmove_env,
     form_base_domain,
@@ -29,7 +28,7 @@ support_api = SupportAPIParser()
 internal_api = InternalAPIParser()
 
 
-class PrimeUser(MilMoveRequestMixin, RestHttpUser):
+class PrimeUser(RestHttpUser):
     """
     A user that can test the Prime API
     """
@@ -42,6 +41,8 @@ class PrimeUser(MilMoveRequestMixin, RestHttpUser):
     # This attribute is used for generating fake requests when hitting the Prime API:
     parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}
 
+    certs_needed = True
+
     # These are locust HttpUser attributes that help define and shape the load test:
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds,
     # accepts decimals and 0)
@@ -50,7 +51,7 @@ class PrimeUser(MilMoveRequestMixin, RestHttpUser):
     @tag(MOVE_TASK_ORDER, "listMoves")
     @task
     def list_moves(self) -> None:
-        with self.rest("GET", self.get_prime_path("/moves"), **self.cert_kwargs) as resp:
+        with self.rest("GET", self.get_prime_path("/moves")) as resp:
             resp: RestResponseContextManager
 
             if isinstance(resp.js, list) and resp.js:
