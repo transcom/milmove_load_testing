@@ -544,8 +544,9 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if mto_shipment.get("agents") is None:
             return  # can't update agents if there aren't any
 
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/agents/{agentID}", "put", PRIME_API_KEY)
         mto_agent = mto_shipment["agents"][0]
+        overrides = {"agentType": mto_agent["agentType"]}  # updates the agent, but keeps the same agent type
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/agents/{agentID}", "put", PRIME_API_KEY, overrides)
         headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
         resp = self.client.put(
             prime_path(f"/mto-shipments/{mto_shipment['id']}/agents/{mto_agent['id']}"),
