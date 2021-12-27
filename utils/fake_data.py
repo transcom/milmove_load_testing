@@ -2,12 +2,14 @@
 """ utils/fake_data.py is for Faker classes and functions to set up test data """
 import logging
 import json
+import random
 import string
 from datetime import datetime
 
 from faker import Faker
 from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
 from faker.providers.address.en_US import Provider as AddressProvider  # extends BaseProvider
+import zipcodes
 
 from .constants import DataType, ZERO_UUID
 
@@ -89,12 +91,31 @@ class MilMoveProvider(AddressProvider, DateProvider):
 
     def safe_postal_code(self):
         """
-        Returns a safe postal code as a string.
+        Returns a safe postal code as a string.  Due to swagger fields being treated independently this may not match
+        the random state value in an address object.
         """
         while True:
             state = self.state_abbr(include_territories=False)
             if state != "AK" and state != "HI":
-                return self.postalcode_in_state(state)
+                return random.choice(zipcodes.filter_by(state=state)).get("zip_code")
+
+    def safe_city_state_zip(self):
+        """
+        Returns a combination of a valid city, state, and postal code.
+        :return: tuple
+        """
+        while True:
+            state = self.state_abbr(include_territories=False)
+            if state != "AK" and state != "HI":
+                location = random.choice(zipcodes.filter_by(state=state))
+                return {"city": location["city"], "state": location["state"], "postalCode": location["zip_code"]}
+
+    def safe_country(self):
+        """
+        Returns a safe country as a string. Currently restricting to US based CONUS locations not including territories
+        in the states list.
+        """
+        return "United States of America"
 
     def safe_uuid(self):
         """
@@ -131,7 +152,8 @@ class MilMoveData:
             DataType.STATE: self.fake.state_abbr,
             DataType.POSTAL_CODE: self.fake.safe_postal_code,
             DataType.POSTAL_CODE_VARIANT: self.fake.safe_postal_code,
-            DataType.COUNTRY: self.fake.country,
+            DataType.COUNTRY: self.fake.safe_country,
+            DataType.CITY_STATE_ZIP: self.fake.safe_city_state_zip,
             DataType.DATE: self.fake.date,
             DataType.DATE_TIME: self.fake.iso_date_time,
             DataType.TIME_MILITARY: self.fake.time_military,
