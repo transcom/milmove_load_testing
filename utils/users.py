@@ -7,7 +7,7 @@ from typing import Union
 
 from locust import FastHttpUser, HttpUser
 
-from utils.hosts import MilMoveRequestMixin
+from utils.request import MilMoveRequestMixin
 from utils.rest import RestMixin, RestResponseContextManager
 
 

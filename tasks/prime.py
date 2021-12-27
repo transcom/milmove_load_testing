@@ -21,7 +21,7 @@ from utils.constants import (
     TEST_PDF,
     ZERO_UUID,
 )
-from utils.hosts import form_prime_path
+from utils.request import form_prime_path
 from utils.rest import get_json_headers
 from utils.types import JSONType
 from .base import CertTaskMixin, ParserTaskMixin, check_response
