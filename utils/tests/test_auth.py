@@ -9,9 +9,8 @@ import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
 from utils.auth import remove_certs, set_up_certs
-from utils.base import ImplementationError
+from utils.base import ImplementationError, MilMoveEnv
 from utils.constants import DP3_CERT_KEY_PEM_FILENAME
-from utils.hosts import MilMoveEnv
 
 
 class TestSetUpCerts:

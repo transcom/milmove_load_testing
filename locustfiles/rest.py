@@ -5,15 +5,12 @@ from locust import between, events, tag, task
 from locust.env import Environment
 
 from tasks.prime import get_prime_moves
-from utils.base import ImplementationError
+from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_milmove_env, is_local
 from utils.constants import INTERNAL_API_KEY, MOVE_TASK_ORDER, PRIME_API_KEY
 from utils.hosts import (
-    MilMoveEnv,
     MilMoveSubdomain,
-    convert_host_string_to_milmove_env,
     form_base_domain,
     get_cert_kwargs,
-    is_local,
 )
 from utils.auth import remove_certs, set_up_certs
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser

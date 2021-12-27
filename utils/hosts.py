@@ -8,15 +8,10 @@ from typing import Optional, Union
 
 from locust import User
 
-from .base import ImplementationError, ValueEnum
+from .base import ImplementationError, MilMoveEnv, ValueEnum, convert_host_string_to_milmove_env, is_local
 from .constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 
 logger = logging.getLogger(__name__)
-
-
-class MilMoveEnv(ValueEnum):
-    LOCAL = "local"
-    DP3 = "dp3"
 
 
 class MilMoveDomain(ValueEnum):
@@ -253,30 +248,6 @@ class MilMoveRequestMixin:
         :return: dict with cert kwargs
         """
         return get_cert_kwargs(env=self.env)
-
-
-def convert_host_string_to_milmove_env(host: str) -> MilMoveEnv:
-    """
-    Takes a host string and return the corresponding MilMoveEnv, if found.
-    :param host: host string, e.g. "local"
-    :return: MilMoveEnv matching the passed in host string, e.g. MilMoveEnv.LOCAL
-    """
-    try:
-        return MilMoveEnv.match(host)
-    except IndexError:  # means MilMoveEnv could not find a match for the value passed in
-        logger.debug(f"Bad host value: {host}")
-
-        raise ImplementationError(
-            "Environment for MilMoveHostMixin must match one of the values in MilMoveEnv."
-        ) from None
-
-
-def is_local(env: MilMoveEnv) -> bool:
-    """
-    Indicates if this user is using the local environment.
-    :return: bool indicating if we are running in the local env or not
-    """
-    return env == MilMoveEnv.LOCAL
 
 
 def get_cert_kwargs(env: MilMoveEnv) -> dict[str, Union[str, bool]]:

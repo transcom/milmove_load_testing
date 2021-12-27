@@ -4,9 +4,9 @@ Place to store auth-related code, e.g. for dealing with certs or session tokens.
 """
 import os
 
-from utils.base import ImplementationError
+from utils.base import ImplementationError, MilMoveEnv
 from utils.constants import DP3_CERT_KEY_PEM
-from utils.hosts import MilMoveEnv, logger
+from utils.hosts import logger
 
 
 def set_up_certs(host: str) -> None:

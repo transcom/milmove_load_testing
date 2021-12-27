@@ -6,8 +6,8 @@ from unittest import mock
 
 import pytest
 
-from utils.base import ImplementationError
-from utils.hosts import MilMoveDomain, MilMoveEnv, MilMoveHostMixin
+from utils.base import ImplementationError, MilMoveEnv
+from utils.hosts import MilMoveDomain, MilMoveHostMixin
 
 
 class TestMilMoveDomain:
