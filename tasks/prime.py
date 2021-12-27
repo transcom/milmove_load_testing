@@ -607,7 +607,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
     """
 
     @tag(MTO_SHIPMENT, "updateMTOShipmentStatus")
-    @task
+    @task(2)
     def update_mto_shipment_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
@@ -624,7 +624,6 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             support_path(f"/move-task-orders/{move_id}"),
             name=support_path("/move-task-orders/{moveTaskOrderID}"),
             headers=headers,
-            **self.cert_kwargs,
         )
         move_details, success = check_response(resp, "getMoveTaskOrder")
         if not move_details:
@@ -659,7 +658,6 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
                     name=support_path("/mto-shipments/{mtoShipmentID}/status"),
                     data=json.dumps(payload),
                     headers=headers,
-                    **self.user.cert_kwargs,
                 )
                 new_mto_shipment, success = check_response(resp, "updateMTOShipmentStatus", payload)
 
@@ -668,7 +666,8 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
                     return mto_shipment
 
     @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
-    @task
+    # run this task less frequently than the others since this is testing an expected failure
+    @task(1)
     def update_mto_shipment_with_invalid_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
@@ -693,12 +692,11 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             name=support_path("/mto-shipments/{mtoShipmentID}/status -- expected failure"),
             data=json.dumps(payload),
             headers=headers,
-            **self.user.cert_kwargs,
         )
         check_response(resp, "updateMTOShipmentStatusFailure", payload)
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
-    @task
+    @task(2)
     def create_move_task_order(self):
         # Check that we have all required ID values for this endpoint:
         if not self.has_all_default_mto_ids():
@@ -751,7 +749,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             return new_mto
 
     # @tag(MTO_SERVICE_ITEM, "updateMTOServiceItemStatus")
-    @task
+    @task(2)
     def update_mto_service_item_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
@@ -779,7 +777,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             return mto_service_item
 
     @tag(PAYMENT_REQUEST, "updatePaymentRequestStatus")
-    @task
+    @task(2)
     def update_payment_request_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
@@ -804,7 +802,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             return new_payment_request
 
     @tag(MOVE_TASK_ORDER, "getMoveTaskOrder")
-    @task
+    @task(2)
     def get_move_task_order(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
