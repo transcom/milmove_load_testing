@@ -74,6 +74,11 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         # Add a shipment and approve it
         overrides = {"primeEstimatedWeight": estimated_weight}
         ship = super().create_mto_shipment(overrides)
+
+        if not ship:
+            logger.info("creating a shipment failed, skipping updating status and creating doshut service item")
+            return
+
         overrides = {"id": ship["id"], "status": "APPROVED"}
         ship = super().update_mto_shipment_status(overrides)
 
@@ -93,8 +98,17 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
     def update_shipment(self):
         # Get the shipment from the mto (this is expecting just one shipment)
         ship = self.get_stored(MTO_SHIPMENT)
+
+        if not ship:
+            logger.info("No shipment object found on the current move, skipping update shipment")
+            return
+
         overrides = {"id": ship["id"]}
         ship = super().update_mto_shipment(overrides)
+
+        if not ship:
+            logger.info("Updating shipment failed, skipping updating address and agents")
+            return
 
         # Update an address
         overrides = {"mtoShipmentID": ship["id"]}
@@ -109,8 +123,17 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
     def create_payment_request(self):
         # Get service item from the mto and create payment request
         service_item = self.get_stored(MTO_SERVICE_ITEM)
+
+        if not service_item:
+            logger.info("No service item found in stored move, skipping creating payment request")
+            return
+
         overrides = {"mtoServiceItemID": service_item["id"]}
         request = super().create_payment_request(overrides)
+
+        if not request:
+            logger.info("creating payment request failed, skipping creating upload for payment request")
+            return
 
         # Create upload for payment request
         overrides = {"id": request["id"]}
@@ -188,4 +211,4 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
             headers=headers,
             **self.user.cert_kwargs,
         )
-        return resp.content
+        return resp.json()
