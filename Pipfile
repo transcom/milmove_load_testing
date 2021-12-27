@@ -4,23 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-Faker = "*"
-locust = ">=2.5"
-locust-plugins = ">=2.1"
-prance = {version = "==0.19.0", extras = ["cli", "osv"]}
 requests = ">=2.22.0"
+locust = ">=1"
+prance = {version = "==0.19.0", extras = ["cli", "osv"]}
+Faker = "*"
 
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
 black = "==21.10b0"
-cryptography = "*"
 flake8 = "*"
-pre-commit = "*"
 pytest = "*"
-pytest-cov = "*"
 pytest-mock = "*"
-python-lsp-server = "*"
+cryptography = "*"
 responses = "*"
+pre-commit = "*"
+python-lsp-server = "*"
+pytest-cov = "*"
 
 [requires]
 python_full_version = "3.9.6"
