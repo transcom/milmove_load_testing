@@ -9,7 +9,7 @@ from typing import Optional, Union
 from locust import User
 
 from .base import ImplementationError, ValueEnum
-from .constants import DOD_CA_BUNDLE, DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
+from .constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 
 logger = logging.getLogger(__name__)
 
@@ -107,11 +107,7 @@ class MilMoveHostMixin:
         if cls.env:
             return
 
-        try:
-            cls.env = MilMoveEnv.match(env)
-        except IndexError:  # means MilMoveEnv could not find a match for the value passed in
-            logger.debug(f"Bad env value: {env}")
-            raise ImplementationError("Environment for MilMoveHostMixin must match one of the values in MilMoveEnv.")
+        cls.env = convert_host_string_to_milmove_env(host=env)
 
     @classmethod
     def set_host_name(cls: Union[User, "MilMoveHostMixin"]):
@@ -148,28 +144,17 @@ class MilMoveHostMixin:
         if cls.cert_kwargs:
             return
 
-        if cls.env == MilMoveEnv.LOCAL:
-            cls.cert_kwargs = deepcopy(LOCAL_TLS_CERT_KWARGS)
-            return
-
-        verify_path = DOD_CA_BUNDLE
-        # DP3 certs are issued by CAs that are well known and so we
-        # don't need any special verification
-        if cls.env == MilMoveEnv.DP3:
-            verify_path = None
-
-        # We also need to use the DoD's specific CA bundle for SSL verification in deployed envs:
-        cls.cert_kwargs = {"cert": DP3_CERT_KEY_PEM, "verify": verify_path}
+        cls.cert_kwargs = get_cert_kwargs(env=cls.env)
 
     @property
     def is_local(self):
         """Indicates if this user is using the local environment."""
-        return self.env == MilMoveEnv.LOCAL
+        return is_local(env=self.env)
 
     @property
     def is_deployed(self):
         """Indicates if this user is running in a deployed environment."""
-        return self.env != MilMoveEnv.LOCAL
+        return not is_local(env=self.env)
 
 
 class MilMoveSubdomain(Enum):
@@ -204,14 +189,9 @@ class MilMoveRequestMixin:
 
     def set_milmove_env(self: Union[User, "MilMoveRequestMixin"]) -> None:
         """
-        Sets the env attribute for the class. Takes in a string and sets the MilMoveEnv in cls.env.
+        Sets the env attribute for the class. Takes in a string and sets the MilMoveEnv in self.env.
         """
-        try:
-            self.env = MilMoveEnv.match(self.host)
-        except IndexError:  # means MilMoveEnv could not find a match for the value passed in
-            logger.debug(f"Bad host value: {self.host}")
-
-            raise ImplementationError("Environment for MilMoveHostMixin must match one of the values in MilMoveEnv.")
+        self.env = convert_host_string_to_milmove_env(host=self.host)
 
     def get_base_domain(self, local_subdomain: MilMoveSubdomain) -> str:
         """
@@ -319,6 +299,11 @@ def remove_certs(host: str) -> None:
 
 
 def convert_host_string_to_milmove_env(host: str) -> MilMoveEnv:
+    """
+    Takes a host string and return the corresponding MilMoveEnv, if found.
+    :param host: host string, e.g. "local"
+    :return: MilMoveEnv matching the passed in host string, e.g. MilMoveEnv.LOCAL
+    """
     try:
         return MilMoveEnv.match(host)
     except IndexError:  # means MilMoveEnv could not find a match for the value passed in
