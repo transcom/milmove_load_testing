@@ -396,7 +396,23 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             "isFinal": False,
         }
 
+        shipment = self.get_stored(MTO_SHIPMENT, service_item["mtoShipmentID"])
+        if not shipment:
+            logger.info("unable to find shipment of payment request service item")
+
         headers = {"content-type": "application/json"}
+
+        # if the actual weight hasn't been provided, creating the payment request will fail
+        if not shipment.get("primeActualWeight"):
+            self.client.post(
+                prime_path("/payment-requests"),
+                name=prime_path("/payment-requests — expected failure"),
+                data=json.dumps(payload),
+                headers=headers,
+                **self.user.cert_kwargs,
+            )
+            return None
+
         resp = self.client.post(
             prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
