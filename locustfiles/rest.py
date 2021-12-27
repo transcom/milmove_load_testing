@@ -14,9 +14,8 @@ from utils.hosts import (
     form_base_domain,
     get_cert_kwargs,
     is_local,
-    remove_certs,
-    set_up_certs,
 )
+from utils.auth import remove_certs, set_up_certs
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
 from utils.rest import RestResponseContextManager
 from utils.types import LOCUST_RUNNER_TYPE

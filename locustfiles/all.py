@@ -8,7 +8,7 @@ from office import ServicesCounselorUser, TOOUser
 from prime import PrimeUser, SupportUser
 from prime_workflow import PrimeWorkflowUser
 from utils.base import ImplementationError
-from utils.hosts import remove_certs, set_up_certs
+from utils.auth import remove_certs, set_up_certs
 from utils.parsers import GHCAPIParser, PrimeAPIParser, SupportAPIParser
 from utils.types import LOCUST_RUNNER_TYPE
 
