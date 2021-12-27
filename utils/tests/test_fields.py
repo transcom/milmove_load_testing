@@ -537,3 +537,80 @@ class TestObjectFieldFaker:
             "petType": "fish",
             "color": "blue",  # the first element in the EnumField
         }
+
+
+class TestObjectFieldAddressFaker:
+    """Tests the ObjectField class' `generate_fake_data` method."""
+
+    MOCK_FAKE_DATA = {
+        DataType.STREET_ADDRESS: "5000 Fifth Avenue",
+        DataType.CITY: "Beverly Hills",
+        DataType.STATE: "CA",
+        DataType.POSTAL_CODE: "90210",
+        DataType.CITY_STATE_ZIP: {"city": "New York", "state": "NY", "postalCode": "10001"},
+    }
+
+    @classmethod
+    def setup_class(cls):
+        """Init and setup the ObjectField for our fake data generation tests."""
+        cls.faker = MilMoveData()
+        cls.object_field = ObjectField(name="objectField")
+
+        cls.object_field.object_fields = []
+        cls.object_field.add_fields(
+            [
+                BaseAPIField(name="streetAddress1", data_type=DataType.STREET_ADDRESS, required=True),
+                BaseAPIField(name="city", data_type=DataType.CITY, required=True),
+                BaseAPIField(name="state", data_type=DataType.STATE, required=True),
+                BaseAPIField(name="postalCode", data_type=DataType.POSTAL_CODE, required=True),
+            ]
+        )
+
+    @staticmethod
+    def setup_mocks(mocker):
+        """
+        Set up the mocked functions we need to run these tests. Must be called at the start of each test function.
+
+        :param mocker: the pytest mocker from the test case calling this function
+        """
+        # We have a 1/3 chance to skip non-required fields normally, so instead let's make it so every non-required
+        # field is skipped unless require_all is used
+        def mock_randint(x, y):
+            """
+            Mock random.randint to always return 0 if that's the floor, otherwise return the ceiling.
+            Done so that non-required fields will NOT be added, but ArrayFields will still have items.
+            """
+            return x if x == 0 else y
+
+        mocker.patch("utils.fields.randint", mock_randint)
+
+        # Mock the Faker data gen functions so that we have consistent, predictable return values:
+        def mock_get_random_choice(_, choices):
+            return choices[0] if choices else None
+
+        def mock_get_fake_data_for_type(_, data_type, params=None):
+            return TestObjectFieldAddressFaker.MOCK_FAKE_DATA[data_type]
+
+        mocker.patch.object(MilMoveData, "get_random_choice", mock_get_random_choice)
+        mocker.patch.object(MilMoveData, "get_fake_data_for_type", mock_get_fake_data_for_type)
+
+    def test_generate_fake_data(self, mocker):
+        """
+        Tests the base version of the generate_fake_data method, with no overrides and require_all=False.
+
+        Our mocks ensure that only required fields will be returned with require_all=False, but note that there is a
+        2/3rds chance that a non-required/optional field will be added to the fake data with the unmocked function.
+        """
+        self.setup_mocks(mocker)
+
+        fake_data = self.object_field.generate_fake_data(self.faker)
+
+        city_state_zip = self.MOCK_FAKE_DATA[DataType.CITY_STATE_ZIP]
+
+        # require_all=False, so we should only see required fields:
+        assert fake_data == {
+            "streetAddress1": self.MOCK_FAKE_DATA[DataType.STREET_ADDRESS],
+            "city": city_state_zip["city"],
+            "state": city_state_zip["state"],
+            "postalCode": city_state_zip["postalCode"],
+        }

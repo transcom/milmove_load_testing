@@ -58,6 +58,7 @@ class DataType(ValueEnum):
     POSTAL_CODE = "postalCode"
     POSTAL_CODE_VARIANT = "postal_code"
     COUNTRY = "country"
+    CITY_STATE_ZIP = "city_state_zip"  # a virtual field to find valid combinations of city, state, and zip
     DATE = "date"
     DATE_TIME = "date-time"  # inconsistent, but matches the swagger format name
     TIME_MILITARY = "timeMilitary"

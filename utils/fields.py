@@ -224,8 +224,21 @@ class ObjectField(BaseAPIField):
         if self.discriminator and d_value:
             overrides[self.discriminator] = d_value
 
+        # Address fields are related so we want to have city, state, zip values that are valid instead of independent
+        # random ones.  This relies on the swagger definition using the name "Address" and the properties being named
+        # the same across APIs.
+        virtual_city_state_zip = None
+        if self.is_address_object():
+            virtual_city_state_zip = BaseAPIField(
+                name=DataType.CITY_STATE_ZIP, data_type=DataType.CITY_STATE_ZIP
+            ).generate_fake_data(faker, overrides=overrides, require_all=require_all)
+
         for obj_field in self.object_fields:
             if self.skip_field(obj_field, discriminator_value=d_value, overrides=overrides, require_all=require_all):
+                continue
+
+            if virtual_city_state_zip and obj_field.name in ["city", "state", "postalCode"]:
+                fake_data[obj_field.name] = virtual_city_state_zip[obj_field.name]
                 continue
 
             fake_data[obj_field.name] = obj_field.generate_fake_data(
@@ -237,6 +250,10 @@ class ObjectField(BaseAPIField):
                 fake_data[field_name] = overrides[field_name]
 
         return fake_data
+
+    def is_address_object(self):
+        field_names = {field.name for field in self.object_fields}
+        return not {"streetAddress1", "city", "state", "postalCode"}.difference(field_names)
 
     @staticmethod
     def skip_field(field, **kwargs):
