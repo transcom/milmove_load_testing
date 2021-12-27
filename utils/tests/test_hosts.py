@@ -95,11 +95,7 @@ class TestMilMoveHostMixin:
         self.TestUser1.set_cert_kwargs()
 
         assert re.search("tls/dp3_tls_cert_key.pem", self.TestUser1.cert_kwargs["cert"])
-        # dp3 does not need a verify cert
-        assert self.TestUser1.cert_kwargs["verify"] is None
         assert re.search("tls/dp3_tls_cert_key.pem", self.TestUser2.cert_kwargs["cert"])
-        # dp3 does not need a verify cert
-        assert self.TestUser2.cert_kwargs["verify"] is None
 
         # Test if the environment is local
         self.HostUserClass.cert_kwargs = None
