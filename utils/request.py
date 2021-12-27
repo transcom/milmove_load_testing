@@ -22,7 +22,6 @@ class MilMoveSubdomain(Enum):
     PRIME = "prime"
     OFFICE = "office"
     MILMOVE = "milmove"
-    SUPPORT = "support"
 
 
 class MilMoveRequestMixin:
@@ -103,7 +102,7 @@ class MilMoveRequestMixin:
         :param endpoint: Endpoint to target, e.g. "/moves"
         :return: fully formed path to endpoint.
         """
-        base_domain = self.get_base_domain(local_subdomain=MilMoveSubdomain.SUPPORT)
+        base_domain = self.get_base_domain(local_subdomain=MilMoveSubdomain.PRIME)
 
         return form_support_path(base_domain=base_domain, endpoint=endpoint)
 
