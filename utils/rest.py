@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import re
+import traceback
 from json import JSONDecodeError
 from typing import Any, Dict, Tuple
 
@@ -69,3 +71,49 @@ def parse_response_json(response: RestResponseContextManager) -> Tuple[JSONType,
         )
 
     return data, error_message
+
+
+def format_failure_msg_from_exception(exc: ExceptionType, response_text: str = "") -> str:
+    """
+    Takes a traceback as a string and formats it into a shorter error message. This is useful for
+    creating a message that can be used to report a task failure.
+    :param exc: Raised exception
+    :param response_text: Text from response, e.g. resp.text
+    :return: formatted error message
+    """
+    # Map a few things to be easier to use later
+    exception_type = type(exc)
+    traceback_obj = exc.__traceback__
+
+    traceback_list = traceback.format_exception(etype=exception_type, value=exc, tb=traceback_obj)
+
+    # We want a shorter message than the full traceback, so we'll just collect some useful tidbits
+    # We'll grab file name, line number, and func name for each stack.
+    callstack_regex = re.compile(r' {2}File "(?P<file_name>/.[^"]*)", line (?P<line_number>\d*),(?P<func_reference>.*)')
+
+    error_lines = []
+
+    for line in traceback_list:
+        if matches := callstack_regex.match(line):
+            file_name = matches.group("file_name")
+            line_number = matches.group("line_number")
+            func_reference = matches.group("func_reference")
+
+            error_lines.append(f"{file_name}:{line_number}{func_reference}")
+
+    # Our base failure message will just be exception info
+    failure_msg = f"{exception_type.__name__}: {exc}"
+
+    # If we got traceback info we can add that to the failure message.
+    if error_lines:
+        error_msg = ", ".join(error_lines)
+
+        failure_msg += f" at {error_msg}."
+
+    # finally, we'll add some response_text, but we'll cap it to not make the final message too big
+    # due to this bit.
+    short_resp = response_text[:200] if response_text else response_text
+
+    failure_msg += f" Response was {short_resp}"
+
+    return failure_msg
