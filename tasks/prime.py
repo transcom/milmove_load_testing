@@ -630,7 +630,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
     """
 
     @tag(MTO_SHIPMENT, "updateMTOShipmentStatus")
-    @task
+    @task(2)
     def update_mto_shipment_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
@@ -638,27 +638,88 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         if not mto_shipment:
             logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
             return None  # can't run this task
+        # To avoid issues with the mto shipment being stale
+        # retrieve the move associated with the shipment
+        # and then use the newly fetched move to the find most up to date version of the shipment
+        move_id = mto_shipment["moveTaskOrderID"]
+        headers = {"content-type": "application/json"}
+        resp = self.client.get(
+            support_path(f"/move-task-orders/{move_id}"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}"),
+            headers=headers,
+        )
+        move_details, success = check_response(resp, "getMoveTaskOrder")
+        if not move_details:
+            logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
+            return None  # can't run this task
+        for fetched_mto_shipment in move_details["mtoShipments"]:
+            if fetched_mto_shipment["id"] == mto_shipment["id"]:
 
+                # Generate fake payload based on the endpoint's required fields
+                payload = self.fake_request(
+                    "/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides
+                )
+
+                if fetched_mto_shipment["status"] == "CANCELLATION_REQUESTED" and payload["status"] != "CANCELED":
+                    return None
+                elif fetched_mto_shipment["status"] == "SUBMITTED" and payload["status"] not in [
+                    "APPROVED",
+                    "REJECTED",
+                ]:
+                    return None
+                elif fetched_mto_shipment["status"] == "DIVERSION_REQUESTED" and payload["status"] != "APPROVED":
+                    return None
+                elif fetched_mto_shipment["status"] == "APPROVED" and payload["status"] != "DIVERSION_REQUESTED":
+                    return None
+                elif fetched_mto_shipment["status"] in ["DRAFT", "REJECTED", "CANCELED"]:
+                    return None
+
+                headers = {"content-type": "application/json", "If-Match": fetched_mto_shipment["eTag"]}
+
+                resp = self.client.patch(
+                    support_path(f"/mto-shipments/{fetched_mto_shipment['id']}/status"),
+                    name=support_path("/mto-shipments/{mtoShipmentID}/status"),
+                    data=json.dumps(payload),
+                    headers=headers,
+                )
+                new_mto_shipment, success = check_response(resp, "updateMTOShipmentStatus", payload)
+
+                if success:
+                    self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
+                    return mto_shipment
+
+    @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
+    # run this task less frequently than the others since this is testing an expected failure
+    @task(1)
+    def update_mto_shipment_with_invalid_status(self, overrides=None):
+        # If id was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("id") if overrides else None
+        mto_shipment = self.get_stored(MTO_SHIPMENT, object_id)
+        if not mto_shipment:
+            logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
+            return None  # can't run this task
+
+        overrides_local = {"status": "DRAFT"}
+
+        # Merge local overrides with passed-in overrides
+        if overrides:
+            overrides_local.update(overrides)
         # Generate fake payload based on the endpoint's required fields
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides)
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides_local)
 
+        payload["status"] = "DRAFT"
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
 
         resp = self.client.patch(
             support_path(f"/mto-shipments/{mto_shipment['id']}/status"),
-            name=support_path("/mto-shipments/{mtoShipmentID}/status"),
+            name=support_path("/mto-shipments/{mtoShipmentID}/status -- expected failure"),
             data=json.dumps(payload),
             headers=headers,
-            **self.user.cert_kwargs,
         )
-        mto_shipment, success = check_response(resp, "updateMTOShipmentStatus", payload)
-
-        if success:
-            self.update_stored(MTO_SHIPMENT, mto_shipment, mto_shipment)
-            return mto_shipment
+        check_response(resp, "updateMTOShipmentStatusFailure", payload)
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
-    @task
+    @task(2)
     def create_move_task_order(self):
         # Check that we have all required ID values for this endpoint:
         if not self.has_all_default_mto_ids():
@@ -710,8 +771,8 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             self.add_stored(MOVE_TASK_ORDER, new_mto)
             return new_mto
 
-    @tag(MTO_SERVICE_ITEM, "updateMTOServiceItemStatus")
-    @task
+    # @tag(MTO_SERVICE_ITEM, "updateMTOServiceItemStatus")
+    @task(2)
     def update_mto_service_item_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
@@ -739,7 +800,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             return mto_service_item
 
     @tag(PAYMENT_REQUEST, "updatePaymentRequestStatus")
-    @task
+    @task(2)
     def update_payment_request_status(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
@@ -764,7 +825,7 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             return new_payment_request
 
     @tag(MOVE_TASK_ORDER, "getMoveTaskOrder")
-    @task
+    @task(2)
     def get_move_task_order(self, overrides=None):
         # If id was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("id") if overrides else None
