@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """ Locust test for the Prime & Support APIs """
 from locust import HttpUser, between, events
-from locust.env import Environment
+from locust.env import Environment, RunnerType
 
 from tasks import PrimeTasks, SupportTasks
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError
 from utils.hosts import MilMoveDomain, MilMoveHostMixin
-from utils.types import LOCUST_RUNNER_TYPE
 
 
 class PrimeUser(MilMoveHostMixin, HttpUser):
@@ -37,7 +36,7 @@ class SupportUser(MilMoveHostMixin, HttpUser):
 
 
 @events.init.add_listener
-def on_init(environment: Environment, runner: LOCUST_RUNNER_TYPE, **_kwargs) -> None:
+def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     """
     Event hook that gets run after the locust environment has been set up. See docs for more info:
     https://docs.locust.io/en/stable/api.html?#locust.event.Events.init

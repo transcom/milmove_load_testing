@@ -2,7 +2,7 @@
 """ Locust test for the Prime & Support APIs """
 
 from locust import between, events, tag, task
-from locust.env import Environment
+from locust.env import Environment, RunnerType
 
 from tasks.prime import get_prime_moves
 from utils.auth import remove_certs, set_up_certs
@@ -10,7 +10,6 @@ from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_m
 from utils.constants import MOVE_TASK_ORDER
 from utils.request import MilMoveURLCreator, get_cert_kwargs
 from utils.rest import RestResponseContextManager
-from utils.types import LOCUST_RUNNER_TYPE
 from utils.users import RestHttpUser
 
 
@@ -56,7 +55,7 @@ def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
 
 
 @events.init.add_listener
-def on_init(environment: Environment, runner: LOCUST_RUNNER_TYPE, **_kwargs) -> None:
+def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     """
     Event hook that gets run after the locust environment has been set up. See docs for more info:
     https://docs.locust.io/en/stable/api.html?#locust.event.Events.init

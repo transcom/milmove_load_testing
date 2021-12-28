@@ -2,14 +2,13 @@
 """ Locust test for all APIs """
 from gevent.pool import Group
 from locust import events
-from locust.env import Environment
+from locust.env import Environment, RunnerType
 
 from locustfiles.office import ServicesCounselorUser, TOOUser
 from locustfiles.prime import PrimeUser, SupportUser
 from locustfiles.prime_workflow import PrimeWorkflowUser
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError
-from utils.types import LOCUST_RUNNER_TYPE
 
 
 ########################################################################
@@ -25,7 +24,7 @@ from utils.types import LOCUST_RUNNER_TYPE
 
 
 @events.init.add_listener
-def on_init(environment: Environment, runner: LOCUST_RUNNER_TYPE, **_kwargs) -> None:
+def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     """
     Event hook that gets run after the locust environment has been set up. See docs for more info:
     https://docs.locust.io/en/stable/api.html?#locust.event.Events.init
