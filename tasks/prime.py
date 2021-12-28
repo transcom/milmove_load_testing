@@ -21,7 +21,7 @@ from utils.constants import (
     TEST_PDF,
     ZERO_UUID,
 )
-from utils.request import form_prime_path
+from utils.request import MilMoveURLCreator
 from utils.rest import get_json_headers
 from utils.types import JSONType
 from .base import CertTaskMixin, ParserTaskMixin, check_response
@@ -37,8 +37,15 @@ def support_path(url: str) -> str:
     return f"/support/v1{url}"
 
 
-def get_prime_moves(base_domain: str, cert_kwargs: dict[str, Union[str, bool]]) -> JSONType:
-    moves_path = form_prime_path(base_domain=base_domain, endpoint="/moves")
+def get_prime_moves(url_creator: MilMoveURLCreator, cert_kwargs: dict[str, Union[str, bool]]) -> JSONType:
+    """
+    Small example of making requests outside user context
+    :param url_creator: instance of MilMoveURLCreator that has been initialized with target env
+    :param cert_kwargs: cert kwargs to use in request headers to auth request
+    :return: info retrieved from api
+    """
+    moves_path = url_creator.form_prime_path(endpoint="/moves")
+
     response = requests.get(url=moves_path, headers=get_json_headers(), **cert_kwargs)
     # You would likely need to do some error handling in case the request messes up, but for now
     # I'll leave it out.

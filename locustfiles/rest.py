@@ -5,11 +5,11 @@ from locust import between, events, tag, task
 from locust.env import Environment
 
 from tasks.prime import get_prime_moves
-from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_milmove_env, is_local
-from utils.constants import INTERNAL_API_KEY, MOVE_TASK_ORDER, PRIME_API_KEY
-from utils.request import MilMoveSubdomain, form_base_domain, get_cert_kwargs
 from utils.auth import remove_certs, set_up_certs
+from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_milmove_env
+from utils.constants import INTERNAL_API_KEY, MOVE_TASK_ORDER, PRIME_API_KEY
 from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
+from utils.request import MilMoveURLCreator, get_cert_kwargs
 from utils.rest import RestResponseContextManager
 from utils.types import LOCUST_RUNNER_TYPE
 from utils.users import RestHttpUser
@@ -53,18 +53,15 @@ class PrimeUser(RestHttpUser):
 
 
 def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
-    local_run = is_local(env=env)
-
-    base_domain = form_base_domain(
-        running_against_local=local_run,
-        local_protocol=PrimeUser.local_protocol,
-        local_subdomain=MilMoveSubdomain.PRIME,
-        local_port=PrimeUser.local_port,
-    )
+    """
+    Sample of func that can set up or get data before tests start.
+    :param env: MilMoveEnv that we're targeting, e.g. MilMoveEnv.LOCAL
+    """
+    url_creator = MilMoveURLCreator(env=env)
 
     cert_kwargs = get_cert_kwargs(env=env)
 
-    moves = get_prime_moves(base_domain=base_domain, cert_kwargs=cert_kwargs)
+    moves = get_prime_moves(url_creator=url_creator, cert_kwargs=cert_kwargs)
 
     if moves:
         print(f"\n{moves[0]=}\n")
