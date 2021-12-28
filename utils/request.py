@@ -150,7 +150,7 @@ class MilMoveRequestMixin:
 
     # The environment the host is running in (ex. locally or deployed).
     # Can be any of the values in MilMoveEnv.
-    env: MilMoveEnv = None
+    env: MilMoveEnv
 
     url_creator: MilMoveURLCreator
 
