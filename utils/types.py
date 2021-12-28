@@ -28,6 +28,9 @@ class JSONObject(Protocol):
     Mapping with string as keys, and JSONValue as values
     """
 
+    def get(self, k: str) -> JSONValue:
+        ...
+
     def pop(self, k: str, d: JSONValue) -> JSONValue:
         ...
 

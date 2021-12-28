@@ -50,13 +50,17 @@ class BaseAPIField:
         if (overrides := kwargs.get("overrides")) and self.name in overrides:
             return overrides[self.name]
 
-        params = (
-            [self.definition.get("minimum", 0), self.definition.get("maximum", 9999)]
-            if self.data_type == DataType.INTEGER
-            else []
-        )
-
-        return faker.get_fake_data_for_type(self.data_type, params)
+        if self.data_type == DataType.INTEGER:
+            params = (self.definition.get("minimum", 0), self.definition.get("maximum", 9999))
+        elif self.data_type == DataType.DATE:
+            params = (self.definition.get("start_date", "today"), self.definition.get("end_date", "+5y"))
+        else:
+            params = ()
+        fake_data = faker.get_fake_data_for_type(self.data_type, params)
+        if self.data_type == DataType.DATE:
+            return str(fake_data)
+        else:
+            return fake_data
 
 
 @dataclass
