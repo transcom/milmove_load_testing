@@ -23,8 +23,14 @@ ExceptionType = TypeVar("ExceptionType", bound=BaseException)
 JSONValue = Union[str, int, float, bool, None, "JSONObject", "JSONArray"]
 
 
-# Mapping with string as keys, and JSONValue as values
 class JSONObject(Protocol):
+    """
+    Mapping with string as keys, and JSONValue as values
+    """
+
+    def pop(self, k: str, d: JSONValue) -> JSONValue:
+        ...
+
     def __setitem__(self, k: str, v: JSONValue) -> None:
         ...
 
@@ -38,9 +44,15 @@ class JSONObject(Protocol):
         ...
 
 
-# Array is List with keys of type `int`
 class JSONArray(Protocol):
-    def insert(self, index: int, value: JSONValue) -> None:
+    """
+    Array is List with keys of type `int`
+    """
+
+    def insert(self, i: int, value: JSONValue) -> None:
+        ...
+
+    def pop(self, i: int) -> JSONValue:
         ...
 
     def __getitem__(self, i: int) -> JSONValue:
