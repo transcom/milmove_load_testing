@@ -13,6 +13,9 @@ class MilMoveUser(MilMoveHostMixin, HttpUser):
 
     local_protocol = "http"
     local_port = "8080"
+
+    deployed_subdomain = "my"
+
     domain = MilMoveDomain.MILMOVE
 
     wait_time = between(1, 9)

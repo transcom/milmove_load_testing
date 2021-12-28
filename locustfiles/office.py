@@ -16,6 +16,9 @@ class ServicesCounselorUser(MilMoveHostMixin, HttpUser):
 
     local_protocol = "http"
     local_port = "8080"
+
+    deployed_subdomain = "office"
+
     domain = MilMoveDomain.OFFICE
 
     # This attribute is used for generating fake requests when hitting the GHC API:
@@ -32,6 +35,9 @@ class TOOUser(MilMoveHostMixin, HttpUser):
 
     local_protocol = "http"
     local_port = "8080"
+
+    deployed_subdomain = "office"
+
     domain = MilMoveDomain.OFFICE
 
     # This attribute is used for generating fake requests when hitting the GHC API:

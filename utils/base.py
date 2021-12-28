@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class ImplementationError(Exception):
-    """Base exception when a util hasn't been implemented correctly."""
+    """Base exception when a utility hasn't been implemented correctly."""
 
 
 class ValueEnum(Enum):
@@ -34,6 +34,10 @@ class ValueEnum(Enum):
 
 
 class MilMoveEnv(ValueEnum):
+    """
+    Valid MilMove Environments that we will target to run load tests against.
+    """
+
     LOCAL = "local"
     DP3 = "dp3"
 

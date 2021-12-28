@@ -19,7 +19,15 @@ class TestMilMoveDomain:
             == "http://primelocal:1111"
         )
 
-        assert MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="dp3") == "https://api.loadtest.dp3.us"
+        assert (
+            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="dp3", deployed_subdomain="api")
+            == "https://api.loadtest.dp3.us"
+        )
+
+        assert (
+            MilMoveDomain.match(MilMoveDomain.OFFICE).host_name(env="dp3", deployed_subdomain="office")
+            == "https://office.loadtest.dp3.us"
+        )
 
         with pytest.raises(ImplementationError):
             MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="local", port=11111)

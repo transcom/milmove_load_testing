@@ -27,13 +27,21 @@ class MilMoveDomain(ValueEnum):
     def local_value(self) -> str:
         return f"{self.value}local"
 
-    def host_name(self, env: str, port: str = "0000", protocol: str = "https") -> str:
+    def host_name(
+        self,
+        env: str,
+        port: str = "0000",
+        protocol: str = "https",
+        deployed_subdomain: str = "",
+    ) -> str:
         """
         Returns the host name for this domain based on the environment, port, and protocol
          (for local envs).
+
         :param env: MilMoveEnv, e.g. local
         :param port: 4 digit port to point at
         :param protocol: "https" or "http"
+        :param deployed_subdomain: API subdomain when deployed, e.g. "api" or "my"
         :return: host, e.g. https://api.loadtest.dp3.us
         """
         if isinstance(env, MilMoveEnv):
@@ -52,7 +60,7 @@ class MilMoveDomain(ValueEnum):
         # allow us to point to another domain if we need to
         base_domain = os.getenv("BASE_DOMAIN", "loadtest.dp3.us")
         # NOTE: deployed protocol is always https
-        return f"https://api.{base_domain}"
+        return f"https://{deployed_subdomain}.{base_domain}"
 
 
 class MilMoveHostMixin:
@@ -70,6 +78,9 @@ class MilMoveHostMixin:
     # The HTTP protocol and port used for a local host:
     local_protocol: str = "https"
     local_port: str = "0000"
+
+    # The subdomain to use when deployed, e.g. "api" or "my"
+    deployed_subdomain: str = "api"
 
     # The set of kwargs that will be used to authenticate an HTTP request, in the format:
     # {"cert": <cert/key file path(s)>, "verify": <False or the CA bundle file path>}
@@ -122,9 +133,18 @@ class MilMoveHostMixin:
 
         try:
             cls.host = MilMoveDomain.match(cls.domain).host_name(
-                env=cls.env.value, port=cls.local_port, protocol=cls.local_protocol
+                env=cls.env.value,
+                port=cls.local_port,
+                protocol=cls.local_protocol,
+                deployed_subdomain=cls.deployed_subdomain,
             )
-            cls.alternative_host = MilMoveDomain.MILMOVE.host_name(env=cls.env.value, port="8080", protocol="http")
+
+            cls.alternative_host = MilMoveDomain.MILMOVE.host_name(
+                env=cls.env.value,
+                port="8080",
+                protocol="http",
+                deployed_subdomain=cls.deployed_subdomain,
+            )
         except IndexError:  # means MilMoveDomain could not find a match for the value passed in
             logger.debug(f"Bad domain value: {cls.domain}")
             raise ImplementationError("Domain for MilMoveHostMixin must match one of the values in MilMoveDomain.")
