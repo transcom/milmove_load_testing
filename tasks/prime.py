@@ -324,6 +324,12 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
     @tag(MTO_SHIPMENT, "createMTOShipment")
     @task
     def create_mto_shipment(self, overrides=None):
+        def guarantee_unique_agent_type(agents):
+            agent_types = {agent["agentType"] for agent in agents}
+            if len(agents) >= 2 and len(agent_types) < 2:
+                possible_types = {"RELEASING_AGENT", "RECEIVING_AGENT"}
+                agents[1]["agentType"] = (possible_types - agent_types).pop()
+
         # If moveTaskOrderID was provided, get that specific one. Else get any stored one.
         object_id = overrides.get("moveTaskOrderID") if overrides else None
 
@@ -350,6 +356,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if overrides:
             overrides_local.update(overrides)
         payload = self.fake_request("/mto-shipments", "post", PRIME_API_KEY, overrides=overrides_local)
+        guarantee_unique_agent_type(payload["agents"])  # modifies the payload directly
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -361,6 +368,48 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if success:
             self.add_stored(MTO_SHIPMENT, mto_shipment)
             return mto_shipment
+
+    @tag(MTO_SHIPMENT, "createMTOShipment", "expectedFailure")
+    @task
+    def create_mto_shipment_with_duplicate_agents(self, overrides=None):
+        # If moveTaskOrderID was provided, get that specific one. Else get any stored one.
+        object_id = overrides.get("moveTaskOrderID") if overrides else None
+
+        move_task_order = self.get_stored(MOVE_TASK_ORDER, object_id)
+        if not move_task_order:
+            logger.debug("createMTOShipment — expected failure: ⚠️ No move_task_order found")
+            return (
+                None  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
+            )
+
+        agent_type = random.choice(["RELEASING_AGENT", "RECEIVING_AGENT"])
+        agent_override = {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID, "agentType": agent_type}
+        overrides_local = {
+            # Override moveTaskorderID because we don't want a random one
+            "moveTaskOrderID": move_task_order["id"],
+            # Set agents UUIDs to ZERO_UUID because we can't actually set the UUID on creation and guarantee two agents
+            "agents": [agent_override, agent_override],
+            # Set pickupAddress to ZERO_UUID because we can't actually set the UUID on creation
+            "pickupAddress": {"id": ZERO_UUID},
+            # Set destinationAddress to ZERO_UUID because we can't actually set the UUID on creation
+            "destinationAddress": {"id": ZERO_UUID},
+            # Set mtoServiceItems to empty to let the createMTOServiceItems endpoint do the creation
+            "mtoServiceItems": [],
+        }
+        # Merge local overrides with passed-in overrides
+        if overrides:
+            overrides_local.update(overrides)
+        payload = self.fake_request("/mto-shipments", "post", PRIME_API_KEY, overrides=overrides_local)
+
+        headers = {"content-type": "application/json"}
+        resp = self.client.post(
+            prime_path("/mto-shipments"),
+            name=prime_path("/mto-shipments — expected failure"),
+            data=json.dumps(payload),
+            headers=headers,
+            **self.user.cert_kwargs,
+        )
+        check_response(resp, "createMTOShipmentFailure", payload, "422")
 
     @tag(PAYMENT_REQUEST, "createUpload")
     @task
@@ -518,8 +567,12 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if mto_shipment.get("agents") is None:
             return  # can't update agents if there aren't any
 
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/agents/{agentID}", "put", PRIME_API_KEY)
+        overrides = {}
+        mto_agents = mto_shipment["agents"]
         mto_agent = mto_shipment["agents"][0]
+        if len(mto_agents) >= 2:
+            overrides = {"agentType": mto_agent["agentType"]}  # ensure agentType does not change
+        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/agents/{agentID}", "put", PRIME_API_KEY, overrides)
         headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
         resp = self.client.put(
             prime_path(f"/mto-shipments/{mto_shipment['id']}/agents/{mto_agent['id']}"),
@@ -712,11 +765,11 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
 
         resp = self.client.patch(
             support_path(f"/mto-shipments/{mto_shipment['id']}/status"),
-            name=support_path("/mto-shipments/{mtoShipmentID}/status -- expected failure"),
+            name=support_path("/mto-shipments/{mtoShipmentID}/status — expected failure"),
             data=json.dumps(payload),
             headers=headers,
         )
-        check_response(resp, "updateMTOShipmentStatusFailure", payload)
+        check_response(resp, "updateMTOShipmentStatusFailure", payload, "422")
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
     @task(2)
