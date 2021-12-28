@@ -104,6 +104,18 @@ class TestMilMoveProvider:
     def test_safe_uuid(self):
         assert self.fake.safe_uuid() == "00000000-0000-0000-0000-000000000000"
 
+    def test_safe_city_state_zip(self):
+        city_state_zip = self.fake.safe_city_state_zip()
+
+        assert city_state_zip.get("city") is not None
+        assert len(city_state_zip["city"]) > 0
+
+        assert city_state_zip.get("state") is not None
+        assert len(city_state_zip["state"]) == 2
+
+        assert city_state_zip.get("postalCode") is not None
+        assert re.match("^[0-9]{5}$", city_state_zip["postalCode"])
+
 
 class TestMilMoveData:
     """Tests the MilMoveData class and its methods."""
