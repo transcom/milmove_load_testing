@@ -544,8 +544,11 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if mto_shipment.get("agents") is None:
             return  # can't update agents if there aren't any
 
+        overrides = {}
+        mto_agents = mto_shipment["agents"]
         mto_agent = mto_shipment["agents"][0]
-        overrides = {"agentType": mto_agent["agentType"]}  # updates the agent, but keeps the same agent type
+        if len(mto_agents) >= 2:
+            overrides = {"agentType": mto_agent["agentType"]}  # ensure agentType does not change
         payload = self.fake_request("/mto-shipments/{mtoShipmentID}/agents/{agentID}", "put", PRIME_API_KEY, overrides)
         headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
         resp = self.client.put(
