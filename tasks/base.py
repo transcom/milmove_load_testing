@@ -10,7 +10,7 @@ from requests import Response
 logger = logging.getLogger(__name__)
 
 
-def check_response(response: Response, task_name="Task", request=None, expected_status_code: str = None):
+def check_response(response: Response, task_name="Task", request=None, expected_status_code: str = "2"):
     """
     Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
     status code doesn't match (by default 2xx), it can also log any request data that was sent in for the sake of debugging.
@@ -29,9 +29,6 @@ def check_response(response: Response, task_name="Task", request=None, expected_
     except (json.JSONDecodeError, TypeError):
         logger.exception("Non-JSON response.")
         return None, False
-
-    if expected_status_code is None:
-        expected_status_code = "2"
 
     if not str(response.status_code).startswith(expected_status_code):
         logger.error(f"⚠️ {task_name} failed.\n{json.dumps(json_response, indent=4)}")
