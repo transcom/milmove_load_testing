@@ -396,7 +396,23 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             "isFinal": False,
         }
 
+        shipment = self.get_stored(MTO_SHIPMENT, service_item["mtoShipmentID"])
+        if not shipment:
+            logger.info("unable to find shipment of payment request service item")
+
         headers = {"content-type": "application/json"}
+
+        # if the actual weight hasn't been provided, creating the payment request will fail
+        if not shipment.get("primeActualWeight"):
+            self.client.post(
+                prime_path("/payment-requests"),
+                name=prime_path("/payment-requests — expected failure"),
+                data=json.dumps(payload),
+                headers=headers,
+                **self.user.cert_kwargs,
+            )
+            return None
+
         resp = self.client.post(
             prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
         )
@@ -427,6 +443,13 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             "secondaryDeliveryAddress",
             "primeEstimatedWeight",
         ]
+
+        # nts weight is only valid when the shipment type is nts release
+        if payload.get("ntsRecordedWeight"):
+            shipmentType = payload.get("shipmentType") or mto_shipment.get("shipmentType")
+            if shipmentType != "HHG_OUTOF_NTS_DOMESTIC":
+                fields_to_remove.append("ntsRecordedWeight")
+
         for f in fields_to_remove:
             payload.pop(f, None)
 
