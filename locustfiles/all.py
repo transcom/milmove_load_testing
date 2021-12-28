@@ -4,13 +4,13 @@ from gevent.pool import Group
 from locust import events
 from locust.env import Environment
 
-from office import ServicesCounselorUser, TOOUser
-from prime import PrimeUser, SupportUser
-from prime_workflow import PrimeWorkflowUser
-from utils.base import ImplementationError
+from locustfiles.office import ServicesCounselorUser, TOOUser
+from locustfiles.prime import PrimeUser, SupportUser
+from locustfiles.prime_workflow import PrimeWorkflowUser
 from utils.auth import remove_certs, set_up_certs
-from utils.parsers import GHCAPIParser, PrimeAPIParser, SupportAPIParser
+from utils.base import ImplementationError
 from utils.types import LOCUST_RUNNER_TYPE
+
 
 ########################################################################
 #
@@ -22,12 +22,6 @@ from utils.types import LOCUST_RUNNER_TYPE
 #  file, or maybe we should move the user definitions elsewhere?
 #
 ########################################################################
-
-
-# init these classes just once because we don't need to parse the API over and over:
-prime_api = PrimeAPIParser()
-support_api = SupportAPIParser()
-ghc_api = GHCAPIParser()
 
 
 @events.init.add_listener

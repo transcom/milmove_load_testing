@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """ tasks/base.py is for code used internally within the tasks package. """
-from utils.base import ImplementationError
 
 import json
-from locust import TaskSet
 import logging
+
+from locust import TaskSet
 from requests import Response
 
 logger = logging.getLogger(__name__)
@@ -69,34 +69,6 @@ class CertTaskMixin:
         milmove_load_testing.utils.hosts.MilMoveHostMixin.
         """
         return self.user.cert_kwargs
-
-
-class ParserTaskMixin:
-    """
-    TaskSet mixin class that needs an APIParser class to be connected to the User calling the tasks. MUST have a parser
-    defined.
-
-    NOTE: MUST BE PLACED BEFORE TaskSet IN MRO INHERITANCE
-    because TaskSet.__init__ does not call super(), meaning this logic will not execute if TaskSet resolves first.
-    """
-
-    def __init__(self, parent):
-        super().__init__(parent)
-
-        # MUST have parser defined, not an option attribute
-        if not hasattr(self.user, "parser"):
-            raise ImplementationError("The user for a TaskSet using ParserTaskSet mixin must have a parser attribute.")
-
-    def fake_request(self, path, method, api_key=None, overrides=None, require_all=False):
-        """
-        Wraps the parser's generate_fake_request method for ease of use.
-        """
-        try:
-            return self.user.parser[api_key].generate_fake_request(path, method, overrides, require_all)
-        # KeyErrors will be thrown for the developer to fix
-        except TypeError:
-            # If parser is not a dictionary, let's see if its just a valid parser object
-            return self.user.parser.generate_fake_request(path, method, overrides, require_all)
 
 
 class LoginTaskSet(TaskSet):

@@ -1,16 +1,34 @@
 # -*- coding: utf-8 -*-
-""" utils/parsers.py is for classes that parse an API and populate fake data for use in requests """
+"""
+This file is for helpers that parse an API and populate fake data for use in requests
+"""
 import logging
 import random
+from dataclasses import dataclass, field
+from enum import Enum
+from functools import lru_cache
+from typing import Optional
 
 from prance import ResolvingParser
 
-from .base import ImplementationError
-from .constants import DataType, ARRAY_MIN, ARRAY_MAX
-from .fake_data import MilMoveData
-from .fields import APIEndpointBody, ObjectField, ArrayField, EnumField, BaseAPIField
+from utils.base import ImplementationError
+from utils.constants import ARRAY_MAX, ARRAY_MIN, DataType
+from utils.fake_data import MilMoveData
+from utils.fields import APIEndpointBody, ArrayField, BaseAPIField, EnumField, ObjectField
+from utils.types import JSONType
 
 logger = logging.getLogger(__name__)
+
+
+class APIKey(Enum):
+    """
+    Define API keys that can be used to know which parser to use.
+    """
+
+    INTERNAL = "internal"
+    OFFICE = "office"
+    PRIME = "prime"
+    SUPPORT = "support"
 
 
 class APIParser:
@@ -209,25 +227,25 @@ class APIParser:
             object_field = self._parse_discriminator(object_field, object_def)
 
         elif object_def.get("properties"):
-            for field, properties in object_def["properties"].items():
-                field = self._parse_definition(field, properties)
-                if field:
+            for field_name, properties in object_def["properties"].items():
+                api_field = self._parse_definition(field_name, properties)
+                if api_field:
                     # NOTE: These are are all ALWAYS distinct fields in the object, NOT combined into the same
                     # object-level like allOf and oneOf:
-                    object_field.add_field(field)
+                    object_field.add_field(api_field)
 
         # Separate if/elif statement because this can also happen for an object with a discriminator and/or properties:
         if object_def.get("allOf"):
             for definition in object_def["allOf"]:
-                field = self._parse_definition(name, definition)
-                if field:
-                    object_field.combine_fields(field, unique=True)
+                api_field = self._parse_definition(name, definition)
+                if api_field:
+                    object_field.combine_fields(api_field, unique=True)
 
         elif object_def.get("oneOf"):
             selection = random.choice(object_def["oneOf"])  # randomly select the object to use
-            field = self._parse_definition(name, selection)
-            if field:
-                object_field.combine_fields(field)
+            api_field = self._parse_definition(name, selection)
+            if api_field:
+                object_field.combine_fields(api_field)
 
         required_fields = object_def.get("required", [])
         object_field.update_required_fields(required_fields)
@@ -270,14 +288,14 @@ class APIParser:
         # For each possible discriminator value, add the fields relevant to that value to the base ObjectField:
         for value in d_options:
             value_definition = self.get_definition(value)
-            field = self._parse_definition(object_field.name, value_definition)
+            api_field = self._parse_definition(object_field.name, value_definition)
 
-            if field:
-                field.add_discriminator_value(value)
+            if api_field:
+                api_field.add_discriminator_value(value)
                 # As we combine fields, we want it to NOT unique because different discriminator definitions could have
                 # the same field names. We want to preserve both so that we can pick the right one when generating fake
                 # data and validating discriminator values:
-                object_field.combine_fields(field)
+                object_field.combine_fields(api_field)
 
         self.discriminated = False
         return object_field
@@ -332,29 +350,29 @@ class APIParser:
         return None
 
     @staticmethod
-    def _approximate_str_type(field):
+    def _approximate_str_type(field_name):
         """
         Approximates the data type for a field with type "string" in the YAML based off the name of the field. Defaults
         to the SENTENCE data type.
 
-        :param field: str, name of the field
+        :param field_name: str, name of the field
         :return: DataType enum
         """
-        field = field.lower()
+        field_name = field_name.lower()
 
         for data_type in DataType:
             value = data_type.value.lower()
-            if (field in value) or (value in field):
+            if (field_name in value) or (value in field_name):
                 return data_type
 
         return DataType.SENTENCE
 
-    def _custom_field_validation(self, field, object_def):
+    def _custom_field_validation(self, api_field, object_def):
         """
         Hook for adding custom validation after a BaseAPIField object has been parsed. May apply whenever the field is
         used to generate data.
 
-        :param field: BaseAPIField
+        :param api_field: BaseAPIField
         :param object_def: dict, original definition that was parsed into resultant field
         :return: field
         """
@@ -395,12 +413,12 @@ class PrimeAPIParser(APIParser):
         """
         return super().generate_fake_request(path, method, overrides, True)
 
-    def _custom_field_validation(self, field, object_def):
+    def _custom_field_validation(self, api_field, object_def):
         """
         Custom validation for Prime API fields.
         """
-        if field and field.name == "modelType" and ("MTOServiceItemBasic" in field.options):
-            field.options.remove("MTOServiceItemBasic")
+        if api_field and api_field.name == "modelType" and ("MTOServiceItemBasic" in api_field.options):
+            api_field.options.remove("MTOServiceItemBasic")
 
     def _custom_request_validation(self, path, method, request_data):
         """
@@ -487,3 +505,72 @@ class InternalAPIParser(APIParser):
     """Parser class for the Internal API."""
 
     api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/internal.yaml"
+
+
+@lru_cache()
+def get_api_parsers() -> dict[APIKey, APIParser]:
+    """
+    Initialize parsers and returnMapping with string as keys, and JSONValue as values them for easy
+    use.
+
+    :return: dict with APIKey types as keys and the corresponding initialized parser as the value.
+    """
+    parser_classes = {
+        APIKey.INTERNAL: InternalAPIParser,
+        APIKey.OFFICE: GHCAPIParser,
+        APIKey.PRIME: PrimeAPIParser,
+        APIKey.SUPPORT: SupportAPIParser,
+    }
+
+    initialized_parsers = {}
+
+    for parser_key, parser_class in parser_classes.items():
+        initialized_parsers[parser_key] = parser_class()
+
+    return initialized_parsers
+
+
+@dataclass
+class APIFakeDataGenerator:
+    """
+    Helper class to generate fake data for different API endpoints.
+    """
+
+    api_parsers: dict[APIKey, APIParser] = field(default_factory=get_api_parsers)
+
+    def generate_fake_request_data(
+        self,
+        api_key: APIKey,
+        path: str,
+        method: str,
+        overrides: Optional[dict[str, JSONType]] = None,
+        require_all: bool = False,
+    ) -> JSONType:
+        """
+        Generates fake data for the given api and method. You can pass overrides for fields and
+        indicate if all fields in an object should be required.
+
+        :param api_key: APIKey to indicate which API you want to target, e.g. APIKey.PRIME
+        :param path: path to use in the api, e.g. "/mto-shipments"
+        :param method: method for the request, e.g. "get"
+        :param overrides: Optional overrides for fields if you need specific values set.
+        :param require_all: Indicates that all fields of an object should be filled in, whether they
+            are required per the API spec or not.
+        :return: a payload to use in a request
+        """
+        return self.api_parsers[api_key].generate_fake_request(
+            path=path,
+            method=method.lower(),  # This needs to be lowercase later so make sure it's correct
+            overrides=overrides,
+            require_all=require_all,
+        )
+
+
+@lru_cache
+def get_api_fake_data_generator() -> APIFakeDataGenerator:
+    """
+    Initializes and returns a fake data generator. Uses cache to avoid re-parsing apis.
+
+    :return: API fake data generator ready for use
+    """
+    return APIFakeDataGenerator()

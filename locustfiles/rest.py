@@ -7,31 +7,17 @@ from locust.env import Environment
 from tasks.prime import get_prime_moves
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_milmove_env
-from utils.constants import INTERNAL_API_KEY, MOVE_TASK_ORDER, PRIME_API_KEY
-from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
+from utils.constants import MOVE_TASK_ORDER
 from utils.request import MilMoveURLCreator, get_cert_kwargs
 from utils.rest import RestResponseContextManager
 from utils.types import LOCUST_RUNNER_TYPE
 from utils.users import RestHttpUser
-
-# init these classes just once because we don't need to parse the API over and over:
-prime_api = PrimeAPIParser()
-support_api = SupportAPIParser()
-internal_api = InternalAPIParser()
 
 
 class PrimeUser(RestHttpUser):
     """
     A user that can test the Prime API
     """
-
-    # These attributes are used in MilMoveRequestMixin to set up the proper hostname for any MilMove
-    # environment:
-    local_port = "9443"
-    local_protocol = "https"
-
-    # This attribute is used for generating fake requests when hitting the Prime API:
-    parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}
 
     certs_needed = True
 

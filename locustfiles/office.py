@@ -2,11 +2,8 @@
 """ Locust test for the MilMove Office interface. """
 from locust import HttpUser, between
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain
-from utils.parsers import GHCAPIParser
 from tasks import ServicesCounselorTasks, TOOTasks
-
-ghc_api = GHCAPIParser()
+from utils.hosts import MilMoveDomain, MilMoveHostMixin
 
 
 class ServicesCounselorUser(MilMoveHostMixin, HttpUser):
@@ -20,9 +17,6 @@ class ServicesCounselorUser(MilMoveHostMixin, HttpUser):
     deployed_subdomain = "office"
 
     domain = MilMoveDomain.OFFICE
-
-    # This attribute is used for generating fake requests when hitting the GHC API:
-    parser = ghc_api
 
     wait_time = between(0.25, 9)
     tasks = {ServicesCounselorTasks: 1}
@@ -39,9 +33,6 @@ class TOOUser(MilMoveHostMixin, HttpUser):
     deployed_subdomain = "office"
 
     domain = MilMoveDomain.OFFICE
-
-    # This attribute is used for generating fake requests when hitting the GHC API:
-    parser = ghc_api
 
     wait_time = between(0.25, 9)
     tasks = {TOOTasks: 1}

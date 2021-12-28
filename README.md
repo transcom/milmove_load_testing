@@ -568,16 +568,16 @@ manipulation in your parser class:
 class GHCAPIParser(APIParser):
     ...
 
-    def _custom_field_validation(self, field, object_def):
+    def _custom_field_validation(self, api_field, object_def):
         """
         This hook is for changes you want to make to a specific field, regardless of which endpoint it is used in.
         These are PRE-DATA changes and will be used to generate the data you want for this field whenever you call the
         generate_fake_data method.
         """
         # Example:
-        if field.name == "agents":
+        if api_field.name == "agents":
             try:
-                field.max_items == 2  # let's say we never want more than two agents, regardless of what the YAML says
+                api_field.max_items == 2  # let's say we never want more than two agents, regardless of what the YAML says
             except AttributeError:
                 pass  # this wasn't the field type we were expecting -- should log as well
 
@@ -625,37 +625,6 @@ GHCUser(...):
 
 Instantiating it once at the beginning of the `locustfile` keeps the API from being reparsed over and over, saving you
 valuable processing time.
-
-Next, navigate to your `TaskSet` class and add the `ParserTaskMixin` to its inheritance:
-
-```python
-from tasks.base import ParserTaskMixin
-
-
-GHCTaskSet(ParserTaskMixin, ...):  # ParserTaskMixin needs to be BEFORE the other classes in the MRO
-```
-
-This gives you access to the `self.fake_request` method, and now you can generate a request body filled with fake data:
-
-```python
-GHCTaskSet(ParserTaskMixin, ...):
-    ...
-
-    @task
-    def update_move_task_order(self):
-        mtoID = "5d4b25bb-eb04-4c03-9a81-ee0398cb779e"
-        payload = self.fake_request(path="/move-task-orders/{moveTaskOrderID}", method="patch")
-
-        response = self.client.patch(
-            f"/ghc/v1/move-task-orders/{mtoID}",
-            name="/ghc/v1/move-task-orders/{moveTaskOrderID}",
-            data=json.dumps(payload),
-            headers={"content-type": "application/json"},
-        )
-
-        # Now process the response however you like:
-        print(response.status_code, response.content)
-```
 
 ## Load Testing against the AWS Loadtest Environment
 

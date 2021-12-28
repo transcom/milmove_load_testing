@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """ TaskSets and tasks for the Office interface. """
-import logging
 import json
+import logging
 import random
 from typing import Dict, Set
 
-from locust import task, tag
+from locust import tag, task
 
+from tasks.base import LoginTaskSet, check_response
 from utils.constants import (
     CUSTOMER,
     MOVE,
@@ -14,12 +15,13 @@ from utils.constants import (
     MTO_SERVICE_ITEM,
     MTO_SHIPMENT,
     ORDER,
-    QUEUES,
     PAYMENT_REQUEST,
+    QUEUES,
 )
-from .base import check_response, LoginTaskSet, ParserTaskMixin
+from utils.parsers import APIKey, get_api_fake_data_generator
 
 logger = logging.getLogger(__name__)
+fake_data_generator = get_api_fake_data_generator()
 
 
 def ghc_path(url: str) -> str:
@@ -93,7 +95,7 @@ class OfficeDataStorageMixin:
             self.local_store[object_key][object_data["id"]] = object_data
 
 
-class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
+class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
     """
     Set of tasks that can be called for the MilMove Office interface with the Services Counselor role.
     """
@@ -261,7 +263,11 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             logger.info("skipping update order, no moves exist yet")
             return
 
-        payload = self.fake_request("/counseling/orders/{orderID}", "patch")
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.OFFICE,
+            path="/counseling/orders/{orderID}",
+            method="patch",
+        )
 
         payload = {key: payload[key] for key in ["issueDate", "reportByDate", "ordersType"]}
         if self.default_mto_ids.get("originDutyStationID"):
@@ -302,7 +308,11 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             logger.info("skipping update allowance, no moves exist yet")
             return
 
-        payload = self.fake_request("/counseling/orders/{orderID}/allowances", "patch")
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.OFFICE,
+            path="/counseling/orders/{orderID}/allowances",
+            method="patch",
+        )
 
         # update allowances handler expects the orders eTag because it also updates parents order fields
         headers = {"content-type": "application/json", "If-Match": order["eTag"]}
@@ -335,9 +345,10 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             logger.info("Skipping update customer as no current address exists")
             return
 
-        payload = self.fake_request(
-            "/customer/{customerID}",
-            "patch",
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.OFFICE,
+            path="/customer/{customerID}",
+            method="patch",
             overrides={"current_address": {"id": customer["current_address"]["id"]}},
             require_all=True,
         )
@@ -355,7 +366,7 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMix
             self.add_stored(CUSTOMER, new_customer)
 
 
-class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
+class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
     """
     Set of tasks that can be called for the MilMove Office interface with the TOO role.
     """
@@ -557,7 +568,12 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
             return
 
         # require all optional fields otherwise nullable fields will be omitted
-        payload = self.fake_request("/orders/{orderID}", "patch", None, None, True)
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.OFFICE,
+            path="/orders/{orderID}",
+            method="patch",
+            require_all=True,
+        )
 
         if self.default_mto_ids.get("originDutyStationID"):
             payload["originDutyStationId"] = random.choice(list(self.default_mto_ids["originDutyStationID"]))
@@ -596,7 +612,11 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet, ParserTaskMixin):
             logger.info("skipping update allowance, no moves exist yet")
             return
 
-        payload = self.fake_request("/orders/{orderID}/allowances", "patch")
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.OFFICE,
+            path="/orders/{orderID}/allowances",
+            method="patch",
+        )
 
         # update allowances handler expects the orders eTag because it also updates parents order fields
         headers = {"content-type": "application/json", "If-Match": order["eTag"]}

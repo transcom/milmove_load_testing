@@ -4,17 +4,10 @@ from locust import HttpUser, between, events
 from locust.env import Environment
 
 from tasks import PrimeTasks, SupportTasks
-from utils.base import ImplementationError
-from utils.constants import INTERNAL_API_KEY, PRIME_API_KEY
-from utils.hosts import MilMoveDomain, MilMoveHostMixin
 from utils.auth import remove_certs, set_up_certs
-from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
+from utils.base import ImplementationError
+from utils.hosts import MilMoveDomain, MilMoveHostMixin
 from utils.types import LOCUST_RUNNER_TYPE
-
-# init these classes just once because we don't need to parse the API over and over:
-prime_api = PrimeAPIParser()
-support_api = SupportAPIParser()
-internal_api = InternalAPIParser()
 
 
 class PrimeUser(MilMoveHostMixin, HttpUser):
@@ -25,9 +18,6 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
     # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove environment:
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host
-
-    # This attribute is used for generating fake requests when hitting the Prime API:
-    parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}
 
     # These are locust HttpUser attributes that help define and shape the load test:
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
@@ -41,8 +31,6 @@ class SupportUser(MilMoveHostMixin, HttpUser):
 
     local_port = "9443"
     domain = MilMoveDomain.PRIME
-
-    parser = support_api
 
     wait_time = between(0.25, 9)
     tasks = {SupportTasks: 1}

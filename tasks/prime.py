@@ -9,24 +9,23 @@ from typing import Dict, Union
 import requests
 from locust import TaskSet, tag, task
 
+from tasks.base import CertTaskMixin, check_response
 from utils.constants import (
-    INTERNAL_API_KEY,
     MOVE_TASK_ORDER,
     MTO_AGENT,
     MTO_SERVICE_ITEM,
     MTO_SHIPMENT,
     PAYMENT_REQUEST,
-    PRIME_API_KEY,
-    SUPPORT_API_KEY,
     TEST_PDF,
     ZERO_UUID,
 )
+from utils.parsers import APIKey, get_api_fake_data_generator
 from utils.request import MilMoveURLCreator
 from utils.rest import get_json_headers
-from utils.types import JSONType
-from .base import CertTaskMixin, ParserTaskMixin, check_response
+from utils.types import JSONObject, JSONType
 
 logger = logging.getLogger(__name__)
+fake_data_generator = get_api_fake_data_generator()
 
 
 def prime_path(url: str) -> str:
@@ -229,7 +228,7 @@ class PrimeDataStorageMixin:
 
 
 @tag("prime")
-class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
+class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Prime API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier.
@@ -273,7 +272,14 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             "current_station_id": current_station_id,
         }
 
-        payload = self.fake_request("/service_members/{serviceMemberId}", "patch", INTERNAL_API_KEY, overrides, True)
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.INTERNAL,
+            path="/service_members/{serviceMemberId}",
+            method="patch",
+            overrides=overrides,
+            require_all=True,
+        )
+
         self.client.patch(
             self.customer_path(f"/internal/service_members/{service_member_id}"),
             name="/internal/service_members/{serviceMemberId}",
@@ -283,9 +289,14 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         )
 
         overrides = {"permission": "NONE"}
-        payload = self.fake_request(
-            "/service_members/{serviceMemberId}/backup_contacts", "post", INTERNAL_API_KEY, overrides
+
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.INTERNAL,
+            path="/service_members/{serviceMemberId}/backup_contacts",
+            method="post",
+            overrides=overrides,
         )
+
         self.client.post(
             self.customer_path(f"/internal/service_members/{service_member_id}/backup_contacts"),
             name="/internal/service_members/{serviceMemberId}/backup_contacts",
@@ -327,7 +338,13 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         }
         # Merge local overrides with passed-in overrides
         overrides_local.update(overrides or {})
-        payload = self.fake_request("/mto-service-items", "post", PRIME_API_KEY, overrides_local)
+
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/mto-service-items",
+            method="post",
+            overrides=overrides_local,
+        )
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -368,7 +385,13 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         # Merge local overrides with passed-in overrides
         if overrides:
             overrides_local.update(overrides)
-        payload = self.fake_request("/mto-shipments", "post", PRIME_API_KEY, overrides=overrides_local)
+
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/mto-shipments",
+            method="post",
+            overrides=overrides_local,
+        )
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -434,7 +457,12 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if not mto_shipment:
             return  # can't run this task
 
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}", "patch", PRIME_API_KEY, overrides)
+        payload: JSONObject = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/mto-shipments/{mtoShipmentID}",
+            method="patch",
+            overrides=overrides,
+        )
 
         # Agents and addresses should not be updated by this endpoint, and primeEstimatedWeight cannot be updated after
         # it is initially set (and it is set in create_mto_shipment)
@@ -480,8 +508,12 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
 
         overrides_local = {"id": address["id"]}
         overrides_local.update(overrides or {})
-        payload = self.fake_request(
-            "/mto-shipments/{mtoShipmentID}/addresses/{addressID}", "put", PRIME_API_KEY, overrides=overrides_local
+
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/mto-shipments/{mtoShipmentID}/addresses/{addressID}",
+            method="put",
+            overrides=overrides_local,
         )
 
         headers = {"content-type": "application/json", "If-Match": address["eTag"]}
@@ -514,7 +546,12 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if mto_shipment.get("agents") is None:
             return  # can't update agents if there aren't any
 
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/agents/{agentID}", "put", PRIME_API_KEY)
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/mto-shipments/{mtoShipmentID}/agents/{agentID}",
+            method="put",
+        )
+
         mto_agent = mto_shipment["agents"][0]
         headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
         resp = self.client.put(
@@ -556,9 +593,10 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             )
             return
 
-        payload = self.fake_request(
-            "/mto-service-items/{mtoServiceItemID}",
-            "patch",
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/mto-service-items/{mtoServiceItemID}",
+            method="patch",
             overrides={
                 "id": mto_service_item["id"],
                 "sitDestinationFinalAddress": {
@@ -594,7 +632,11 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             logger.debug("updateMTOPostCounselingInformation: ⚠️ No move_task_order found")
             return  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
 
-        payload = self.fake_request("/move-task-orders/{moveTaskOrderID}/post-counseling-info", "patch", PRIME_API_KEY)
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/move-task-orders/{moveTaskOrderID}/post-counseling-info",
+            method="patch",
+        )
 
         move_task_order_id = move_task_order["id"]  # path parameter
         headers = {"content-type": "application/json", "If-Match": move_task_order["eTag"]}
@@ -614,7 +656,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
 
 
 @tag("support")
-class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet):
+class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
     """
     Set of the tasks that can be called on the Support API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier. Ex:
@@ -636,7 +678,12 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             return None  # can't run this task
 
         # Generate fake payload based on the endpoint's required fields
-        payload = self.fake_request("/mto-shipments/{mtoShipmentID}/status", "patch", SUPPORT_API_KEY, overrides)
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.SUPPORT,
+            path="/mto-shipments/{mtoShipmentID}/status",
+            method="patch",
+            overrides=overrides,
+        )
 
         headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
 
@@ -679,7 +726,13 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
                 "customer": {},
             },
         }
-        payload = self.fake_request("/move-task-orders", "post", SUPPORT_API_KEY, overrides)
+
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.SUPPORT,
+            path="/move-task-orders",
+            method="post",
+            overrides=overrides,
+        )
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
@@ -717,7 +770,13 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
             logger.debug("updateMTOServiceItemStatus: ⚠️ No mto_service_item found")
             return None
 
-        payload = self.fake_request("/mto-service-items/{mtoServiceItemID}/status", "patch", SUPPORT_API_KEY, overrides)
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.SUPPORT,
+            path="/mto-service-items/{mtoServiceItemID}/status<",
+            method="patch",
+            overrides=overrides,
+        )
+
         headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
 
         resp = self.client.patch(
@@ -743,7 +802,12 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
         if not payment_request:
             return
 
-        payload = self.fake_request("/payment-requests/{paymentRequestID}/status", "patch", SUPPORT_API_KEY)
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.SUPPORT,
+            path="/payment-requests/{paymentRequestID}/status",
+            method="patch",
+        )
+
         headers = {"content-type": "application/json", "If-Match": payment_request["eTag"]}
 
         resp = self.client.patch(
