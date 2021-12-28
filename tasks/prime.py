@@ -765,11 +765,11 @@ class SupportTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSe
 
         resp = self.client.patch(
             support_path(f"/mto-shipments/{mto_shipment['id']}/status"),
-            name=support_path("/mto-shipments/{mtoShipmentID}/status -- expected failure"),
+            name=support_path("/mto-shipments/{mtoShipmentID}/status — expected failure"),
             data=json.dumps(payload),
             headers=headers,
         )
-        check_response(resp, "updateMTOShipmentStatusFailure", payload)
+        check_response(resp, "updateMTOShipmentStatusFailure", payload, "422")
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
     @task(2)
