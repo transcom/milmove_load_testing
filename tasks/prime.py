@@ -382,7 +382,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
                 None  # we can't do anything else without a default value, and no pre-made MTOs satisfy our requirements
             )
 
-        agent_type = random.sample(["RELEASING_AGENT", "RECEIVING_AGENT"], 1).pop()
+        agent_type = random.choice(["RELEASING_AGENT", "RECEIVING_AGENT"])
         agent_override = {"id": ZERO_UUID, "mtoShipmentID": ZERO_UUID, "agentType": agent_type}
         overrides_local = {
             # Override moveTaskorderID because we don't want a random one
