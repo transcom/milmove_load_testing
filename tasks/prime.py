@@ -356,7 +356,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         if overrides:
             overrides_local.update(overrides)
         payload = self.fake_request("/mto-shipments", "post", PRIME_API_KEY, overrides=overrides_local)
-        guarantee_unique_agent_type(payload["agents"])
+        guarantee_unique_agent_type(payload["agents"])  # modifies the payload directly
 
         headers = {"content-type": "application/json"}
         resp = self.client.post(
