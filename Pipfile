@@ -8,6 +8,7 @@ requests = ">=2.22.0"
 locust = ">=1"
 prance = {version = "==0.19.0", extras = ["cli", "osv"]}
 Faker = "*"
+zipcodes = "*"
 
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
