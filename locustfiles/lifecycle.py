@@ -6,6 +6,9 @@ flow, which is very useful for fetching test data.
 This was copied from https://github.com/locustio/locust/blob/master/examples/test_data_management.py
 and put in this repo for ease of use and to add some missing numbers in print statements.
 
+Copyright (c) 2009-2010, Carl Byström, Jonatan Heyman
+From: https://github.com/locustio/locust/blob/master/LICENSE
+
 1. Locustfile parse time
 2. Locust start
 3. Test start
