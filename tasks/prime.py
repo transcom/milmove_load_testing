@@ -225,6 +225,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         return f"{self.user.alternative_host}{url}"
 
     def on_start(self):
+        # Customer login using dev local
         self.client.get(self.customer_path("/devlocal-auth/login"))
         self.csrf_token = self.client.cookies.get("masked_gorilla_csrf")
         self.client.headers.update({"x-csrf-token": self.csrf_token})
@@ -242,8 +243,10 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         email = json_resp["email"]
         user_id = json_resp["id"]
 
-        origin_duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=29"))
-        current_station_id = origin_duty_stations.json()[0]["id"]
+        # Setup customer profile
+        duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=palms"))
+        stations = duty_stations.json()
+        current_station_id = stations[0]["id"]
 
         overrides = {
             "id": service_member_id,
