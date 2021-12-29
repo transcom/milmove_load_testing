@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-""" Locust test for the Prime & Support APIs """
-
+"""
+Example of a locustfile using the latest changes...
+TODO: This file should probably be deleted before merging...
+"""
 from locust import between, events, tag, task
 from locust.env import Environment, RunnerType
 
@@ -8,7 +10,7 @@ from tasks.prime import get_prime_moves
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_milmove_env
 from utils.constants import MOVE_TASK_ORDER
-from utils.request import MilMoveURLCreator, get_cert_kwargs
+from utils.request import MilMoveRequestPreparer
 from utils.rest import RestResponseContextManager
 from utils.users import RestHttpUser
 
@@ -18,8 +20,6 @@ class PrimeUser(RestHttpUser):
     A user that can test the Prime API
     """
 
-    certs_needed = True
-
     # These are locust HttpUser attributes that help define and shape the load test:
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds,
     # accepts decimals and 0)
@@ -28,7 +28,9 @@ class PrimeUser(RestHttpUser):
     @tag(MOVE_TASK_ORDER, "listMoves")
     @task
     def list_moves(self) -> None:
-        with self.rest("GET", self.get_prime_path("/moves")) as resp:
+        moves_path, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+
+        with self.rest(method="GET", url=moves_path, **request_kwargs) as resp:
             resp: RestResponseContextManager
 
             if isinstance(resp.js, list) and resp.js:
@@ -42,11 +44,9 @@ def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
     Sample of func that can set up or get data before tests start.
     :param env: MilMoveEnv that we're targeting, e.g. MilMoveEnv.LOCAL
     """
-    url_creator = MilMoveURLCreator(env=env)
+    request_preparer = MilMoveRequestPreparer(env=env)
 
-    cert_kwargs = get_cert_kwargs(env=env)
-
-    moves = get_prime_moves(url_creator=url_creator, cert_kwargs=cert_kwargs)
+    moves = get_prime_moves(request_preparer=request_preparer)
 
     if moves:
         print(f"\n{moves[0]=}\n")

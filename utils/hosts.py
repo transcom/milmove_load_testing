@@ -2,6 +2,7 @@
 """ utils/hosts.py is for the tools that handle setting the MilMove hostnames and setting up TLS certs. """
 import logging
 import os
+from copy import deepcopy
 from typing import Optional, Union
 
 from locust import User
@@ -13,7 +14,7 @@ from utils.base import (
     convert_host_string_to_milmove_env,
     is_local,
 )
-from utils.request import get_cert_kwargs
+from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +164,10 @@ class MilMoveHostMixin:
         if cls.cert_kwargs:
             return
 
-        cls.cert_kwargs = get_cert_kwargs(env=cls.env)
+        if is_local(env=cls.env):
+            cls.cert_kwargs = deepcopy(LOCAL_TLS_CERT_KWARGS)
+        else:
+            cls.cert_kwargs = {"cert": DP3_CERT_KEY_PEM}
 
     @property
     def is_local(self):

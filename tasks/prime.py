@@ -4,7 +4,7 @@ import json
 import logging
 import random
 from copy import deepcopy
-from typing import Dict, Union
+from typing import Dict
 
 import requests
 from locust import TaskSet, tag, task
@@ -20,8 +20,7 @@ from utils.constants import (
     ZERO_UUID,
 )
 from utils.parsers import APIKey, get_api_fake_data_generator
-from utils.request import MilMoveURLCreator
-from utils.rest import get_json_headers
+from utils.request import MilMoveRequestPreparer
 from utils.types import JSONObject, JSONType
 
 logger = logging.getLogger(__name__)
@@ -36,18 +35,18 @@ def support_path(url: str) -> str:
     return f"/support/v1{url}"
 
 
-def get_prime_moves(url_creator: MilMoveURLCreator, cert_kwargs: dict[str, Union[str, bool]]) -> JSONType:
+def get_prime_moves(request_preparer: MilMoveRequestPreparer) -> JSONType:
     """
     Small example of making requests outside user context
-    :param url_creator: instance of MilMoveURLCreator that has been initialized with target env
-    :param cert_kwargs: cert kwargs to use in request headers to auth request
+    :param request_preparer: instance of MilMoveRequestPreparer that has been initialized with target env
     :return: info retrieved from api
     """
-    moves_path = url_creator.form_prime_path(endpoint="/moves")
+    moves_path, request_kwargs = request_preparer.prep_prime_request(endpoint="/moves")
 
-    response = requests.get(url=moves_path, headers=get_json_headers(), **cert_kwargs)
+    response = requests.get(url=moves_path, **request_kwargs)
     # You would likely need to do some error handling in case the request messes up, but for now
     # I'll leave it out.
+
     return response.json()
 
 
