@@ -332,6 +332,24 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             headers={"content-type": "application/json"},
         )
 
+        # Confirm move request
+        full_name = f"{service_member['first_name']} {service_member['last_name']}"
+        overrides = {
+            "certification_type": "SHIPMENT",
+            "signature": full_name,
+            "date": datetime.now().strftime(
+                "%Y-%m-%dT%H:%M:%S-05:00"
+            ),  # needed because yaml uses date instead of date-time
+            "personally_procured_move_id": None,
+        }
+        payload = self.fake_request("/moves/{moveId}/submit", "post", INTERNAL_API_KEY, overrides, True)
+        self.client.post(
+            self.customer_path(f"/internal/moves/{move_id}/submit"),
+            name="/internal/moves/{moveId}/submit",
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
+        )
+
     @tag(MOVE_TASK_ORDER, "listMoves")
     @task
     def list_moves(self):
