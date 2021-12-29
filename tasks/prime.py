@@ -5,6 +5,7 @@ import json
 import random
 from copy import deepcopy
 from typing import Dict
+from datetime import datetime
 
 from locust import tag, task, TaskSet
 
@@ -274,6 +275,37 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             name="/internal/service_members/{serviceMemberId}/backup_contacts",
             data=json.dumps(payload),
             headers={"content-type": "application/json"},
+        )
+
+        # Setup customer order
+        overrides = {
+            "service_member_id": service_member_id,
+            "issue_date": datetime.now().strftime("%Y-%m-%d"),
+            "report_by_date": datetime.now().strftime("%Y-%m-%d"),
+            "orders_type": "PERMANENT_CHANGE_OF_STATION",
+            "orders_type_detail": "HHG_PERMITTED",
+            "has_dependents": False,
+            "spouse_has_pro_gear": False,
+            "new_duty_station_id": stations[1]["id"],
+            "orders_number": None,
+            "tac": None,
+            "sac": None,
+            "department_indicator": None,
+        }
+        payload = self.fake_request("/orders", "post", INTERNAL_API_KEY, overrides, True)
+        order_resp = self.client.post(
+            self.customer_path("/internal/orders"),
+            data=json.dumps(overrides),
+            headers={"content-type": "application/json"},
+        )
+        order = order_resp.json()
+
+        document_id = order["uploaded_orders"]["id"]
+        upload_file = {"file": open(TEST_PDF, "rb")}
+        self.client.post(
+            self.customer_path(f"/internal/uploads?documentId={document_id}"),
+            name="/internal/uploads",
+            files=upload_file,
         )
 
     @tag(MOVE_TASK_ORDER, "listMoves")
