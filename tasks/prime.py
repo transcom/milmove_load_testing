@@ -257,9 +257,8 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             "email_is_preferred": True,
             "current_station_id": current_station_id,
         }
-
         payload = self.fake_request("/service_members/{serviceMemberId}", "patch", INTERNAL_API_KEY, overrides, True)
-        self.client.patch(
+        service_member_resp = self.client.patch(
             self.customer_path(f"/internal/service_members/{service_member_id}"),
             name="/internal/service_members/{serviceMemberId}",
             data=json.dumps(payload),
@@ -306,6 +305,31 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             self.customer_path(f"/internal/uploads?documentId={document_id}"),
             name="/internal/uploads",
             files=upload_file,
+        )
+
+        # Setup customer shipment
+        move_id = order["moves"][0]["id"]
+        self.client.patch(
+            self.customer_path(f"/internal/moves/{move_id}"),
+            name="/internal/moves/{moveId}",
+            data=json.dumps({"selected_move_type": "HHG"}),
+            headers={"content-type": "application/json"},
+        )
+
+        service_member = service_member_resp.json()
+        address = service_member["residential_address"]
+        address.pop("id")  # remove unneeded id
+        overrides = {
+            "moveTaskOrderID": move_id,
+            "shipmentType": "HHG",
+            "pickupAddress": address,
+            "agents": [],
+        }
+        payload = self.fake_request("/mto_shipments", "post", INTERNAL_API_KEY, overrides, True)
+        self.client.post(
+            self.customer_path("/internal/mto_shipments"),
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
         )
 
     @tag(MOVE_TASK_ORDER, "listMoves")
