@@ -260,7 +260,6 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             name="/internal/service_members/{serviceMemberId}",
             data=json.dumps(payload),
             headers={"content-type": "application/json"},
-            **self.user.cert_kwargs,
         )
 
         overrides = {"permission": "NONE"}
@@ -272,7 +271,6 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             name="/internal/service_members/{serviceMemberId}/backup_contacts",
             data=json.dumps(payload),
             headers={"content-type": "application/json"},
-            **self.user.cert_kwargs,
         )
 
     @tag(MOVE_TASK_ORDER, "listMoves")
