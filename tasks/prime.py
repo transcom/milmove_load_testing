@@ -282,7 +282,6 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             "issue_date": datetime.now().strftime("%Y-%m-%d"),
             "report_by_date": datetime.now().strftime("%Y-%m-%d"),
             "orders_type": "PERMANENT_CHANGE_OF_STATION",
-            "orders_type_detail": "HHG_PERMITTED",
             "has_dependents": False,
             "spouse_has_pro_gear": False,
             "new_duty_station_id": stations[1]["id"],
