@@ -8,7 +8,7 @@ from locustfiles.office import ServicesCounselorUser, TOOUser
 from locustfiles.prime import PrimeUser, SupportUser
 from locustfiles.prime_workflow import PrimeWorkflowUser
 from utils.auth import remove_certs, set_up_certs
-from utils.base import ImplementationError
+from utils.base import ImplementationError, MilMoveEnv
 
 
 ########################################################################
@@ -36,10 +36,17 @@ def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     :return: None
     """
     try:
-        set_up_certs(host=environment.host)
-    except ImplementationError as err:
+        milmove_env = MilMoveEnv(value=environment.host)
+    except ValueError as err:
         # For some reason exceptions don't stop the runner automatically, so we have to do it
         # ourselves.
+        runner.quit()
+
+        raise err
+
+    try:
+        set_up_certs(env=milmove_env)
+    except ImplementationError as err:
         runner.quit()
 
         raise err
@@ -55,7 +62,16 @@ def on_quitting(environment: Environment, **_kwargs):
     :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
     :return: None
     """
-    remove_certs(host=environment.host)
+    try:
+        milmove_env = MilMoveEnv(value=environment.host)
+    except ValueError as err:
+        # This should in theory never happen since a similar check is done on init, but just in
+        # case...
+        environment.runner.quit()
+
+        raise err
+
+    remove_certs(env=milmove_env)
 
 
 @events.init_command_line_parser.add_listener

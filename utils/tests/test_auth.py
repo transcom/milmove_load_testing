@@ -22,7 +22,7 @@ class TestSetUpCerts:
         cert_key_pem = tmp_path / DP3_CERT_KEY_PEM_FILENAME
 
         with mock.patch("utils.auth.DP3_CERT_KEY_PEM", str(cert_key_pem)):
-            set_up_certs(host=MilMoveEnv.LOCAL.value)
+            set_up_certs(env=MilMoveEnv.LOCAL)
 
             assert len(list(tmp_path.iterdir())) == 0
 
@@ -39,7 +39,7 @@ class TestSetUpCerts:
                 ImplementationError,
                 match="Cannot run load testing in a deployed environment without the matching certificate and key.",
             ):
-                set_up_certs(host=MilMoveEnv.DP3.value)
+                set_up_certs(env=MilMoveEnv.DP3)
 
             assert len(list(tmp_path.iterdir())) == 0
 
@@ -54,7 +54,7 @@ class TestSetUpCerts:
         cert_key_pem = tmp_path / DP3_CERT_KEY_PEM_FILENAME
 
         with mock.patch("utils.auth.DP3_CERT_KEY_PEM", str(cert_key_pem)):
-            set_up_certs(host=MilMoveEnv.DP3.value)
+            set_up_certs(env=MilMoveEnv.DP3)
 
             assert len(list(tmp_path.iterdir())) == 1
 
@@ -74,7 +74,7 @@ class TestRemoveCerts:
         cert_key_pem.touch()  # creating it just so that we can test that it won't get removed
 
         with mock.patch("utils.auth.DP3_CERT_KEY_PEM", cert_key_pem):
-            remove_certs(host=MilMoveEnv.LOCAL.value)
+            remove_certs(env=MilMoveEnv.LOCAL)
 
             assert len(list(tmp_path.iterdir())) == 1
             assert cert_key_pem.exists()
@@ -85,7 +85,7 @@ class TestRemoveCerts:
         cert_key_pem.touch()
 
         with mock.patch("utils.auth.DP3_CERT_KEY_PEM", cert_key_pem):
-            remove_certs(host=MilMoveEnv.DP3.value)
+            remove_certs(env=MilMoveEnv.DP3)
 
             assert len(list(tmp_path.iterdir())) == 0
 
@@ -97,7 +97,7 @@ class TestRemoveCerts:
         assert len(list(tmp_path.iterdir())) == 0
 
         with mock.patch("utils.auth.DP3_CERT_KEY_PEM", cert_key_pem):
-            remove_certs(host=MilMoveEnv.DP3.value)
+            remove_certs(env=MilMoveEnv.DP3)
 
             assert len(list(tmp_path.iterdir())) == 0
 

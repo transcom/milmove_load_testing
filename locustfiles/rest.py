@@ -69,15 +69,15 @@ def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     try:
         milmove_env = MilMoveEnv(value=environment.host)
     except ValueError as err:
+        # For some reason exceptions don't stop the runner automatically, so we have to do it
+        # ourselves.
         runner.quit()
 
         raise err
 
     try:
-        set_up_certs(host=environment.host)
+        set_up_certs(env=milmove_env)
     except ImplementationError as err:
-        # For some reason exceptions don't stop the runner automatically, so we have to do it
-        # ourselves.
         runner.quit()
 
         raise err
@@ -100,4 +100,13 @@ def on_quitting(environment: Environment, **_kwargs):
     :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
     :return: None
     """
-    remove_certs(host=environment.host)
+    try:
+        milmove_env = MilMoveEnv(value=environment.host)
+    except ValueError as err:
+        # This should in theory never happen since a similar check is done on init, but just in
+        # case...
+        environment.runner.quit()
+
+        raise err
+
+    remove_certs(env=milmove_env)
