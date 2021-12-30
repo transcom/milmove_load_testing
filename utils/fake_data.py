@@ -11,7 +11,7 @@ from faker.providers.date_time import Provider as DateProvider  # extends BasePr
 from faker.providers.address.en_US import Provider as AddressProvider  # extends BaseProvider
 import zipcodes
 
-from .constants import DataType, ZERO_UUID
+from utils.constants import DataType, STATIC_FILES, ZERO_UUID
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class MilMoveProvider(AddressProvider, DateProvider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        with open("static/fake_data.json") as f:
+        with open(STATIC_FILES / "fake_data.json") as f:
             self.safe_data = json.load(f)
 
         self.current_name = {"first_name": "", "last_name": ""}
