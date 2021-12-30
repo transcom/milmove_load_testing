@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """ utils/fake_data.py is for Faker classes and functions to set up test data """
-import logging
 import json
+import logging
 import random
 import string
 from datetime import datetime
 
-from faker import Faker
-from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
-from faker.providers.address.en_US import Provider as AddressProvider  # extends BaseProvider
 import zipcodes
+from faker import Faker
+from faker.providers.address.en_US import Provider as AddressProvider  # extends BaseProvider
+from faker.providers.date_time import Provider as DateProvider  # extends BaseProvider
 
 from utils.constants import DataType, STATIC_FILES, ZERO_UUID
 

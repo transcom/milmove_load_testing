@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from random import randint
 from typing import List
 
-from .constants import ARRAY_MAX, ARRAY_MIN, DataType
+from utils.constants import ARRAY_MAX, ARRAY_MIN, DataType
 
 logger = logging.getLogger(__name__)
 

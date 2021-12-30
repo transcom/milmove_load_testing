@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-""" Tests tasks/prime.py """
+"""
+Tests tasks/prime.py
+"""
 import pytest
-
 import responses
 from requests import Session
 
 from tasks.prime import PrimeDataStorageMixin, support_path
-from utils.constants import MOVE_TASK_ORDER, MTO_SHIPMENT, MTO_SERVICE_ITEM, PAYMENT_REQUEST, ZERO_UUID
+from utils.constants import MOVE_TASK_ORDER, MTO_SERVICE_ITEM, MTO_SHIPMENT, PAYMENT_REQUEST, ZERO_UUID
 
 
 class TestPrimeDataStorageMixin:

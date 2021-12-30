@@ -3,7 +3,7 @@ import logging
 
 from locust import tag, task
 
-from .prime import PrimeTasks, SupportTasks
+from tasks.prime import PrimeTasks, SupportTasks
 from utils.constants import MOVE_TASK_ORDER
 
 logger = logging.getLogger(__name__)

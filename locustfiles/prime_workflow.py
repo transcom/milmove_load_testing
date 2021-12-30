@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from locust import HttpUser, between
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain
-from tasks.prime_hhg_workflow import PrimeWorkflowTasks
 from tasks.prime_endpoint_workflows import PrimeEndpointWorkflowsTasks
+from tasks.prime_hhg_workflow import PrimeWorkflowTasks
+from utils.hosts import MilMoveDomain, MilMoveHostMixin
 
 
 class PrimeWorkflowUser(MilMoveHostMixin, HttpUser):

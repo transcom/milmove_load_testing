@@ -8,7 +8,6 @@ import os
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM
 
-
 logger = logging.getLogger(__name__)
 
 

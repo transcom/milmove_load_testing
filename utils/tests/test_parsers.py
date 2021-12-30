@@ -9,7 +9,7 @@ from utils.constants import ARRAY_MAX, ARRAY_MIN, DataType, STATIC_FILES
 from utils.fake_data import MilMoveData
 from utils.fields import APIEndpointBody, ArrayField, BaseAPIField, EnumField, ObjectField
 from utils.parsers import APIParser, PrimeAPIParser
-from .params_parsers import *
+from utils.tests.params_parsers import *
 
 
 class TestAPIParser:

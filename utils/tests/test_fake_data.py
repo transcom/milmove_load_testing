@@ -8,7 +8,7 @@ from faker import Faker
 from faker.generator import Generator
 
 from utils.constants import DataType
-from utils.fake_data import MilMoveProvider, MilMoveData
+from utils.fake_data import MilMoveData, MilMoveProvider
 
 
 class TestMilMoveProvider:
