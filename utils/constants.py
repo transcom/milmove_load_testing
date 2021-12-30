@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """ utils/constants.py is for constant values useful throughout the codebase. """
+from enum import Enum
 from pathlib import Path
-
-from .base import ValueEnum
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_FILES = BASE_DIR / "static"
@@ -37,7 +36,7 @@ PAYMENT_REQUEST = "paymentRequest"
 QUEUES = "queues"
 
 
-class DataType(ValueEnum):
+class DataType(Enum):
     """
     Swagger data types that we expect to deal with. The latest pattern uses camelCase, while the older pattern uses snake_case.
     """

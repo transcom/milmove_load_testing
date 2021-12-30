@@ -8,7 +8,7 @@ from locust.env import Environment, RunnerType
 
 from tasks.prime import get_prime_moves
 from utils.auth import remove_certs, set_up_certs
-from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_milmove_env
+from utils.base import ImplementationError, MilMoveEnv
 from utils.constants import MOVE_TASK_ORDER
 from utils.request import MilMoveRequestPreparer
 from utils.rest import RestResponseContextManager
@@ -67,17 +67,17 @@ def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     :return: None
     """
     try:
-        set_up_certs(host=environment.host)
-    except ImplementationError as err:
-        # For some reason exceptions don't stop the runner automatically, so we have to do it
-        # ourselves.
+        milmove_env = MilMoveEnv(value=environment.host)
+    except ValueError as err:
         runner.quit()
 
         raise err
 
     try:
-        milmove_env = convert_host_string_to_milmove_env(host=environment.host)
+        set_up_certs(host=environment.host)
     except ImplementationError as err:
+        # For some reason exceptions don't stop the runner automatically, so we have to do it
+        # ourselves.
         runner.quit()
 
         raise err

@@ -11,7 +11,7 @@ from typing import Union
 
 from locust import User
 
-from utils.base import ImplementationError, MilMoveEnv, convert_host_string_to_milmove_env, is_local
+from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 from utils.rest import get_json_headers
 
@@ -239,7 +239,7 @@ class MilMoveRequestMixin:
         """
         Sets the env attribute for the class. Takes in a string and sets the MilMoveEnv in self.env.
         """
-        self.env = convert_host_string_to_milmove_env(host=self.host)
+        self.env = MilMoveEnv(value=self.host)
 
     def set_up_request_preparer(self: Union[User, "MilMoveRequestMixin"]) -> None:
         """

@@ -332,16 +332,18 @@ class APIParser:
         :return: BaseAPIField or None
         """
         data_type = None
-        if DataType.validate(field_type):
-            data_type = DataType.match(field_type)
 
-        elif DataType.validate(name):  # the field name itself indicates one of our handled data types
-            data_type = DataType.match(name)
+        # Try with field type first, then try other things. The field name itself indicates one
+        # of our handled data types while the format might also tell us which type to use.
+        for value_to_match in (field_type, name, field_format):
+            try:
+                data_type = DataType(value=value_to_match)
+            except ValueError:
+                continue
+            else:
+                break
 
-        elif DataType.validate(field_format):  # the format might also tell us which type to use
-            data_type = DataType.match(field_format)
-
-        elif field_type == "string":
+        if data_type is None and field_type == "string":
             data_type = self._approximate_str_type(name)
 
         if data_type:

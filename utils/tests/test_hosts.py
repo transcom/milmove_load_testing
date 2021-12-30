@@ -15,25 +15,25 @@ class TestMilMoveDomain:
 
     def test_host_name(self):
         assert (
-            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="local", port=1111, protocol="http")
+            MilMoveDomain(MilMoveDomain.PRIME).host_name(env="local", port=1111, protocol="http")
             == "http://primelocal:1111"
         )
 
         assert (
-            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="dp3", deployed_subdomain="api")
+            MilMoveDomain(MilMoveDomain.PRIME).host_name(env="dp3", deployed_subdomain="api")
             == "https://api.loadtest.dp3.us"
         )
 
         assert (
-            MilMoveDomain.match(MilMoveDomain.OFFICE).host_name(env="dp3", deployed_subdomain="office")
+            MilMoveDomain(MilMoveDomain.OFFICE).host_name(env="dp3", deployed_subdomain="office")
             == "https://office.loadtest.dp3.us"
         )
 
         with pytest.raises(ImplementationError):
-            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="local", port=11111)
+            MilMoveDomain(MilMoveDomain.PRIME).host_name(env="local", port=11111)
 
-        with pytest.raises(ImplementationError):
-            MilMoveDomain.match(MilMoveDomain.PRIME).host_name(env="test")
+        with pytest.raises(ValueError):
+            MilMoveDomain(MilMoveDomain.PRIME).host_name(env="test")
 
 
 class TestMilMoveHostMixin:
@@ -73,7 +73,7 @@ class TestMilMoveHostMixin:
     def test_invalid_set_milmove_env(self):
         self.HostUserClass.env = None
 
-        with pytest.raises(ImplementationError):
+        with pytest.raises(ValueError):
             self.TestUser1.set_milmove_env("test")
 
     def test_set_host_name(self):

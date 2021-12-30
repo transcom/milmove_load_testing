@@ -3,6 +3,7 @@
 import logging
 import os
 from copy import deepcopy
+from enum import Enum
 from typing import Optional, Union
 
 from locust import User
@@ -10,8 +11,6 @@ from locust import User
 from utils.base import (
     ImplementationError,
     MilMoveEnv,
-    ValueEnum,
-    convert_host_string_to_milmove_env,
     is_local,
 )
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
@@ -19,7 +18,7 @@ from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 logger = logging.getLogger(__name__)
 
 
-class MilMoveDomain(ValueEnum):
+class MilMoveDomain(Enum):
     PRIME = "prime"
     OFFICE = "office"
     MILMOVE = "milmove"
@@ -48,10 +47,9 @@ class MilMoveDomain(ValueEnum):
         if isinstance(env, MilMoveEnv):
             env = env.value  # ensure that we're using the value string instead of the Enum literal
 
-        if env not in MilMoveEnv.values():
-            raise ImplementationError("The environment for determining the host name must be included in MilMoveEnv.")
+        milmove_env = MilMoveEnv(value=env)
 
-        if env == MilMoveEnv.LOCAL.value:
+        if milmove_env == MilMoveEnv.LOCAL:
             port = str(port)  # just in case an int was passed in
             if not port.isdigit() or len(port) != 4:
                 raise ImplementationError("The local port must be a string of 4 digits.")
@@ -101,8 +99,11 @@ class MilMoveHostMixin:
         """
         # Check if the host value is one of our accepted environments. If not, we'll continue with the host entered
         # as-is and skip the rest of the custom setup.
-        if MilMoveEnv.validate(self.host):
+        try:
             type(self).set_milmove_env(self.host)
+        except ValueError:
+            pass
+        else:
             type(self).host = None
             type(self).set_host_name()
             type(self).set_cert_kwargs()
@@ -118,7 +119,7 @@ class MilMoveHostMixin:
         if cls.env:
             return
 
-        cls.env = convert_host_string_to_milmove_env(host=env)
+        cls.env = MilMoveEnv(value=env)
 
     @classmethod
     def set_host_name(cls: Union[User, "MilMoveHostMixin"]):
@@ -133,7 +134,7 @@ class MilMoveHostMixin:
             return
 
         try:
-            cls.host = MilMoveDomain.match(cls.domain).host_name(
+            cls.host = MilMoveDomain(cls.domain).host_name(
                 env=cls.env.value,
                 port=cls.local_port,
                 protocol=cls.local_protocol,
