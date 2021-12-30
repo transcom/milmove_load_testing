@@ -62,3 +62,8 @@ class JSONArray(Protocol):
 
 
 JSONType = Union[JSONValue, JSONObject, JSONArray]
+
+# We have a custom enum class, ValueEnum. Type hinting the values of enums is hard, especially
+# at a parent class level. To help with that, we'll have this type hint that can be updated if
+# needed. As of this writing (2021-12-30), it's valid.
+ValueEnumValueType = str

@@ -5,7 +5,9 @@ This file is for generic utilities or helpers that don't merit having their own 
 
 import logging
 from enum import Enum
+from typing import Union
 
+from utils.types import ValueEnumValueType
 
 logger = logging.getLogger(__name__)
 
@@ -15,21 +17,50 @@ class ImplementationError(Exception):
 
 
 class ValueEnum(Enum):
+    """
+    Enum with some extra methods to allow validating values and other helpers.
+    """
+
     @classmethod
-    def values(cls):
+    def values(cls) -> list[ValueEnumValueType]:
+        """
+        Returns the values of all the enum members.
+
+        :return: list of enum member values
+        """
         return [c.value for c in cls]
 
     @classmethod
-    def names(cls):
+    def names(cls) -> list[str]:
+        """
+        Returns the names of all enum members
+
+        :return: list of enum member names
+        """
         return [c.name for c in cls]
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls, value: Union["ValueEnum", ValueEnumValueType]) -> bool:
+        """
+        Determines if the value passed in is either a member of the enum, or if it is the value of
+        one of the members.
+
+        :param value: value to check
+        :return: boolean indicating if the value passed in is a valid member or member value.
+        """
         return isinstance(value, cls) or value in cls.values()
 
     @classmethod
-    def match(cls, value):
-        """Returns the first literal that matches the value - throws an IndexError if not found."""
+    def match(cls, value: Union["ValueEnum", ValueEnumValueType]) -> "ValueEnum":
+        """
+        Returns the first enum member that matches the input value. Will check if it is an enum
+        member already, or if it matches an enum member value.
+
+        Throws an IndexError if not found.
+
+        :param value: value to check
+        :return: matching enum member
+        """
         return [c for c in cls if c == value or c.value == value][0]
 
 
