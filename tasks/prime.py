@@ -922,7 +922,7 @@ class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
 
         payload = fake_data_generator.generate_fake_request_data(
             api_key=APIKey.SUPPORT,
-            path="/mto-service-items/{mtoServiceItemID}/status<",
+            path="/mto-service-items/{mtoServiceItemID}/status",
             method="patch",
             overrides=overrides,
         )
