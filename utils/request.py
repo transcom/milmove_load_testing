@@ -6,7 +6,6 @@ url-forming functions.
 import os
 from copy import deepcopy
 from dataclasses import dataclass
-from enum import Enum
 from typing import Union
 
 from locust import User
@@ -14,8 +13,7 @@ from locust import User
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 from utils.rest import get_json_headers
-
-RequestKwargsType = dict[str, Union[str, bool, tuple[str], dict[str, str]]]
+from utils.types import RequestKwargsType
 
 
 @dataclass
@@ -65,7 +63,7 @@ class MilMoveRequestPreparer:
         :param deployed_subdomain: subdomain to target when deployed, e.g. "api" or "my".
         :param local_port: Port to use when running locally.
         :param local_protocol: local protocol to run against, e.g. "https"
-        :param local_subdomain: subdomain to target when running locally, e.g. MilMoveSubdomain.PRIME.
+        :param local_subdomain: subdomain to target when running locally, e.g. "primelocal"
         :return: base domain to use for requests, e.g. https://api.loadtest.dp3.us
         """
         if base_domain := os.getenv("BASE_DOMAIN"):
@@ -201,16 +199,6 @@ class MilMoveRequestPreparer:
         kwargs = self.get_request_kwargs(certs_required=True)
 
         return url, kwargs
-
-
-class MilMoveSubdomain(Enum):
-    """
-    Valid subdomains
-    """
-
-    PRIME = "prime"
-    OFFICE = "office"
-    MILMOVE = "milmove"
 
 
 class MilMoveRequestMixin:

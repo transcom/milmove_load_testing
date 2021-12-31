@@ -62,3 +62,5 @@ class JSONArray(Protocol):
 
 
 JSONType = Union[JSONValue, JSONObject, JSONArray]
+
+RequestKwargsType = dict[str, Union[str, bool, tuple[str], dict[str, str]]]
