@@ -5,9 +5,16 @@ Tests for utils/rest.py
 import json
 from json import JSONDecodeError
 from typing import NoReturn, Optional
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
-from utils.rest import format_failure_msg_from_exception, get_json_headers, parse_response_json
+import pytest
+
+from utils.rest import (
+    RestMixin,
+    format_failure_msg_from_exception,
+    get_json_headers,
+    parse_response_json,
+)
 from utils.types import ExceptionType
 
 
@@ -168,3 +175,101 @@ class TestFormatTraceBackToErrorMessage:
         formatted_message = format_failure_msg_from_exception(exc=exc, response_text=response_text)
 
         assert response_text in formatted_message
+
+
+@pytest.fixture()
+def rest_user() -> RestMixin:
+    """
+    Creates a RestMixin with a mocked out client attr to mimic if we'd actually used the mixin
+    with a User class.
+
+    :return: initialized mixin
+    """
+    user = RestMixin()
+
+    # We only really need to mock out client to be on our way.
+    user.client = MagicMock()
+
+    yield user
+
+    user.client.reset_mock()
+
+
+class TestRestMixin:
+    """
+    Tests for RestMixin
+    """
+
+    def test_inserts_expected_kwargs_into_request(self, rest_user: RestMixin) -> None:
+        # In particular, expecting the catch_response=True, and the JSON headers.
+
+        request_method = "GET"
+        fake_url = "https://localhost:8080"
+
+        expected_headers = get_json_headers()
+
+        with rest_user.rest(method=request_method, url=fake_url):
+            rest_user.client.request.assert_called_once_with(
+                request_method, fake_url, catch_response=True, headers=expected_headers
+            )
+
+    def test_will_not_override_custom_headers(self, rest_user: RestMixin) -> None:
+        request_method = "GET"
+        fake_url = "https://localhost:8080"
+
+        expected_headers = {"Content-Type": "multipart/form-data"}
+
+        with rest_user.rest(method=request_method, url=fake_url, headers=expected_headers):
+            rest_user.client.request.assert_called_once_with(
+                request_method, fake_url, catch_response=True, headers=expected_headers
+            )
+
+    @patch("utils.rest.parse_response_json", autospec=True)
+    def test_parses_response_json(self, mock_parse_response_json: MagicMock, rest_user: RestMixin) -> None:
+        mock_parse_response_json.return_value = ({}, "")
+
+        with rest_user.rest(method="GET", url="https://localhost:8080") as resp:
+            resp: MagicMock
+
+            mock_parse_response_json.assert_called_once_with(response=resp)
+
+            assert resp.js == mock_parse_response_json.return_value
+
+    @patch("utils.rest.parse_response_json", autospec=True)
+    def test_if_there_is_an_error_parsing_response_json_then_marks_response_as_failure(
+        self, mock_parse_response_json: MagicMock, rest_user: RestMixin
+    ) -> None:
+        error_msg = "Invalid JSON!"
+
+        mock_parse_response_json.return_value = ({}, error_msg)
+
+        with rest_user.rest(method="GET", url="https://localhost:8080") as resp:
+            resp: MagicMock
+
+            mock_parse_response_json.assert_called_once_with(response=resp)
+
+            assert resp.js is None
+            resp.failure.assert_called_once_with(error_msg)
+
+    @patch("utils.rest.parse_response_json", autospec=True)
+    @patch("utils.rest.format_failure_msg_from_exception", autospec=True)
+    def test_if_exception_is_raised_in_context_manager_then_response_is_failed(
+        self, mock_failure_format_func: MagicMock, mock_parse_response_json: MagicMock, rest_user: RestMixin
+    ) -> None:
+        exception = Exception("Something broke!")
+
+        mock_parse_response_json.return_value = ({}, "")
+
+        mock_resp: MagicMock
+
+        with rest_user.rest(method="GET", url="https://localhost:8080") as resp:
+            resp: MagicMock
+
+            # This is an easy way to access this mock later. Otherwise, we would have to dig in to
+            # the call stack, e.g. rest_user.client.request.return_value (and a few more levels).
+            mock_resp = resp
+
+            raise exception
+
+        mock_failure_format_func.assert_called_once_with(exc=exception, response_text=mock_resp.text)
+        mock_resp.failure.assert_called_once_with(mock_failure_format_func.return_value)
