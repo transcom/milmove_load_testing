@@ -23,19 +23,20 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
   * [License Information](#license-information)
   * [Table of Contents](#table-of-contents)
   * [Overview](#overview)
+  * [Project Directories](#project-directories)
+    * [ecs/](#ecs)
     * [locustfiles/](#locustfiles)
+    * [scripts](#scripts)
+    * [static/](#static)
     * [tasks/](#tasks)
     * [utils/](#utils)
-    * [static/](#static)
-    * [ecs](#ecs)
-    * [scripts](#scripts)
   * [Getting Started](#getting-started)
     * [Base Installation](#base-installation)
       * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
       * [Setup: Nix](#setup-nix)
-    * [Installing Python Dependencies and Pre-commit Hooks](#installing-python-dependencies-and-pre-commit-hooks)
+        * [Nix: Dependency Updates](#nix-dependency-updates)
+        * [Nix: Disabling Nix](#nix-disabling-nix)
     * [Unsupported Setup](#unsupported-setup)
-      * [Alternative Setup: Docker](#alternative-setup-docker)
     * [Troubleshooting](#troubleshooting)
     * [Testing](#testing)
   * [Running Load Tests](#running-load-tests)
@@ -43,7 +44,6 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Setting up Tests in AWS](#setting-up-tests-in-aws)
     * [Running preset tests](#running-preset-tests)
     * [Running custom tests](#running-custom-tests)
-    * [Running Tests for Reporting](#running-tests-for-reporting)
   * [Adding Load Tests](#adding-load-tests)
     * [Starting from scratch](#starting-from-scratch)
     * [Creating TaskSets](#creating-tasksets)
@@ -60,7 +60,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Metrics](#metrics)
   * [References](#references)
 
-<!-- Added by: pearl, at: Tue Dec  7 10:03:58 EST 2021 -->
+<!-- Added by: felipe, at: Mon Jan  3 12:48:44 PST 2022 -->
 
 <!--te-->
 <!-- markdownlint-restore -->
@@ -144,21 +144,29 @@ that section.
 
 #### Setup: Pyenv and Pipenv
 
-When setting up for the first time, before you run `direnv allow`, run
+1. When setting up for the first time, before you run `direnv allow`, run
 
-  ```shell
-  make install_tools
-  ```
+    ```shell
+    make install_tools
+    ```
 
-This will install `pyenv` and `pipenv` along with other tools like `pre-commit`. Now run
+    1. This will install `pyenv` and `pipenv` along with other tools like `pre-commit`.
 
-  ```shell
-  direnv allow
-  ```
+2. Restart your terminal.
+3. Now run
 
-This should install the dependencies via `pipenv` automatically.
+    ```shell
+    direnv allow
+    ```
 
-If the base dependencies change, you can always re-run this command.
+   1. This should install the dependencies via `pipenv` automatically.
+   2. If the base dependencies change, you can always re-run this command.
+
+4. Install `pre-commit` hooks:
+
+    ```shell
+    make ensure_pre_commit
+    ```
 
 #### Setup: Nix
 
@@ -169,10 +177,31 @@ If you need help with this setup, you can ask for help in the
    [Truss Engineering Playbook](https://github.com/trussworks/Engineering-Playbook/tree/main/developing/nix)
    .
 2. Follow the installation instructions in the playbook.
-3. Ensure you have `direnv` and a modern `bash` installed. To install globally with nix,
-   run `nix-env -i direnv bash`
-4. Ensure you have run `direnv allow` to set up the appropriate nix environment variables.
-5. Run `./nix/update.sh`
+3. Ensure you have `direnv` and a modern `bash` installed. To install globally with nix, run:
+
+    ```shell
+    nix-env -i direnv bash
+    ```
+
+4. To set up the appropriate nix environment variables run:
+
+    ```shell
+    direnv allow
+    ```
+
+5. Run
+
+    ```shell
+    ./nix/update.sh
+    ```
+
+6. Install `pre-commit` hooks:
+
+    ```shell
+    make ensure_pre_commit
+    ```
+
+##### Nix: Dependency Updates
 
 If the nix dependencies change, you should see a warning from direnv:
 
@@ -180,21 +209,10 @@ If the nix dependencies change, you should see a warning from direnv:
 direnv: WARNING: nix packages out of date. Run nix/update.sh
 ```
 
+##### Nix: Disabling Nix
+
 Note that if you would like to disable `nix` for this repo, you can do so by creating
 a `.nix-disable` file at the top level of this repo and reload your shell.
-
-### Installing Python Dependencies and Pre-commit Hooks
-
-* Run
-
-  ```shell script
-  make setup
-  ```
-
-  This will install all the `python` dependencies in `requirements.txt` and `requirements-dev.txt`.
-  It will also install the `pre-commit` hooks.
-
-*Note: The requirements are indicated in the `Pipfile`.
 
 ### Unsupported Setup
 
