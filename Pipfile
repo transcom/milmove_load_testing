@@ -12,7 +12,7 @@ zipcodes = "*"
 
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
-black = "==21.10b0"
+black = "==21.12b0"
 flake8 = "*"
 pytest = "*"
 pytest-mock = "*"
