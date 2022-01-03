@@ -1,9 +1,8 @@
 # MilMove Load Testing
 
-This repository contains code written to run load testing for
-the [MilMove](https://github.com/transcom/mymove)
-application. Load testing is accomplished via the [Locust](https://docs.locust.io/en/stable/)
-framework.
+This repository contains code written to run load testing for the
+[MilMove](https://github.com/transcom/mymove) application. Load testing is accomplished via the
+[Locust](https://docs.locust.io/en/stable/) framework.
 
 ## License Information
 
@@ -69,48 +68,35 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
 ## Overview
 
 MilMove is a system to help service members (and other authorized personnel) move their gear and
-possessions from one place to another. This codebase has been written to perform load tests on the
-MilMove app for the purpose of gathering data about responses times, finding breakpoints, and
-assessing the overall health of the system.
+possessions from one place to another.
 
-### `locustfiles/`
+This codebase has been written to perform load tests on the MilMove app for the purpose of gathering
+data about responses times, finding breakpoints, and assessing the overall health of the system.
 
-[Locust](https://docs.locust.io/en/stable/) uses a python file called a "locustfile" as the base for
-running a load test. This directory contains all of the locustfiles for this repo. This file must
-contain at least one class definition that inherits from the locust `User` class. Locust will
-dynamically create instances of these `User` classes to simulate the request load desired.
+## Project Directories
 
-Each of these files can be thought of as a different test case for the system, although locust also
-provides a number of
-[config options](https://docs.locust.io/en/stable/configuration.html) to allow you to manipulate
-which users and/or tasks run from any given locustfile.
+This section covers some high-level notes for some directories included in this repo.
 
-### `tasks/`
-
-Each `User` class needs a set of tasks to complete to be able to run a load test. All tasks are
-callables that can be manually set into the `tasks` attribute of the user, or they can be organized
-into instances of the locust class
-`TaskSet` and then associated with a user. This directory contains all of the tasks used in our load
-tests.
-
-To read more about users and tasks and how they interact, refer
-to [Writing a locustfile](https://docs.locust.io/en/stable/writing-a-locustfile.html).
-
-### `utils/`
-
-This directory contains python code and utilities that are do not rely on the locust package. Mixin
-classes and constants are located here.
-
-### `static/`
-
-This folder is for static files (certificates, PDFs, etc.) that will be used during load testing.
-
-### `ecs`
+### `ecs/`
 
 This directory contains a representation of the task definition for running the docker container in
 AWS. To make changes to the task definition will require changing the terraform in
 `transcom/transcom-infrasec-gov-nonato/transcom-gov-dev/app-dev/loadtesting.tf`. This file is
 updated manually to reflect the current state.
+
+### `locustfiles/`
+
+[Locust](https://docs.locust.io/en/stable/) uses a python file called a "locustfile" as the base for
+running a load test. This directory contains all locustfiles for this repo. This file must contain
+at least one class definition that inherits from a locust `User` class (or more likely a subclass).
+Locust will dynamically create instances of these `User` classes to simulate the request load
+desired.
+
+Each of these files can be thought of as a different test case for the system, although locust also
+provides a number of [config options](https://docs.locust.io/en/stable/configuration.html) to allow
+you to manipulate which users and/or tasks run from any given locustfile.
+
+In particular, our `locustfiles/all.py` combines all our `User` classes into a single run.
 
 ### `scripts`
 
@@ -122,6 +108,29 @@ at [http://localhost:4000](http://localhost:4000).
 service. It builds a new docker image and publishes it to ECR so the service can pull down the new
 image. It also controls updating the service if there is a new task definition from updating the
 Terraform code.
+
+`install_tools` - This script is used in the local set up for this repository if you aren't using
+`nix`.
+
+### `static/`
+
+This folder is for static files (certificates, PDFs, etc.) that will be used during load testing.
+
+### `tasks/`
+
+Each `User` class needs a set of tasks to complete to be able to run a load test. All tasks are
+callables that can be manually set into the `tasks` attribute of the user, or they can be organized
+into instances of the locust class `TaskSet` and then associated with a user. This directory
+contains all the tasks used in our load tests.
+
+To read more about users and tasks and how they interact, refer
+to [Writing a locustfile](https://docs.locust.io/en/stable/writing-a-locustfile.html).
+
+### `utils/`
+
+This directory contains python code and utilities that help us run our load tests. For example, the
+code we use to manage authenticating to the Prime API. Mixin classes, helper functions, and
+constants are located here.
 
 ## Getting Started
 
