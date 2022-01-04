@@ -7,7 +7,7 @@ from copy import deepcopy
 from unittest.mock import MagicMock, patch
 
 import pytest
-from locust import HttpUser
+from locust import TaskSet
 
 from utils.base import ImplementationError, MilMoveEnv
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
@@ -258,22 +258,24 @@ class TestMilMoveRequestMixin:
         ),
     )
     def test_sets_milmove_env_on_init(self, user_host: str, env: MilMoveEnv) -> None:
-        mock_locust_env = MagicMock()  # All users need to be initialized with an environment.
+        # All task sets need to be initialized with a parent (user or another task set).
+        mock_user = MagicMock()
+        mock_user.host = user_host
 
-        class SampleUser(MilMoveRequestMixin, HttpUser):
+        class SampleTaskSet(MilMoveRequestMixin, TaskSet):
             """
             User to use for unit tests
             """
 
-            host = user_host  # Need to manually set here since it would normally be set by the CLI.
+            user = mock_user
 
-        assert not hasattr(SampleUser, "env")
+        assert not hasattr(SampleTaskSet, "env")
 
-        user = SampleUser(environment=mock_locust_env)
+        task_set = SampleTaskSet(parent=mock_user)
 
-        assert hasattr(user, "env")
+        assert hasattr(task_set, "env")
 
-        assert user.env == env
+        assert task_set.env == env
 
     @pytest.mark.parametrize(
         "user_host,env",
@@ -283,18 +285,20 @@ class TestMilMoveRequestMixin:
         ),
     )
     def test_sets_up_request_preparer_on_init(self, user_host: str, env: MilMoveEnv) -> None:
-        mock_locust_env = MagicMock()  # All users need to be initialized with an environment.
+        # All task sets need to be initialized with a parent (user or another task set).
+        mock_user = MagicMock()
+        mock_user.host = user_host
 
-        class SampleUser(MilMoveRequestMixin, HttpUser):
+        class SampleTaskSet(MilMoveRequestMixin, TaskSet):
             """
             User to use for unit tests
             """
 
-            host = user_host  # Need to manually set here since it would normally be set by the CLI.
+            user = mock_user
 
-        assert not hasattr(SampleUser, "request_preparer")
+        assert not hasattr(SampleTaskSet, "request_preparer")
 
-        user = SampleUser(environment=mock_locust_env)
+        user = SampleTaskSet(parent=mock_user)
 
         assert hasattr(user, "request_preparer")
 

@@ -8,7 +8,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Union
 
-from locust import User
+from locust import TaskSet
 
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
@@ -203,8 +203,8 @@ class MilMoveRequestPreparer:
 
 class MilMoveRequestMixin:
     """
-    Mixin for a Locust User class/subclass that provides helper functions to form urls based on the
-    host (as passed in the --host flag) and .
+    Mixin for a Locust TaskSet class/subclass that provides access to a helper for forming request
+    URLs and preparing request kwargs.
     """
 
     # The environment the host is running in (ex. locally or deployed).
@@ -213,7 +213,7 @@ class MilMoveRequestMixin:
 
     request_preparer: MilMoveRequestPreparer
 
-    def __init__(self: Union[User, "MilMoveRequestMixin"], *args, **kwargs) -> None:
+    def __init__(self: Union[TaskSet, "MilMoveRequestMixin"], *args, **kwargs) -> None:
         """
         Sets up the env based on value from the --host flag. Note that the `self.host` value is set
         on the class from the command line flag BEFORE initialization.
@@ -223,13 +223,13 @@ class MilMoveRequestMixin:
 
         super().__init__(*args, **kwargs)
 
-    def set_milmove_env(self: Union[User, "MilMoveRequestMixin"]) -> None:
+    def set_milmove_env(self: Union[TaskSet, "MilMoveRequestMixin"]) -> None:
         """
         Sets the env attribute for the class. Takes in a string and sets the MilMoveEnv in self.env.
         """
-        self.env = MilMoveEnv(value=self.host)
+        self.env = MilMoveEnv(value=self.user.host)
 
-    def set_up_request_preparer(self: Union[User, "MilMoveRequestMixin"]) -> None:
+    def set_up_request_preparer(self: Union[TaskSet, "MilMoveRequestMixin"]) -> None:
         """
         Sets up a URL creator that can be used later to form proper endpoint URLs
         """
