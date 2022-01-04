@@ -7,7 +7,8 @@ from typing import Dict, Set
 
 from locust import tag, task
 
-from tasks.base import LoginTaskSet, check_response
+from tasks.base import check_response
+from utils.task import LoginTaskSet
 from utils.constants import (
     CUSTOMER,
     MOVE,

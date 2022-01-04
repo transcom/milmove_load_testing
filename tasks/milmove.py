@@ -5,7 +5,8 @@ import logging
 
 from locust import task
 
-from tasks.base import LoginTaskSet
+from utils.task import LoginTaskSet
+
 
 logger = logging.getLogger(__name__)
 
