@@ -530,13 +530,16 @@ class MyUser(HttpUser):
 
 You will need to specify what tasks this user should run. This can be done via a `tasks` attribute
 on the class or defining tasks directly on the user class. In our repo, we primarily use the `tasks`
-attribute and pass it task sets. Later section will show this more.
+attribute and pass it task sets. The next section will show examples of this.
 
 ### Creating TaskSets
 
 Tasks are distinct functions, or callables, that tell Locust what to do during load testing. A task
-is, in essence, a load test. `TaskSet` classes are a clean way to link tasks together and keep the
-code organized.
+is, in essence, a load test. `TaskSet` classes are a way to link tasks together and keep the code
+organized. It is possible for a user class to have more than one task set, but it's important to
+keep in mind is that if a user has more than one task set, they will only ever switch between the
+task sets if you remember to have the task set stop at some point. Otherwise, the user will just
+stay stuck on their first task set until the load tests end. Examples will be included below.
 
 Task sets and functions should all be defined in python files in the `tasks/` directory. An
 example `TaskSet` for this project might be:
@@ -559,24 +562,21 @@ logger = logging.getLogger(__name__)
 
 # tags are useful to add at a TaskSet and task level to enable running only specific load tests.
 @tag('mainTasks')
-class MyTasks(RestTaskSet):
+class PrimeTasks(RestTaskSet):
   """
   Description of the flow for these tasks here.
   """
 
-  def on_start(self):
+  @task
+  def stop(self) -> None:
     """
-    Description of functionality that runs whenever the task set is initialized.
+    This ensures that at some point, the user will stop running the tasks in this task set.
     """
-    pass
-    # Set up tasks might go here, like:
-    # - logging in
-    # - grabbing cookies
-    # - setting shared headers
+    self.interrupt()
 
   @tag('doSomething')
   @task
-  def do_something(self):
+  def do_something(self) -> None:
     """
     Do a task! Tasks generally have three steps: Set-up, make a request, validate/log results
     """
@@ -585,6 +585,8 @@ class MyTasks(RestTaskSet):
 
     # Now make the request
     with self.rest(method="GET", url=moves_path, **request_kwargs) as resp:
+      # This will let our editors know that we expect `resp` to be an instance of
+      # `RestResponseContextManager`, which then lets it know what type hints to suggest below.
       resp: RestResponseContextManager
 
       # Lastly, validate the response and/or log any relevant info:
@@ -598,29 +600,40 @@ class MyTasks(RestTaskSet):
 ```
 
 Note that we are using the `RestTaskSet` as our parent class. It enables easier testing and more
-control over whether a load test should be considered a success or failure. The rest of the docs
-will assume you have used this as the parent class. Among the things it provides are the
-`self.request_preparer` object and `self.rest` context manager.
+control over whether a load test should be considered a success or failure. Among the things it
+provides are the `self.request_preparer` object and `self.rest` context manager.
 
 The `request_preparer` has several helper functions for preparing to make a request to the mymove
-server. They are `prep_ghc_request`, `prep_internal_request`, `prep_prime_request`, and
-`prep_support_request`. Each of these takes an endpoint, e.g. `moves` (like in the example above)
-and return a tuple containing the url to use (stored in `moves_path` above), and the keyword
-arguments (or kwargs) to pass to `self.rest`.
+server:
 
-The `rest` context manager makes it easier to work with responses by automatically parsing the
-response content into json and failing the load test if it can't be parsed. It also provides a
-variable you can use (called `resp` above) to mark the load test as a success (by calling
-`resp.success()`) or a failure (`resp.failure("message")` like at the end of the example). The last
-thing it provides is automatic catching of any exceptions that may be raised in your `with` block,
-which will then mark the load test as a failure and format an error message to display in the
-results.
+* `prep_ghc_request`
+* `prep_internal_request`
+* `prep_prime_request`
+* `prep_support_request`
+
+Each of these takes an endpoint, e.g. `/moves` (like in the example above) and return a tuple
+containing the url to use (stored in `moves_path` above), and the keyword arguments (or kwargs,
+called `request_kwargs` above) to pass to `self.rest`.
+
+The `rest` context manager makes it easier to work with responses by:
+
+* providing a variable you can use (called `resp` above) to mark the load test as a success (by
+  calling `resp.success()`) or a failure (`resp.failure("message")` like at the end of the example).
+* automatically parsing the response content into json and failing the load test if it can't be
+  parsed. The parsed json response content can be accessed in `resp.js`.
+* automatically catching of any exceptions that may be raised in your `with` block, which will then
+  mark the load test as a failure and format an error message to display in the results.
+
+Also note that we included a `stop` task that means at some point, that task will be selected and
+the task set will end, passing control back to the parent. In our case this means the user class,
+but locust does allow nested task sets, in which case it would give control back to the parent task
+set.
 
 For more details on `TaskSet`s, see the
 [locust TaskSet class docs](https://docs.locust.io/en/stable/tasksets.html).
 
-You can link a `User` class with a task set by passing the task set to the `User`'s
-`tasks` attribute like this:
+You can link a `User` class with a task set by passing the task set to the `User`'s `tasks`
+attribute like this:
 
 ```python
 # -*- coding: utf-8 -*-
@@ -645,50 +658,53 @@ class MyUser(HttpUser):
 The number next to the task set indicates its relative _weight_ - so in this example, tasks
 from `PrimeTasks` would be 5 times more likely than tasks from `SupportTasks`.
 
-[//]: # ( TODO: anything after here hasn't been updated yet)
-There are a couple of base `TaskSet` classes that you may also want to take advantage of:
+Another `TaskSet` class that you might find useful is the `LoginTaskSet`. It adds code for logging
+into the Office/GHC and Customer/Internal APIs. It also includes the `rest` context manager that the
+`RestTaskSet` provides, but does not have the `request_preparer` yet (hopefully a future update
+will include an update to have it).
 
-* `SequentialTaskSet` - Locust base class, asserts that all of the tasks in the `TaskSet` are
-  executed in the order in which they are defined (instead of randomly)
-
-* `LoginTaskSet` - in `tasks/base.py`, adds code for logging into the MilMove Office and MyMove
-  interfaces. To use it, you can add an `on_start` definition to your `TaskSet` like so:
+To use the `LoginTaskSet` login functionality, add an `on_start` definition to your task set like
+so:
 
 ```python
-class MyLoggedInTasks(LoginTaskSet):
+# -*- coding: utf-8 -*-
+"""
+Example of a task set using the LoginTaskSet functionality.
+"""
+from locust import task
 
-  def on_start(self):
+from utils.task import LoginTaskSet
+
+
+class MyLoggedInTasks(LoginTaskSet):
+  """
+  Tasks to run that require logging in to the office/ghc or customer/internal APIs.
+  """
+
+  def on_start(self) -> None:
     """
-    Creates a login right at the start of the TaskSet and stops task execution if the login fails.
+    Creates a login right at the start of the TaskSet and stops task execution if the login
+    fails.
     """
     super().on_start()  # sets the csrf token
 
     resp = self._create_login(user_type="my_user_type", session_token_name="my_token_name")
     if resp.status_code != 200:
-      self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
+      # if we didn't successfully log in, there's no point attempting the other tasks
+      self.interrupt()
+
+  @task
+  def stop(self) -> None:
+    """
+    This ensures that at some point, the user will stop running the tasks in this task set.
+    """
+    self.interrupt()
 ```
 
-* `CertTaskMixin` - in `tasks/base.py`, accounts for the use of a `cert_kwargs` attribute defined on
-  the `User`-level that can then be passed in as validation during the request. Ex:
+There are multiple other ways to organize and link tasks together, but using our `RestTaskSet` and
+`LoginTaskSet` classes is the main recommendation in this repo.
 
-Add this as an attribute to your user:
-
-```python
-# MyUser
-cert_kwargs = {'cert': ("path_to_my_cert", "path_to_my_key"), "verify": True}
-```
-
-Then in your task, write your request like so:
-
-```python
-# MyTasks.get_something
-self.client.get("/path", **self.user.cert_kwargs)
-```
-
-There are multiple other ways to organize and link tasks together, but using `TaskSet` classes is
-the main recommendation in this repo. If you need to do something different, however, Locust's
-documentation is a great place to get started:
-[https://docs.locust.io/en/stable/writing-a-locustfile.html#tasks](https://docs.locust.io/en/stable/writing-a-locustfile.html#tasks)
+[//]: # ( TODO: anything after here hasn't been updated yet)
 
 ### Adding tasks to existing load tests
 
