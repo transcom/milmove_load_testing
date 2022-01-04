@@ -3,32 +3,34 @@
 Example of a locustfile using the latest changes...
 TODO: This file should probably be deleted before merging...
 """
-from locust import between, events, tag, task
+from locust import HttpUser, between, events, tag, task
 from locust.env import Environment, RunnerType
 
 from tasks.prime import get_prime_moves
 from utils.auth import remove_certs, set_up_certs
-from utils.base import ImplementationError, MilMoveEnv
+from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import MOVE_TASK_ORDER
 from utils.request import MilMoveRequestPreparer
 from utils.rest import RestResponseContextManager
-from utils.users import RestHttpUser
+from utils.task import RestTaskSet
 
 
-class PrimeUser(RestHttpUser):
+class PrimeTaskSet(RestTaskSet):
     """
-    A user that can test the Prime API
+    Tasks to run
     """
-
-    # These are locust HttpUser attributes that help define and shape the load test:
-    wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds,
-    # accepts decimals and 0)
-    # tasks = {PrimeTasks: 1}  # the set of tasks to be executed and their relative weight
 
     @tag(MOVE_TASK_ORDER, "listMoves")
     @task
     def list_moves(self) -> None:
-        moves_path, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+        """
+        Lists moves...
+        """
+        moves_path, request_kwargs = self.user.request_preparer.prep_prime_request(endpoint="/moves")
+
+        if is_local(env=self.user.env):
+            # set a timeout of 15sec if we're running locally - just for this endpoint
+            request_kwargs["timeout"] = 15
 
         with self.rest(method="GET", url=moves_path, **request_kwargs) as resp:
             resp: RestResponseContextManager
@@ -37,6 +39,19 @@ class PrimeUser(RestHttpUser):
                 print(f"\n{resp.js[0]=}\n")
             else:
                 print("No moves found.")
+
+
+class PrimeUser(HttpUser):
+    """
+    A user that can test the Prime API
+    """
+
+    # These are locust HttpUser attributes that help define and shape the load test:
+
+    tasks = {PrimeTaskSet: 1}  # the set of tasks to be executed and their relative weight
+
+    # the time period to wait in between tasks (in seconds, accepts decimals and 0)
+    wait_time = between(0.25, 9)
 
 
 def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
