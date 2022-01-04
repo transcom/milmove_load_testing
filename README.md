@@ -39,13 +39,18 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
   * [Unit Tests](#unit-tests)
   * [Load Tests](#load-tests)
     * [Load Tests: Local Locust Setup](#load-tests-local-locust-setup)
-      * [Local Server Data](#local-server-data)
+      * [Setup to Run Locust Against A Local MyMove Server](#setup-to-run-locust-against-a-local-mymove-server)
+        * [Local Server Data](#local-server-data)
+      * [Setup to Run Locust Against The Load Test Env MyMove Server](#setup-to-run-locust-against-the-load-test-env-mymove-server)
     * [Load Tests: Running Locust Locally](#load-tests-running-locust-locally)
       * [Running Locust Command](#running-locust-command)
         * [Workflows](#workflows)
       * [Running Preset Load Tests](#running-preset-load-tests)
     * [Load Tests: Running Locust from AWS](#load-tests-running-locust-from-aws)
       * [Troubleshooting: Running Locust from AWS](#troubleshooting-running-locust-from-aws)
+    * [Load Tests: Load Test Environment](#load-tests-load-test-environment)
+      * [Metrics](#metrics)
+      * [Handling Rate Limiting](#handling-rate-limiting)
 * [Adding Load Tests](#adding-load-tests)
   * [Starting from scratch](#starting-from-scratch)
   * [Creating TaskSets](#creating-tasksets)
@@ -56,10 +61,6 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
   * [Deploying New Tests](#deploying-new-tests)
 * [Fake Data Generation](#fake-data-generation)
   * [Creating a custom parser](#creating-a-custom-parser)
-* [Load Testing against the AWS Loadtest Environment](#load-testing-against-the-aws-loadtest-environment)
-  * [Prime API](#prime-api)
-  * [Handling Rate Limiting](#handling-rate-limiting)
-  * [Metrics](#metrics)
 * [References](#references)
 
 <!-- Regenerate with "pre-commit run -a markdown-toc" -->
@@ -304,9 +305,10 @@ cover a decent amount of helpful information.
 
 #### Load Tests: Local Locust Setup
 
-You only need to do this section if you plan on running against a local mymove server. If you are
-going to run against the load test env mymove server, then you can skip to the
-[Running Locust Locally](#load-tests-running-locust-locally) section.
+This section covers the setup necessary to run `locust` locally. For info on running the load tests,
+see the [Running Locust Locally](#load-tests-running-locust-locally) section.
+
+##### Setup to Run Locust Against A Local MyMove Server
 
 You will need to check out and set up the [MilMove](https://github.com/transcom/mymove) project.
 
@@ -315,7 +317,7 @@ Follow the setup instructions in the mymove README, all the way through running 
 skip the `make client_run` step), unless you would like to be able to log in and look at data using
 the mymove UI.
 
-##### Local Server Data
+###### Local Server Data
 
 Our goal is to eventually have all the data we need set up by the load tests, but until that's done,
 you should populate the mymove server with data using this command (in the mymove repo directory):
@@ -323,6 +325,29 @@ you should populate the mymove server with data using this command (in the mymov
 ```shell
 make db_dev_e2e_populate  ## populates the development database with test data
 ```
+
+##### Setup to Run Locust Against The Load Test Env MyMove Server
+
+To load test against the Prime API in the load test environment, you will need to install and set
+up `direnv`, `chamber`, and `aws-vault`. If you have already set up these tools in order to run
+the `mymove` project, you do not need to repeat these steps. Otherwise, please follow the
+instructions in the `mymove` repo to complete this setup:
+
+* [Setup: AWS Services](https://github.com/transcom/mymove#setup-aws-services-optional)
+* [Setup: `direnv` and `chamber`](https://github.com/transcom/mymove#setup-direnv)
+
+Now run the following:
+
+```shell
+cp .envrc.chamber.template .envrc.chamber
+```
+
+```shell
+direnv allow
+```
+
+Once you have loaded the secrets from `chamber`, which will include the dp3 certificate and private
+key, you may run your load tests using `dp3` as the host value.
 
 #### Load Tests: Running Locust Locally
 
@@ -454,6 +479,27 @@ You may see the following errors:
     ```shell
     direnv allow
     ```
+
+#### Load Tests: Load Test Environment
+
+This section covers a few things that are different when running against the load test environment.
+
+##### Metrics
+
+To view metrics follow documentation for
+[Viewing OTel logs in Load Test Environment](https://dp3.atlassian.net/wiki/spaces/MT/pages/1520533505/Viewing+Otel+Logs+in+Load+Testing+Environment)
+
+##### Handling Rate Limiting
+
+Each environment is set to limit the number of requests from a single IP in a 5 minute period. The
+limit for the load testing environment is 20000. If this ever needs to be updated, work with
+infrastructure to modify the limit. The limit is set in
+[transcom-infrasec-gov-nonato/transcom-gov-milmove-loadtest/app-loadtest/main.tf](https://github.com/transcom/transcom-infrasec-gov-nonato/blob/main/transcom-gov-milmove-loadtest/app-loadtest/main.tf)
+by this code:
+
+```sh
+ waf_ip_rate_limit   = 20000
+```
 
 ## Adding Load Tests
 
@@ -782,41 +828,6 @@ parser = ghc_parser
 
 Instantiating it once at the beginning of the `locustfile` keeps the API from being reparsed over
 and over, saving you valuable processing time.
-
-## Load Testing against the AWS Loadtest Environment
-
-### Prime API
-
-To load test against the Prime API in the load test environment, you will need to install and set
-up `direnv`, `chamber`, and
-`aws-vault`. If you have already set up these tools in order to run the `mymove` project, you do not
-need to repeat these steps. Otherwise, please follow the instructions in the `mymove` repo to
-complete this setup:
-
-* [Setup: `direnv` and `chamber`](https://github.com/transcom/mymove#setup-direnv)
-* [Setup: AWS credentials and `aws-vault`](https://github.com/transcom/mymove#setup-aws-services-optional)
-
-Once you have loaded the secrets from `chamber`, which will include the dp3 certificate and private
-key, you may run your load tests using "dp3" as the host value. It is strongly recommended that you
-set up your `User` classes to subclass `MilMoveHostMixin` so that your TLS settings are
-automatically updated when you switch from "local" to "dp3"
-
-### Handling Rate Limiting
-
-Each environment is set to limit the number of requests from a single IP in a 5 minute period. The
-limit for the load testing environment is 2000. If this ever needs to be updated, work with
-infrastructure to modify the limit. The limit is set
-in [transcom-infrasec-gov-nonato/transcom-gov-milmove-loadtest/app-loadtest/main.tf](https://github.com/transcom/transcom-infrasec-gov-nonato/blob/main/transcom-gov-milmove-loadtest/app-loadtest/main.tf)
-by this code:
-
-```sh
- waf_ip_rate_limit   = 20000
-```
-
-### Metrics
-
-To view metrics follow documentation
-for [Viewing OTel logs in Load Test Environment](https://dp3.atlassian.net/wiki/spaces/MT/pages/1520533505/Viewing+Otel+Logs+in+Load+Testing+Environment)
 
 ## References
 
