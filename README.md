@@ -15,55 +15,56 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
 
 ## Table of Contents
 
-<!-- Uses gh-md-toc to generate Table of Contents: https://github.com/ekalinin/github-markdown-toc -->
-<!-- markdownlint-disable -->
-<!--ts-->
+<!-- Table of Contents auto-generated with a `pre-commit` hook, `markdown-toc` -->
 
-* [MilMove Load Testing](#milmove-load-testing)
-  * [License Information](#license-information)
-  * [Table of Contents](#table-of-contents)
-  * [Overview](#overview)
-  * [Project Directories](#project-directories)
-    * [ecs/](#ecs)
-    * [locustfiles/](#locustfiles)
-    * [scripts](#scripts)
-    * [static/](#static)
-    * [tasks/](#tasks)
-    * [utils/](#utils)
-  * [Getting Started](#getting-started)
-    * [Base Installation](#base-installation)
-      * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
-      * [Setup: Nix](#setup-nix)
-        * [Nix: Dependency Updates](#nix-dependency-updates)
-        * [Nix: Disabling Nix](#nix-disabling-nix)
-    * [Unsupported Setup](#unsupported-setup)
-    * [Troubleshooting](#troubleshooting)
-    * [Testing](#testing)
-  * [Running Load Tests](#running-load-tests)
-    * [Setting up the local environment](#setting-up-the-local-environment)
-    * [Setting up Tests in AWS](#setting-up-tests-in-aws)
-    * [Running preset tests](#running-preset-tests)
-    * [Running custom tests](#running-custom-tests)
-  * [Adding Load Tests](#adding-load-tests)
-    * [Starting from scratch](#starting-from-scratch)
-    * [Creating TaskSets](#creating-tasksets)
-    * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
-  * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
-    * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
-    * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
-    * [Deploying New Tests](#deploying-new-tests)
-  * [Fake Data Generation](#fake-data-generation)
-    * [Creating a custom parser](#creating-a-custom-parser)
-  * [Load Testing against the AWS Loadtest Environment](#load-testing-against-the-aws-loadtest-environment)
-    * [Prime API](#prime-api)
-    * [Handling Rate Limiting](#handling-rate-limiting)
-    * [Metrics](#metrics)
-  * [References](#references)
+<!-- toc -->
 
-<!-- Added by: felipe, at: Mon Jan  3 12:48:44 PST 2022 -->
+* [Overview](#overview)
+* [Project Directories](#project-directories)
+  * [`ecs/`](#ecs)
+  * [`locustfiles/`](#locustfiles)
+  * [`scripts`](#scripts)
+  * [`static/`](#static)
+  * [`tasks/`](#tasks)
+  * [`utils/`](#utils)
+* [Getting Started](#getting-started)
+  * [Base Installation](#base-installation)
+    * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
+    * [Setup: Nix](#setup-nix)
+      * [Nix: Dependency Updates](#nix-dependency-updates)
+      * [Nix: Disabling Nix](#nix-disabling-nix)
+  * [Unsupported Setup](#unsupported-setup)
+  * [Troubleshooting](#troubleshooting)
+* [Running Tests](#running-tests)
+  * [Unit Tests](#unit-tests)
+  * [Load Tests](#load-tests)
+    * [Load Tests: Local Locust Setup](#load-tests-local-locust-setup)
+      * [Local Server Data](#local-server-data)
+    * [Load Tests: Running Locust Locally](#load-tests-running-locust-locally)
+      * [Running Locust Command](#running-locust-command)
+        * [Workflows](#workflows)
+      * [Running Preset Load Tests](#running-preset-load-tests)
+    * [Load Tests: Running Locust from AWS](#load-tests-running-locust-from-aws)
+      * [Troubleshooting: Running Locust from AWS](#troubleshooting-running-locust-from-aws)
+* [Adding Load Tests](#adding-load-tests)
+  * [Starting from scratch](#starting-from-scratch)
+  * [Creating TaskSets](#creating-tasksets)
+  * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
+* [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
+  * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
+  * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
+  * [Deploying New Tests](#deploying-new-tests)
+* [Fake Data Generation](#fake-data-generation)
+  * [Creating a custom parser](#creating-a-custom-parser)
+* [Load Testing against the AWS Loadtest Environment](#load-testing-against-the-aws-loadtest-environment)
+  * [Prime API](#prime-api)
+  * [Handling Rate Limiting](#handling-rate-limiting)
+  * [Metrics](#metrics)
+* [References](#references)
 
-<!--te-->
-<!-- markdownlint-restore -->
+<!-- Regenerate with "pre-commit run -a markdown-toc" -->
+
+<!-- tocstop -->
 
 ## Overview
 
@@ -247,10 +248,23 @@ If you encounter compiler issues while installing the required Python version, t
 brew unlink binutils
 ```
 
-### Testing
+## Running Tests
+
+There are two types of tests in this repository:
+
+* Load tests which run against the mymove server, whether local or deployed. For more info on these,
+  see [Running Load Tests](#load-tests).
+* Unit tests which test the helper code we have in this repository. For more info on these, see
+  [Running Unit Tests](#unit-tests).
+
+### Unit Tests
+
+These are located is `tests/` directories within the corresponding python package, e.g.
+`utils/tests/`. They are mainly here to ensure our setup code is doing what we expect, e.g. testing
+that our Prime auth code is setting up certs the way we expect.
 
 This project uses [`pytest`](https://docs.pytest.org/en/stable/) as its testing framework. To run
-the tests, activate your virtual environment and use the command:
+the tests use the command:
 
 ```shell
 pytest
@@ -268,89 +282,66 @@ To run a specific test, use:
 pytest /utils/tests/test_parsers.py
 ```
 
-If you have a pre-existing installation of `pytest` on your machine, you may need to invoke your
-system's version of
-`python`/`python3` in the command:
-
-```shell
-python3 -m pytest -v
-```
-
 For more instructions and examples, please
 read [pytest's documentation](https://docs.pytest.org/en/stable/).
 
-## Running Load Tests
+### Load Tests
 
-### Setting up the local environment
+There are several ways you can run load tests. You can run `locust` locally or use the deployed
+version. You can also use a local mymove server or the one deployed in the load test environment.
+This means you have three possible combinations:
 
-To run load tests against a local server, you will need to check out and set up
-the [MilMove](https://github.com/transcom/mymove)
-project. Once you have completed this process, run the following commands in the `mymove` directory
-to spin up your local environment:
+* Run `locust` locally against local mymove server
+* Run `locust` locally against load test env mymove server
+* Run `locust` from AWS against the load test env mymove server
 
-```shell script
+If you run `locust` locally, you have the option of running with or without the `locust` UI. If you
+run `locust` from AWS, you will only have the option of running with the UI. The instructions in the
+following sections will cover how to get `locust` started (with or without the UI), but won't cover
+much about the UI since the
+[locust web interface docs](https://docs.locust.io/en/stable/quickstart.html#locust-s-web-interface)
+cover a decent amount of helpful information.
+
+#### Load Tests: Local Locust Setup
+
+You only need to do this section if you plan on running against a local mymove server. If you are
+going to run against the load test env mymove server, then you can skip to the
+[Running Locust Locally](#load-tests-running-locust-locally) section.
+
+You will need to check out and set up the [MilMove](https://github.com/transcom/mymove) project.
+
+Follow the setup instructions in the mymove README, all the way through running the local server
+(`make server_run`). You don't need to run the user interface in order to run load tests (so you can
+skip the `make client_run` step), unless you would like to be able to log in and look at data using
+the mymove UI.
+
+##### Local Server Data
+
+Our goal is to eventually have all the data we need set up by the load tests, but until that's done,
+you should populate the mymove server with data using this command (in the mymove repo directory):
+
+```shell
 make db_dev_e2e_populate  ## populates the development database with test data
-make server_run
 ```
 
-### Setting up Tests in AWS
+#### Load Tests: Running Locust Locally
 
-Run the port-forwarding script.
+This section covers running `locust` locally, whether pointing at a local mymove server or the load
+test env mymove server. We specify which we want to point at by defining the `host`. So if you want
+to run locally, you'll use `local`, while the load test env will use the `dp3` value. You can define
+the host either in the UI in the appropriate field, or via the command line using the `--host`
+option, e.g. `--host local`.
 
-  ```sh
-  aws-vault exec $AWS_PROFILE -- ./scripts/aws-session-port-forward.py
-  ```
+You can invoke the `locust` command directly to run the load tests, or you can use some presets we
+have defined in the `Makefile`.
 
-You may see the following error:
+##### Running Locust Command
 
-* `SessionManagerPlugin is not found`. If you do please follow the link and the instructions to
-  install the Session Manager plugin or
-  reference [this](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos)
-  directly.
-
-* You may see an error mentioning `credentials missing` and an additional reference to a specific
-  profile. If this is the case please add the corresponding entry
-  from [this template](https://dp3.atlassian.net/wiki/spaces/MT/pages/1348927493/AWS+GovCloud+Config+Templates)
-  to your `~/.aws/config` file. If you only see an error mentioning `credentials missing` without an
-  additional reference to a specific profile, please ensure that your $AWS_PROFILE variable is not
-  blank. This can be set by running `direnv allow`.
-
-You can then visit <http://localhost:4000> and run tests from AWS.
-
-### Running preset tests
-
-Default tests commands for each locustfile are added to the Makefile to make rerunning common preset
-tests either. These commands include:
-
-* `make load_test_prime`
-
-  Runs the load tests for `locustfiles/prime.py`, which test the endpoints in the Prime and Support
-  APIs.
-
-* `make load_test_office`
-
-  Runs the load tests for `locustfiles/office.py`, which tests the MilMove Office interface.
-
-* `make load_test_milmove`
-
-  Runs the load tests for `locustfiles/milmove.py`, which tests the MilMove Customer interface.
-
-Each of these commands opens the Locust interface for initiating and monitoring the tests, set
-to [http://localhost:8089](http://localhost:8089). Using this interface, you can set the number of
-users to simulate and their hatch rate, then start and stop the test at will. For the host, you can
-enter a full URL address, or you can simply enter "local" or "dp3" (for loadtest), and let the
-system set the URL as appropriate.
-
-**NOTE: Currently the system only functions in the local or dp3 environment. You may try the other
-settings for fun, but don't expect them to work.**
-
-### Running custom tests
-
-If you need more control over the parameters for a load test, you will need to run a custom locust
-command. This will look something like:
+If you want more control over the parameters for a load test, you will need to invoke the `locust`
+command directly. This will look something like:
 
 ```sh
-locust -f locustfiles/<file_to_test>.py --host <local/dp3>
+locust -f <path_to_locustfile>.py --host <local/dp3>
 ```
 
 Ex:
@@ -359,8 +350,110 @@ Ex:
 locust -f locustfiles/prime.py --host local
 ```
 
-For more information on running custom tests, refer to
-the [wiki](https://github.com/transcom/milmove_load_testing/wiki/Running-Load-Tests-Against-MyMove)
+To run the test without the web interface you will need to specify a few things that would otherwise
+have been input via the interface.
+
+* Add the `--headless` tag to turn off the UI
+* Add the `-u` (or `--users`) option to specify the total number of users.
+* Add the `-r` (or `--spawn-rate`) option to specify the number of users that should be added per
+  second.
+* Add the `-t` (or `--run-time`) option to specify how long the tests should run for, e.g. (300s,
+  20m, 3h, 1h30m, etc.)
+
+There are other options that can be useful such as:
+
+* `-T` (or `--tags`) to specify which load tests to run based on their tags.
+  * You can see a load test's tag by looking at the task definition and looking for `@tag("myTag")`
+    * So in this case you would use `-T myTag`
+* `-E` (or `--exclude-tags`) to specify which load tests to exclude based on their tags.
+
+The command will also take a list (or single one) of `User` classes at the end.
+
+So a full command could look like:
+
+```shell
+locust -f locustfiles/prime.py --host local --headless -u 1000 -r 50 -t 30s -T listMoves PrimeUser
+```
+
+You can see more information on the
+[locust running without the web UI docs](https://docs.locust.io/en/stable/running-without-web-ui.html#running-without-web-ui).
+
+For more CLI config options, refer to the
+[locust configuration docs](https://docs.locust.io/en/stable/configuration.html).
+
+###### Workflows
+
+There are several workflows defined as tags, so you can use those tags in the `locust` command as
+shown above. Listed below are the available workflows tags to test.
+
+Prime API Workflow Tags
+
+* `hhgMove`
+  * This workflow simulates how an HHG move would flow through the PrimeAPI. This workflow
+    utilizes both PrimeAPI and SupportAPI tasks.
+* `createMTOShipmentWorkflow`
+  * This work flow tests the PrimeAPI create_mto_shipment endpoint. It creates or selects an
+    existing move, then creates shipments on the selected move.
+
+##### Running Preset Load Tests
+
+Default tests commands for each locustfile are available in the Makefile to make rerunning common
+preset tests easier. These all use the UI and default to the `local` host (but the host can be
+changed in the UI). These commands include:
+
+* Prime and Support API load tests - runs the load tests for `locustfiles/prime.py`:
+
+  ```shell
+  make load_test_prime
+  ```
+
+* Office/GHC API load tests - runs the load tests for `locustfiles/office.py`
+
+  ```shell
+  make load_test_office
+  ```
+
+* Customer/Internal API load tests - runs load tests for `locustfiles/milmove.py`
+
+  ```shell
+  make load_test_milmove
+  ```
+
+Each of these commands opens the Locust interface for initiating and monitoring the tests, set
+to <http://localhost:8089>. Using this interface, you can set the number of users to simulate, their
+spawn rate, and the host to target. Then start and stop the test at will.
+
+#### Load Tests: Running Locust from AWS
+
+1. Run the port-forwarding script:
+
+    ```sh
+    aws-vault exec $AWS_PROFILE -- ./scripts/aws-session-port-forward.py
+    ```
+
+2. You can then visit <http://localhost:4000> and run tests from AWS.
+
+##### Troubleshooting: Running Locust from AWS
+
+You may see the following errors:
+
+* `SessionManagerPlugin is not found`. If you do please follow the link and the instructions to
+  install the Session Manager plugin or reference
+  [the Session Manager plugin installation guide](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos)
+  directly.
+
+* An error mentioning `credentials missing`.
+  * If there is an additional reference to a specific profile. If this is the case please add the
+    corresponding entry from
+    [this AWS config template](https://dp3.atlassian.net/wiki/spaces/MT/pages/1348927493/AWS+GovCloud+Config+Templates)
+    to your `~/.aws/config` file.
+  * If you only see an error mentioning `credentials missing` without an additional reference to a
+    specific profile, please ensure that your $AWS_PROFILE variable is not blank. This can be set by
+    running:
+
+    ```shell
+    direnv allow
+    ```
 
 ## Adding Load Tests
 
