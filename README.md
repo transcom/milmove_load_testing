@@ -33,6 +33,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Setup: Nix](#setup-nix)
       * [Nix: Dependency Updates](#nix-dependency-updates)
       * [Nix: Disabling Nix](#nix-disabling-nix)
+  * [Updating Python Dependencies](#updating-python-dependencies)
   * [Unsupported Setup](#unsupported-setup)
   * [Troubleshooting](#troubleshooting)
 * [Running Tests](#running-tests)
@@ -165,7 +166,6 @@ that section.
     ```
 
    1. This should install the dependencies via `pipenv` automatically.
-   2. If the base dependencies change, you can always re-run this command.
 
 4. Install `pre-commit` hooks:
 
@@ -218,6 +218,15 @@ direnv: WARNING: nix packages out of date. Run nix/update.sh
 
 Note that if you would like to disable `nix` for this repo, you can do so by creating
 a `.nix-disable` file at the top level of this repo and reload your shell.
+
+### Updating Python Dependencies
+
+1. If the python dependencies get updated (`Pipfile` and/or `Pipfile.lock` files change), you can
+  update your local environment by running:
+
+    ```shell
+    make install_python_deps
+    ```
 
 ### Unsupported Setup
 

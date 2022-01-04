@@ -17,7 +17,7 @@ install_tools: ## Install tools needed for project.
 
 .PHONY: install_python_deps
 install_python_deps: ## Install all python dependencies/requirements
-	pipenv install
+	pipenv install --dev
 
 .PHONY: ensure_pre_commit
 ensure_pre_commit: .git/hooks/pre-commit ## Ensure pre-commit is installed
