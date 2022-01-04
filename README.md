@@ -51,8 +51,8 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Load Tests: Load Test Environment](#load-tests-load-test-environment)
       * [Metrics](#metrics)
       * [Handling Rate Limiting](#handling-rate-limiting)
-* [Adding Load Tests](#adding-load-tests)
-  * [Starting from scratch](#starting-from-scratch)
+* [Working With Load Tests](#working-with-load-tests)
+  * [Creating A New Locustfile](#creating-a-new-locustfile)
   * [Creating TaskSets](#creating-tasksets)
   * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
 * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
@@ -501,9 +501,9 @@ by this code:
  waf_ip_rate_limit   = 20000
 ```
 
-## Adding Load Tests
+## Working With Load Tests
 
-### Starting from scratch
+### Creating A New Locustfile
 
 If you are developing load testing for a new MilMove application, or perhaps just designing a new
 suite of tests, the first step will be to create a new locustfile in the `locustfiles/` directory.
@@ -512,71 +512,54 @@ This where you will define all of the `User` classes for your load tests. A comm
 like:
 
 ```python
+# -*- coding: utf-8 -*-
+"""
+Example of a locustfile...
+"""
 from locust import HttpUser, between
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain
 
+class MyUser(HttpUser):
+  """
+  A user that can test things...
+  """
 
-# Use MilMoveHostMixin to easily switch between local and dp3 environments
-# HttpUser is the Locust user class we want to use to hit endpoint paths
-class MyUser(MilMoveHostMixin, HttpUser):
-  """ Here's a short description of what my user does. """
-
-  # Required attributes:
   # The time (in seconds) Locust waits in between tasks. Can use decimals.
-  wait_time = between(1, 9)
-
-  # The list of tasks for this user. You can use a TaskSet or define tasks in your MyUser class itself.
-  tasks = []
-
-  # MilMoveHostMixin attributes:
-  # Some local hosts for MilMove don't use HTTPS - you can override that default here:
-  local_protocol = "http"
-
-  # The default port you want to use for local testing:
-  local_port = "3000"
-
-  # The domain for the host, if it's one of the default options (MILMOVE, OFFICE, PRIME)
-  # NOTE: The domain corresponds to whatever you use in local - so <domain>local
-  domain = MilMoveDomain.OFFICE
-
-  # If not using MilMoveHostMixin:
-  # You can set the host on the class directly. Useful if it never changes based on env.
-  host = "https://primelocal:9443"
+  wait_time = between(0.25, 9)
 ```
 
-This is the bare minimum that you need to have a functional load test. The `MilMoveHostMixin` class
-is designed to make set up faster and running tests an easier, simpler process. You don't have to
-use this structure, however. If it makes sense to create a custom user for your test case, please do
-so! Please note that it may be easier to add your customization to the `TaskSet` instead of
-the `User`, however.
+You will need to specify what tasks this user should run. This can be done via a `tasks` attribute
+on the class or defining tasks directly on the user class. In our repo, we primarily use the `tasks`
+attribute and pass it task sets. Later section will show this more.
 
 ### Creating TaskSets
 
-Tasks are distinct functions, or callables, that tell Locust what to do during load
-testing. `TaskSet` classes are a clean way to link tasks together and keep the code organized. You
-can link a `User` class with a task set using the following syntax in the `tasks` attribute:
+Tasks are distinct functions, or callables, that tell Locust what to do during load testing. A task
+is, in essence, a load test. `TaskSet` classes are a clean way to link tasks together and keep the
+code organized.
+
+Task sets and functions should all be defined in python files in the `tasks/` directory. An
+example `TaskSet` for this project might be:
 
 ```python
-tasks = {MyMainTaskSet: 5, MyOtherTaskSet: 1}
-```
-
-The number next to the task set indicates its relative _weight_ - so in this example, tasks
-from `MyMainTaskSet` would be 5 times more likely than tasks from `MyOtherTaskSet`. Task sets and
-functions should all be defined in python files in the `tasks/` directory. An example `TaskSet` for
-this project might be:
-
-```python
+# -*- coding: utf-8 -*-
+"""
+Example of a TaskSet file...
+"""
 import logging
-import json
 
-from locust import TaskSet, task
+from locust import tag, task
+
+from utils.rest import RestResponseContextManager
+from utils.task import RestTaskSet
 
 
 logger = logging.getLogger(__name__)
 
 
-class MyTasks(TaskSet):
+# tags are useful to add at a TaskSet and task level to enable running only specific load tests.
+@tag('mainTasks')
+class MyTasks(RestTaskSet):
   """
   Description of the flow for these tasks here.
   """
@@ -585,38 +568,84 @@ class MyTasks(TaskSet):
     """
     Description of functionality that runs whenever the task set is initialized.
     """
+    pass
     # Set up tasks might go here, like:
     # - logging in
     # - grabbing cookies
     # - setting shared headers
 
+  @tag('doSomething')
   @task
   def do_something(self):
     """
     Do a task! Tasks generally have three steps: Set-up, make a request, validate/log results
     """
-    # First, complete any set up you need:
-    request_body = {
-      "userName": "squidGirl1992",
-      "email": "actual-squid-scientist@marinebiology.edu"
-    }
-    headers = {"content-type": "application/json"}
+    # Prep the path and request kwargs
+    moves_path, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
 
-    # Next, make the request:
-    resp = self.client.post("/my-path-here/update-user", data=json.dumps(request_body),
-                            headers=headers)
+    # Now make the request
+    with self.rest(method="GET", url=moves_path, **request_kwargs) as resp:
+      resp: RestResponseContextManager
 
-    # Lastly, validate the response and/or log any relevant info:
-    logger.info(f"ℹ️ Status code: {resp.status_code}")
+      # Lastly, validate the response and/or log any relevant info:
+      logger.info(f"ℹ️ Status code: {resp.status_code}")
 
-    try:
-      json_body = json.loads(resp.content)
-    except (json.JSONDecodeError, TypeError):
-      logger.exception("Non-JSON response")
-    else:
-      logger.info(f"ℹ️ User's most liked post: {json_body['best_post']}")
+      if isinstance(resp.js, list) and resp.js:
+        logger.info(f"\nℹ️ {resp.js[0]=}\n")
+      else:
+        # if you wanted to, you could mark this load test as a failure by doing this:
+        resp.failure("No moves found!")
 ```
 
+Note that we are using the `RestTaskSet` as our parent class. It enables easier testing and more
+control over whether a load test should be considered a success or failure. The rest of the docs
+will assume you have used this as the parent class. Among the things it provides are the
+`self.request_preparer` object and `self.rest` context manager.
+
+The `request_preparer` has several helper functions for preparing to make a request to the mymove
+server. They are `prep_ghc_request`, `prep_internal_request`, `prep_prime_request`, and
+`prep_support_request`. Each of these takes an endpoint, e.g. `moves` (like in the example above)
+and return a tuple containing the url to use (stored in `moves_path` above), and the keyword
+arguments (or kwargs) to pass to `self.rest`.
+
+The `rest` context manager makes it easier to work with responses by automatically parsing the
+response content into json and failing the load test if it can't be parsed. It also provides a
+variable you can use (called `resp` above) to mark the load test as a success (by calling
+`resp.success()`) or a failure (`resp.failure("message")` like at the end of the example). The last
+thing it provides is automatic catching of any exceptions that may be raised in your `with` block,
+which will then mark the load test as a failure and format an error message to display in the
+results.
+
+For more details on `TaskSet`s, see the
+[locust TaskSet class docs](https://docs.locust.io/en/stable/tasksets.html).
+
+You can link a `User` class with a task set by passing the task set to the `User`'s
+`tasks` attribute like this:
+
+```python
+# -*- coding: utf-8 -*-
+"""
+Example of a TaskSet file...
+"""
+from locust import HttpUser, between
+
+from tasks.prime import PrimeTasks, SupportTasks
+
+
+class MyUser(HttpUser):
+  """
+  A user that can test things...
+  """
+
+  tasks = {PrimeTasks: 5, SupportTasks: 1}
+  # The time (in seconds) Locust waits in between tasks. Can use decimals.
+  wait_time = between(0.25, 9)
+```
+
+The number next to the task set indicates its relative _weight_ - so in this example, tasks
+from `PrimeTasks` would be 5 times more likely than tasks from `SupportTasks`.
+
+[//]: # ( TODO: anything after here hasn't been updated yet)
 There are a couple of base `TaskSet` classes that you may also want to take advantage of:
 
 * `SequentialTaskSet` - Locust base class, asserts that all of the tasks in the `TaskSet` are
