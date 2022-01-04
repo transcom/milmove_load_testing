@@ -31,7 +31,3 @@ Brewfile.lock.json
 
 # nix
 .nix-disable
-
-# gh-md-toc
-gh-md-toc
-README.md.*
