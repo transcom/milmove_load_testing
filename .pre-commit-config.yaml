@@ -11,6 +11,13 @@ repos:
     hooks:
       - id: flake8
 
+  - repo: git://github.com/trussworks/pre-commit-hooks
+    rev: v1.1.0
+    hooks:
+      - id: circleci-validate
+      - id: markdown-toc
+      - id: hadolint
+
   - repo: git://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:
