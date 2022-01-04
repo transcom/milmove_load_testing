@@ -26,9 +26,9 @@ class PrimeTaskSet(RestTaskSet):
         """
         Lists moves...
         """
-        moves_path, request_kwargs = self.user.request_preparer.prep_prime_request(endpoint="/moves")
+        moves_path, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
 
-        if is_local(env=self.user.env):
+        if is_local(env=self.env):
             # set a timeout of 15sec if we're running locally - just for this endpoint
             request_kwargs["timeout"] = 15
 

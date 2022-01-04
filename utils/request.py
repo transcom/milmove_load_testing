@@ -218,10 +218,10 @@ class MilMoveRequestMixin:
         Sets up the env based on value from the --host flag. Note that the `self.host` value is set
         on the class from the command line flag BEFORE initialization.
         """
+        super().__init__(*args, **kwargs)
+
         self.set_milmove_env()
         self.set_up_request_preparer()
-
-        super().__init__(*args, **kwargs)
 
     def set_milmove_env(self: Union[TaskSet, "MilMoveRequestMixin"]) -> None:
         """
