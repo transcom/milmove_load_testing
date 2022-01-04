@@ -14,7 +14,7 @@ class RestTaskSet(MilMoveRequestMixin, RestMixin, TaskSet):
     """
 
 
-class LoginTaskSet(TaskSet):
+class LoginTaskSet(RestMixin, TaskSet):
     """
     TaskSet that grabs the CSRF and session tokens for the user and creates a fake logon for making requests.
     """
