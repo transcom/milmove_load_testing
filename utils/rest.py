@@ -14,7 +14,7 @@ from contextlib import contextmanager
 from json import JSONDecodeError
 from typing import Any, Dict, Tuple, Union
 
-from locust import FastHttpUser, HttpUser
+from locust import FastHttpUser, HttpUser, TaskSet
 from locust.clients import ResponseContextManager
 
 from utils.types import ExceptionType, JSONType
@@ -42,7 +42,7 @@ class RestMixin:
 
     @contextmanager
     def rest(
-        self: Union[HttpUser, FastHttpUser, "RestMixin"], method: str, url: str, **kwargs
+        self: Union[HttpUser, FastHttpUser, TaskSet, "RestMixin"], method: str, url: str, **kwargs
     ) -> RestResponseContextManager:
         """
         This is a wrapper around self.client.request() that:

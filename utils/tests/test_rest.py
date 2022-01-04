@@ -178,21 +178,21 @@ class TestFormatTraceBackToErrorMessage:
 
 
 @pytest.fixture()
-def rest_user() -> RestMixin:
+def rest_parent() -> RestMixin:
     """
     Creates a RestMixin with a mocked out client attr to mimic if we'd actually used the mixin
-    with a User class.
+    with a User or TaskSet class.
 
     :return: initialized mixin
     """
-    user = RestMixin()
+    parent = RestMixin()
 
     # We only really need to mock out client to be on our way.
-    user.client = MagicMock()
+    parent.client = MagicMock()
 
-    yield user
+    yield parent
 
-    user.client.reset_mock()
+    parent.client.reset_mock()
 
 
 class TestRestMixin:
@@ -200,7 +200,7 @@ class TestRestMixin:
     Tests for RestMixin
     """
 
-    def test_inserts_expected_kwargs_into_request(self, rest_user: RestMixin) -> None:
+    def test_inserts_expected_kwargs_into_request(self, rest_parent: RestMixin) -> None:
         # In particular, expecting the catch_response=True, and the JSON headers.
 
         request_method = "GET"
@@ -208,27 +208,27 @@ class TestRestMixin:
 
         expected_headers = get_json_headers()
 
-        with rest_user.rest(method=request_method, url=fake_url):
-            rest_user.client.request.assert_called_once_with(
+        with rest_parent.rest(method=request_method, url=fake_url):
+            rest_parent.client.request.assert_called_once_with(
                 request_method, fake_url, catch_response=True, headers=expected_headers
             )
 
-    def test_will_not_override_custom_headers(self, rest_user: RestMixin) -> None:
+    def test_will_not_override_custom_headers(self, rest_parent: RestMixin) -> None:
         request_method = "GET"
         fake_url = "https://localhost:8080"
 
         expected_headers = {"Content-Type": "multipart/form-data"}
 
-        with rest_user.rest(method=request_method, url=fake_url, headers=expected_headers):
-            rest_user.client.request.assert_called_once_with(
+        with rest_parent.rest(method=request_method, url=fake_url, headers=expected_headers):
+            rest_parent.client.request.assert_called_once_with(
                 request_method, fake_url, catch_response=True, headers=expected_headers
             )
 
     @patch("utils.rest.parse_response_json", autospec=True)
-    def test_parses_response_json(self, mock_parse_response_json: MagicMock, rest_user: RestMixin) -> None:
+    def test_parses_response_json(self, mock_parse_response_json: MagicMock, rest_parent: RestMixin) -> None:
         mock_parse_response_json.return_value = ({}, "")
 
-        with rest_user.rest(method="GET", url="https://localhost:8080") as resp:
+        with rest_parent.rest(method="GET", url="https://localhost:8080") as resp:
             resp: MagicMock
 
             mock_parse_response_json.assert_called_once_with(response=resp)
@@ -237,13 +237,13 @@ class TestRestMixin:
 
     @patch("utils.rest.parse_response_json", autospec=True)
     def test_if_there_is_an_error_parsing_response_json_then_marks_response_as_failure(
-        self, mock_parse_response_json: MagicMock, rest_user: RestMixin
+        self, mock_parse_response_json: MagicMock, rest_parent: RestMixin
     ) -> None:
         error_msg = "Invalid JSON!"
 
         mock_parse_response_json.return_value = ({}, error_msg)
 
-        with rest_user.rest(method="GET", url="https://localhost:8080") as resp:
+        with rest_parent.rest(method="GET", url="https://localhost:8080") as resp:
             resp: MagicMock
 
             mock_parse_response_json.assert_called_once_with(response=resp)
@@ -254,7 +254,7 @@ class TestRestMixin:
     @patch("utils.rest.parse_response_json", autospec=True)
     @patch("utils.rest.format_failure_msg_from_exception", autospec=True)
     def test_if_exception_is_raised_in_context_manager_then_response_is_failed(
-        self, mock_failure_format_func: MagicMock, mock_parse_response_json: MagicMock, rest_user: RestMixin
+        self, mock_failure_format_func: MagicMock, mock_parse_response_json: MagicMock, rest_parent: RestMixin
     ) -> None:
         exception = Exception("Something broke!")
 
@@ -262,11 +262,11 @@ class TestRestMixin:
 
         mock_resp: MagicMock
 
-        with rest_user.rest(method="GET", url="https://localhost:8080") as resp:
+        with rest_parent.rest(method="GET", url="https://localhost:8080") as resp:
             resp: MagicMock
 
             # This is an easy way to access this mock later. Otherwise, we would have to dig in to
-            # the call stack, e.g. rest_user.client.request.return_value (and a few more levels).
+            # the call stack, e.g. rest_parent.client.request.return_value (and a few more levels).
             mock_resp = resp
 
             raise exception
