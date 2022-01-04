@@ -23,7 +23,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
 * [Project Directories](#project-directories)
   * [`ecs/`](#ecs)
   * [`locustfiles/`](#locustfiles)
-  * [`scripts`](#scripts)
+  * [`scripts/`](#scripts)
   * [`static/`](#static)
   * [`tasks/`](#tasks)
   * [`utils/`](#utils)
@@ -74,6 +74,9 @@ possessions from one place to another.
 
 This codebase has been written to perform load tests on the MilMove app for the purpose of gathering
 data about responses times, finding breakpoints, and assessing the overall health of the system.
+The load tests run by this repo only interact with APIs exposed by the MilMove app (or mymove
+server, both are used in these docs). We are not testing the front-end (client/browser) as of this
+writing.
 
 ## Project Directories
 
@@ -100,7 +103,7 @@ you to manipulate which users and/or tasks run from any given locustfile.
 
 In particular, our `locustfiles/all.py` combines all our `User` classes into a single run.
 
-### `scripts`
+### `scripts/`
 
 `aws-session-port-forward.py` - This is the script used to access the deployed locust load testing
 container and forward to your local port 4000 accessible
