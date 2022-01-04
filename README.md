@@ -301,12 +301,12 @@ read [pytest's documentation](https://docs.pytest.org/en/stable/).
 ### Load Tests
 
 There are several ways you can run load tests. You can run `locust` locally or use the deployed
-version. You can also use a local mymove server or the one deployed in the load test environment.
-This means you have three possible combinations:
+version. You can also use a local mymove server or the one deployed in the load test environment
+(on loadtest.dp3.us). This means you have three possible combinations:
 
-* Run `locust` locally against local mymove server
-* Run `locust` locally against load test env mymove server
-* Run `locust` from AWS against the load test env mymove server
+* Run `locust` locally against local mymove server (i.e. local -> local)
+* Run `locust` locally against load test env mymove server (i.e. local -> loadtest.dp3.us)
+* Run `locust` from AWS against the load test env mymove server (i.e. aws -> loadtest.dp3.us)
 
 If you run `locust` locally, you have the option of running with or without the `locust` UI. If you
 run `locust` from AWS, you will only have the option of running with the UI. The instructions in the
