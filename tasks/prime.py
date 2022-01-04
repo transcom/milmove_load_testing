@@ -293,7 +293,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         payload = self.fake_request("/orders", "post", INTERNAL_API_KEY, overrides, True)
         order_resp = self.client.post(
             self.customer_path("/internal/orders"),
-            data=json.dumps(overrides),
+            data=json.dumps(payload),
             headers={"content-type": "application/json"},
         )
         order = order_resp.json()
