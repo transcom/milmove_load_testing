@@ -133,7 +133,7 @@ class PrimeDataStorageMixin:
 
         data_list.append(new_data)
 
-    def set_default_mto_ids(self, moves):
+    def set_default_mto_ids(self, move_id):
         """
         Given a list of Move Task Orders, gets the four ID values needed to create more MTOs:
           - contractorID
@@ -156,41 +156,36 @@ class PrimeDataStorageMixin:
             return
 
         headers = {"content-type": "application/json"}
-        for move in moves:
-            # Call the Support API to get full details on the move:
-            resp = self.client.get(
-                support_path(f"/move-task-orders/{move['id']}"),
-                name=support_path("/move-task-orders/{moveTaskOrderID}"),
-                headers=headers,
-                **self.cert_kwargs,
+
+        # Call the Support API to get full details on the move:
+        resp = self.client.get(
+            support_path(f"/move-task-orders/{move_id}"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}"),
+            headers=headers,
+            **self.cert_kwargs,
+        )
+        move_details, success = check_response(resp, "getMoveTaskOrder")
+
+        # Get the values we need from the move and set them in self.default_move_ids.
+        # If this move is missing any of these values, we default to using whatever value is already in
+        # self.default_mto_ids, which could be nothing, or could be a value gotten from a previous move.
+        # This way we never override good ID values from earlier moves in the list.
+        self.default_mto_ids["contractorID"] = move_details.get("contractorID", self.default_mto_ids["contractorID"])
+        if order_details := move_details.get("order"):
+            self.default_mto_ids["uploadedOrdersID"] = order_details.get(
+                "uploadedOrdersID", self.default_mto_ids["uploadedOrdersID"]
             )
-            move_details, success = check_response(resp, "getMoveTaskOrder")
-
-            if not success:
-                continue  # try again with the next move in the list
-
-            # Get the values we need from the move and set them in self.default_move_ids.
-            # If this move is missing any of these values, we default to using whatever value is already in
-            # self.default_mto_ids, which could be nothing, or could be a value gotten from a previous move.
-            # This way we never override good ID values from earlier moves in the list.
-            self.default_mto_ids["contractorID"] = move_details.get(
-                "contractorID", self.default_mto_ids["contractorID"]
+            self.default_mto_ids["destinationDutyStationID"] = order_details.get(
+                "destinationDutyStationID", self.default_mto_ids["destinationDutyStationID"]
             )
-            if order_details := move_details.get("order"):
-                self.default_mto_ids["uploadedOrdersID"] = order_details.get(
-                    "uploadedOrdersID", self.default_mto_ids["uploadedOrdersID"]
-                )
-                self.default_mto_ids["destinationDutyStationID"] = order_details.get(
-                    "destinationDutyStationID", self.default_mto_ids["destinationDutyStationID"]
-                )
-                self.default_mto_ids["originDutyStationID"] = order_details.get(
-                    "originDutyStationID", self.default_mto_ids["originDutyStationID"]
-                )
+            self.default_mto_ids["originDutyStationID"] = order_details.get(
+                "originDutyStationID", self.default_mto_ids["originDutyStationID"]
+            )
 
-            # Do we have all the ID values we need? Cool, then stop processing.
-            if self.has_all_default_mto_ids():
-                logger.info(f"☑️ Set default MTO IDs for createMoveTaskOrder: \n{self.default_mto_ids}")
-                break
+        # Do we have all the ID values we need? Cool, then stop processing.
+        if self.has_all_default_mto_ids():
+            logger.info(f"☑️ Set default MTO IDs for createMoveTaskOrder: \n{self.default_mto_ids}")
+            return
 
         # If we're in the local environment, and we have gone through the entire list without getting a full set of IDs,
         # set our hardcoded IDs as the default:
@@ -349,20 +344,8 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             headers={"content-type": "application/json"},
         )
 
-    @tag(MOVE_TASK_ORDER, "listMoves")
-    @task
-    def list_moves(self):
-        timeout = {}
-        if self.user.is_local:
-            timeout["timeout"] = 15  # set a timeout of 15sec if we're running locally - just for this endpoint
-
-        resp = self.client.get(prime_path("/moves"), **self.cert_kwargs, **timeout)
-        moves, success = check_response(resp, "listMoves")
-
-        # Use these MTOs to set the ID values we'll need to create more MTOs
-        # (NOTE: we don't care about a failure here because we can set the default IDs instead,
-        # if this is running locally)
-        self.set_default_mto_ids(moves or [])
+        # Set local variables with needed info to create a move
+        self.set_default_mto_ids(move_id)
 
     @tag(MTO_SERVICE_ITEM, "createMTOServiceItem")
     @task
