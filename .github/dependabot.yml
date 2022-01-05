@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # pipenv requires using the "pip" value https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/configuration-options-for-dependency-updates#package-ecosystem
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "11:00"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+  # The python version base image is the only real docker dependency but should match what's in the pipfile
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "11:00"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
