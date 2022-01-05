@@ -1,23 +1,35 @@
 # -*- coding: utf-8 -*-
-""" Tests utils/parsers.py """
-import os
-import pytest
+"""
+Tests utils/parsers.py
+"""
+from unittest.mock import MagicMock
 
+import pytest
 from prance import ResolvingParser
 from prance.util.url import ResolutionError
 
 from utils.base import ImplementationError
-from utils.constants import STATIC_FILES, DataType, ARRAY_MIN, ARRAY_MAX
+from utils.constants import ARRAY_MAX, ARRAY_MIN, DataType, STATIC_FILES
 from utils.fake_data import MilMoveData
-from utils.fields import APIEndpointBody, ObjectField, BaseAPIField, ArrayField, EnumField
-from utils.parsers import APIParser, PrimeAPIParser
-from .params_parsers import *
+from utils.fields import APIEndpointBody, ArrayField, BaseAPIField, EnumField, ObjectField
+from utils.parsers import (
+    APIFakeDataGenerator,
+    APIKey,
+    APIParser,
+    GHCAPIParser,
+    InternalAPIParser,
+    PrimeAPIParser,
+    SupportAPIParser,
+    get_api_fake_data_generator,
+    get_api_parsers,
+)
+from utils.tests.params_parsers import *
 
 
 class TestAPIParser:
     """Tests the APIParser class and its methods."""
 
-    TEST_API = os.path.join(STATIC_FILES, "test_api.yaml")
+    TEST_API = str(STATIC_FILES / "test_api.yaml")
 
     @classmethod
     def setup_class(cls):
@@ -274,3 +286,146 @@ class TestPrimeAPIParser:
         """
         output_dimensions = self.parser.normalize_crate_dimensions(*input_dimensions)
         assert output_dimensions == expected_dimensions
+
+
+class TestGetAPIParsers:
+    """
+    Tests for get_api_parsers
+    """
+
+    def test_returns_expected_parsers_already_initialized(self) -> None:
+        api_parsers = get_api_parsers()
+
+        assert list(api_parsers.keys()) == [
+            APIKey.INTERNAL,
+            APIKey.OFFICE,
+            APIKey.PRIME,
+            APIKey.SUPPORT,
+        ]
+
+        assert isinstance(api_parsers[APIKey.INTERNAL], InternalAPIParser)
+        assert isinstance(api_parsers[APIKey.OFFICE], GHCAPIParser)
+        assert isinstance(api_parsers[APIKey.PRIME], PrimeAPIParser)
+        assert isinstance(api_parsers[APIKey.SUPPORT], SupportAPIParser)
+
+    def test_returns_cached_parsers(self) -> None:
+        # Cache is shared across tests so to be sure this is correct, we'll calculate the values
+        # we expect. We could clear the cache instead, but that would make the tests slower
+        # because the api parsing is slow.
+        previous_cache_misses = get_api_parsers.cache_info().misses
+
+        if previous_cache_misses == 0:
+            expected_misses = 1
+            expected_hits = 1
+        else:
+            expected_misses = 1
+            expected_hits = get_api_parsers.cache_info().hits + 2
+
+        get_api_parsers()
+        get_api_parsers()
+
+        # Misses the first time since it's the first time it's called, but should get it the second
+        # time
+        assert get_api_parsers.cache_info().misses == expected_misses
+        assert get_api_parsers.cache_info().hits == expected_hits
+
+
+class TestAPIFakeDataGenerator:
+    """
+    Tests for APIFakeDataGenerator
+    """
+
+    def test_api_parsers_defaults_to_all_parsers(self) -> None:
+        fake_data_generator = APIFakeDataGenerator()
+
+        assert list(fake_data_generator.api_parsers.keys()) == [
+            APIKey.INTERNAL,
+            APIKey.OFFICE,
+            APIKey.PRIME,
+            APIKey.SUPPORT,
+        ]
+
+        assert isinstance(fake_data_generator.api_parsers[APIKey.INTERNAL], InternalAPIParser)
+        assert isinstance(fake_data_generator.api_parsers[APIKey.OFFICE], GHCAPIParser)
+        assert isinstance(fake_data_generator.api_parsers[APIKey.PRIME], PrimeAPIParser)
+        assert isinstance(fake_data_generator.api_parsers[APIKey.SUPPORT], SupportAPIParser)
+
+    def test_generate_fake_request_data_gives_back_expected_payload(self) -> None:
+        mock_internal_api_parser = MagicMock()
+
+        fake_data_generator = APIFakeDataGenerator(
+            api_parsers={
+                APIKey.INTERNAL: mock_internal_api_parser.return_value,
+            }
+        )
+
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.INTERNAL,
+            path="/moves",
+            method="POST",
+            overrides={"thing": None},
+            require_all=True,
+        )
+
+        assert payload == mock_internal_api_parser.return_value.generate_fake_request.return_value
+
+    def test_generate_fake_request_data_calls_fake_request_with_expected_values(self) -> None:
+        mock_internal_api_parser = MagicMock()
+
+        fake_data_generator = APIFakeDataGenerator(
+            api_parsers={
+                APIKey.INTERNAL: mock_internal_api_parser.return_value,
+            }
+        )
+
+        fake_path = "/moves"
+        method = "POST"
+        overrides = {"thing": None}
+        require_all = True
+
+        fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.INTERNAL,
+            path=fake_path,
+            method=method,
+            overrides=overrides,
+            require_all=require_all,
+        )
+
+        mock_internal_api_parser.return_value.generate_fake_request.assert_called_once_with(
+            path=fake_path,
+            method=method.lower(),
+            overrides=overrides,
+            require_all=require_all,
+        )
+
+
+class TestGetAPIFakeDataGenerator:
+    """
+    Tests for get_api_fake_data_generator
+    """
+
+    def test_returns_initialized_api_fake_data_generator(self) -> None:
+        fake_data_generator = get_api_fake_data_generator()
+
+        assert isinstance(fake_data_generator, APIFakeDataGenerator)
+
+    def test_returns_cached_parsers(self) -> None:
+        # Cache is shared across tests so to be sure this is correct, we'll calculate the values
+        # we expect. We could clear the cache instead, but that would make the tests slower
+        # because the api parsing is slow.
+        previous_cache_misses = get_api_fake_data_generator.cache_info().misses
+
+        if previous_cache_misses == 0:
+            expected_misses = 1
+            expected_hits = 1
+        else:
+            expected_misses = 1
+            expected_hits = get_api_fake_data_generator.cache_info().hits + 2
+
+        get_api_fake_data_generator()
+        get_api_fake_data_generator()
+
+        # Misses the first time since it's the first time it's called, but should get it the second
+        # time
+        assert get_api_fake_data_generator.cache_info().misses == expected_misses
+        assert get_api_fake_data_generator.cache_info().hits == expected_hits

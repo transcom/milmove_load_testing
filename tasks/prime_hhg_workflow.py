@@ -4,13 +4,8 @@ import random
 
 from locust import tag, task
 
-from .prime import PrimeTasks, SupportTasks, prime_path
-from utils.constants import (
-    MOVE_TASK_ORDER,
-    MTO_SHIPMENT,
-    MTO_SERVICE_ITEM,
-    PAYMENT_REQUEST,
-)
+from tasks.prime import PrimeTasks, SupportTasks, prime_path
+from utils.constants import MOVE_TASK_ORDER, MTO_SERVICE_ITEM, MTO_SHIPMENT, PAYMENT_REQUEST
 
 # from utils.base import ImplementationError
 

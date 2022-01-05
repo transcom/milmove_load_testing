@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 """ utils/constants.py is for constant values useful throughout the codebase. """
-import os
+from enum import Enum
+from pathlib import Path
 
-from .base import ValueEnum
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_FILES = BASE_DIR / "static"
 
-STATIC_FILES = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "static")
-TEST_PDF = os.path.join(STATIC_FILES, "test_upload.pdf")
+TEST_PDF = STATIC_FILES / "test_upload.pdf"
 
-STATIC_TLS_FILES = os.path.join(STATIC_FILES, "tls")
-DOD_CA_BUNDLE = os.path.join(STATIC_TLS_FILES, "dod-ca-60-61-bundle.pem")
-LOCAL_MTLS_CERT = os.path.join(STATIC_TLS_FILES, "devlocal-mtls.cer")
-LOCAL_MTLS_KEY = os.path.join(STATIC_TLS_FILES, "devlocal-mtls.key")
+STATIC_TLS_FILES = STATIC_FILES / "tls"
+
+DOD_CA_BUNDLE = STATIC_TLS_FILES / "dod-ca-60-61-bundle.pem"
+
+LOCAL_MTLS_CERT = str(STATIC_TLS_FILES / "devlocal-mtls.cer")
+LOCAL_MTLS_KEY = str(STATIC_TLS_FILES / "devlocal-mtls.key")
 
 LOCAL_TLS_CERT_KWARGS = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
 
-PRIME_API_KEY = "prime"
-SUPPORT_API_KEY = "support"
-INTERNAL_API_KEY = "internal"
+DP3_CERT_KEY_PEM_FILENAME = "dp3_tls_cert_key.pem"
+DP3_CERT_KEY_PEM = str(STATIC_TLS_FILES / DP3_CERT_KEY_PEM_FILENAME)
 
 ARRAY_MIN = 1
 ARRAY_MAX = 5
@@ -34,7 +36,7 @@ PAYMENT_REQUEST = "paymentRequest"
 QUEUES = "queues"
 
 
-class DataType(ValueEnum):
+class DataType(Enum):
     """
     Swagger data types that we expect to deal with. The latest pattern uses camelCase, while the older pattern uses snake_case.
     """

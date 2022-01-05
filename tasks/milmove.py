@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """ TaskSets and tasks for the MilMove interface. """
-import logging
 import json
+import logging
 
 from locust import task
 
-from .base import LoginTaskSet
+from utils.task import LoginTaskSet
+
 
 logger = logging.getLogger(__name__)
 

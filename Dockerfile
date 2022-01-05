@@ -7,7 +7,7 @@ ENV PIPENV_SITE_PACKAGES 1
 
 WORKDIR /app
 
-RUN pip install pipenv
+RUN pip install --no-cache-dir pipenv==2021.5.29
 
 # Copy over and install Pipfiles and use pip to install requirements
 # outside of virtualenv

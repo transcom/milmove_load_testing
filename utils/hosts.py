@@ -2,57 +2,54 @@
 """ utils/hosts.py is for the tools that handle setting the MilMove hostnames and setting up TLS certs. """
 import logging
 import os
-from typing import Optional
+from copy import deepcopy
+from enum import Enum
+from typing import Optional, Union
 
-from locust.env import Environment
+from locust import User
 
-from .base import ImplementationError, ValueEnum
-from .constants import LOCAL_MTLS_CERT, LOCAL_MTLS_KEY, DOD_CA_BUNDLE, STATIC_TLS_FILES
+from utils.base import (
+    ImplementationError,
+    MilMoveEnv,
+    is_local,
+)
+from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
 
 logger = logging.getLogger(__name__)
 
 
-class MilMoveEnv(ValueEnum):
-    LOCAL = "local"
-    EXP = "exp"
-    DOD = "dod"
-    DP3 = "dp3"
-
-
-class MilMoveDomain(ValueEnum):
+class MilMoveDomain(Enum):
     PRIME = "prime"
     OFFICE = "office"
     MILMOVE = "milmove"
 
     @property
-    def local_value(self):
+    def local_value(self) -> str:
         return f"{self.value}local"
 
-    @property
-    def deployed_value(self):
-        if self.value == self.MILMOVE.value:
-            return "my"
-
-        return self.value
-
-    def host_name(self, env, is_api=False, port="0000", protocol="https"):
-
+    def host_name(
+        self,
+        env: str,
+        port: str = "0000",
+        protocol: str = "https",
+        deployed_subdomain: str = "",
+    ) -> str:
         """
-        Returns the host name for this domain based on the environment, whether or not it is in the API domain, and the
-        port and protocol (for local envs).
-        :param env: str MilMoveEnv
-        :param is_api: bool
-        :param port: str containing 4 digits
-        :param protocol: str "https" or "http"
-        :return: str host
+        Returns the host name for this domain based on the environment, port, and protocol
+         (for local envs).
+
+        :param env: MilMoveEnv, e.g. local
+        :param port: 4 digit port to point at
+        :param protocol: "https" or "http"
+        :param deployed_subdomain: API subdomain when deployed, e.g. "api" or "my"
+        :return: host, e.g. https://api.loadtest.dp3.us
         """
         if isinstance(env, MilMoveEnv):
             env = env.value  # ensure that we're using the value string instead of the Enum literal
 
-        if env not in MilMoveEnv.values():
-            raise ImplementationError("The environment for determining the host name must be included in MilMoveEnv.")
+        milmove_env = MilMoveEnv(value=env)
 
-        if env == MilMoveEnv.LOCAL.value:
+        if is_local(env=milmove_env):
             port = str(port)  # just in case an int was passed in
             if not port.isdigit() or len(port) != 4:
                 raise ImplementationError("The local port must be a string of 4 digits.")
@@ -62,7 +59,7 @@ class MilMoveDomain(ValueEnum):
         # allow us to point to another domain if we need to
         base_domain = os.getenv("BASE_DOMAIN", "loadtest.dp3.us")
         # NOTE: deployed protocol is always https
-        return f"https://{'api' if is_api else self.deployed_value}.{base_domain}"
+        return f"https://{deployed_subdomain}.{base_domain}"
 
 
 class MilMoveHostMixin:
@@ -81,10 +78,8 @@ class MilMoveHostMixin:
     local_protocol: str = "https"
     local_port: str = "0000"
 
-    # A boolean indicating whether or not the host belongs to an API on the server.
-    # For deployed environments only, this will change the host to use api.<env>.move.mil instead of the standard
-    # domain name.
-    is_api: bool = False
+    # The subdomain to use when deployed, e.g. "api" or "my"
+    deployed_subdomain: str = "api"
 
     # The set of kwargs that will be used to authenticate an HTTP request, in the format:
     # {"cert": <cert/key file path(s)>, "verify": <False or the CA bundle file path>}
@@ -104,8 +99,11 @@ class MilMoveHostMixin:
         """
         # Check if the host value is one of our accepted environments. If not, we'll continue with the host entered
         # as-is and skip the rest of the custom setup.
-        if MilMoveEnv.validate(self.host):
+        try:
             type(self).set_milmove_env(self.host)
+        except ValueError:
+            pass
+        else:
             type(self).host = None
             type(self).set_host_name()
             type(self).set_cert_kwargs()
@@ -121,14 +119,10 @@ class MilMoveHostMixin:
         if cls.env:
             return
 
-        try:
-            cls.env = MilMoveEnv.match(env)
-        except IndexError:  # means MilMoveEnv could not find a match for the value passed in
-            logger.debug(f"Bad env value: {env}")
-            raise ImplementationError("Environment for MilMoveHostMixin must match one of the values in MilMoveEnv.")
+        cls.env = MilMoveEnv(value=env)
 
     @classmethod
-    def set_host_name(cls):
+    def set_host_name(cls: Union[User, "MilMoveHostMixin"]):
         """
         Sets the hostname based on the domain, environment, and whether or not it is an API.
 
@@ -140,10 +134,19 @@ class MilMoveHostMixin:
             return
 
         try:
-            cls.host = MilMoveDomain.match(cls.domain).host_name(
-                cls.env.value, cls.is_api, cls.local_port, cls.local_protocol
+            cls.host = MilMoveDomain(cls.domain).host_name(
+                env=cls.env.value,
+                port=cls.local_port,
+                protocol=cls.local_protocol,
+                deployed_subdomain=cls.deployed_subdomain,
             )
-            cls.alternative_host = MilMoveDomain.MILMOVE.host_name(cls.env.value, False, "8080", "http")
+
+            cls.alternative_host = MilMoveDomain.MILMOVE.host_name(
+                env=cls.env.value,
+                port="8080",
+                protocol="http",
+                deployed_subdomain=cls.deployed_subdomain,
+            )
         except IndexError:  # means MilMoveDomain could not find a match for the value passed in
             logger.debug(f"Bad domain value: {cls.domain}")
             raise ImplementationError("Domain for MilMoveHostMixin must match one of the values in MilMoveDomain.")
@@ -162,100 +165,17 @@ class MilMoveHostMixin:
         if cls.cert_kwargs:
             return
 
-        if cls.env == MilMoveEnv.LOCAL:
-            cls.cert_kwargs = {"cert": (LOCAL_MTLS_CERT, LOCAL_MTLS_KEY), "verify": False}
-            return
-
-        # We now know we're in a deployed environment, so let's make a deployed cert/key file:
-        cert_key = cls.create_deployed_cert_file()
-
-        verify_path = DOD_CA_BUNDLE
-        # DP3 certs are issued by CAs that are well known and so we
-        # don't need any special verification
-        if cls.env == MilMoveEnv.DP3:
-            verify_path = None
-
-        # We also need to use the DoD's specific CA bundle for SSL verification in deployed envs:
-        cls.cert_kwargs = {"cert": cert_key, "verify": verify_path}
-
-    @classmethod
-    def create_deployed_cert_file(cls) -> Optional[str]:
-        """
-        Grabs the TLS certificate and key values for this environment from the relevant environment variables (which
-        must be set for this function to work), and then creates a new .pem file that contains both the certificate and
-        the key for request validation. This is only called for deployed MilMove environments.
-
-        :return: str, the path to the newly created cert file
-        """
-        if cls.env == MilMoveEnv.LOCAL:
-            return  # can't complete this logic with local certs
-
-        deployed_tls_cert = os.environ.get(f"MOVE_MIL_{cls.env.value.upper()}_TLS_CERT")
-        deployed_tls_key = os.environ.get(f"MOVE_MIL_{cls.env.value.upper()}_TLS_KEY")
-
-        if not (deployed_tls_cert and deployed_tls_key):
-            logger.debug(f"Unable to find cert and key values for environment: {cls.env.value}")
-            raise ImplementationError(
-                "Cannot run load testing in a deployed environment without the matching certificate and key."
-            )
-
-        cert_key_file = os.path.join(STATIC_TLS_FILES, f"{cls.env.value}_tls_cert_key.pem")
-        with open(cert_key_file, "w") as f:
-            f.write(deployed_tls_cert)
-            f.write("\n")
-            f.write(deployed_tls_key)
-
-        return cert_key_file
-
-    @classmethod
-    def remove_deployed_cert_file(cls):
-        """
-        Removes the .pem cert/key file that was created for running load tests against a deployed environment.
-        """
-        if cls.env == MilMoveEnv.LOCAL:
-            return  # can't complete this logic with local certs
-
-        try:
-            os.remove(cls.cert_kwargs["cert"])
-        except (KeyError, TypeError, FileNotFoundError):
-            # KeyError means "cert" wasn't in the cert_kwargs dict - it may have been cleared out.
-            # TypeError means self.cert_kwargs["cert"] did not resolve to a string - also means we may have already
-            # removed this file.
-            # FileNotFoundError means whatever path was in the "cert" kwarg was incorrect or the file was already
-            # removed.
-
-            # In any case, let's try again to remove the file using the custom filename to be extra sure we're
-            # cleaning up after ourselves:
-            try:
-                os.remove(os.path.join(STATIC_TLS_FILES, f"{cls.env.value if cls.env else ''}_tls_cert_key.pem"))
-            except FileNotFoundError:
-                # The file is gone, huzzah!
-                pass
-
-        # Finally, clear out all traces of the deployed cert file:
-        cls.cert_kwargs = {}
+        if is_local(env=cls.env):
+            cls.cert_kwargs = deepcopy(LOCAL_TLS_CERT_KWARGS)
+        else:
+            cls.cert_kwargs = {"cert": DP3_CERT_KEY_PEM}
 
     @property
     def is_local(self):
         """Indicates if this user is using the local environment."""
-        return self.env == MilMoveEnv.LOCAL
+        return is_local(env=self.env)
 
     @property
     def is_deployed(self):
         """Indicates if this user is running in a deployed environment."""
-        return self.env != MilMoveEnv.LOCAL
-
-
-def clean_milmove_host_users(locust_env: Environment):
-    """
-    Cleans up the Users' cert/key settings if the User is a subclass of MilMoveHostMixin. This should be called in the
-    "test_stop" event for a locustfile/load test.
-    """
-    if locust_env.host == MilMoveEnv.LOCAL.value:
-        return  # we don't need to remove any cert files for a local test run
-
-    for user_class in locust_env.user_classes:
-        if issubclass(user_class, MilMoveHostMixin):
-            user_class.remove_deployed_cert_file()
-
-    logger.info("Cleaned up User SSL/TLS certificates.")
+        return not is_local(env=self.env)

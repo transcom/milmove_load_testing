@@ -2,8 +2,8 @@
 """ Locust test for the MilMove Customer Signup interface. """
 from locust import HttpUser, between
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain
 from tasks import MilMoveTasks
+from utils.hosts import MilMoveDomain, MilMoveHostMixin
 
 
 class MilMoveUser(MilMoveHostMixin, HttpUser):
@@ -13,6 +13,9 @@ class MilMoveUser(MilMoveHostMixin, HttpUser):
 
     local_protocol = "http"
     local_port = "8080"
+
+    deployed_subdomain = "my"
+
     domain = MilMoveDomain.MILMOVE
 
     wait_time = between(1, 9)

@@ -17,7 +17,7 @@ install_tools: ## Install tools needed for project.
 
 .PHONY: install_python_deps
 install_python_deps: ## Install all python dependencies/requirements
-	pipenv install
+	pipenv install --dev
 
 .PHONY: ensure_pre_commit
 ensure_pre_commit: .git/hooks/pre-commit ## Ensure pre-commit is installed
@@ -47,10 +47,6 @@ pretty: ## Prettify the code
 .PHONY: lint
 lint: ## Run linting tests
 	flake8 .
-
-.PHONY: generate_readme_toc
-generate_readme_toc: ## Re-generates and re-places the table of contents for the README.md
-	./gh-md-toc --insert README.md
 
 .PHONY: load_test_prime
 load_test_prime: clean ## Run load testing on the Prime API

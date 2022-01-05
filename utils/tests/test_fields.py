@@ -3,13 +3,11 @@
 import re
 
 import pytest
-
-# from pytest_mock import mocker
 from faker.generator import Generator
 
-from utils.fields import BaseAPIField, ArrayField, EnumField, ObjectField
 from utils.constants import DataType
-from utils.fake_data import MilMoveProvider, MilMoveData
+from utils.fake_data import MilMoveData, MilMoveProvider
+from utils.fields import ArrayField, BaseAPIField, EnumField, ObjectField
 
 
 class TestBaseAPIField:

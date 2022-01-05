@@ -1,26 +1,30 @@
 # -*- coding: utf-8 -*-
-""" utils/base.py is for generic utilities that don't deserve their own file and may only be used in utils. """
+"""
+This file is for generic utilities or helpers that don't merit having their own file yet.
+"""
+
+import logging
 from enum import Enum
+
+logger = logging.getLogger(__name__)
 
 
 class ImplementationError(Exception):
-    """Base exception when a util hasn't been implemented correctly."""
+    """Base exception when a utility hasn't been implemented correctly."""
 
 
-class ValueEnum(Enum):
-    @classmethod
-    def values(cls):
-        return [c.value for c in cls]
+class MilMoveEnv(Enum):
+    """
+    Valid MilMove Environments that we will target to run load tests against.
+    """
 
-    @classmethod
-    def names(cls):
-        return [c.name for c in cls]
+    LOCAL = "local"
+    DP3 = "dp3"
 
-    @classmethod
-    def validate(cls, value):
-        return isinstance(value, cls) or value in cls.values()
 
-    @classmethod
-    def match(cls, value):
-        """Returns the first literal that matches the value - throws an IndexError if not found."""
-        return [c for c in cls if c == value or c.value == value][0]
+def is_local(env: MilMoveEnv) -> bool:
+    """
+    Indicates if this user is using the local environment.
+    :return: bool indicating if we are running in the local env or not
+    """
+    return env == MilMoveEnv.LOCAL

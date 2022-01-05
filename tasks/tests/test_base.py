@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ This file tests the classes and functions in tasks/base.py """
 import logging
+
 from requests import Response
 
 from tasks.base import check_response

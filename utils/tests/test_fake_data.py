@@ -8,11 +8,13 @@ from faker import Faker
 from faker.generator import Generator
 
 from utils.constants import DataType
-from utils.fake_data import MilMoveProvider, MilMoveData
+from utils.fake_data import MilMoveData, MilMoveProvider
 
 
 class TestMilMoveProvider:
     """Tests the MilMoveProvide class and its methods."""
+
+    fake: Faker
 
     @classmethod
     def setup_class(cls):
@@ -73,9 +75,12 @@ class TestMilMoveProvider:
         Tests the first name is a string and does not equal the current first name
         """
         fake_name = self.fake.safe_first_name()
+        found = False
+
         for name in self.provider.safe_data["names"]:
             if name["first_name"] == fake_name:
                 found = True
+
         assert found
 
     def test_safe_last_name(self):
@@ -83,9 +88,12 @@ class TestMilMoveProvider:
         Tests the last name is a string and does not equal the current last name
         """
         fake_name = self.fake.safe_last_name()
+        found = False
+
         for name in self.provider.safe_data["names"]:
             if name["last_name"] == fake_name:
                 found = True
+
         assert found
 
     def test_safe_street_address(self):

@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 """ Locust test for the Prime & Support APIs """
 from locust import HttpUser, between, events
-from utils.constants import INTERNAL_API_KEY, PRIME_API_KEY
+from locust.env import Environment, RunnerType
 
-from utils.hosts import MilMoveHostMixin, MilMoveDomain, clean_milmove_host_users
-from utils.parsers import InternalAPIParser, PrimeAPIParser, SupportAPIParser
 from tasks import PrimeTasks, SupportTasks
-
-# init these classes just once because we don't need to parse the API over and over:
-prime_api = PrimeAPIParser()
-support_api = SupportAPIParser()
-internal_api = InternalAPIParser()
+from utils.auth import remove_certs, set_up_certs
+from utils.base import ImplementationError, MilMoveEnv
+from utils.hosts import MilMoveDomain, MilMoveHostMixin
 
 
 class PrimeUser(MilMoveHostMixin, HttpUser):
@@ -21,10 +17,6 @@ class PrimeUser(MilMoveHostMixin, HttpUser):
     # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove environment:
     local_port = "9443"
     domain = MilMoveDomain.PRIME  # the base domain for the host
-    is_api = True  # if True, uses the api base domain in deployed environments
-
-    # This attribute is used for generating fake requests when hitting the Prime API:
-    parser = {PRIME_API_KEY: prime_api, INTERNAL_API_KEY: internal_api}
 
     # These are locust HttpUser attributes that help define and shape the load test:
     wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
@@ -38,17 +30,57 @@ class SupportUser(MilMoveHostMixin, HttpUser):
 
     local_port = "9443"
     domain = MilMoveDomain.PRIME
-    is_api = True
-
-    parser = support_api
 
     wait_time = between(0.25, 9)
     tasks = {SupportTasks: 1}
 
 
-@events.test_stop.add_listener
-def on_test_stop(**kwargs):
+@events.init.add_listener
+def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     """
-    Clean up steps to run when the load test stops. Removes any cert files that may have been created during the setup.
+    Event hook that gets run after the locust environment has been set up. See docs for more info:
+    https://docs.locust.io/en/stable/api.html?#locust.event.Events.init
+
+    In our case, we're setting up certs.
+    :param environment: locust environment.
+    :param runner: locust runner that can be used to shut down the test run.
+    :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+    :return: None
     """
-    clean_milmove_host_users(locust_env=kwargs["environment"])
+    try:
+        milmove_env = MilMoveEnv(value=environment.host)
+    except ValueError as err:
+        # For some reason exceptions don't stop the runner automatically, so we have to do it
+        # ourselves.
+        runner.quit()
+
+        raise err
+
+    try:
+        set_up_certs(env=milmove_env)
+    except ImplementationError as err:
+        runner.quit()
+
+        raise err
+
+
+@events.quitting.add_listener
+def on_quitting(environment: Environment, **_kwargs):
+    """
+    Event hook that gets run when locust is shutting down.
+
+    We're using it to clean up certs that were created during setup.
+    :param environment: locust environment.
+    :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+    :return: None
+    """
+    try:
+        milmove_env = MilMoveEnv(value=environment.host)
+    except ValueError as err:
+        # This should in theory never happen since a similar check is done on init, but just in
+        # case...
+        environment.runner.quit()
+
+        raise err
+
+    remove_certs(env=milmove_env)
