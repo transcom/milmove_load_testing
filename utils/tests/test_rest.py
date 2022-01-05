@@ -5,12 +5,14 @@ Tests for utils/rest.py
 import json
 from json import JSONDecodeError
 from typing import NoReturn, Optional
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, create_autospec, patch
 
 import pytest
+from requests import Response
 
 from utils.rest import (
     RestMixin,
+    RestResponseContextManager,
     format_failure_msg_from_exception,
     get_json_headers,
     parse_response_json,
@@ -27,17 +29,33 @@ class TestGetJSONHeaders:
         assert {"Content-Type": "application/json", "Accept": "application/json"} == get_json_headers()
 
 
-@patch("utils.rest.RestResponseContextManager", autospec=True)
-class TestParseResponseToDict:
+def get_mock_response(basic_response: bool = False) -> MagicMock:
+    """
+    Creates a RestMixin with a mocked out client attr to mimic if we'd actually used the mixin
+    with a User or TaskSet class.
+
+    :param basic_response: whether to make a basic response
+    :return: mock response
+    """
+    if basic_response:
+        return create_autospec(Response)
+    else:
+        return create_autospec(RestResponseContextManager)
+
+
+class TestParseResponseToJSON:
     """
     Tests for parse_response_json
     """
 
-    def test_returns_proper_error_message_if_response_text_is_none(self, mock_response):
+    def test_returns_proper_error_message_for_rest_response_if_response_text_is_none(self):
+        mock_response = get_mock_response()
+
         mock_response.text = None
 
         response_time = 10.35153  # In seconds
-        mock_response.request_meta.__getitem__.return_value = response_time * 1000  # Needs to be in ms
+        mock_response.request_meta.__getitem__.return_value = response_time * 1000  # Needs to be
+        # in ms
 
         response_error = "Server Error"
         mock_response.error = response_error
@@ -54,7 +72,26 @@ class TestParseResponseToDict:
         assert response_error in error_message
         assert str(response_status_code) in error_message
 
-    def test_returns_empty_dict_and_err_msg_if_no_error_and_no_text(self, mock_response):
+    def test_returns_proper_error_message_for_base_response_if_response_text_is_none(self):
+        mock_response = get_mock_response(basic_response=True)
+
+        mock_response.text = None
+
+        response_error = "Server Error"
+        mock_response.error = response_error
+
+        response_status_code = 500
+        mock_response.status_code = response_status_code
+
+        parsed_json, error_message = parse_response_json(mock_response)
+
+        assert not parsed_json
+
+        assert response_error in error_message
+        assert str(response_status_code) in error_message
+
+    @pytest.mark.parametrize("mock_response", (get_mock_response(), get_mock_response(basic_response=True)))
+    def test_returns_empty_dict_and_err_msg_if_no_error_and_no_text(self, mock_response: MagicMock):
         mock_response.text = ""
 
         parsed_json, error_message = parse_response_json(mock_response)
@@ -62,7 +99,8 @@ class TestParseResponseToDict:
         assert not parsed_json
         assert not error_message
 
-    def test_returns_proper_error_message_if_response_text_is_not_json(self, mock_response):
+    @pytest.mark.parametrize("mock_response", (get_mock_response(), get_mock_response(basic_response=True)))
+    def test_returns_proper_error_message_if_response_text_is_not_json(self, mock_response: MagicMock):
         mock_response.text = "Not Authorized"
 
         response_status_code = 403

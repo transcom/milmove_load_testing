@@ -16,6 +16,7 @@ from typing import Any, Dict, Tuple, Union
 
 from locust import FastHttpUser, HttpUser, TaskSet
 from locust.clients import ResponseContextManager
+from requests import Response
 
 from utils.types import ExceptionType, JSONType
 
@@ -89,7 +90,7 @@ def get_json_headers() -> dict[str, str]:
     return {"Content-Type": "application/json", "Accept": "application/json"}
 
 
-def parse_response_json(response: RestResponseContextManager) -> Tuple[JSONType, str]:
+def parse_response_json(response: Union[RestResponseContextManager, Response]) -> Tuple[JSONType, str]:
     """
     Takes a response object and tries to parse its text content into a dictionary. Returns a tuple
     with the first item being the parsed response text as a dictionary (defaults to an empty dict)
@@ -104,14 +105,16 @@ def parse_response_json(response: RestResponseContextManager) -> Tuple[JSONType,
     error_message = ""
 
     if response.text is None:
-        # round the response time to the nearest second to improve error grouping. request_meta
-        # contains the time in milliseconds, so we need to convert to seconds, and then round.
-        response_time = round(response.request_meta["response_time"] / 1000, 1)
+        error_message = f"response body None, error {response.error}, response code {response.status_code}"
 
-        error_message = (
-            f"response body None, error {response.error}, response code {response.status_code}, "
-            f"response time ~{response_time}s."
-        )
+        try:
+            # round the response time to the nearest second to improve error grouping. request_meta
+            # contains the time in milliseconds, so we need to convert to seconds, and then round.
+            response_time = round(response.request_meta["response_time"] / 1000, 1)
+        except AttributeError:
+            pass  # Only RestResponseContextManager has the `request_meta`
+        else:
+            error_message = f"{error_message}, response time ~{response_time}s."
 
         return data, error_message
 
