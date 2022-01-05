@@ -49,7 +49,7 @@ class MilMoveDomain(Enum):
 
         milmove_env = MilMoveEnv(value=env)
 
-        if milmove_env == MilMoveEnv.LOCAL:
+        if is_local(env=milmove_env):
             port = str(port)  # just in case an int was passed in
             if not port.isdigit() or len(port) != 4:
                 raise ImplementationError("The local port must be a string of 4 digits.")
