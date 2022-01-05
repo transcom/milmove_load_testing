@@ -244,11 +244,14 @@ class TestPrimeDataStorageMixin:
         # Random list to use after first run, none of these values will be used after the default IDs are initially set:
         test_moves_after = [
             {
-                "contractorID": "contractor4",
-                "order": {
-                    "uploadedOrdersID": "upload4",
-                    "destinationDutyStationID": "destination4",
-                    "originDutyStationID": "origin4",
+                "id": "101",
+                "status": 200,
+                "json": {
+                    "order": {
+                        "uploadedOrdersID": "upload101",
+                        "destinationDutyStationID": "destination101",
+                        "originDutyStationID": "origin101",
+                    },
                 },
             }
         ]
@@ -257,14 +260,16 @@ class TestPrimeDataStorageMixin:
         session_storage1 = PrimeSessionStorage1()
         session_storage2 = PrimeSessionStorage2()
 
-        session_storage1.set_default_mto_ids(test_moves)
+        for move in test_moves:
+            session_storage1.set_default_mto_ids(move["id"])
 
         assert session_storage1.default_mto_ids == expected_ids
         assert session_storage1.default_mto_ids == session_storage2.default_mto_ids
         assert len(responses.calls) == 4
 
         # Call func again with new list, but all values should stay the same as before:
-        session_storage2.set_default_mto_ids(test_moves_after)
+        for move in test_moves_after:
+            session_storage2.set_default_mto_ids(move["id"])
 
         assert session_storage1.default_mto_ids == expected_ids
         assert session_storage1.default_mto_ids == session_storage2.default_mto_ids

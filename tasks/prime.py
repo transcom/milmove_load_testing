@@ -5,6 +5,7 @@ import json
 import random
 from copy import deepcopy
 from typing import Dict
+from datetime import datetime
 
 from locust import tag, task, TaskSet
 
@@ -132,7 +133,7 @@ class PrimeDataStorageMixin:
 
         data_list.append(new_data)
 
-    def set_default_mto_ids(self, moves):
+    def set_default_mto_ids(self, move_id):
         """
         Given a list of Move Task Orders, gets the four ID values needed to create more MTOs:
           - contractorID
@@ -154,54 +155,29 @@ class PrimeDataStorageMixin:
         if self.has_all_default_mto_ids():
             return
 
-        headers = {"content-type": "application/json"}
-        for move in moves:
-            # Call the Support API to get full details on the move:
-            resp = self.client.get(
-                support_path(f"/move-task-orders/{move['id']}"),
-                name=support_path("/move-task-orders/{moveTaskOrderID}"),
-                headers=headers,
-                **self.cert_kwargs,
+        # Call the Support API to get full details on the move:
+        resp = self.client.get(
+            support_path(f"/move-task-orders/{move_id}"),
+            name=support_path("/move-task-orders/{moveTaskOrderID}"),
+            headers={"content-type": "application/json"},
+            **self.cert_kwargs,
+        )
+        move_details, success = check_response(resp, "getMoveTaskOrder")
+
+        # Get the values we need from the move and set them in self.default_move_ids.
+        # If this move is missing any of these values, we default to using whatever value is already in
+        # self.default_mto_ids, which could be nothing, or could be a value gotten from a previous move.
+        # This way we never override good ID values from earlier moves in the list.
+        self.default_mto_ids["contractorID"] = move_details.get("contractorID", self.default_mto_ids["contractorID"])
+        if order_details := move_details.get("order"):
+            self.default_mto_ids["uploadedOrdersID"] = order_details.get(
+                "uploadedOrdersID", self.default_mto_ids["uploadedOrdersID"]
             )
-            move_details, success = check_response(resp, "getMoveTaskOrder")
-
-            if not success:
-                continue  # try again with the next move in the list
-
-            # Get the values we need from the move and set them in self.default_move_ids.
-            # If this move is missing any of these values, we default to using whatever value is already in
-            # self.default_mto_ids, which could be nothing, or could be a value gotten from a previous move.
-            # This way we never override good ID values from earlier moves in the list.
-            self.default_mto_ids["contractorID"] = move_details.get(
-                "contractorID", self.default_mto_ids["contractorID"]
+            self.default_mto_ids["destinationDutyStationID"] = order_details.get(
+                "destinationDutyStationID", self.default_mto_ids["destinationDutyStationID"]
             )
-            if order_details := move_details.get("order"):
-                self.default_mto_ids["uploadedOrdersID"] = order_details.get(
-                    "uploadedOrdersID", self.default_mto_ids["uploadedOrdersID"]
-                )
-                self.default_mto_ids["destinationDutyStationID"] = order_details.get(
-                    "destinationDutyStationID", self.default_mto_ids["destinationDutyStationID"]
-                )
-                self.default_mto_ids["originDutyStationID"] = order_details.get(
-                    "originDutyStationID", self.default_mto_ids["originDutyStationID"]
-                )
-
-            # Do we have all the ID values we need? Cool, then stop processing.
-            if self.has_all_default_mto_ids():
-                logger.info(f"☑️ Set default MTO IDs for createMoveTaskOrder: \n{self.default_mto_ids}")
-                break
-
-        # If we're in the local environment, and we have gone through the entire list without getting a full set of IDs,
-        # set our hardcoded IDs as the default:
-        if not self.has_all_default_mto_ids() and self.user.is_local:
-            logger.warning("⚠️ Using hardcoded MTO IDs for LOCAL env")
-            self.default_mto_ids.update(
-                {
-                    "contractorID": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
-                    "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
-                    "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
-                    "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
-                }
+            self.default_mto_ids["originDutyStationID"] = order_details.get(
+                "originDutyStationID", self.default_mto_ids["originDutyStationID"]
             )
 
     def has_all_default_mto_ids(self) -> bool:
@@ -225,6 +201,7 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         return f"{self.user.alternative_host}{url}"
 
     def on_start(self):
+        # Customer login using dev local
         self.client.get(self.customer_path("/devlocal-auth/login"))
         self.csrf_token = self.client.cookies.get("masked_gorilla_csrf")
         self.client.headers.update({"x-csrf-token": self.csrf_token})
@@ -242,8 +219,10 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
         email = json_resp["email"]
         user_id = json_resp["id"]
 
-        origin_duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=29"))
-        current_station_id = origin_duty_stations.json()[0]["id"]
+        # Setup customer profile
+        duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=palms"))
+        stations = duty_stations.json()
+        current_station_id = stations[0]["id"]
 
         overrides = {
             "id": service_member_id,
@@ -253,14 +232,12 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             "email_is_preferred": True,
             "current_station_id": current_station_id,
         }
-
         payload = self.fake_request("/service_members/{serviceMemberId}", "patch", INTERNAL_API_KEY, overrides, True)
-        self.client.patch(
+        service_member_resp = self.client.patch(
             self.customer_path(f"/internal/service_members/{service_member_id}"),
             name="/internal/service_members/{serviceMemberId}",
             data=json.dumps(payload),
             headers={"content-type": "application/json"},
-            **self.user.cert_kwargs,
         )
 
         overrides = {"permission": "NONE"}
@@ -272,23 +249,83 @@ class PrimeTasks(PrimeDataStorageMixin, ParserTaskMixin, CertTaskMixin, TaskSet)
             name="/internal/service_members/{serviceMemberId}/backup_contacts",
             data=json.dumps(payload),
             headers={"content-type": "application/json"},
-            **self.user.cert_kwargs,
         )
 
-    @tag(MOVE_TASK_ORDER, "listMoves")
-    @task
-    def list_moves(self):
-        timeout = {}
-        if self.user.is_local:
-            timeout["timeout"] = 15  # set a timeout of 15sec if we're running locally - just for this endpoint
+        # Setup customer order
+        overrides = {
+            "service_member_id": service_member_id,
+            "issue_date": datetime.now().strftime("%Y-%m-%d"),
+            "report_by_date": datetime.now().strftime("%Y-%m-%d"),
+            "orders_type": "PERMANENT_CHANGE_OF_STATION",
+            "has_dependents": False,
+            "spouse_has_pro_gear": False,
+            "new_duty_station_id": stations[1]["id"],
+            "orders_number": None,
+            "tac": None,
+            "sac": None,
+            "department_indicator": None,
+        }
+        payload = self.fake_request("/orders", "post", INTERNAL_API_KEY, overrides, True)
+        order_resp = self.client.post(
+            self.customer_path("/internal/orders"),
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
+        )
+        order = order_resp.json()
 
-        resp = self.client.get(prime_path("/moves"), **self.cert_kwargs, **timeout)
-        moves, success = check_response(resp, "listMoves")
+        document_id = order["uploaded_orders"]["id"]
+        upload_file = {"file": open(TEST_PDF, "rb")}
+        self.client.post(
+            self.customer_path(f"/internal/uploads?documentId={document_id}"),
+            name="/internal/uploads",
+            files=upload_file,
+        )
 
-        # Use these MTOs to set the ID values we'll need to create more MTOs
-        # (NOTE: we don't care about a failure here because we can set the default IDs instead,
-        # if this is running locally)
-        self.set_default_mto_ids(moves or [])
+        # Setup customer shipment
+        move_id = order["moves"][0]["id"]
+        self.client.patch(
+            self.customer_path(f"/internal/moves/{move_id}"),
+            name="/internal/moves/{moveId}",
+            data=json.dumps({"selected_move_type": "HHG"}),
+            headers={"content-type": "application/json"},
+        )
+
+        service_member = service_member_resp.json()
+        address = service_member["residential_address"]
+        address.pop("id")  # remove unneeded id
+        overrides = {
+            "moveTaskOrderID": move_id,
+            "shipmentType": "HHG",
+            "pickupAddress": address,
+            "agents": [],
+        }
+        payload = self.fake_request("/mto_shipments", "post", INTERNAL_API_KEY, overrides, True)
+        self.client.post(
+            self.customer_path("/internal/mto_shipments"),
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
+        )
+
+        # Confirm move request
+        full_name = f"{service_member['first_name']} {service_member['last_name']}"
+        overrides = {
+            "certification_type": "SHIPMENT",
+            "signature": full_name,
+            "date": datetime.now().strftime(
+                "%Y-%m-%dT%H:%M:%S-05:00"
+            ),  # needed because yaml uses date instead of date-time
+            "personally_procured_move_id": None,
+        }
+        payload = self.fake_request("/moves/{moveId}/submit", "post", INTERNAL_API_KEY, overrides, True)
+        self.client.post(
+            self.customer_path(f"/internal/moves/{move_id}/submit"),
+            name="/internal/moves/{moveId}/submit",
+            data=json.dumps(payload),
+            headers={"content-type": "application/json"},
+        )
+
+        # Set local variables with needed info to create a move
+        self.set_default_mto_ids(move_id)
 
     @tag(MTO_SERVICE_ITEM, "createMTOServiceItem")
     @task
