@@ -700,6 +700,8 @@ from locust.env import Environment, RunnerType
 from tasks.prime import PrimeTasks
 from utils.base import MilMoveEnv
 from utils.request import MilMoveRequestPreparer
+from utils.rest import parse_response_json
+from utils.types import JSONArray
 
 
 class PrimeUser(HttpUser):
@@ -730,7 +732,19 @@ def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
 
   response = requests.get(url=moves_path, **request_kwargs)
 
-  moves = response.json()  # if this raises a JSONDecodeError, it'll be caught in the init hook
+  # This function will handle parsing the response content for us, so we can work with the data more
+  # easily and creates a nice error message. Alternatively, we could call response.json() and let
+  # the caller catch any exceptions (since it's already set up to do that).
+  moves, error_msg = parse_response_json(response=response)
+
+  # `moves` comes back as a JSONType which is more generic so this states we specifically expect it
+  # to be a JSONArray
+  moves: JSONArray
+
+  if error_msg:
+    print(error_msg)
+
+    return
 
   if moves:
     print(f"\n{moves[0]=}\n")
@@ -868,6 +882,8 @@ The `rest` context manager makes it easier to work with responses by:
   calling `resp.success()`) or a failure (`resp.failure("message")` like at the end of the example).
 * automatically parsing the response content into json and failing the load test if it can't be
   parsed. The parsed json response content can be accessed in `resp.js`.
+  * In an example earlier, you can see `parse_response_json` being used. The context manager uses
+    that internally to populate `resp.js`.
 * automatically catching of any exceptions that may be raised in your `with` block, which will then
   mark the load test as a failure and format an error message to display in the results.
 
