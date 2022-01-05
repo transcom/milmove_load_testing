@@ -155,13 +155,11 @@ class PrimeDataStorageMixin:
         if self.has_all_default_mto_ids():
             return
 
-        headers = {"content-type": "application/json"}
-
         # Call the Support API to get full details on the move:
         resp = self.client.get(
             support_path(f"/move-task-orders/{move_id}"),
             name=support_path("/move-task-orders/{moveTaskOrderID}"),
-            headers=headers,
+            headers={"content-type": "application/json"},
             **self.cert_kwargs,
         )
         move_details, success = check_response(resp, "getMoveTaskOrder")
@@ -180,24 +178,6 @@ class PrimeDataStorageMixin:
             )
             self.default_mto_ids["originDutyStationID"] = order_details.get(
                 "originDutyStationID", self.default_mto_ids["originDutyStationID"]
-            )
-
-        # Do we have all the ID values we need? Cool, then stop processing.
-        if self.has_all_default_mto_ids():
-            logger.info(f"☑️ Set default MTO IDs for createMoveTaskOrder: \n{self.default_mto_ids}")
-            return
-
-        # If we're in the local environment, and we have gone through the entire list without getting a full set of IDs,
-        # set our hardcoded IDs as the default:
-        if not self.has_all_default_mto_ids() and self.user.is_local:
-            logger.warning("⚠️ Using hardcoded MTO IDs for LOCAL env")
-            self.default_mto_ids.update(
-                {
-                    "contractorID": "5db13bb4-6d29-4bdb-bc81-262f4513ecf6",
-                    "destinationDutyStationID": "71b2cafd-7396-4265-8225-ff82be863e01",
-                    "originDutyStationID": "1347d7f3-2f9a-44df-b3a5-63941dd55b34",
-                    "uploadedOrdersID": "c26421b0-e4c3-446b-88f3-493bb25c1756",
-                }
             )
 
     def has_all_default_mto_ids(self) -> bool:
