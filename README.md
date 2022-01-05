@@ -53,8 +53,10 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Metrics](#metrics)
       * [Handling Rate Limiting](#handling-rate-limiting)
 * [Working With Load Tests](#working-with-load-tests)
-  * [Creating A New Locustfile](#creating-a-new-locustfile)
-  * [Creating TaskSets](#creating-tasksets)
+  * [Locustfiles](#locustfiles)
+    * [Locust Event Hooks](#locust-event-hooks)
+      * [Making Requests Outside A User Or TaskSet Class](#making-requests-outside-a-user-or-taskset-class)
+  * [TaskSets](#tasksets)
   * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
 * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
   * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
@@ -515,10 +517,31 @@ by this code:
 
 ## Working With Load Tests
 
-### Creating A New Locustfile
+There are two main things to keep in mind when it comes to load testing with `locust` and how we
+have our load tests structured. In order to run a load test, you need:
 
-If you are developing load testing for a new MilMove application, or perhaps just designing a new
-suite of tests, the first step will be to create a new locustfile in the `locustfiles/` directory.
+* a `locustfile` which serves as the entry point and defines your `User` classes.
+* a task set file which serves to define `TaskSet`s, which are the work the users should perform.
+
+The docs below will go over each of these so that you can understand our existing files and either
+create more or edit them as needed.
+
+One thing to note is that `locust` has a concept of `host` that differs a bit from how we use it.
+`locust` defaults to using `host` in the `User`/`TaskSet` context as a base domain to then add on to
+when you make requests, but because we have a need to make requests outside the `User`/`TaskSet`
+context, we've taken a slightly different approach.
+
+We use `locust`'s `host` value as a key to know which mymove server we want to target (mentioned in
+the [Load Tests: Running Locust Locally](#load-tests-running-locust-locally) section). We use
+`locust`'s `host` value combined with an `Enum` called `MilMoveEnv` to know what environment we're
+targeting. Then we combine it with a helper class called `MilMoveRequestPreparer` which helps us
+build proper URLs and enables us to make requests more easily in and out of the `User`/`TaskSet`
+context.
+
+### Locustfiles
+
+Our `locustfiles` live in the `locustfiles/` directory. We likely already have all the ones you
+need, but if not, this is where you would add a new one.
 
 This where you will define all of the `User` classes for your load tests. A common user might look
 like:
@@ -530,31 +553,242 @@ Example of a locustfile...
 """
 from locust import HttpUser, between
 
+from tasks.prime import PrimeTasks
 
-class MyUser(HttpUser):
+
+class PrimeUser(HttpUser):
   """
   A user that can test things...
   """
 
+  tasks = {PrimeTasks: 1}
+
   # The time (in seconds) Locust waits in between tasks. Can use decimals.
   wait_time = between(0.25, 9)
+
 ```
 
 You will need to specify what tasks this user should run. This can be done via a `tasks` attribute
-on the class or defining tasks directly on the user class. In our repo, we primarily use the `tasks`
-attribute and pass it task sets. The next section will show examples of this.
+on the class (like in the example above) or defining tasks directly on the user class. In our repo,
+we use the `tasks` attribute and pass it task sets.
 
-### Creating TaskSets
+#### Locust Event Hooks
+
+In addition to the `User` classes, another thing that the `locustfiles` will have is hooks. Hooks
+provide a way to run code when a given event occurs, e.g. `locust` initializes, load testing is
+starting, etc. You can see more info on the
+[locust event hooks docs](https://docs.locust.io/en/stable/extending-locust.html).
+
+We have a few hooks we use in our `locusfiles` to help out with making requests to the Prime API.
+They set up certs needed to auth our requests. You'll see them look something like this:
+
+```python
+# -*- coding: utf-8 -*-
+"""
+Example of a locustfile with event hooks...
+"""
+from locust import HttpUser, between, events
+from locust.env import Environment, RunnerType
+
+from tasks import PrimeTasks
+from utils.auth import remove_certs, set_up_certs
+from utils.base import ImplementationError, MilMoveEnv
+
+
+class PrimeUser(HttpUser):
+  """
+  A user that can test things...
+  """
+
+  tasks = {PrimeTasks: 1}
+
+  # The time (in seconds) Locust waits in between tasks. Can use decimals.
+  wait_time = between(0.25, 9)
+
+
+@events.init.add_listener
+def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
+  """
+  Event hook that gets run after the locust environment has been set up. See docs for more info:
+  https://docs.locust.io/en/stable/api.html?#locust.event.Events.init
+
+  In our case, we're setting up certs.
+  :param environment: locust environment.
+  :param runner: locust runner that can be used to shut down the test run.
+  :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+  :return: None
+  """
+  # Here we're taking locust's `host` variable from the `environment` and turning it into a
+  # MilMoveEnv instance, e.g. MilMoveEnv.LOCAL.
+  try:
+    milmove_env = MilMoveEnv(value=environment.host)
+  except ValueError as err:
+    # For some reason exceptions don't stop the runner automatically, so we have to do it
+    # ourselves.
+    runner.quit()
+
+    raise err
+
+  # Then we use our MilMoveEnv instance, milmove_env, to set up the certs needed for making requests
+  # to the Prime API.
+  try:
+    set_up_certs(env=milmove_env)
+  except ImplementationError as err:
+    runner.quit()
+
+    raise err
+
+
+@events.quitting.add_listener
+def on_quitting(environment: Environment, **_kwargs):
+  """
+  Event hook that gets run when locust is shutting down.
+
+  We're using it to clean up certs that were created during setup.
+  :param environment: locust environment.
+  :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+  :return: None
+  """
+  # Here again we'll need our instance of a MilMoveEnv, so we'll turn the `environment.host` into
+  # our version of it.
+  try:
+    milmove_env = MilMoveEnv(value=environment.host)
+  except ValueError as err:
+    # This should in theory never happen since a similar check is done on init, but just in
+    # case...
+    environment.runner.quit()
+
+    raise err
+
+  # Then we need to use that MilMoveEnv instance to remove the certs that the init hook created.
+  remove_certs(env=milmove_env)
+
+```
+
+Here you can see two examples of hooks, one that runs after `locust` has finished initializing, but
+before load testing has begun, and one that runs when `locust` is shutting down. In this case we're
+setting up and removing certs needed for interacting with the Prime API.
+
+One thing to note is that because the `locustfile` is the entry point for `locust` if you have a
+hook that you want to run across `locustfiles`, you'll need to hook up your function in each file.
+
+We have a sample `locustfile` located at `locustfiles/lifecycle.py` that you can run to see some
+printed statements showing you some `locust` hooks and the order they run in. You can test it by
+running:
+
+```shell
+locust -f locustfiles/lifecycle.py --headless -u 1 -r 1 -t 1s
+```
+
+Note that we don't define a `host` because it sets one up in the file because of the way it's using
+a `Postman` test API.
+
+##### Making Requests Outside A User Or TaskSet Class
+
+Another use for event hooks is if you need to make some requests before the load tests begin at all.
+Here is an example:
+
+```python
+# -*- coding: utf-8 -*-
+"""
+Example of a locustfile making a request in an event hook...
+"""
+import requests
+from locust import HttpUser, between, events
+from locust.env import Environment, RunnerType
+
+from tasks.prime import PrimeTasks
+from utils.base import MilMoveEnv
+from utils.request import MilMoveRequestPreparer
+
+
+class PrimeUser(HttpUser):
+  """
+  A user that can test the Prime API
+  """
+
+  # These are locust HttpUser attributes that help define and shape the load test:
+
+  tasks = {PrimeTasks: 1}  # the set of tasks to be executed and their relative weight
+
+  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
+  wait_time = between(0.25, 9)
+
+
+def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
+  """
+  Sample of func that can set up or get data before tests start.
+  :param env: MilMoveEnv that we're targeting, e.g. MilMoveEnv.LOCAL
+  """
+  # Note how we can use the `MilMoveRequestPreparer` class combined with the `MilMoveEnv` instance
+  # to make it easier to prepare for making requests.
+  request_preparer = MilMoveRequestPreparer(env=env)
+
+  # Here request_kwargs will include the necessary headers for making a json request and the certs
+  # needed to auth to the Prime API.
+  moves_path, request_kwargs = request_preparer.prep_prime_request(endpoint="/moves")
+
+  response = requests.get(url=moves_path, **request_kwargs)
+
+  moves = response.json()  # if this raises a JSONDecodeError, it'll be caught in the init hook
+
+  if moves:
+    print(f"\n{moves[0]=}\n")
+  else:
+    print("No moves found.")
+
+
+@events.init.add_listener
+def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
+  """
+  Event hook that gets run after the locust environment has been set up. See docs for more info:
+  https://docs.locust.io/en/stable/api.html?#locust.event.Events.init
+
+  In our case, we're setting up for the load tests.
+
+  :param environment: locust environment.
+  :param runner: locust runner that can be used to shut down the test run.
+  :param _kwargs: Other kwargs we aren't using that are passed to hook functions.
+  :return: None
+  """
+  try:
+    milmove_env = MilMoveEnv(value=environment.host)
+  except ValueError as err:
+    # For some reason exceptions don't stop the runner automatically, so we have to do it
+    # ourselves.
+    runner.quit()
+
+    raise err
+
+  # For the sake of brevity, the code for setting up and removing the certs was excluded from this
+  # example.
+
+  try:
+    set_up_for_prime_load_tests(env=milmove_env)
+  except Exception as err:
+    runner.quit()
+
+    raise err
+
+```
+
+Note that we're using the `requests` package directly to make our requests. The nice thing about
+using the `MilMoveRequestPreparer` class is that it enables us to set up requests in a similar
+manner both in and out of the `User`/`TaskSet` context. Examples of using it in the `TaskSet`
+context will be in the [TaskSets](#tasksets) section.
+
+### TaskSets
 
 Tasks are distinct functions, or callables, that tell Locust what to do during load testing. A task
 is, in essence, a load test. `TaskSet` classes are a way to link tasks together and keep the code
-organized. It is possible for a user class to have more than one task set, but it's important to
-keep in mind is that if a user has more than one task set, they will only ever switch between the
-task sets if you remember to have the task set stop at some point. Otherwise, the user will just
-stay stuck on their first task set until the load tests end. Examples will be included below.
+organized. Task sets and functions should all be defined in python files in the `tasks/` directory.
 
-Task sets and functions should all be defined in python files in the `tasks/` directory. An
-example `TaskSet` for this project might be:
+It is possible for a user class to have more than one task set, but it's important to keep in mind
+is that if a user has more than one task set, they will only ever switch between the task sets if
+you remember to have the task set stop at some point. Otherwise, the user will just stay stuck on
+their first task set until the load tests end. Examples will be included below.
+
+An example `TaskSet` for this project might be:
 
 ```python
 # -*- coding: utf-8 -*-
@@ -615,8 +849,9 @@ Note that we are using the `RestTaskSet` as our parent class. It enables easier 
 control over whether a load test should be considered a success or failure. Among the things it
 provides are the `self.request_preparer` object and `self.rest` context manager.
 
-The `request_preparer` has several helper functions for preparing to make a request to the mymove
-server:
+The `request_preparer` is an instance of the helper class mentioned earlier called
+`MilMoveRequestPreparer` and has several helper functions for preparing to make a request to the
+mymove server:
 
 * `prep_ghc_request`
 * `prep_internal_request`
@@ -640,6 +875,10 @@ Also note that we included a `stop` task that means at some point, that task wil
 the task set will end, passing control back to the parent. In our case this means the user class,
 but locust does allow nested task sets, in which case it would give control back to the parent task
 set.
+
+One last thing to point out is that we used the `@task` decorator for the `TaskSet`'s
+methods/functions. This is the key part that turns the methods into load tests. Any methods that
+don't have the `@task` decorator will be regular methods that the `TaskSet` has access to.
 
 For more details on `TaskSet`s, see the
 [locust TaskSet class docs](https://docs.locust.io/en/stable/tasksets.html).
@@ -716,30 +955,22 @@ class MyLoggedInTasks(LoginTaskSet):
 There are multiple other ways to organize and link tasks together, but using our `RestTaskSet` and
 `LoginTaskSet` classes is the main recommendation in this repo.
 
-[//]: # ( TODO: anything after here hasn't been updated yet)
-
 ### Adding tasks to existing load tests
 
-Adding a task to an existing load test is thankfully a fairly straight-forward process that requires
-just a bit of research and just a bit of coding. Here are the general steps:
+If you want to add a load test, here are the general steps (more detailed information can be found
+in the rest of the documentation):
 
-* Locate the locust file your test needs to be run from.
-* Figure out which user class (if multiple) that will run your task.
-  * Generally a `HttpUser` only has one host to use as the base for its tasks, so find the one with
-    the right host for your endpoint.
-* Pick a `TaskSet` used by the user for your task.
-  * This should make sense thematically, but using clues like if the tasks in a `TaskSet` use the
-    same login or certificates that you need for your task, then that's probably the place to be.
-  * But keep in mind that it may not make sense in any of the current task sets - or maybe
-    the `TaskSet` is used in multiple places and you don't want to affect other load tests in the
-    system. In that case, you should create a new one.
-* Add a function with the code for your task to the `TaskSet`. Make sure to decorate it with `@task`
-  .
-  * You should also decorate it with any tags you think are relevant to this task. Look at some of
-    the other tags for this user to give you an idea of what you have to work with. This should look
-    like `@tag('tag1', 'tag2')` either directly above or below the `@task` decorator.
-* Run the load test and check that your task is working properly.
-  * If it is, you're good to go!
+1. Start by finding (or creating) the corresponding `User` class (e.g. `PrimeUser`)
+2. Find (or creating) the `TaskSet` that defines the tasks (load tests) the user will perform.
+   1. We have `TaskSets` for all of our users, so you may be able to add your new load test to an
+      existing class, but one thing to keep in mind is that some `TaskSets` are shared across users.
+   2. If the `TaskSet` is used by multiple `User` classes, see if it makes sense for your load test
+      to be run by all the users that use the existing `TaskSet` or if you should create a new
+      `TaskSet` and add it to the user's `tasks` attribute.
+3. Add a task (a function/method decorated with the `@task` decorator) to the `TaskSet`.
+   1. You should also decorate it with any tags you think are relevant to this task.
+4. Run the load test and check that your task is working properly.
+   1. If it is, you're good to go!
 
 ## AWS Deployed Environment Setup
 
@@ -757,6 +988,8 @@ these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1469284356/A
 
 Refer to
 these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1512603655/Deploying+load-tests+to+AWS#Instructions)
+
+[//]: # ( TODO: anything after here hasn't been updated yet)
 
 ## Fake Data Generation
 
