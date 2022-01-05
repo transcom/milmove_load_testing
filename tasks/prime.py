@@ -151,7 +151,7 @@ class PrimeDataStorageMixin:
 
         data_list.append(new_data)
 
-    def set_default_mto_ids(self, move_id):
+    def set_default_mto_ids(self, move_id: str):
         """
         Given a list of Move Task Orders, gets the four ID values needed to create more MTOs:
           - contractorID
@@ -166,7 +166,7 @@ class PrimeDataStorageMixin:
 
         CAN ONLY be used when subclassed with TaskSet and CertTaskMixin.
 
-        :param moves: list of JSON/dict objects
+        :param move_id: Move UUID
         :return: None
         """
         # Checks that we have a full set of MTO IDs already and halts processing if so:
@@ -341,7 +341,7 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
 
         payload = fake_data_generator.generate_fake_request_data(
             api_key=APIKey.INTERNAL,
-            path="/mto_shipment",
+            path="/mto_shipments",
             method="post",
             overrides=overrides,
             require_all=True,
