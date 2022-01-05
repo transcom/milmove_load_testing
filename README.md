@@ -58,12 +58,12 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Making Requests Outside A User Or TaskSet Class](#making-requests-outside-a-user-or-taskset-class)
   * [TaskSets](#tasksets)
   * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
+  * [Fake Data Generation](#fake-data-generation)
+    * [API Parsers](#api-parsers)
 * [AWS Deployed Environment Setup](#aws-deployed-environment-setup)
   * [Deploying to the Load Testing Environment](#deploying-to-the-load-testing-environment)
   * [Resetting the DB After a Load Test](#resetting-the-db-after-a-load-test)
   * [Deploying New Tests](#deploying-new-tests)
-* [Fake Data Generation](#fake-data-generation)
-  * [Creating a custom parser](#creating-a-custom-parser)
 * [References](#references)
 
 <!-- Regenerate with "pre-commit run -a markdown-toc" -->
@@ -988,93 +988,226 @@ in the rest of the documentation):
 4. Run the load test and check that your task is working properly.
    1. If it is, you're good to go!
 
-## AWS Deployed Environment Setup
+### Fake Data Generation
 
-### Deploying to the Load Testing Environment
+We have several helpers to generate fake data for requests, allowing us to create more dynamic
+bodies and simulating varied user input/behavior. At a top level, and the level at which you will
+use it more often, we have a function called `get_api_fake_data_generator` that will return an
+object you can use to generate fake data.
 
-Refer to
-these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1470922798/How+to+deploy+to+Experimental+or+Demo+or+Loadest)
+Here is what it would look like to use the fake data generator in a `TaskSet`:
 
-### Resetting the DB After a Load Test
+```python
+# -*- coding: utf-8 -*-
+"""
+Example of a TaskSet file using the fake data generator...
+"""
+import logging
+import random
 
-Refer to
-these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1469284356/Atlantis+Restore+Post-Load+Testing)
+from locust import tag, task
 
-### Deploying New Tests
+from utils.constants import ZERO_UUID
+from utils.parsers import APIKey, get_api_fake_data_generator
+from utils.rest import RestResponseContextManager
+from utils.task import RestTaskSet
 
-Refer to
-these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1512603655/Deploying+load-tests+to+AWS#Instructions)
 
-[//]: # ( TODO: anything after here hasn't been updated yet)
+logger = logging.getLogger(__name__)
+fake_data_generator = get_api_fake_data_generator()
 
-## Fake Data Generation
 
-This repo also contains a tool to generate fake data for creating dynamic request bodies and
-simulating more varied user behavior, the `APIParser` class. It parses an API `.yaml` file using a
-path or URL using the `prance` library to create a fully-resolved dictionary of its Swagger
-specification. The main methods are:
+# tags are useful to add at a TaskSet and task level to enable running only specific load tests.
+@tag('support')
+class SupportTasks(RestTaskSet):
+  """
+  Description of the flow for these tasks here.
+  """
+
+  @task
+  def stop(self) -> None:
+    """
+    This ensures that at some point, the user will stop running the tasks in this task set.
+    """
+    self.interrupt()
+
+  @tag('createMTOShipment')
+  @task
+  def create_mto_shipment(self) -> None:
+    """
+    Create a shipment on a move.
+    """
+    # First we'll need a move to work with
+    moves_path, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+
+    with self.rest(method="GET", url=moves_path, **request_kwargs) as resp:
+      # This will let our editors know that we expect `resp` to be an instance of
+      # `RestResponseContextManager`, which then lets it know what type hints to suggest below.
+      resp: RestResponseContextManager
+
+      # Lastly, validate the response and/or log any relevant info:
+      logger.info(f"ℹ️ Status code: {resp.status_code}")
+
+      if isinstance(resp.js, list) and resp.js:
+        moves = resp.js
+      else:
+        # if you wanted to, you could mark this load test as a failure by doing this:
+        resp.failure("No moves found!")
+
+    # You can filter more if you need a specific move
+    move_to_use = random.choice(moves)
+
+    # The fake data generator allows us to define overrides if there are specific values we want (or
+    # don't want) it to use.
+
+    # We'll set the move ID and set a few other IDs to be a ZERO_UUID value because we want it to
+    # create those objects and thus can't use a non-zero UUID. We're also setting the agents to
+    # empty list for simplicity here, but in our real version there's more to it.
+    overrides = {
+      "moveTaskOrderID": move_to_use['id'],
+      "agents": [],
+      "pickupAddress": {"id": ZERO_UUID},
+      "destinationAddress": {"id": ZERO_UUID},
+      "mtoServiceItems": [],
+    }
+
+    # Now we can use the fake data generator to generate the fake request data.
+    payload = fake_data_generator.generate_fake_request_data(
+      api_key=APIKey.PRIME,  # This tells the generator which API spec to look at.
+      path="/mto-shipments",
+      method="post",
+      overrides=overrides,
+    )
+
+    # Now we can make our request:
+    create_shipment_path, request_kwargs = self.request_preparer.prep_prime_request(
+      endpoint="/mto-shipments")
+
+    # The `generate_fake_request_data` method returns a JSONType object which can be used in our
+    # request as the data payload.
+    with self.rest(method="POST", url=create_shipment_path, data=payload, **request_kwargs) as resp:
+      resp: RestResponseContextManager
+
+      logger.info(f"ℹ️ Status code: {resp.status_code}")
+
+      # Do whatever else you need to here.
+```
+
+`get_api_fake_data_generator` does not need to be used in the context of a `TaskSet` so you can use
+it wherever you want. It caches the fake data generator so this means that even if you use it in
+multiple places, only the first call to it will parse the API files (which is slow).
+
+You can read more about the internals of the generator in child sections.
+
+#### API Parsers
+
+Internally, the fake data generator is using an `APIParser` class. It parses an API specification
+(`.yaml`) file using a path or URL using the `prance` library to create a fully-resolved dictionary
+of its Swagger specification. The main methods are:
 
 * `get_request_body`: Returns the full Swagger specification of the request body for a given
-  endpoint. Requires the
-  `path` and the `method` (post, get, etc) to be passed in. Returns an empty dictionary if no
-  matching request found.
+  endpoint. Requires the `path` and the `method` (`post`, `get`, etc.) to be passed in. Returns an
+  empty dictionary if no matching request found.
 
-```python
-from utils.parsers import APIParser
+  ```python
+  # -*- coding: utf-8 -*-
+  """
+  Example of using APIParser.get_request_body
+  """
+  from utils.parsers import APIParser
 
 
-parser = APIParser(
-  api_file="https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml")
-parser.get_request_body(path="/mto-shipments", method="post")
-```
+  parser = APIParser(
+    api_file="https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml")
+
+  parser.get_request_body(path="/mto-shipments", method="post")
+  ```
 
 * `get_response_body`: Returns the full Swagger specification of the response for a given endpoint.
-  Requires the
-  `path` and the `method` (post, get, etc). Optionally accepts the `status` code for the response,
-  which defaults to
-  `"200"`. Returns an empty dictionary if no matching response is found.
+  Requires the `path` and the `method` (`post`, `get`, etc.). Optionally accepts the `status` code
+  for the response, which defaults to `"200"`. Returns an empty dictionary if no matching response
+  is found.
 
-```python
-parser.get_response_body(path="/mto-service-items", method="post", status="201")
-```
+  ```python
+  # -*- coding: utf-8 -*-
+  """
+  Example of using APIParser.get_response_body
+  """
+  from utils.parsers import APIParser
+
+  parser = APIParser(
+    api_file="https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml")
+
+  parser.get_response_body(path="/mto-service-items", method="post", status="201")
+  ```
 
 * `get_definition`: Returns the full Swagger specification for a specific definition. Requires
   the `name` of the definition to be passed in. Returns `None` if no matching definition is found.
 
-```python
-parser.get_definition(name="MoveTaskOrder")
-```
+  ```python
+  # -*- coding: utf-8 -*-
+  """
+  Example of using APIParser.get_definition
+  """
+  from utils.parsers import APIParser
 
-* `generate_fake_request`: Takes in the endpoint `path` and `method` and returns a JSON-ready
-  dictionary with the fields and fake data for the request. Uses the `faker` library to generate the
-  data. Can optionally accept a dictionary of
-  `overrides` for any fields that need to have specific values set, or a boolean `require_all` that
-  indicates that all fields should be filled, even if not required.
 
-```python
-parser.generate_fake_request(path="/mto-service-items", method="post",
+  parser = APIParser(
+    api_file="https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml")
+
+  parser.get_definition(name="MoveTaskOrder")
+  ```
+
+* `generate_fake_request`: Takes in the endpoint `path` and `method` and returns a JSONType object
+  with the fields and fake data for the request. Uses the `faker` library to generate the data. Can
+  optionally accept a dictionary of `overrides` for any fields that need to have specific values
+  set, or a boolean `require_all` that indicates that all fields should be filled, even if not
+  required.
+
+  ```python
+  # -*- coding: utf-8 -*-
+  """
+  Example of using APIParser.generate_fake_request
+  """
+  from utils.parsers import APIParser
+
+
+  parser = APIParser(
+    api_file="https://raw.githubusercontent.com/transcom/mymove/master/swagger/prime.yaml")
+
+  parser.generate_fake_request(path="/mto-service-items", method="post",
                              overrides={"modelType": "MTOServiceItemDDSFIT"})
-```
+  ```
 
-### Creating a custom parser
+  * The fake data generator shown earlier uses this method when you call
+    `fake_data_generator.generate_fake_request_data`.
 
-The `APIParser` class is designed to be inherited and customized for specific APIs. To start, go to
-the bottom of the
-`utils/parsers.py` file and create a new class with the link to your API YAML file:
+We don't use the `APIParser` class directly though, we define subclasses that use its functionality
+with the specific needs for each API specification. These live in the `utils/parsers.py` file. We
+have these defined:
+
+* `PrimeAPIParser`
+* `SupportAPIParser`
+* `GHCAPIParser`
+* `InternalAPIParser`
+
+Each one defines what API specification the parser should look at, and can optionally use the hooks
+that are built-in to the `APIParser` class to define custom behavior. Here is a sample parser:
 
 ```python
+# -*- coding: utf-8 -*-
+"""
+Sample API parser
+"""
+from utils.parsers import APIParser
+
+
 class GHCAPIParser(APIParser):
-  """ Parsing the GHC API as an example: """
+  """
+  Sample Parser class for the GHC API.
+  """
 
   api_file = "https://raw.githubusercontent.com/transcom/mymove/master/swagger/ghc.yaml"
-```
-
-The `APIParser` has three built-in hook methods that are designed to make it easier to implement
-custom data manipulation in your parser class:
-
-```python
-class GHCAPIParser(APIParser):
-  ...
 
   def _custom_field_validation(self, api_field, object_def):
     """
@@ -1117,23 +1250,32 @@ class GHCAPIParser(APIParser):
         request_data["availableToPrimeAt"] = None
 ```
 
-Next, instantiate the parser in your `locustfile` and reference it in the `parser` attribute on
-your `User` class:
+We have all the parsers we need for now defined, but if you have a need to add a new one follow
+these steps (all in the `utils/parsers.py` file):
 
-```python
-from utils.parsers import GHCAPIParser
+1. Add your new parser, subclassing `APIParser` and defining whatever things you need.
+2. Add a key/value pair to the `APIKey` enum.
+3. Go to `get_api_parsers` and add your new parser to the `parser_classes` dict, giving it the key
+   you defined in `APIKey` and the value of your new parser class (un-initialized).
+4. Now you should be able to use your new parser with the fake data generator! You'll use your new
+   `APIKey.<key>` when using the fake data generator.
 
+## AWS Deployed Environment Setup
 
-ghc_parser = GHCAPIParser()
+### Deploying to the Load Testing Environment
 
-GHCUser(...):
-...
+Refer to
+these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1470922798/How+to+deploy+to+Experimental+or+Demo+or+Loadest)
 
-parser = ghc_parser
-```
+### Resetting the DB After a Load Test
 
-Instantiating it once at the beginning of the `locustfile` keeps the API from being reparsed over
-and over, saving you valuable processing time.
+Refer to
+these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1469284356/Atlantis+Restore+Post-Load+Testing)
+
+### Deploying New Tests
+
+Refer to
+these [instructions](https://dp3.atlassian.net/wiki/spaces/MT/pages/1512603655/Deploying+load-tests+to+AWS#Instructions)
 
 ## References
 
