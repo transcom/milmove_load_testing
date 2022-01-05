@@ -215,8 +215,10 @@ class MilMoveRequestMixin:
 
     def __init__(self: Union[TaskSet, "MilMoveRequestMixin"], *args, **kwargs) -> None:
         """
-        Sets up the env based on value from the --host flag. Note that the `self.host` value is set
-        on the class from the command line flag BEFORE initialization.
+        Sets up the env and request_preparer based on the input locust host. Note that the
+        `self.user.host` value is set on the user class BEFORE initialization. This can be either
+        the value set on the command line (via the --host flag) on the one set in the locust UI form
+        field.
         """
         super().__init__(*args, **kwargs)
 
