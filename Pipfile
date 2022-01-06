@@ -12,6 +12,7 @@ zipcodes = "*"
 
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
+# this version should match what is in .pre-commit-config.yaml as well
 black = "==21.12b0"
 flake8 = "*"
 pytest = "*"

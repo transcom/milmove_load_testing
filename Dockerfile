@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir pipenv==2021.5.29
 # outside of virtualenv
 COPY Pipfile Pipfile.lock /app/
 RUN set -x \
-    && pipenv install --system --deploy --site-packages \
+    && pipenv install --system --deploy --site-packages --ignore-pipfile \
     && rm -rf /root/.local/share/virtualenv /root/.local/share/virtualenvs
 
 # Copy over everything else for the app:
