@@ -238,7 +238,7 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         user_id = json_resp["id"]
 
         # Setup customer profile
-        duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=palms"))
+        duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=whitesands"))
         stations = duty_stations.json()
         current_station_id = stations[0]["id"]
 
