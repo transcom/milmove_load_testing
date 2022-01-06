@@ -22,21 +22,60 @@ class TestMilMoveRequestPreparer:
     """
 
     @pytest.mark.parametrize(
-        "env,certs_required,expected_kwargs",
+        "env,certs_required,endpoint_name,expected_kwargs",
         (
-            (MilMoveEnv.LOCAL, False, {"headers": get_json_headers()}),
-            (MilMoveEnv.LOCAL, True, {"headers": get_json_headers(), **deepcopy(LOCAL_TLS_CERT_KWARGS)}),
-            (MilMoveEnv.DP3, False, {"headers": get_json_headers()}),
-            (MilMoveEnv.DP3, True, {"headers": get_json_headers(), "cert": DP3_CERT_KEY_PEM}),
+            (
+                MilMoveEnv.LOCAL,
+                False,
+                "",
+                {
+                    "headers": get_json_headers(),
+                },
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                False,
+                "/internal/service_members/{serviceMemberId}",
+                {"headers": get_json_headers(), "name": "/internal/service_members/{serviceMemberId}"},
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                True,
+                "/support/v1/move-task-orders/{moveTaskOrderID}",
+                {
+                    "name": "/support/v1/move-task-orders/{moveTaskOrderID}",
+                    "headers": get_json_headers(),
+                    **deepcopy(LOCAL_TLS_CERT_KWARGS),
+                },
+            ),
+            (
+                MilMoveEnv.DP3,
+                False,
+                "/internal/service_members/{serviceMemberId}",
+                {"name": "/internal/service_members/{serviceMemberId}", "headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.DP3,
+                True,
+                "/support/v1/move-task-orders/{moveTaskOrderID}",
+                {
+                    "name": "/support/v1/move-task-orders/{moveTaskOrderID}",
+                    "headers": get_json_headers(),
+                    "cert": DP3_CERT_KEY_PEM,
+                },
+            ),
         ),
     )
     def test_returns_expected_request_kwargs(
-        self, env: MilMoveEnv, certs_required: bool, expected_kwargs: RequestKwargsType
+        self, env: MilMoveEnv, certs_required: bool, endpoint_name: str, expected_kwargs: RequestKwargsType
     ) -> None:
 
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.get_request_kwargs(certs_required=certs_required) == expected_kwargs
+        assert (
+            request_preparer.get_request_kwargs(certs_required=certs_required, endpoint_name=endpoint_name)
+            == expected_kwargs
+        )
 
     @pytest.mark.parametrize(
         "env,deployed_subdomain,local_port,local_protocol,local_subdomain,expected_base_domain",
@@ -103,19 +142,59 @@ class TestMilMoveRequestPreparer:
         assert request_preparer.form_ghc_path(endpoint=endpoint) == expected_path
 
     @pytest.mark.parametrize(
-        "env,endpoint,expected_path",
+        "env,endpoint,endpoint_name,expected_path,expected_headers",
         (
-            (MilMoveEnv.LOCAL, "/moves", "http://officelocal:8080/ghc/v1/moves"),
-            (MilMoveEnv.LOCAL, "/queue", "http://officelocal:8080/ghc/v1/queue"),
-            (MilMoveEnv.DP3, "/moves", "https://office.loadtest.dp3.us/ghc/v1/moves"),
+            (
+                MilMoveEnv.LOCAL,
+                "/queues/moves",
+                "",
+                "http://officelocal:8080/ghc/v1/queues/moves",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                "/queues/counseling",
+                "",
+                "http://officelocal:8080/ghc/v1/queues/counseling",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                "/move/1",
+                "/move/{locator}",
+                "http://officelocal:8080/ghc/v1/move/1",
+                {"name": "/ghc/v1/move/{locator}", "headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/queues/moves",
+                "",
+                "https://office.loadtest.dp3.us/ghc/v1/queues/moves",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/move/1",
+                "/move/{locator}",
+                "https://office.loadtest.dp3.us/ghc/v1/move/1",
+                {"name": "/ghc/v1/move/{locator}", "headers": get_json_headers()},
+            ),
         ),
     )
     def test_returns_values_needed_for_making_a_ghc_request(
-        self, env: MilMoveEnv, endpoint: str, expected_path: str
+        self,
+        env: MilMoveEnv,
+        endpoint: str,
+        endpoint_name: str,
+        expected_path: str,
+        expected_headers: RequestKwargsType,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.prep_ghc_request(endpoint=endpoint) == (expected_path, {"headers": get_json_headers()})
+        assert request_preparer.prep_ghc_request(endpoint=endpoint, endpoint_name=endpoint_name) == (
+            expected_path,
+            expected_headers,
+        )
 
     @pytest.mark.parametrize(
         "env,endpoint,expected_path",
@@ -136,21 +215,58 @@ class TestMilMoveRequestPreparer:
         assert request_preparer.form_internal_path(endpoint=endpoint) == expected_path
 
     @pytest.mark.parametrize(
-        "env,endpoint,expected_path",
+        "env,endpoint,endpoint_name,expected_path,expected_headers",
         (
-            (MilMoveEnv.LOCAL, "/moves", "http://milmovelocal:8080/internal/moves"),
-            (MilMoveEnv.LOCAL, "/mto-shipments", "http://milmovelocal:8080/internal/mto-shipments"),
-            (MilMoveEnv.DP3, "/moves", "https://my.loadtest.dp3.us/internal/moves"),
+            (
+                MilMoveEnv.LOCAL,
+                "/users/logged_in",
+                "",
+                "http://milmovelocal:8080/internal/users/logged_in",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                "/mto_shipments",
+                "",
+                "http://milmovelocal:8080/internal/mto_shipments",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                "/service_members/4",
+                "/service_members/{serviceMemberId}",
+                "http://milmovelocal:8080/internal/service_members/4",
+                {"name": "/internal/service_members/{serviceMemberId}", "headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/users/logged_in",
+                "",
+                "https://my.loadtest.dp3.us/internal/users/logged_in",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/service_members/4",
+                "/service_members/{serviceMemberId}",
+                "https://my.loadtest.dp3.us/internal/service_members/4",
+                {"name": "/internal/service_members/{serviceMemberId}", "headers": get_json_headers()},
+            ),
         ),
     )
     def test_returns_values_needed_for_making_an_internal_request(
-        self, env: MilMoveEnv, endpoint: str, expected_path: str
+        self,
+        env: MilMoveEnv,
+        endpoint: str,
+        endpoint_name: str,
+        expected_path: str,
+        expected_headers: RequestKwargsType,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.prep_internal_request(endpoint=endpoint) == (
+        assert request_preparer.prep_internal_request(endpoint=endpoint, endpoint_name=endpoint_name) == (
             expected_path,
-            {"headers": get_json_headers()},
+            expected_headers,
         )
 
     @pytest.mark.parametrize(
@@ -172,34 +288,67 @@ class TestMilMoveRequestPreparer:
         assert request_preparer.form_prime_path(endpoint=endpoint) == expected_path
 
     @pytest.mark.parametrize(
-        "env,endpoint,expected_path,expected_request_kwargs",
+        "env,endpoint,endpoint_name,expected_path,expected_headers",
         (
             (
                 MilMoveEnv.LOCAL,
                 "/moves",
+                "",
                 "https://primelocal:9443/prime/v1/moves",
                 {"headers": get_json_headers(), **deepcopy(LOCAL_TLS_CERT_KWARGS)},
             ),
             (
                 MilMoveEnv.LOCAL,
-                "/mto-shipments",
-                "https://primelocal:9443/prime/v1/mto-shipments",
+                "/mto_shipments",
+                "",
+                "https://primelocal:9443/prime/v1/mto_shipments",
                 {"headers": get_json_headers(), **deepcopy(LOCAL_TLS_CERT_KWARGS)},
             ),
             (
+                MilMoveEnv.LOCAL,
+                "/move-task-orders/1234",
+                "/move-task-orders/{moveID}",
+                "https://primelocal:9443/prime/v1/move-task-orders/1234",
+                {
+                    "name": "/prime/v1/move-task-orders/{moveID}",
+                    "headers": get_json_headers(),
+                    **deepcopy(LOCAL_TLS_CERT_KWARGS),
+                },
+            ),
+            (
                 MilMoveEnv.DP3,
-                "/moves",
-                "https://api.loadtest.dp3.us/prime/v1/moves",
+                "/mto_shipments",
+                "",
+                "https://api.loadtest.dp3.us/prime/v1/mto_shipments",
                 {"headers": get_json_headers(), "cert": DP3_CERT_KEY_PEM},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/move-task-orders/1234",
+                "/move-task-orders/{moveID}",
+                "https://api.loadtest.dp3.us/prime/v1/move-task-orders/1234",
+                {
+                    "name": "/prime/v1/move-task-orders/{moveID}",
+                    "headers": get_json_headers(),
+                    "cert": DP3_CERT_KEY_PEM,
+                },
             ),
         ),
     )
     def test_returns_values_needed_for_making_a_prime_request(
-        self, env: MilMoveEnv, endpoint: str, expected_path: str, expected_request_kwargs: RequestKwargsType
+        self,
+        env: MilMoveEnv,
+        endpoint: str,
+        endpoint_name: str,
+        expected_path: str,
+        expected_headers: RequestKwargsType,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.prep_prime_request(endpoint=endpoint) == (expected_path, expected_request_kwargs)
+        assert request_preparer.prep_prime_request(endpoint=endpoint, endpoint_name=endpoint_name) == (
+            expected_path,
+            expected_headers,
+        )
 
     @pytest.mark.parametrize(
         "env,endpoint,expected_path",
@@ -215,34 +364,60 @@ class TestMilMoveRequestPreparer:
         assert request_preparer.form_support_path(endpoint=endpoint) == expected_path
 
     @pytest.mark.parametrize(
-        "env,endpoint,expected_path,expected_request_kwargs",
+        "env,endpoint,endpoint_name,expected_path,expected_headers",
         (
             (
                 MilMoveEnv.LOCAL,
-                "/moves",
-                "https://primelocal:9443/support/v1/moves",
+                "/move-task-orders",
+                "",
+                "https://primelocal:9443/support/v1/move-task-orders",
                 {"headers": get_json_headers(), **deepcopy(LOCAL_TLS_CERT_KWARGS)},
             ),
             (
                 MilMoveEnv.LOCAL,
-                "/mto-shipments",
-                "https://primelocal:9443/support/v1/mto-shipments",
-                {"headers": get_json_headers(), **deepcopy(LOCAL_TLS_CERT_KWARGS)},
+                "/payment-requests/13/status",
+                "/payment-requests/{paymentRequestID}/status",
+                "https://primelocal:9443/support/v1/payment-requests/13/status",
+                {
+                    "name": "/support/v1/payment-requests/{paymentRequestID}/status",
+                    "headers": get_json_headers(),
+                    **deepcopy(LOCAL_TLS_CERT_KWARGS),
+                },
             ),
             (
                 MilMoveEnv.DP3,
-                "/moves",
-                "https://api.loadtest.dp3.us/support/v1/moves",
+                "/move-task-orders",
+                "",
+                "https://api.loadtest.dp3.us/support/v1/move-task-orders",
                 {"headers": get_json_headers(), "cert": DP3_CERT_KEY_PEM},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/payment-requests/13/status",
+                "/payment-requests/{paymentRequestID}/status",
+                "https://api.loadtest.dp3.us/support/v1/payment-requests/13/status",
+                {
+                    "name": "/support/v1/payment-requests/{paymentRequestID}/status",
+                    "headers": get_json_headers(),
+                    "cert": DP3_CERT_KEY_PEM,
+                },
             ),
         ),
     )
     def test_returns_values_needed_for_making_a_support_request(
-        self, env: MilMoveEnv, endpoint: str, expected_path: str, expected_request_kwargs: RequestKwargsType
+        self,
+        env: MilMoveEnv,
+        endpoint: str,
+        endpoint_name: str,
+        expected_path: str,
+        expected_headers: RequestKwargsType,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.prep_support_request(endpoint=endpoint) == (expected_path, expected_request_kwargs)
+        assert request_preparer.prep_support_request(endpoint=endpoint, endpoint_name=endpoint_name) == (
+            expected_path,
+            expected_headers,
+        )
 
 
 class TestMilMoveRequestMixin:

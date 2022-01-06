@@ -26,7 +26,12 @@ class MilMoveRequestPreparer:
     # Can be any of the values in MilMoveEnv.
     env: MilMoveEnv
 
-    def get_request_kwargs(self, certs_required: bool = False) -> RequestKwargsType:
+    GHC_PATH_PREFIX = "/ghc/v1"
+    INTERNAL_PATH_PREFIX = "/internal"
+    PRIME_PATH_PREFIX = "/prime/v1"
+    SUPPORT_PATH_PREFIX = "/support/v1"
+
+    def get_request_kwargs(self, certs_required: bool = False, endpoint_name: str = "") -> RequestKwargsType:
         """
         Grabs request kwargs that will be needed for the endpoint.
 
@@ -34,6 +39,7 @@ class MilMoveRequestPreparer:
             paths for the TLS cert/key files, which change based on the environment being targetted.
             Possibly also includes a value that is either a boolean that indicates if the TLS certs
             should be verified, or a path to certs to use for verification.
+        :param endpoint_name: name of endpoint, for locust request grouping
         :return: kwargs that can be passed to the request.
         """
         kwargs = {"headers": get_json_headers()}
@@ -43,6 +49,9 @@ class MilMoveRequestPreparer:
                 kwargs.update(deepcopy(LOCAL_TLS_CERT_KWARGS))
             else:
                 kwargs["cert"] = DP3_CERT_KEY_PEM
+
+        if endpoint_name:
+            kwargs["name"] = endpoint_name
 
         return kwargs
 
@@ -96,17 +105,22 @@ class MilMoveRequestPreparer:
         else:
             base_domain = self.form_base_domain(deployed_subdomain="office")
 
-        return f"{base_domain}/ghc/v1{endpoint}"
+        return f"{base_domain}{self.GHC_PATH_PREFIX}{endpoint}"
 
-    def prep_ghc_request(self, endpoint: str) -> tuple[str, RequestKwargsType]:
+    def prep_ghc_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
         """
         Prepares a request URL and the request kwargs for making a request to the GHC API.
+
         :param endpoint: endpoint to target, e.g. "/moves"
+        :param endpoint_name: name of endpoint, for locust request grouping
         :return: tuple of the full url to the endpoint and the kwargs to pass to the request
         """
         url = self.form_ghc_path(endpoint=endpoint)
 
-        kwargs = self.get_request_kwargs()
+        if endpoint_name:
+            endpoint_name = f"{self.GHC_PATH_PREFIX}{endpoint_name}"
+
+        kwargs = self.get_request_kwargs(endpoint_name=endpoint_name)
 
         return url, kwargs
 
@@ -126,17 +140,22 @@ class MilMoveRequestPreparer:
         else:
             base_domain = self.form_base_domain(deployed_subdomain="my")
 
-        return f"{base_domain}/internal{endpoint}"
+        return f"{base_domain}{self.INTERNAL_PATH_PREFIX}{endpoint}"
 
-    def prep_internal_request(self, endpoint: str) -> tuple[str, RequestKwargsType]:
+    def prep_internal_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
         """
         Prepares a request URL and the request kwargs for making a request to the Internal API.
+
         :param endpoint: endpoint to target, e.g. "/moves"
+        :param endpoint_name: name of endpoint, for locust request grouping
         :return: tuple of the full url to the endpoint and the kwargs to pass to the request
         """
         url = self.form_internal_path(endpoint=endpoint)
 
-        kwargs = self.get_request_kwargs()
+        if endpoint_name:
+            endpoint_name = f"{self.INTERNAL_PATH_PREFIX}{endpoint_name}"
+
+        kwargs = self.get_request_kwargs(endpoint_name=endpoint_name)
 
         return url, kwargs
 
@@ -156,17 +175,22 @@ class MilMoveRequestPreparer:
         else:
             base_domain = self.form_base_domain(deployed_subdomain="api")
 
-        return f"{base_domain}/prime/v1{endpoint}"
+        return f"{base_domain}{self.PRIME_PATH_PREFIX}{endpoint}"
 
-    def prep_prime_request(self, endpoint: str) -> tuple[str, RequestKwargsType]:
+    def prep_prime_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
         """
         Prepares a request URL and the request kwargs for making a request to the Prime API.
+
         :param endpoint: endpoint to target, e.g. "/moves"
+        :param endpoint_name: name of endpoint, for locust request grouping
         :return: tuple of the full url to the endpoint and the kwargs to pass to the request
         """
         url = self.form_prime_path(endpoint=endpoint)
 
-        kwargs = self.get_request_kwargs(certs_required=True)
+        if endpoint_name:
+            endpoint_name = f"{self.PRIME_PATH_PREFIX}{endpoint_name}"
+
+        kwargs = self.get_request_kwargs(certs_required=True, endpoint_name=endpoint_name)
 
         return url, kwargs
 
@@ -186,17 +210,22 @@ class MilMoveRequestPreparer:
         else:
             base_domain = self.form_base_domain(deployed_subdomain="api")
 
-        return f"{base_domain}/support/v1{endpoint}"
+        return f"{base_domain}{self.SUPPORT_PATH_PREFIX}{endpoint}"
 
-    def prep_support_request(self, endpoint: str) -> tuple[str, RequestKwargsType]:
+    def prep_support_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
         """
         Prepares a request URL and the request kwargs for making a request to the Support API.
+
         :param endpoint: endpoint to target, e.g. "/moves"
+        :param endpoint_name: name of endpoint, for locust request grouping
         :return: tuple of the full url to the endpoint and the kwargs to pass to the request
         """
         url = self.form_support_path(endpoint=endpoint)
 
-        kwargs = self.get_request_kwargs(certs_required=True)
+        if endpoint_name:
+            endpoint_name = f"{self.SUPPORT_PATH_PREFIX}{endpoint_name}"
+
+        kwargs = self.get_request_kwargs(certs_required=True, endpoint_name=endpoint_name)
 
         return url, kwargs
 

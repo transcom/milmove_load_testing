@@ -840,8 +840,11 @@ class PrimeTasks(RestTaskSet):
     """
     Do a task! Tasks generally have three steps: Set-up, make a request, validate/log results
     """
-    # Prep the path and request kwargs
-    moves_path, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+    # Prep the path and request kwargs. Using "1" for the moveID for the sake of simplicity here,
+    # but in a regular load test, you would need to have some way of getting this.
+    moves_path, request_kwargs = self.request_preparer.prep_prime_request(
+      endpoint="/move-task-orders/1", endpoint_name="/move-task-orders/{moveID}"
+    )
 
     # Now make the request
     with self.rest(method="GET", url=moves_path, **request_kwargs) as resp:
@@ -852,11 +855,11 @@ class PrimeTasks(RestTaskSet):
       # Lastly, validate the response and/or log any relevant info:
       logger.info(f"ℹ️ Status code: {resp.status_code}")
 
-      if isinstance(resp.js, list) and resp.js:
-        logger.info(f"\nℹ️ {resp.js[0]=}\n")
+      if resp.js:
+        logger.info(f"\nℹ️ {resp.js=}\n")
       else:
         # if you wanted to, you could mark this load test as a failure by doing this:
-        resp.failure("No moves found!")
+        resp.failure("Move not found!")
 ```
 
 Note that we are using the `RestTaskSet` as our parent class. It enables easier testing and more
@@ -872,9 +875,15 @@ mymove server:
 * `prep_prime_request`
 * `prep_support_request`
 
-Each of these takes an endpoint, e.g. `/moves` (like in the example above) and return a tuple
-containing the url to use (stored in `moves_path` above), and the keyword arguments (or kwargs,
-called `request_kwargs` above) to pass to `self.rest`.
+Each of these takes an endpoint, e.g. `/move-task-orders/1` (like in the example above). They can
+also optionally take an `endpoint_name` argument that is useful for the purposes of locust request
+grouping. So in the example above, we use `endpoint_name="/move-task-orders/{moveID}"`. That way
+instead of `locust` having each request to an endpoint like `/move-task-orders/{moveID}` be its own
+group, e.g. `/move-task-orders/1` , `/move-task-orders/2`, etc., `locust` will group them all under
+the same name.
+
+Each of these functions will return a tuple containing the url to use (stored in `moves_path`
+above), and the keyword arguments (or kwargs, called `request_kwargs` above) to pass to `self.rest`.
 
 The `rest` context manager makes it easier to work with responses by:
 
