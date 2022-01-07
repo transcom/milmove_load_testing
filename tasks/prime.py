@@ -231,16 +231,15 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         if resp.status_code != 200:
             self.interrupt()
 
-        logged_in_user = self.client.get(self.customer_path("/internal/users/logged_in"))
-        json_resp = logged_in_user.json()
-        service_member_id = json_resp["service_member"]["id"]
-        email = json_resp["email"]
-        user_id = json_resp["id"]
+        resp = self.client.get(self.customer_path("/internal/users/logged_in"))
+        logged_in_user = resp.json()
+        service_member_id = logged_in_user["service_member"]["id"]
+        email = logged_in_user["email"]
+        user_id = logged_in_user["id"]
 
         # Setup customer profile
-        duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=palms"))
-        stations = duty_stations.json()
-        current_station_id = stations[0]["id"]
+        resp = self.client.get(self.customer_path("/internal/duty_locations?search=white%20sands"))
+        duty_locations = resp.json()
 
         overrides = {
             "id": service_member_id,
@@ -248,7 +247,7 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             "edipi": "9999999999",
             "personal_email": email,
             "email_is_preferred": True,
-            "current_station_id": current_station_id,
+            "current_station_id": duty_locations[0]["id"],
         }
 
         payload = fake_data_generator.generate_fake_request_data(
@@ -290,7 +289,7 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             "orders_type": "PERMANENT_CHANGE_OF_STATION",
             "has_dependents": False,
             "spouse_has_pro_gear": False,
-            "new_duty_station_id": stations[1]["id"],
+            "new_duty_station_id": duty_locations[1]["id"],
             "orders_number": None,
             "tac": None,
             "sac": None,
