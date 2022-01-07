@@ -6,7 +6,7 @@ import pytest
 import responses
 from requests import Session
 
-from tasks.prime import PrimeDataStorageMixin, support_path
+from tasks.prime import PrimeDataStorageMixin
 from utils.constants import MOVE_TASK_ORDER, MTO_SERVICE_ITEM, MTO_SHIPMENT, PAYMENT_REQUEST, ZERO_UUID
 
 
@@ -230,7 +230,7 @@ class TestPrimeDataStorageMixin:
         for test_move in test_moves:
             responses.add(
                 responses.GET,
-                mocked_url(support_path(f"/move-task-orders/{test_move['id']}")),
+                mocked_url(f"/support/v1/move-task-orders/{test_move['id']}"),
                 json=test_move["json"],
                 status=test_move["status"],
             )

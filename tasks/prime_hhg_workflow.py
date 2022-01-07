@@ -4,10 +4,12 @@ import random
 
 from locust import tag, task
 
-from tasks.prime import PrimeTasks, SupportTasks, prime_path
+from tasks.prime import PrimeTasks, SupportTasks
 from utils.constants import MOVE_TASK_ORDER, MTO_SERVICE_ITEM, MTO_SHIPMENT, PAYMENT_REQUEST
 
 # from utils.base import ImplementationError
+from utils.types import JSONObject
+
 
 logger = logging.getLogger(__name__)
 
@@ -198,12 +200,11 @@ class PrimeWorkflowTasks(PrimeTasks, SupportTasks):
         return random.choice(nested_array)
 
     @property
-    def current_move(self):
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            prime_path(f"/move-task-orders/{self.current_move_id}"),
-            name=prime_path("/move-task-orders/{moveID}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+    def current_move(self) -> JSONObject:
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/move-task-orders/{self.current_move_id}",
+            endpoint_name="/move-task-orders/{moveID}",
         )
-        return resp.json()
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            return resp.js

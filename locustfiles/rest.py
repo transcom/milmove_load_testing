@@ -3,15 +3,15 @@
 Example of a locustfile using the latest changes...
 TODO: This file should probably be deleted before merging...
 """
+import requests
 from locust import HttpUser, between, events, tag, task
 from locust.env import Environment, RunnerType
 
-from tasks.prime import get_prime_moves
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import MOVE_TASK_ORDER
 from utils.request import MilMoveRequestPreparer
-from utils.rest import RestResponseContextManager
+from utils.rest import RestResponseContextManager, parse_response_json
 from utils.task import LoginTaskSet, RestTaskSet
 
 
@@ -79,9 +79,17 @@ def set_up_for_prime_load_tests(env: MilMoveEnv) -> None:
     """
     request_preparer = MilMoveRequestPreparer(env=env)
 
-    moves = get_prime_moves(request_preparer=request_preparer)
+    moves_path, request_kwargs = request_preparer.prep_prime_request(endpoint="/moves")
 
-    if moves:
+    response = requests.get(url=moves_path, **request_kwargs)
+    # You would likely need to do some error handling in case the request messes up, but for now
+    # I'll leave it out.
+
+    moves, error_msg = parse_response_json(response=response)
+
+    if error_msg:
+        print(error_msg)
+    elif moves:
         print(f"\n{moves[0]=}\n")
     else:
         print("No moves found.")

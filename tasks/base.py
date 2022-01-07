@@ -3,13 +3,22 @@
 
 import json
 import logging
+from typing import Union
 
 from requests import Response
+
+from utils.rest import RestResponseContextManager
+
 
 logger = logging.getLogger(__name__)
 
 
-def check_response(response: Response, task_name="Task", request=None, expected_status_code: str = "2"):
+def check_response(
+    response: Union[Response, RestResponseContextManager],
+    task_name="Task",
+    request=None,
+    expected_status_code: str = "2",
+):
     """
     Logs the status code from the response and converts it from JSON into a python dictionary we can work with. If the
     status code doesn't match (by default 2xx), it can also log any request data that was sent in for the sake of debugging.
@@ -23,11 +32,15 @@ def check_response(response: Response, task_name="Task", request=None, expected_
     """
     logger.info(f"ℹ️ {task_name} status code: {response.status_code} {response.reason}")
 
-    try:
-        json_response = json.loads(response.content)
-    except (json.JSONDecodeError, TypeError):
-        logger.exception("Non-JSON response.")
-        return None, False
+    # TODO: Temporary hacky workaround while I think about how check_response should work with the new changes
+    if not hasattr(response, "js"):
+        try:
+            json_response = json.loads(response.content)
+        except (json.JSONDecodeError, TypeError):
+            logger.exception("Non-JSON response.")
+            return None, False
+    else:
+        json_response = response.js
 
     if not str(response.status_code).startswith(expected_status_code):
         logger.error(f"⚠️ {task_name} failed.\n{json.dumps(json_response, indent=4)}")

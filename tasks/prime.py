@@ -5,12 +5,12 @@ import logging
 import random
 from copy import deepcopy
 from datetime import datetime
-from typing import Dict
+from typing import Dict, Union
 
-import requests
-from locust import TaskSet, tag, task
+from locust import tag, task
 
-from tasks.base import CertTaskMixin, check_response
+from tasks.base import check_response
+from utils.auth import UserType, create_user
 from utils.constants import (
     MOVE_TASK_ORDER,
     MTO_AGENT,
@@ -21,35 +21,13 @@ from utils.constants import (
     ZERO_UUID,
 )
 from utils.parsers import APIKey, get_api_fake_data_generator
-from utils.request import MilMoveRequestPreparer
-from utils.types import JSONObject, JSONType
+from utils.rest import parse_response_json
+from utils.task import RestTaskSet
+from utils.types import JSONArray, JSONObject
 
 
 logger = logging.getLogger(__name__)
 fake_data_generator = get_api_fake_data_generator()
-
-
-def prime_path(url: str) -> str:
-    return f"/prime/v1{url}"
-
-
-def support_path(url: str) -> str:
-    return f"/support/v1{url}"
-
-
-def get_prime_moves(request_preparer: MilMoveRequestPreparer) -> JSONType:
-    """
-    Small example of making requests outside user context
-    :param request_preparer: instance of MilMoveRequestPreparer that has been initialized with target env
-    :return: info retrieved from api
-    """
-    moves_path, request_kwargs = request_preparer.prep_prime_request(endpoint="/moves")
-
-    response = requests.get(url=moves_path, **request_kwargs)
-    # You would likely need to do some error handling in case the request messes up, but for now
-    # I'll leave it out.
-
-    return response.json()
 
 
 class PrimeDataStorageMixin:
@@ -151,7 +129,7 @@ class PrimeDataStorageMixin:
 
         data_list.append(new_data)
 
-    def set_default_mto_ids(self, move_id: str):
+    def set_default_mto_ids(self: Union[RestTaskSet, "PrimeDataStorageMixin"], move_id: str):
         """
         Given a list of Move Task Orders, gets the four ID values needed to create more MTOs:
           - contractorID
@@ -174,13 +152,12 @@ class PrimeDataStorageMixin:
             return
 
         # Call the Support API to get full details on the move:
-        resp = self.client.get(
-            support_path(f"/move-task-orders/{move_id}"),
-            name=support_path("/move-task-orders/{moveTaskOrderID}"),
-            headers={"content-type": "application/json"},
-            **self.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_support_request(
+            endpoint=f"/move-task-orders/{move_id}", endpoint_name="/move-task-orders/{moveTaskOrderID}"
         )
-        move_details, success = check_response(resp, "getMoveTaskOrder")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            move_details: JSONObject = resp.js
 
         # Get the values we need from the move and set them in self.default_move_ids.
         # If this move is missing any of these values, we default to using whatever value is already in
@@ -204,43 +181,49 @@ class PrimeDataStorageMixin:
 
 
 @tag("prime")
-class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
+class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
     """
     Set of the tasks that can be called on the Prime API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier.
     """
 
-    def __init__(self, parent):
-        self.csrf_token = None
-        self.session_token = None
-        super().__init__(parent)
-
-    def customer_path(self, url: str) -> str:
-        return f"{self.user.alternative_host}{url}"
-
-    def on_start(self):
+    def on_start(self) -> None:
+        """
+        Set up data we'll need for the load tests.
+        """
         # Customer login using dev local
-        self.client.get(self.customer_path("/devlocal-auth/login"))
-        self.csrf_token = self.client.cookies.get("masked_gorilla_csrf")
-        self.client.headers.update({"x-csrf-token": self.csrf_token})
-        resp = self.client.post(
-            self.customer_path("/devlocal-auth/create"),
-            data={"userType": "milmove", "gorilla.csrf.Token": self.csrf_token},
-        )
-        self.session_token = self.client.cookies.get("mil_session_token")
-        if resp.status_code != 200:
+        success = create_user(request_preparer=self.request_preparer, session=self.client, user_type=UserType.MILMOVE)
+
+        if not success:
+            logger.error("Failed to create a user")
             self.interrupt()
 
-        logged_in_user = self.client.get(self.customer_path("/internal/users/logged_in"))
-        json_resp = logged_in_user.json()
-        service_member_id = json_resp["service_member"]["id"]
-        email = json_resp["email"]
-        user_id = json_resp["id"]
+        url, request_kwargs = self.request_preparer.prep_internal_request(endpoint="/users/logged_in")
+
+        logged_in_user_resp = self.client.get(url=url, **request_kwargs)
+        logged_in_user, error_msg = parse_response_json(response=logged_in_user_resp)
+
+        if error_msg:
+            logger.error(error_msg)
+            self.interrupt()
+
+        service_member_id = logged_in_user["service_member"]["id"]
+        email = logged_in_user["email"]
+        user_id = logged_in_user["id"]
 
         # Setup customer profile
-        duty_stations = self.client.get(self.customer_path("/internal/duty_stations?search=palms"))
-        stations = duty_stations.json()
-        current_station_id = stations[0]["id"]
+        url, request_kwargs = self.request_preparer.prep_internal_request(endpoint="/duty_locations?search=palms")
+
+        duty_stations_resp = self.client.get(url=url, **request_kwargs)
+
+        duty_stations, error_msg = parse_response_json(response=duty_stations_resp)
+        duty_stations: JSONArray
+
+        if error_msg:
+            logger.error(error_msg)
+            self.interrupt()
+
+        current_station_id = duty_stations[0]["id"]
 
         overrides = {
             "id": service_member_id,
@@ -259,12 +242,18 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             require_all=True,
         )
 
-        service_member_resp = self.client.patch(
-            self.customer_path(f"/internal/service_members/{service_member_id}"),
-            name="/internal/service_members/{serviceMemberId}",
-            data=json.dumps(payload),
-            headers={"content-type": "application/json"},
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint=f"/service_members/{service_member_id}", endpoint_name="/service_members/{serviceMemberId}"
         )
+
+        service_member_resp = self.client.patch(url=url, data=json.dumps(payload), **request_kwargs)
+
+        service_member, error_msg = parse_response_json(response=service_member_resp)
+        service_member: JSONObject
+
+        if error_msg:
+            logger.error(error_msg)
+            self.interrupt()
 
         overrides = {"permission": "NONE"}
 
@@ -275,12 +264,12 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             overrides=overrides,
         )
 
-        self.client.post(
-            self.customer_path(f"/internal/service_members/{service_member_id}/backup_contacts"),
-            name="/internal/service_members/{serviceMemberId}/backup_contacts",
-            data=json.dumps(payload),
-            headers={"content-type": "application/json"},
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint=f"/service_members/{service_member_id}/backup_contacts",
+            endpoint_name="/service_members/{serviceMemberId}/backup_contacts",
         )
+
+        self.client.post(url=url, data=json.dumps(payload), **request_kwargs)
 
         # Setup customer order
         overrides = {
@@ -290,7 +279,7 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             "orders_type": "PERMANENT_CHANGE_OF_STATION",
             "has_dependents": False,
             "spouse_has_pro_gear": False,
-            "new_duty_station_id": stations[1]["id"],
+            "new_duty_station_id": duty_stations[1]["id"],
             "orders_number": None,
             "tac": None,
             "sac": None,
@@ -305,32 +294,39 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             require_all=True,
         )
 
-        order_resp = self.client.post(
-            self.customer_path("/internal/orders"),
-            data=json.dumps(payload),
-            headers={"content-type": "application/json"},
-        )
-        order = order_resp.json()
+        url, request_kwargs = self.request_preparer.prep_internal_request(endpoint="/orders")
+
+        order_resp = self.client.post(url=url, data=json.dumps(payload), **request_kwargs)
+
+        order, error_msg = parse_response_json(response=order_resp)
+        order: JSONObject
+
+        if error_msg:
+            logger.error(error_msg)
+            self.interrupt()
 
         document_id = order["uploaded_orders"]["id"]
         upload_file = {"file": open(TEST_PDF, "rb")}
-        self.client.post(
-            self.customer_path(f"/internal/uploads?documentId={document_id}"),
-            name="/internal/uploads",
-            files=upload_file,
+
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint=f"/uploads?documentId={document_id}",
+            endpoint_name="/uploads",
         )
+
+        request_kwargs.pop("headers")  # Don't want the JSON headers for this one
+
+        self.client.post(url=url, files=upload_file, **request_kwargs)
 
         # Setup customer shipment
         move_id = order["moves"][0]["id"]
-        self.client.patch(
-            self.customer_path(f"/internal/moves/{move_id}"),
-            name="/internal/moves/{moveId}",
-            data=json.dumps({"selected_move_type": "HHG"}),
-            headers={"content-type": "application/json"},
+
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint=f"/moves/{move_id}", endpoint_name="/moves/{moveId}"
         )
 
-        service_member = service_member_resp.json()
-        address = service_member["residential_address"]
+        self.client.patch(url=url, data=json.dumps({"selected_move_type": "HHG"}), **request_kwargs)
+
+        address: JSONObject = service_member["residential_address"]
         address.pop("id")  # remove unneeded id
         overrides = {
             "moveTaskOrderID": move_id,
@@ -347,11 +343,9 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             require_all=True,
         )
 
-        self.client.post(
-            self.customer_path("/internal/mto_shipments"),
-            data=json.dumps(payload),
-            headers={"content-type": "application/json"},
-        )
+        url, request_kwargs = self.request_preparer.prep_internal_request(endpoint="/mto_shipments")
+
+        self.client.post(url=url, data=json.dumps(payload), **request_kwargs)
 
         # Confirm move request
         full_name = f"{service_member['first_name']} {service_member['last_name']}"
@@ -372,12 +366,11 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             require_all=True,
         )
 
-        self.client.post(
-            self.customer_path(f"/internal/moves/{move_id}/submit"),
-            name="/internal/moves/{moveId}/submit",
-            data=json.dumps(payload),
-            headers={"content-type": "application/json"},
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint=f"/moves/{move_id}/submit", endpoint_name="/moves/{moveId}/submit"
         )
+
+        self.client.post(url=url, data=json.dumps(payload), **request_kwargs)
 
         # Set local variables with needed info to create a move
         self.set_default_mto_ids(move_id)
@@ -408,12 +401,12 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             overrides=overrides_local,
         )
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.post(
-            prime_path("/mto-service-items"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
-        )
+        url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/mto-service-items")
 
-        mto_service_items, success = check_response(resp, f"createMTOServiceItem {payload['reServiceCode']}", payload)
+        with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            mto_service_items, success = check_response(
+                resp, f"createMTOServiceItem {payload['reServiceCode']}", payload
+            )
 
         if success:
             self.add_stored(MTO_SERVICE_ITEM, mto_service_items)
@@ -463,12 +456,10 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
 
         guarantee_unique_agent_type(payload["agents"])  # modifies the payload directly
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.post(
-            prime_path("/mto-shipments"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
-        )
+        url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/mto-shipments")
 
-        mto_shipment, success = check_response(resp, "createMTOShipment", payload)
+        with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            mto_shipment, success = check_response(resp, "createMTOShipment", payload)
 
         if success:
             self.add_stored(MTO_SHIPMENT, mto_shipment)
@@ -512,15 +503,12 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             overrides=overrides_local,
         )
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.post(
-            prime_path("/mto-shipments"),
-            name=prime_path("/mto-shipments — expected failure"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint="/mto-shipments", endpoint_name="/mto-shipments — expected failure"
         )
-        check_response(resp, "createMTOShipmentFailure", payload, "422")
+
+        with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            check_response(resp, "createMTOShipmentFailure", payload, "422")
 
     @tag(PAYMENT_REQUEST, "createUpload")
     @task
@@ -533,13 +521,15 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
 
         upload_file = {"file": open(TEST_PDF, "rb")}
 
-        resp = self.client.post(
-            prime_path(f"/payment-requests/{payment_request['id']}/uploads"),
-            name=prime_path("/payment-requests/{paymentRequestID}/uploads"),
-            files=upload_file,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/payment-requests/{payment_request['id']}/uploads",
+            endpoint_name="/payment-requests/{paymentRequestID}/uploads",
         )
-        check_response(resp, "createUpload")
+
+        request_kwargs.pop("headers")  # don't want the JSON headers for this one
+
+        with self.rest(method="POST", url=url, files=upload_file, **request_kwargs) as resp:
+            check_response(resp, "createUpload")
 
     @tag(PAYMENT_REQUEST, "createPaymentRequest")
     @task
@@ -560,24 +550,21 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         if not shipment:
             logger.info("unable to find shipment of payment request service item")
 
-        headers = {"content-type": "application/json"}
-
         # if the actual weight hasn't been provided, creating the payment request will fail
         if not shipment.get("primeActualWeight"):
-            self.client.post(
-                prime_path("/payment-requests"),
-                name=prime_path("/payment-requests — expected failure"),
-                data=json.dumps(payload),
-                headers=headers,
-                **self.user.cert_kwargs,
+            url, request_kwargs = self.request_preparer.prep_prime_request(
+                endpoint="/payment-requests", endpoint_name="/payment-requests — expected failure"
             )
+
+            self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs)
+
             return None
 
-        resp = self.client.post(
-            prime_path("/payment-requests"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
-        )
+        url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/payment-requests")
 
-        payment_request, success = check_response(resp, "createPaymentRequest", payload)
+        with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            payment_request, success = check_response(resp, "createPaymentRequest", payload)
+
         if success:
             self.add_stored(PAYMENT_REQUEST, payment_request)
             return payment_request
@@ -618,15 +605,15 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         for f in fields_to_remove:
             payload.pop(f, None)
 
-        headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
-        resp = self.client.patch(
-            prime_path(f"/mto-shipments/{mto_shipment['id']}"),
-            name=prime_path("/mto-shipments/{mtoShipmentID}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/mto-shipments/{mto_shipment['id']}",
+            endpoint_name="/mto-shipments/{mtoShipmentID}",
         )
-        new_mto_shipment, success = check_response(resp, "updateMTOShipment", payload)
+
+        request_kwargs["headers"]["If-Match"] = mto_shipment["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_mto_shipment, success = check_response(resp, "updateMTOShipment", payload)
 
         if success:
             self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
@@ -657,16 +644,16 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             overrides=overrides_local,
         )
 
-        headers = {"content-type": "application/json", "If-Match": address["eTag"]}
-        # update mto_shipment address
-        resp = self.client.put(
-            prime_path(f"/mto-shipments/{mto_shipment['id']}/addresses/{address['id']}"),
-            name=prime_path("/mto-shipments/{mtoShipmentID}/addresses/{addressID}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/mto-shipments/{mto_shipment['id']}/addresses/{address['id']}",
+            endpoint_name="/mto-shipments/{mtoShipmentID}/addresses/{addressID}",
         )
-        updated_address, success = check_response(resp, "updateMTOShipmentAddress", payload)
+
+        request_kwargs["headers"]["If-Match"] = address["eTag"]
+
+        # update mto_shipment address
+        with self.rest(method="PUT", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            updated_address, success = check_response(resp, "updateMTOShipmentAddress", payload)
 
         if success:
             # we only got the address, so we're gonna pop it back into the shipment to store
@@ -701,16 +688,16 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         )
 
         mto_agent = mto_shipment["agents"][0]
-        headers = {"content-type": "application/json", "If-Match": mto_agent["eTag"]}
-        resp = self.client.put(
-            prime_path(f"/mto-shipments/{mto_shipment['id']}/agents/{mto_agent['id']}"),
-            name=prime_path("/mto-shipments/{mtoShipmentID}/agents/{agentID}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/mto-shipments/{mto_shipment['id']}/agents/{mto_agent['id']}",
+            endpoint_name="/mto-shipments/{mtoShipmentID}/agents/{agentID}",
         )
 
-        updated_agent, success = check_response(resp, "updateMTOAgent", payload)
+        request_kwargs["headers"]["If-Match"] = mto_agent["eTag"]
+
+        with self.rest(method="PUT", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            updated_agent, success = check_response(resp, "updateMTOAgent", payload)
 
         if success:
             # we only got the agent, so we're gonna pop it back into the shipment to store
@@ -756,15 +743,15 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             },
         )
 
-        headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
-        resp = self.client.patch(
-            prime_path(f"/mto-service-items/{mto_service_item['id']}"),
-            name=prime_path("/mto-service-items/{mtoServiceItemID}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/mto-service-items/{mto_service_item['id']}",
+            endpoint_name="/mto-service-items/{mtoServiceItemID}",
         )
-        updated_service_item, success = check_response(resp, f"updateMTOServiceItem {re_service_code}", payload)
+
+        request_kwargs["headers"]["If-Match"] = mto_service_item["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            updated_service_item, success = check_response(resp, f"updateMTOServiceItem {re_service_code}", payload)
 
         if success:
             self.update_stored(MTO_SERVICE_ITEM, mto_service_item, updated_service_item)
@@ -787,16 +774,16 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         )
 
         move_task_order_id = move_task_order["id"]  # path parameter
-        headers = {"content-type": "application/json", "If-Match": move_task_order["eTag"]}
 
-        resp = self.client.patch(
-            prime_path(f"/move-task-orders/{move_task_order_id}/post-counseling-info"),
-            name=prime_path("/move-task-orders/{moveTaskOrderID}/post-counseling-info"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/move-task-orders/{move_task_order_id}/post-counseling-info",
+            endpoint_name="/move-task-orders/{moveTaskOrderID}/post-counseling-info",
         )
-        new_mto, success = check_response(resp, "updateMTOPostCounselingInformation", payload)
+
+        request_kwargs["headers"]["If-Match"] = move_task_order["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_mto, success = check_response(resp, "updateMTOPostCounselingInformation", payload)
 
         if success:
             self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
@@ -804,7 +791,7 @@ class PrimeTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
 
 
 @tag("support")
-class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
+class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
     """
     Set of the tasks that can be called on the Support API. Make sure to mark tasks with the `@task` decorator and add
     tags where appropriate to make filtering for custom tests easier. Ex:
@@ -828,54 +815,57 @@ class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         # retrieve the move associated with the shipment
         # and then use the newly fetched move to the find most up to date version of the shipment
         move_id = mto_shipment["moveTaskOrderID"]
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            support_path(f"/move-task-orders/{move_id}"),
-            name=support_path("/move-task-orders/{moveTaskOrderID}"),
-            headers=headers,
+
+        url, request_kwargs = self.request_preparer.prep_support_request(
+            endpoint=f"/move-task-orders/{move_id}",
+            endpoint_name="/move-task-orders/{moveTaskOrderID}",
         )
-        move_details, success = check_response(resp, "getMoveTaskOrder")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            move_details, success = check_response(resp, "getMoveTaskOrder")
+
         if not move_details:
             logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
             return None  # can't run this task
         for fetched_mto_shipment in move_details["mtoShipments"]:
-            if fetched_mto_shipment["id"] == mto_shipment["id"]:
+            if fetched_mto_shipment["id"] != mto_shipment["id"]:
+                continue
 
-                # Generate fake payload based on the endpoint's required fields
-                payload = fake_data_generator.generate_fake_request_data(
-                    api_key=APIKey.SUPPORT,
-                    path="/mto-shipments/{mtoShipmentID}/status",
-                    method="patch",
-                    overrides=overrides,
-                )
+            # Generate fake payload based on the endpoint's required fields
+            payload = fake_data_generator.generate_fake_request_data(
+                api_key=APIKey.SUPPORT,
+                path="/mto-shipments/{mtoShipmentID}/status",
+                method="patch",
+                overrides=overrides,
+            )
 
-                if fetched_mto_shipment["status"] == "CANCELLATION_REQUESTED" and payload["status"] != "CANCELED":
-                    return None
-                elif fetched_mto_shipment["status"] == "SUBMITTED" and payload["status"] not in [
-                    "APPROVED",
-                    "REJECTED",
-                ]:
-                    return None
-                elif fetched_mto_shipment["status"] == "DIVERSION_REQUESTED" and payload["status"] != "APPROVED":
-                    return None
-                elif fetched_mto_shipment["status"] == "APPROVED" and payload["status"] != "DIVERSION_REQUESTED":
-                    return None
-                elif fetched_mto_shipment["status"] in ["DRAFT", "REJECTED", "CANCELED"]:
-                    return None
+            if fetched_mto_shipment["status"] == "CANCELLATION_REQUESTED" and payload["status"] != "CANCELED":
+                return None
+            elif fetched_mto_shipment["status"] == "SUBMITTED" and payload["status"] not in [
+                "APPROVED",
+                "REJECTED",
+            ]:
+                return None
+            elif fetched_mto_shipment["status"] == "DIVERSION_REQUESTED" and payload["status"] != "APPROVED":
+                return None
+            elif fetched_mto_shipment["status"] == "APPROVED" and payload["status"] != "DIVERSION_REQUESTED":
+                return None
+            elif fetched_mto_shipment["status"] in ["DRAFT", "REJECTED", "CANCELED"]:
+                return None
 
-                headers = {"content-type": "application/json", "If-Match": fetched_mto_shipment["eTag"]}
+            url, request_kwargs = self.request_preparer.prep_support_request(
+                endpoint=f"/mto-shipments/{fetched_mto_shipment['id']}/status",
+                endpoint_name="/mto-shipments/{mtoShipmentID}/status",
+            )
 
-                resp = self.client.patch(
-                    support_path(f"/mto-shipments/{fetched_mto_shipment['id']}/status"),
-                    name=support_path("/mto-shipments/{mtoShipmentID}/status"),
-                    data=json.dumps(payload),
-                    headers=headers,
-                )
+            request_kwargs["headers"]["If-Match"] = fetched_mto_shipment["eTag"]
+
+            with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
                 new_mto_shipment, success = check_response(resp, "updateMTOShipmentStatus", payload)
 
-                if success:
-                    self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
-                    return mto_shipment
+            if success:
+                self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
+                return mto_shipment
 
     @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
     # run this task less frequently than the others since this is testing an expected failure
@@ -903,15 +893,16 @@ class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
         )
 
         payload["status"] = "DRAFT"
-        headers = {"content-type": "application/json", "If-Match": mto_shipment["eTag"]}
 
-        resp = self.client.patch(
-            support_path(f"/mto-shipments/{mto_shipment['id']}/status"),
-            name=support_path("/mto-shipments/{mtoShipmentID}/status — expected failure"),
-            data=json.dumps(payload),
-            headers=headers,
+        url, request_kwargs = self.request_preparer.prep_support_request(
+            endpoint=f"/mto-shipments/{mto_shipment['id']}/status",
+            endpoint_name="/mto-shipments/{mtoShipmentID}/status — expected failure",
         )
-        check_response(resp, "updateMTOShipmentStatusFailure", payload, "422")
+
+        request_kwargs["headers"]["If-Match"] = mto_shipment["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            check_response(resp, "updateMTOShipmentStatusFailure", payload, "422")
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
     @task(2)
@@ -947,26 +938,25 @@ class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             overrides=overrides,
         )
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.post(
-            support_path("/move-task-orders"), data=json.dumps(payload), headers=headers, **self.user.cert_kwargs
-        )
-        json_body, success = check_response(resp, "createMoveTaskOrder", payload)
+        url, request_kwargs = self.request_preparer.prep_support_request(endpoint="/move-task-orders")
+
+        with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            json_body, success = check_response(resp, "createMoveTaskOrder", payload)
 
         if not success:
             return  # no point continuing if it didn't work out
 
         move_task_order_id = json_body["id"]
-        e_tag = json_body["eTag"]
-        headers["if-match"] = e_tag
 
-        resp = self.client.patch(
-            support_path(f"/move-task-orders/{move_task_order_id}/available-to-prime"),
-            name=support_path("/move-task-orders/{moveTaskOrderID}/available-to-prime"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_support_request(
+            endpoint=f"/move-task-orders/{move_task_order_id}/available-to-prime",
+            endpoint_name="/move-task-orders/{moveTaskOrderID}/available-to-prime",
         )
-        new_mto, success = check_response(resp, "makeMoveTaskOrderAvailable")
+
+        request_kwargs["headers"]["If-Match"] = json_body["eTag"]
+
+        with self.rest(method="PATCH", url=url, **request_kwargs) as resp:
+            new_mto, success = check_response(resp, "makeMoveTaskOrderAvailable")
 
         if success:
             self.add_stored(MOVE_TASK_ORDER, new_mto)
@@ -990,17 +980,15 @@ class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             overrides=overrides,
         )
 
-        headers = {"content-type": "application/json", "If-Match": mto_service_item["eTag"]}
-
-        resp = self.client.patch(
-            support_path(f"/mto-service-items/{mto_service_item['id']}/status"),
-            name=support_path("/mto-service-items/{mtoServiceItemID}/status"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_support_request(
+            endpoint=f"/mto-service-items/{mto_service_item['id']}/status",
+            endpoint_name="/mto-service-items/{mtoServiceItemID}/status",
         )
 
-        mto_service_item, success = check_response(resp, "updateMTOServiceItemStatus", payload)
+        request_kwargs["headers"]["If-Match"] = mto_service_item["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            mto_service_item, success = check_response(resp, "updateMTOServiceItemStatus", payload)
 
         if success:
             self.update_stored(MTO_SERVICE_ITEM, mto_service_item, mto_service_item)
@@ -1021,16 +1009,15 @@ class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             method="patch",
         )
 
-        headers = {"content-type": "application/json", "If-Match": payment_request["eTag"]}
-
-        resp = self.client.patch(
-            support_path(f"/payment-requests/{payment_request['id']}/status"),
-            name=support_path("/payment-requests/{paymentRequestID}/status"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_support_request(
+            endpoint=f"/payment-requests/{payment_request['id']}/status",
+            endpoint_name="/payment-requests/{paymentRequestID}/status",
         )
-        new_payment_request, success = check_response(resp, "updatePaymentRequestStatus", payload)
+
+        request_kwargs["headers"]["If-Match"] = payment_request["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_payment_request, success = check_response(resp, "updatePaymentRequestStatus", payload)
 
         if success:
             self.update_stored(PAYMENT_REQUEST, payment_request, new_payment_request)
@@ -1046,15 +1033,13 @@ class SupportTasks(PrimeDataStorageMixin, CertTaskMixin, TaskSet):
             logger.debug("getMoveTaskOrder: ⚠️ No move_task_order found")
             return
 
-        headers = {"content-type": "application/json"}
-
-        resp = self.client.get(
-            support_path(f"/move-task-orders/{move_task_order['id']}"),
-            name=support_path("/move-task-orders/{moveTaskOrderID}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_support_request(
+            endpoint=f"/move-task-orders/{move_task_order['id']}",
+            endpoint_name="/move-task-orders/{moveTaskOrderID}",
         )
-        new_mto, success = check_response(resp, "getMoveTaskOrder")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            new_mto, success = check_response(resp, "getMoveTaskOrder")
 
         if success:
             self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)

@@ -6,33 +6,24 @@ from locust.env import Environment, RunnerType
 from tasks import PrimeTasks, SupportTasks
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv
-from utils.hosts import MilMoveDomain, MilMoveHostMixin
 
 
-class PrimeUser(MilMoveHostMixin, HttpUser):
+class PrimeUser(HttpUser):
     """
     Tests the Prime API.
     """
 
-    # These attributes are used in MilMoveHostMixin to set up the proper hostname for any MilMove environment:
-    local_port = "9443"
-    domain = MilMoveDomain.PRIME  # the base domain for the host
-
-    # These are locust HttpUser attributes that help define and shape the load test:
-    wait_time = between(0.25, 9)  # the time period to wait in between tasks (in seconds, accepts decimals and 0)
-    tasks = {PrimeTasks: 1}  # the set of tasks to be executed and their relative weight
+    tasks = {PrimeTasks: 1}
+    wait_time = between(0.25, 9)
 
 
-class SupportUser(MilMoveHostMixin, HttpUser):
+class SupportUser(HttpUser):
     """
     Tests the Support API.
     """
 
-    local_port = "9443"
-    domain = MilMoveDomain.PRIME
-
-    wait_time = between(0.25, 9)
     tasks = {SupportTasks: 1}
+    wait_time = between(0.25, 9)
 
 
 @events.init.add_listener
