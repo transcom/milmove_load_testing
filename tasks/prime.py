@@ -909,7 +909,7 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
     def create_move_task_order(self):
         # Check that we have all required ID values for this endpoint:
         if not self.has_all_default_mto_ids():
-            logger.debug(f"⚠️ Missing createMoveTaskOrder IDs for environment {self.user.env}")
+            logger.debug(f"⚠️ Missing createMoveTaskOrder IDs for environment {self.env}")
             return
 
         overrides = {
