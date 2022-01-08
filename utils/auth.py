@@ -82,23 +82,13 @@ def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user
     """
     # Hacky workaround for now...not sure if this should really be added to the
     # MilMoveRequestPreparer class since it's only needed for this.
+    endpoint = "/devlocal-auth/login"
     if user_type == UserType.MILMOVE:
-        local_subdomain = "milmovelocal"
-        deployed_subdomain = "my"
+        url = request_preparer.form_internal_path(endpoint=endpoint, include_prefix=False)
     else:
-        local_subdomain = "officelocal"
-        deployed_subdomain = "office"
+        url = request_preparer.form_ghc_path(endpoint=endpoint, include_prefix=False)
 
-    if is_local(env=request_preparer.env):
-        base_domain = request_preparer.form_base_domain(
-            local_port="8080",
-            local_protocol="http",
-            local_subdomain=local_subdomain,
-        )
-    else:
-        base_domain = request_preparer.form_base_domain(deployed_subdomain=deployed_subdomain)
-
-    session.get(url=f"{base_domain}/devlocal-auth/login")
+    session.get(url=url)
 
     csrf_token = session.cookies.get("masked_gorilla_csrf")
 
@@ -109,6 +99,12 @@ def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user
         "gorilla.csrf.Token": csrf_token,
     }
 
-    resp = session.post(url=f"{base_domain}/devlocal-auth/create", data=payload)
+    endpoint = "/devlocal-auth/create"
+    if user_type == UserType.MILMOVE:
+        url = request_preparer.form_internal_path(endpoint=endpoint, include_prefix=False)
+    else:
+        url = request_preparer.form_ghc_path(endpoint=endpoint, include_prefix=False)
+
+    resp = session.post(url=url, data=payload)
 
     return resp.status_code == 200
