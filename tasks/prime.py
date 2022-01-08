@@ -142,7 +142,7 @@ class PrimeDataStorageMixin:
         Support API instead. It will go through and hit this endpoint for all of the moves in the list until it finally
         gets a complete set of IDs.
 
-        CAN ONLY be used when subclassed with TaskSet and CertTaskMixin.
+        CAN ONLY be used when subclassed with RestTaskSet.
 
         :param move_id: Move UUID
         :return: None
