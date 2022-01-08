@@ -212,18 +212,18 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         user_id = logged_in_user["id"]
 
         # Setup customer profile
-        url, request_kwargs = self.request_preparer.prep_internal_request(endpoint="/duty_locations?search=palms")
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint="/duty_locations?search=white%20sands"
+        )
 
-        duty_stations_resp = self.client.get(url=url, **request_kwargs)
+        resp = self.client.get(url=url, **request_kwargs)
 
-        duty_stations, error_msg = parse_response_json(response=duty_stations_resp)
-        duty_stations: JSONArray
+        duty_locations, error_msg = parse_response_json(response=resp)
+        duty_locations: JSONArray
 
         if error_msg:
             logger.error(error_msg)
             self.interrupt()
-
-        current_station_id = duty_stations[0]["id"]
 
         overrides = {
             "id": service_member_id,
@@ -231,7 +231,7 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
             "edipi": "9999999999",
             "personal_email": email,
             "email_is_preferred": True,
-            "current_station_id": current_station_id,
+            "current_station_id": duty_locations[0]["id"],
         }
 
         payload = fake_data_generator.generate_fake_request_data(
@@ -279,7 +279,7 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
             "orders_type": "PERMANENT_CHANGE_OF_STATION",
             "has_dependents": False,
             "spouse_has_pro_gear": False,
-            "new_duty_station_id": duty_stations[1]["id"],
+            "new_duty_station_id": duty_locations[1]["id"],
             "orders_number": None,
             "tac": None,
             "sac": None,
