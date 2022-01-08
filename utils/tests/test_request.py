@@ -124,37 +124,55 @@ class TestMilMoveRequestPreparer:
         assert request_preparer.form_base_domain() == "https://localhost:8080/"
 
     @pytest.mark.parametrize(
-        "env,endpoint,expected_path",
+        "env,endpoint,include_prefix,expected_path",
         (
-            (MilMoveEnv.LOCAL, "/moves", "http://officelocal:8080/ghc/v1/moves"),
-            (MilMoveEnv.LOCAL, "/queue", "http://officelocal:8080/ghc/v1/queue"),
-            (MilMoveEnv.DP3, "/moves", "https://office.loadtest.dp3.us/ghc/v1/moves"),
+            (MilMoveEnv.LOCAL, "/moves", True, "http://officelocal:8080/ghc/v1/moves"),
+            (MilMoveEnv.LOCAL, "/internal/users/logged_in", False, "http://officelocal:8080/internal/users/logged_in"),
+            (MilMoveEnv.LOCAL, "/queue", True, "http://officelocal:8080/ghc/v1/queue"),
+            (MilMoveEnv.DP3, "/moves", True, "https://office.loadtest.dp3.us/ghc/v1/moves"),
+            (
+                MilMoveEnv.DP3,
+                "/internal/users/logged_in",
+                False,
+                "https://office.loadtest.dp3.us/internal/users/logged_in",
+            ),
         ),
     )
     def test_can_form_expected_ghc_path(
         self,
         env: MilMoveEnv,
         endpoint: str,
+        include_prefix: bool,
         expected_path: str,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.form_ghc_path(endpoint=endpoint) == expected_path
+        assert request_preparer.form_ghc_path(endpoint=endpoint, include_prefix=include_prefix) == expected_path
 
     @pytest.mark.parametrize(
-        "env,endpoint,endpoint_name,expected_path,expected_headers",
+        "env,endpoint,endpoint_name,include_prefix,expected_path,expected_headers",
         (
             (
                 MilMoveEnv.LOCAL,
                 "/queues/moves",
                 "",
+                True,
                 "http://officelocal:8080/ghc/v1/queues/moves",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                "/internal/users/logged_in",
+                "",
+                False,
+                "http://officelocal:8080/internal/users/logged_in",
                 {"headers": get_json_headers()},
             ),
             (
                 MilMoveEnv.LOCAL,
                 "/queues/counseling",
                 "",
+                True,
                 "http://officelocal:8080/ghc/v1/queues/counseling",
                 {"headers": get_json_headers()},
             ),
@@ -162,6 +180,7 @@ class TestMilMoveRequestPreparer:
                 MilMoveEnv.LOCAL,
                 "/move/1",
                 "/move/{locator}",
+                True,
                 "http://officelocal:8080/ghc/v1/move/1",
                 {"name": "/ghc/v1/move/{locator}", "headers": get_json_headers()},
             ),
@@ -169,13 +188,23 @@ class TestMilMoveRequestPreparer:
                 MilMoveEnv.DP3,
                 "/queues/moves",
                 "",
+                True,
                 "https://office.loadtest.dp3.us/ghc/v1/queues/moves",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/internal/users/logged_in",
+                "",
+                False,
+                "https://office.loadtest.dp3.us/internal/users/logged_in",
                 {"headers": get_json_headers()},
             ),
             (
                 MilMoveEnv.DP3,
                 "/move/1",
                 "/move/{locator}",
+                True,
                 "https://office.loadtest.dp3.us/ghc/v1/move/1",
                 {"name": "/ghc/v1/move/{locator}", "headers": get_json_headers()},
             ),
@@ -186,48 +215,64 @@ class TestMilMoveRequestPreparer:
         env: MilMoveEnv,
         endpoint: str,
         endpoint_name: str,
+        include_prefix: bool,
         expected_path: str,
         expected_headers: RequestKwargsType,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.prep_ghc_request(endpoint=endpoint, endpoint_name=endpoint_name) == (
+        assert request_preparer.prep_ghc_request(
+            endpoint=endpoint, endpoint_name=endpoint_name, include_prefix=include_prefix
+        ) == (
             expected_path,
             expected_headers,
         )
 
     @pytest.mark.parametrize(
-        "env,endpoint,expected_path",
+        "env,endpoint,include_prefix,expected_path",
         (
-            (MilMoveEnv.LOCAL, "/moves", "http://milmovelocal:8080/internal/moves"),
-            (MilMoveEnv.LOCAL, "/mto-shipments", "http://milmovelocal:8080/internal/mto-shipments"),
-            (MilMoveEnv.DP3, "/moves", "https://my.loadtest.dp3.us/internal/moves"),
+            (MilMoveEnv.LOCAL, "/moves", True, "http://milmovelocal:8080/internal/moves"),
+            (MilMoveEnv.LOCAL, "/devlocal-auth/login", False, "http://milmovelocal:8080/devlocal-auth/login"),
+            (MilMoveEnv.LOCAL, "/mto-shipments", True, "http://milmovelocal:8080/internal/mto-shipments"),
+            (MilMoveEnv.DP3, "/moves", True, "https://my.loadtest.dp3.us/internal/moves"),
+            (MilMoveEnv.DP3, "/devlocal-auth/login", False, "https://my.loadtest.dp3.us/devlocal-auth/login"),
         ),
     )
     def test_can_form_expected_internal_path(
         self,
         env: MilMoveEnv,
         endpoint: str,
+        include_prefix: bool,
         expected_path: str,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.form_internal_path(endpoint=endpoint) == expected_path
+        assert request_preparer.form_internal_path(endpoint=endpoint, include_prefix=include_prefix) == expected_path
 
     @pytest.mark.parametrize(
-        "env,endpoint,endpoint_name,expected_path,expected_headers",
+        "env,endpoint,endpoint_name,include_prefix,expected_path,expected_headers",
         (
             (
                 MilMoveEnv.LOCAL,
                 "/users/logged_in",
                 "",
+                True,
                 "http://milmovelocal:8080/internal/users/logged_in",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.LOCAL,
+                "/devlocal-auth/login",
+                "",
+                False,
+                "http://milmovelocal:8080/devlocal-auth/login",
                 {"headers": get_json_headers()},
             ),
             (
                 MilMoveEnv.LOCAL,
                 "/mto_shipments",
                 "",
+                True,
                 "http://milmovelocal:8080/internal/mto_shipments",
                 {"headers": get_json_headers()},
             ),
@@ -235,6 +280,7 @@ class TestMilMoveRequestPreparer:
                 MilMoveEnv.LOCAL,
                 "/service_members/4",
                 "/service_members/{serviceMemberId}",
+                True,
                 "http://milmovelocal:8080/internal/service_members/4",
                 {"name": "/internal/service_members/{serviceMemberId}", "headers": get_json_headers()},
             ),
@@ -242,13 +288,23 @@ class TestMilMoveRequestPreparer:
                 MilMoveEnv.DP3,
                 "/users/logged_in",
                 "",
+                True,
                 "https://my.loadtest.dp3.us/internal/users/logged_in",
+                {"headers": get_json_headers()},
+            ),
+            (
+                MilMoveEnv.DP3,
+                "/devlocal-auth/login",
+                "",
+                False,
+                "https://my.loadtest.dp3.us/devlocal-auth/login",
                 {"headers": get_json_headers()},
             ),
             (
                 MilMoveEnv.DP3,
                 "/service_members/4",
                 "/service_members/{serviceMemberId}",
+                True,
                 "https://my.loadtest.dp3.us/internal/service_members/4",
                 {"name": "/internal/service_members/{serviceMemberId}", "headers": get_json_headers()},
             ),
@@ -259,12 +315,15 @@ class TestMilMoveRequestPreparer:
         env: MilMoveEnv,
         endpoint: str,
         endpoint_name: str,
+        include_prefix: bool,
         expected_path: str,
         expected_headers: RequestKwargsType,
     ) -> None:
         request_preparer = MilMoveRequestPreparer(env=env)
 
-        assert request_preparer.prep_internal_request(endpoint=endpoint, endpoint_name=endpoint_name) == (
+        assert request_preparer.prep_internal_request(
+            endpoint=endpoint, endpoint_name=endpoint_name, include_prefix=include_prefix
+        ) == (
             expected_path,
             expected_headers,
         )

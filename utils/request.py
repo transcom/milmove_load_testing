@@ -89,11 +89,12 @@ class MilMoveRequestPreparer:
 
         return f"{local_protocol}://{local_subdomain}:{port}"
 
-    def form_ghc_path(self, endpoint: str) -> str:
+    def form_ghc_path(self, endpoint: str, include_prefix: bool = True) -> str:
         """
         Returns a url pointing at the requested endpoint for the GHC API.
 
         :param endpoint: Endpoint to target, e.g. "/moves"
+        :param include_prefix: Indicate if the GHC prefix should be included or not
         :return: full url to use in requests
         """
         if is_local(env=self.env):
@@ -105,17 +106,25 @@ class MilMoveRequestPreparer:
         else:
             base_domain = self.form_base_domain(deployed_subdomain="office")
 
-        return f"{base_domain}{self.GHC_PATH_PREFIX}{endpoint}"
+        ghc_path = base_domain
 
-    def prep_ghc_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
+        if include_prefix:
+            ghc_path += self.GHC_PATH_PREFIX
+
+        return f"{ghc_path}{endpoint}"
+
+    def prep_ghc_request(
+        self, endpoint: str, endpoint_name: str = "", include_prefix: bool = True
+    ) -> tuple[str, RequestKwargsType]:
         """
         Prepares a request URL and the request kwargs for making a request to the GHC API.
 
         :param endpoint: endpoint to target, e.g. "/moves"
         :param endpoint_name: name of endpoint, for locust request grouping
+        :param include_prefix: Indicate if the GHC prefix should be included or not
         :return: tuple of the full url to the endpoint and the kwargs to pass to the request
         """
-        url = self.form_ghc_path(endpoint=endpoint)
+        url = self.form_ghc_path(endpoint=endpoint, include_prefix=include_prefix)
 
         if endpoint_name:
             endpoint_name = f"{self.GHC_PATH_PREFIX}{endpoint_name}"
@@ -124,11 +133,12 @@ class MilMoveRequestPreparer:
 
         return url, kwargs
 
-    def form_internal_path(self, endpoint: str) -> str:
+    def form_internal_path(self, endpoint: str, include_prefix: bool = True) -> str:
         """
         Returns a url pointing at the requested endpoint for the Internal API.
 
         :param endpoint: Endpoint to target, e.g. "/moves"
+        :param include_prefix: Indicate if the internal prefix should be included or not
         :return: full url to use in requests
         """
         if is_local(env=self.env):
@@ -140,17 +150,25 @@ class MilMoveRequestPreparer:
         else:
             base_domain = self.form_base_domain(deployed_subdomain="my")
 
-        return f"{base_domain}{self.INTERNAL_PATH_PREFIX}{endpoint}"
+        internal_path = base_domain
 
-    def prep_internal_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
+        if include_prefix:
+            internal_path += self.INTERNAL_PATH_PREFIX
+
+        return f"{internal_path}{endpoint}"
+
+    def prep_internal_request(
+        self, endpoint: str, endpoint_name: str = "", include_prefix: bool = True
+    ) -> tuple[str, RequestKwargsType]:
         """
         Prepares a request URL and the request kwargs for making a request to the Internal API.
 
         :param endpoint: endpoint to target, e.g. "/moves"
         :param endpoint_name: name of endpoint, for locust request grouping
+        :param include_prefix: Indicate if the internal prefix should be included or not
         :return: tuple of the full url to the endpoint and the kwargs to pass to the request
         """
-        url = self.form_internal_path(endpoint=endpoint)
+        url = self.form_internal_path(endpoint=endpoint, include_prefix=include_prefix)
 
         if endpoint_name:
             endpoint_name = f"{self.INTERNAL_PATH_PREFIX}{endpoint_name}"
