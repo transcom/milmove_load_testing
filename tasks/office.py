@@ -8,7 +8,7 @@ from typing import Dict, Set
 from locust import tag, task
 
 from tasks.base import check_response
-from utils.task import LoginTaskSet
+from utils.auth import UserType, create_user
 from utils.constants import (
     CUSTOMER,
     MOVE,
@@ -20,13 +20,11 @@ from utils.constants import (
     QUEUES,
 )
 from utils.parsers import APIKey, get_api_fake_data_generator
+from utils.task import RestTaskSet
+
 
 logger = logging.getLogger(__name__)
 fake_data_generator = get_api_fake_data_generator()
-
-
-def ghc_path(url: str) -> str:
-    return f"/ghc/v1{url}"
 
 
 class OfficeDataStorageMixin:
@@ -96,7 +94,7 @@ class OfficeDataStorageMixin:
             self.local_store[object_key][object_data["id"]] = object_data
 
 
-class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
+class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
     """
     Set of tasks that can be called for the MilMove Office interface with the Services Counselor role.
     """
@@ -105,24 +103,25 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
         """
         Creates a login right at the start of the TaskSet and stops task execution if the login fails.
         """
-        super().on_start()  # sets the csrf token
+        success = create_user(
+            request_preparer=self.request_preparer, session=self.client, user_type=UserType.SERVICE_COUNSELOR
+        )
 
-        resp = self._create_login(user_type="Services Counselor office", session_token_name="office_session_token")
-        if resp.status_code != 200:
-            self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
+        if not success:
+            logger.error("Failed to create a user")
+            self.interrupt()
 
     @task
     def get_user_info(self):
         """
         Gets the user info for the currently logged in user.
         """
-        resp = self.client.get("/internal/users/logged_in")
-        try:
-            json_body = json.loads(resp.content)
-        except json.JSONDecodeError:
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ User email: {json_body.get('email', 'None')}")
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint="/internal/users/logged_in", include_prefix=False
+        )
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            logger.info(f"ℹ️ User email: {resp.js.get('email', 'None')}")
 
     @tag(MOVE, "getMove")
     @task
@@ -137,15 +136,14 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
             logger.info("Skipping get move none are stored yet")
             return
 
-        headers = {"content-type": "application/json"}
-
-        resp = self.client.get(
-            ghc_path(f"/move/{move['locator']}"),
-            name=ghc_path("/move/{locator}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/move/{move['locator']}",
+            endpoint_name="/move/{locator}",
         )
-        new_mto, success = check_response(resp, "getMove")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            new_mto, success = check_response(resp, "getMove")
+
         if success:
             self.add_stored(MOVE_TASK_ORDER, new_mto)
         return new_mto
@@ -156,20 +154,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
         """
         Fetches a list of paginated moves
         """
-
-        headers = {"content-type": "application/json"}
-
-        # Use the default queue sort for now, adding a filter to return service counseling completed moves as well
-        resp = self.client.get(
-            ghc_path(
-                "/queues/counseling?page=1&perPage=50&sort=submittedAt&order=asc"
-                "&status=NEEDS SERVICE COUNSELING,SERVICE COUNSELING COMPLETED"
-            ),
-            name=ghc_path("/queues/counseling"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        # Use the default queue sort for now, adding a filter to return service counseling completed
+        # moves as well
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint="/queues/counseling?page=1&perPage=50&sort=submittedAt&order=asc&status=NEEDS SERVICE COUNSELING,SERVICE COUNSELING COMPLETED",
+            endpoint_name="/queues/counseling",
         )
-        moves, success = check_response(resp, "getServicesCounselingQueue")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            moves, success = check_response(resp, "getServicesCounselingQueue")
+
         if success:
             # these are not full move models and will be those in needs counseling status
             self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
@@ -191,14 +185,14 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
         if orders_id is None:
             move = self.get_move({"id": move["id"]})
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            ghc_path(f"/orders/{move['ordersId']}"),
-            name=ghc_path("/orders/{orderId}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/orders/{move['ordersId']}",
+            endpoint_name="/orders/{orderId}",
         )
-        order, success = check_response(resp, "getOrder")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            order, success = check_response(resp, "getOrder")
+
         if success:
             self.add_stored(ORDER, order)
 
@@ -215,14 +209,14 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
             logger.info("Skipping get customer no order is stored yet")
             return
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            ghc_path(f"/customer/{order['customerID']}"),
-            name=ghc_path("/customer/{customerId}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/customer/{order['customerID']}",
+            endpoint_name="/customer/{customerId}",
         )
-        customer, success = check_response(resp, "getCustomer")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            customer, success = check_response(resp, "getCustomer")
+
         if success:
             self.add_stored(CUSTOMER, customer)
 
@@ -239,14 +233,14 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
             logger.info("Skipping get shipments no moves are stored yet")
             return
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            ghc_path(f"/move_task_orders/{move['id']}/mto_shipments"),
-            name=ghc_path("/move_task_orders/{moveId}/mto_shipments"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/move_task_orders/{move['id']}/mto_shipments",
+            endpoint_name="/move_task_orders/{moveId}/mto_shipments",
         )
-        shipments, success = check_response(resp, "listMTOShipments")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            shipments, success = check_response(resp, "listMTOShipments")
+
         if success:
             self.add_stored(MTO_SHIPMENT, shipments)
 
@@ -282,16 +276,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
             payload["newDutyStationId"] = order["destinationDutyStation"]["id"]
 
         # The request may result in validation errors if the underlying move is no longer in needs counseling status
-        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
-        resp = self.client.patch(
-            ghc_path(f"/counseling/orders/{order['id']}"),
-            name=ghc_path("/counseling/orders/{orderId}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/counseling/orders/{order['id']}",
+            endpoint_name="/counseling/orders/{orderId}",
         )
 
-        new_order, success = check_response(resp, "updateOrder", payload)
+        request_kwargs["headers"]["If-Match"] = order["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_order, success = check_response(resp, "updateOrder", payload)
+
         if success:
             self.add_stored(ORDER, new_order)
 
@@ -316,15 +310,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
         )
 
         # update allowances handler expects the orders eTag because it also updates parents order fields
-        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
-        resp = self.client.patch(
-            ghc_path(f"/counseling/orders/{order['id']}/allowances"),
-            name=ghc_path("/counseling/orders/{orderId}/allowances"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/counseling/orders/{order['id']}/allowances",
+            endpoint_name="/counseling/orders/{orderId}/allowances",
         )
-        new_order, success = check_response(resp, "updateAllowance", payload)
+
+        request_kwargs["headers"]["If-Match"] = order["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_order, success = check_response(resp, "updateAllowance", payload)
+
         if success:
             self.add_stored(ORDER, new_order)
             self.add_stored(CUSTOMER, new_order["customer"])
@@ -354,20 +349,21 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, LoginTaskSet):
             require_all=True,
         )
 
-        headers = {"content-type": "application/json", "If-Match": customer["eTag"]}
-        resp = self.client.patch(
-            ghc_path(f"/customer/{customer['id']}"),
-            name=ghc_path("/customer/{customerID}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/customer/{customer['id']}",
+            endpoint_name="/customer/{customerID}",
         )
-        new_customer, success = check_response(resp, "updateCustomer", payload)
+
+        request_kwargs["headers"]["If-Match"] = customer["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_customer, success = check_response(resp, "updateCustomer", payload)
+
         if success:
             self.add_stored(CUSTOMER, new_customer)
 
 
-class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
+class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
     """
     Set of tasks that can be called for the MilMove Office interface with the TOO role.
     """
@@ -376,24 +372,23 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
         """
         Creates a login right at the start of the TaskSet and stops task execution if the login fails.
         """
-        super().on_start()  # sets the csrf token
+        success = create_user(request_preparer=self.request_preparer, session=self.client, user_type=UserType.TOO)
 
-        resp = self._create_login(user_type="TOO office", session_token_name="office_session_token")
-        if resp.status_code != 200:
-            self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
+        if not success:
+            logger.error("Failed to create a user")
+            self.interrupt()
 
     @task
     def get_user_info(self):
         """
         Gets the user info for the currently logged in user.
         """
-        resp = self.client.get("/internal/users/logged_in")
-        try:
-            json_body = json.loads(resp.content)
-        except json.JSONDecodeError:
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ User email: {json_body.get('email', 'None')}")
+        url, request_kwargs = self.request_preparer.prep_internal_request(
+            endpoint="/users/logged_in", include_prefix=False
+        )
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            logger.info(f"ℹ️ User email: {resp.js.get('email', 'None')}")
 
     @tag(MOVE, "getMove")
     @task
@@ -408,15 +403,14 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
             logger.info("Skipping get move none are stored yet")
             return
 
-        headers = {"content-type": "application/json"}
-
-        resp = self.client.get(
-            ghc_path(f"/move/{move['locator']}"),
-            name=ghc_path("/move/{locator}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/move/{move['locator']}",
+            endpoint_name="/move/{locator}",
         )
-        new_mto, success = check_response(resp, "getMove")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            new_mto, success = check_response(resp, "getMove")
+
         if success:
             self.add_stored(MOVE_TASK_ORDER, new_mto)
         return new_mto
@@ -427,16 +421,14 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
         """
         Fetches a list of paginated moves
         """
-
-        headers = {"content-type": "application/json"}
-
-        resp = self.client.get(
-            ghc_path("/queues/moves?page=1&perPage=50&sort=status&order=asc"),
-            name=ghc_path("/queues/moves"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint="/queues/moves?page=1&perPage=50&sort=status&order=asc",
+            endpoint_name="/queues/moves",
         )
-        moves, success = check_response(resp, "getMovesQueue")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            moves, success = check_response(resp, "getMovesQueue")
+
         if success:
             self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
 
@@ -461,14 +453,14 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
         if orders_id is None:
             move = self.get_move({"id": move["id"]})
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            ghc_path(f"/orders/{move['ordersId']}"),
-            name=ghc_path("/orders/{orderId}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/orders/{move['ordersId']}",
+            endpoint_name="/orders/{orderId}",
         )
-        order, success = check_response(resp, "getOrder")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            order, success = check_response(resp, "getOrder")
+
         if success:
             self.add_stored(ORDER, order)
             # the origin duty station is not in the queue response and we can't use the destination
@@ -488,14 +480,14 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
             logger.info("Skipping get shipments no moves are stored yet")
             return
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            ghc_path(f"/move_task_orders/{move['id']}/mto_shipments"),
-            name=ghc_path("/move_task_orders/{moveId}/mto_shipments"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/move_task_orders/{move['id']}/mto_shipments",
+            endpoint_name="/move_task_orders/{moveId}/mto_shipments",
         )
-        shipments, success = check_response(resp, "listMTOShipments")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            shipments, success = check_response(resp, "listMTOShipments")
+
         if success:
             self.add_stored(MTO_SHIPMENT, shipments)
 
@@ -512,15 +504,14 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
             logger.info("Skipping get service items no moves are stored yet")
             return
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            ghc_path(f"/move_task_orders/{move['id']}/mto_service_items"),
-            name=ghc_path("/move_task_orders/{moveId}/mto_service_items"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/move_task_orders/{move['id']}/mto_service_items",
+            endpoint_name="/move_task_orders/{moveId}/mto_service_items",
         )
 
-        service_items, success = check_response(resp, "listMTOServiceItems")
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            service_items, success = check_response(resp, "listMTOServiceItems")
+
         if success:
             self.add_stored(MTO_SERVICE_ITEM, service_items)
 
@@ -537,15 +528,14 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
             logger.info("Skipping get customer no order is stored yet")
             return
 
-        headers = {"content-type": "application/json"}
-        resp = self.client.get(
-            ghc_path(f"/customer/{order['customerID']}"),
-            name=ghc_path("/customer/{customerId}"),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/customer/{order['customerID']}",
+            endpoint_name="/customer/{customerId}",
         )
 
-        customer, success = check_response(resp, "getCustomer")
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            customer, success = check_response(resp, "getCustomer")
+
         if success:
             self.add_stored(CUSTOMER, customer)
 
@@ -586,15 +576,16 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
         else:
             payload["newDutyStationId"] = order["destinationDutyStation"]["id"]
 
-        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
-        resp = self.client.patch(
-            ghc_path(f"/orders/{order['id']}"),
-            name=ghc_path("/orders/{orderId}"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/orders/{order['id']}",
+            endpoint_name="/orders/{orderId}",
         )
-        new_order, success = check_response(resp, "updateOrder", payload)
+
+        request_kwargs["headers"]["If-Match"] = order["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_order, success = check_response(resp, "updateOrder", payload)
+
         if success:
             self.add_stored(ORDER, new_order)
             self.add_stored(CUSTOMER, new_order["customer"])
@@ -620,15 +611,16 @@ class TOOTasks(OfficeDataStorageMixin, LoginTaskSet):
         )
 
         # update allowances handler expects the orders eTag because it also updates parents order fields
-        headers = {"content-type": "application/json", "If-Match": order["eTag"]}
-        resp = self.client.patch(
-            ghc_path(f"/orders/{order['id']}/allowances"),
-            name=ghc_path("/orders/{orderId}/allowances"),
-            data=json.dumps(payload),
-            headers=headers,
-            **self.user.cert_kwargs,
+        url, request_kwargs = self.request_preparer.prep_ghc_request(
+            endpoint=f"/orders/{order['id']}/allowances",
+            endpoint_name="/orders/{orderId}/allowances",
         )
-        new_order, success = check_response(resp, "updateAllowance", payload)
+
+        request_kwargs["headers"]["If-Match"] = order["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            new_order, success = check_response(resp, "updateAllowance", payload)
+
         if success:
             self.add_stored(ORDER, new_order)
             self.add_stored(CUSTOMER, new_order["customer"])
