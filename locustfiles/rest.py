@@ -12,25 +12,7 @@ from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import MOVE_TASK_ORDER
 from utils.request import MilMoveRequestPreparer
 from utils.rest import RestResponseContextManager, parse_response_json
-from utils.task import LoginTaskSet, RestTaskSet
-
-
-class MyLoggedInTasks(LoginTaskSet):
-    """
-    Tasks to run that require logging in to the office/ghc or customer/internal APIs.
-    """
-
-    def on_start(self):
-        """
-        Creates a login right at the start of the TaskSet and stops task execution if the login
-        fails.
-        """
-        super().on_start()  # sets the csrf token
-
-        resp = self._create_login(user_type="my_user_type", session_token_name="my_token_name")
-        if resp.status_code != 200:
-            # if we didn't successfully log in, there's no point attempting the other tasks
-            self.interrupt()
+from utils.task import RestTaskSet
 
 
 class PrimeTaskSet(RestTaskSet):

@@ -934,25 +934,27 @@ class MyUser(HttpUser):
 The number next to the task set indicates its relative _weight_ - so in this example, tasks
 from `PrimeTasks` would be 5 times more likely than tasks from `SupportTasks`.
 
-Another `TaskSet` class that you might find useful is the `LoginTaskSet`. It adds code for logging
-into the Office/GHC and Customer/Internal APIs. It also includes the `rest` context manager that the
-`RestTaskSet` provides, but does not have the `request_preparer` yet (hopefully a future update
-will include an update to have it).
-
-To use the `LoginTaskSet` login functionality, add an `on_start` definition to your task set like
-so:
+If you need to be logged in for the load tests, we have a helper function to create users in
+`utils/auth.py` called `create_user`. You can use it during the `on_start` method of a `TaskSet`
+like this:
 
 ```python
 # -*- coding: utf-8 -*-
 """
 Example of a task set using the LoginTaskSet functionality.
 """
+import logging
+
 from locust import task
 
-from utils.task import LoginTaskSet
+from utils.auth import UserType, create_user
+from utils.task import RestTaskSet
 
 
-class MyLoggedInTasks(LoginTaskSet):
+logger = logging.getLogger(__name__)
+
+
+class MyLoggedInTasks(RestTaskSet):
   """
   Tasks to run that require logging in to the office/ghc or customer/internal APIs.
   """
@@ -962,11 +964,11 @@ class MyLoggedInTasks(LoginTaskSet):
     Creates a login right at the start of the TaskSet and stops task execution if the login
     fails.
     """
-    super().on_start()  # sets the csrf token
+    success = create_user(request_preparer=self.request_preparer, session=self.client,
+                          user_type=UserType.MILMOVE)
 
-    resp = self._create_login(user_type="my_user_type", session_token_name="my_token_name")
-    if resp.status_code != 200:
-      # if we didn't successfully log in, there's no point attempting the other tasks
+    if not success:
+      logger.error("Failed to create a user")
       self.interrupt()
 
   @task
@@ -977,8 +979,11 @@ class MyLoggedInTasks(LoginTaskSet):
     self.interrupt()
 ```
 
-There are multiple other ways to organize and link tasks together, but using our `RestTaskSet` and
-`LoginTaskSet` classes is the main recommendation in this repo.
+The `request_preparer` and `session` are available already on `RestTaskSet` instances, so the main
+thing you need to provide is the `user_type` you want to create.
+
+There are multiple other ways to organize and link tasks together, but using our `RestTaskSet` class
+is the main recommendation in this repo.
 
 ### Adding tasks to existing load tests
 
