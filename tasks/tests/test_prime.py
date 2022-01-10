@@ -2,12 +2,17 @@
 """
 Tests tasks/prime.py
 """
+from unittest.mock import MagicMock
+
 import pytest
 import responses
-from requests import Session
+from locust import HttpUser
 
 from tasks.prime import PrimeDataStorageMixin
+from utils.base import MilMoveEnv
 from utils.constants import MOVE_TASK_ORDER, MTO_SERVICE_ITEM, MTO_SHIPMENT, PAYMENT_REQUEST, ZERO_UUID
+from utils.request import MilMoveRequestPreparer
+from utils.task import RestTaskSet
 
 
 class TestPrimeDataStorageMixin:
@@ -159,26 +164,23 @@ class TestPrimeDataStorageMixin:
         This function loops through a list of MTOs that must have "id" values, and then it calls the Support API
         getMoveTaskOrder endpoint to get further details on the move. It repeats this process for as many of the listed
         moves as necessary to get a complete set of valid IDs to use with the createMoveTaskOrder endpoint.
-
-        To test this function, we have to mock the session client Locust uses in User/TaskSet classes, which we use to
-        make the API call. At its core, this client is an instance of requests.Session, so we create a simplified
-        subclass of Session and then do the rest of our requests mocking with the responses framework.
         """
         # Set up some mock functions and classes for our test:
-        def mocked_url(url):
-            return f"http:/{url}"
+        mock_locust_env = MagicMock()
 
-        class MockLocustSession(Session):
-            def get(self, path, **kwargs):
-                return super().get(mocked_url(path))
+        class MyUser(HttpUser):
+            host = "local"
 
-        class PrimeSessionStorage1(PrimeDataStorageMixin):
-            client = MockLocustSession()
-            cert_kwargs = {}
+        user = MyUser(environment=mock_locust_env)
 
-        class PrimeSessionStorage2(PrimeDataStorageMixin):
-            client = MockLocustSession()
-            cert_kwargs = {}
+        milmove_env = MilMoveEnv(MyUser.host)
+        local_request_preparer = MilMoveRequestPreparer(env=milmove_env)
+
+        class PrimeSessionStorage1(PrimeDataStorageMixin, RestTaskSet):
+            pass
+
+        class PrimeSessionStorage2(PrimeDataStorageMixin, RestTaskSet):
+            pass
 
         # Set up our test data and expected results:
         test_moves = [
@@ -228,9 +230,11 @@ class TestPrimeDataStorageMixin:
 
         # Mock the API calls for each of these moves:
         for test_move in test_moves:
+            url = local_request_preparer.form_support_path(endpoint=f"/move-task-orders/{test_move['id']}")
+
             responses.add(
                 responses.GET,
-                mocked_url(f"/support/v1/move-task-orders/{test_move['id']}"),
+                url,
                 json=test_move["json"],
                 status=test_move["status"],
             )
@@ -258,8 +262,8 @@ class TestPrimeDataStorageMixin:
         ]
 
         # Test set_default_mto_ids:
-        session_storage1 = PrimeSessionStorage1()
-        session_storage2 = PrimeSessionStorage2()
+        session_storage1 = PrimeSessionStorage1(parent=user)
+        session_storage2 = PrimeSessionStorage2(parent=user)
 
         for move in test_moves:
             session_storage1.set_default_mto_ids(move["id"])
