@@ -57,6 +57,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
     * [Locust Event Hooks](#locust-event-hooks)
       * [Making Requests Outside A User Or TaskSet Class](#making-requests-outside-a-user-or-taskset-class)
   * [TaskSets](#tasksets)
+    * [Logging In As A Customer or Office User](#logging-in-as-a-customer-or-office-user)
   * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
   * [Fake Data Generation](#fake-data-generation)
     * [API Parsers](#api-parsers)
@@ -813,6 +814,7 @@ import logging
 
 from locust import tag, task
 
+from utils.request import log_response_info, log_response_failure
 from utils.rest import RestResponseContextManager
 from utils.task import RestTaskSet
 
@@ -852,12 +854,15 @@ class PrimeTasks(RestTaskSet):
       # `RestResponseContextManager`, which then lets it know what type hints to suggest below.
       resp: RestResponseContextManager
 
-      # Lastly, validate the response and/or log any relevant info:
-      logger.info(f"ℹ️ Status code: {resp.status_code}")
+      # This function helps us log the response status code uniformly across requests.
+      log_response_info(response=resp)
 
-      if resp.js:
+      if resp.status_code == 200:
         logger.info(f"\nℹ️ {resp.js=}\n")
       else:
+        # This function helps us log info about the response and request when there are errors.
+        log_response_failure(response=resp)
+
         # if you wanted to, you could mark this load test as a failure by doing this:
         resp.failure("Move not found!")
 ```
@@ -893,6 +898,7 @@ The `rest` context manager makes it easier to work with responses by:
   parsed. The parsed json response content can be accessed in `resp.js`.
   * In an example earlier, you can see `parse_response_json` being used. The context manager uses
     that internally to populate `resp.js`.
+  * This isn't called `resp.json` because that's already a method on the `resp` object.
 * automatically catching of any exceptions that may be raised in your `with` block, which will then
   mark the load test as a failure and format an error message to display in the results.
 
@@ -933,6 +939,8 @@ class MyUser(HttpUser):
 
 The number next to the task set indicates its relative _weight_ - so in this example, tasks
 from `PrimeTasks` would be 5 times more likely than tasks from `SupportTasks`.
+
+#### Logging In As A Customer or Office User
 
 If you need to be logged in for the load tests, we have a helper function to create users in
 `utils/auth.py` called `create_user`. You can use it during the `on_start` method of a `TaskSet`

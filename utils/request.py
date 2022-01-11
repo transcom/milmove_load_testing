@@ -2,18 +2,29 @@
 """
 This file is to hold request-related code, meaning code that help make api requests, such as
 url-forming functions.
+
+The main difference between the code here and in utils/rest.py is that that code is based on some
+open source code, and we might contribute our changes back to that repo. This is our own stuff that
+we'll keep for this repo.
 """
+import inspect
+import json
+import logging
 import os
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Union
 
 from locust import TaskSet
+from requests import PreparedRequest, Response
 
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
-from utils.rest import get_json_headers
+from utils.rest import RestResponseContextManager, get_json_headers, parse_response_json
 from utils.types import RequestKwargsType
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -283,3 +294,88 @@ class MilMoveRequestMixin:
         Sets up a URL creator that can be used later to form proper endpoint URLs
         """
         self.request_preparer = MilMoveRequestPreparer(env=self.env)
+
+
+def log_response_info(response: Union[Response, RestResponseContextManager], task_name: str = "") -> None:
+    """
+    Function to uniformly log responses.
+
+    :param response: response object
+    :param task_name: optional task name to use in logging. Will default to calling function name.
+    """
+    if not task_name:
+        task_name = inspect.stack()[1].function
+
+    logger.info(f"ℹ️ {task_name} status code: {response.status_code} {response.reason}")
+
+
+def format_response_display_message(response: Union[Response, RestResponseContextManager]) -> str:
+    """
+    Take a response and format text for displaying.
+
+    :param response: response object.
+    :return: text to display, e.g. in a log.
+    """
+    response_display = "No content found."  # Default that will get overwritten if content is found.
+
+    if hasattr(response, "js"):
+        response_json = response.js
+    else:
+        response_json, error_msg = parse_response_json(response=response)
+
+        if error_msg:
+            response_display = error_msg
+
+    if response_json:
+        response_display = json.dumps(response_json, indent=4)
+
+    response_display = f"Response:\n\n{response_display}\n"
+
+    return response_display
+
+
+def format_request_display_message(request: PreparedRequest) -> str:
+    """
+    Take a request and format text for displaying.
+
+    :param request: request object
+    :return: text to display, e.g. in a log.
+    """
+    base_display_msg = f"Request:\n\n{request.method} {request.url}\n"
+
+    if not request.body:
+        return f"{base_display_msg}No content found."
+
+    # Want to display the body a little nicer so we'll convert back to JSON so we can take advantage
+    # of `json.dumps` formatting.
+
+    # In case it fails to parse.
+    raw_request_display = f"Error parsing body so here it is raw:\n{request.body}"
+
+    try:
+        body_json = json.loads(request.body)
+    except json.JSONDecodeError:
+        request_display = raw_request_display
+    else:
+        try:
+            request_display = json.dumps(body_json, indent=4)
+        except TypeError:
+            request_display = raw_request_display
+
+    return f"{base_display_msg}{request_display}\n"
+
+
+def log_response_failure(response: Union[Response, RestResponseContextManager], task_name: str = "") -> None:
+    """
+    Function to uniformly log info if we decide a response should be considered a failure.
+
+    :param response: response object
+    :param task_name: optional task name to use in logging. Will default to calling function name.
+    """
+    if not task_name:
+        task_name = inspect.stack()[1].function
+
+    response_display = format_response_display_message(response=response)
+    request_display = format_request_display_message(request=response.request)
+
+    logger.error(f"\n⚠️ {task_name} failed.\n{response_display}\n{request_display}\n")

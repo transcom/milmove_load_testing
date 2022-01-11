@@ -4,15 +4,23 @@ Tests for utils/request.py
 """
 import os
 from copy import deepcopy
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, create_autospec, patch
 
 import pytest
 from locust import TaskSet
+from requests import PreparedRequest, Response
 
 from utils.base import ImplementationError, MilMoveEnv
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
-from utils.request import MilMoveRequestMixin, MilMoveRequestPreparer
-from utils.rest import get_json_headers
+from utils.request import (
+    MilMoveRequestMixin,
+    MilMoveRequestPreparer,
+    format_request_display_message,
+    format_response_display_message,
+    log_response_failure,
+    log_response_info,
+)
+from utils.rest import RestResponseContextManager, get_json_headers
 from utils.types import RequestKwargsType
 
 
@@ -537,3 +545,240 @@ class TestMilMoveRequestMixin:
         assert hasattr(user, "request_preparer")
 
         assert user.request_preparer == MilMoveRequestPreparer(env=env)
+
+
+@patch("utils.request.logger", autospec=True)
+class TestLogResponseInfo:
+    """
+    Tests for log_response_info
+    """
+
+    def test_defaults_to_include_calling_function_name_in_log(self, mock_logger: MagicMock) -> None:
+        mock_response = create_autospec(Response)
+        mock_response.status_code = 200
+        mock_response.reason = ""
+
+        log_response_info(response=mock_response)
+
+        mock_logger.info.assert_called_once()
+
+        assert "test_defaults_to_include_calling_function_name_in_log" in mock_logger.info.call_args[0][0]
+
+    def test_can_override_task_name_in_log(self, mock_logger: MagicMock) -> None:
+        mock_response = create_autospec(Response)
+        mock_response.status_code = 200
+        mock_response.reason = ""
+
+        task_name = "my_task"
+        log_response_info(response=mock_response, task_name=task_name)
+
+        mock_logger.info.assert_called_once()
+
+        assert task_name in mock_logger.info.call_args[0][0]
+        assert "test_can_override_task_name_in_log" not in mock_logger.info.call_args[0][0]
+
+    def test_includes_status_code_in_log(self, mock_logger: MagicMock) -> None:
+        mock_response = create_autospec(Response)
+        mock_response.status_code = 200
+        mock_response.reason = ""
+
+        log_response_info(response=mock_response)
+
+        mock_logger.info.assert_called_once()
+
+        assert str(mock_response.status_code) in mock_logger.info.call_args[0][0]
+
+    def test_includes_reason_in_log(self, mock_logger: MagicMock) -> None:
+        mock_response = create_autospec(Response)
+        mock_response.status_code = 500
+        mock_response.reason = "Server Error"
+
+        log_response_info(response=mock_response)
+
+        mock_logger.info.assert_called_once()
+
+        assert mock_response.reason in mock_logger.info.call_args[0][0]
+
+
+class TestFormatResponseDisplayMessage:
+    """
+    Tests for format_response_display_message
+    """
+
+    def test_indicates_if_no_content_found(self) -> None:
+        mock_response = create_autospec(RestResponseContextManager)
+        mock_response.js = ""
+
+        msg = format_response_display_message(response=mock_response)
+
+        assert "No content found." in msg
+
+    def test_includes_js_content(self) -> None:
+        mock_response = create_autospec(RestResponseContextManager)
+        mock_response.js = {"moveID": "123"}
+
+        msg = format_response_display_message(response=mock_response)
+
+        assert '"moveID": "123"' in msg
+
+    @patch("utils.request.parse_response_json")
+    def test_parses_response_content_to_json_if_not_already_parsed(self, mock_parse_response_json: MagicMock) -> None:
+        mock_parse_response_json.return_value = ({"moveID": "123"}, "")
+
+        mock_response = create_autospec(Response)
+
+        msg = format_response_display_message(response=mock_response)
+
+        mock_parse_response_json.assert_called_once_with(response=mock_response)
+
+        assert '"moveID": "123"' in msg
+
+    @patch("utils.request.parse_response_json")
+    def test_if_parses_response_content_to_json_fails_then_msg_includes_failure(
+        self, mock_parse_response_json: MagicMock
+    ) -> None:
+        fail_msg = "Response content not parsable to JSON."
+        mock_parse_response_json.return_value = ({}, fail_msg)
+
+        mock_response = create_autospec(Response)
+
+        msg = format_response_display_message(response=mock_response)
+
+        mock_parse_response_json.assert_called_once_with(response=mock_response)
+
+        assert fail_msg in msg
+
+
+class TestFormatRequestDisplayMessage:
+    """
+    Tests for format_request_display_message
+    """
+
+    def test_indicates_if_no_content_found(self) -> None:
+        mock_request = create_autospec(PreparedRequest)
+        mock_request.method = "GET"
+        mock_request.url = "http://milmovelocal:8080/internal/users/logged_in"
+        mock_request.body = ""
+
+        msg = format_request_display_message(request=mock_request)
+
+        assert mock_request.method in msg
+        assert mock_request.url in msg
+        assert "No content found." in msg
+
+    @patch("utils.request.json", autospec=True)
+    def test_request_body_is_parsed_using_json(self, mock_json: MagicMock) -> None:
+        mock_request = create_autospec(PreparedRequest)
+        mock_request.method = "GET"
+        mock_request.url = "http://milmovelocal:8080/internal/users/logged_in"
+        mock_request.body = '{"moveID": "123"}'
+
+        msg = format_request_display_message(request=mock_request)
+
+        assert mock_request.method in msg
+        assert mock_request.url in msg
+
+        mock_json.loads.assert_called_once_with(mock_request.body)
+        mock_json.dumps.assert_called_once_with(mock_json.loads.return_value, indent=4)
+
+    def test_if_invalid_request_body_includes_msg_indicating_that_and_raw_body(self) -> None:
+        mock_request = create_autospec(PreparedRequest)
+        mock_request.method = "GET"
+        mock_request.url = "http://milmovelocal:8080/internal/users/logged_in"
+        mock_request.body = '{"moveID": "123"'  # missing closing curly bracket on purpose
+
+        msg = format_request_display_message(request=mock_request)
+
+        assert mock_request.method in msg
+        assert mock_request.url in msg
+        assert "Error parsing body" in msg
+        assert mock_request.body in msg
+
+    @patch("utils.request.json", autospec=True)
+    def test_if_json_cant_be_dumped_then_includes_msg_with_raw_body(self, mock_json: MagicMock) -> None:
+        mock_request = create_autospec(PreparedRequest)
+        mock_request.method = "GET"
+        mock_request.url = "http://milmovelocal:8080/internal/users/logged_in"
+        mock_request.body = '{"moveID": "123"}'
+
+        mock_json.dumps.side_effect = TypeError("Bad json!")  # faking out the error
+
+        msg = format_request_display_message(request=mock_request)
+
+        assert mock_request.method in msg
+        assert mock_request.url in msg
+        assert "Error parsing body" in msg
+        assert mock_request.body in msg
+
+    @patch("utils.request.json", autospec=True)
+    def test_includes_parsed_response_body_in_msg(self, mock_json: MagicMock) -> None:
+        mock_request = create_autospec(PreparedRequest)
+        mock_request.method = "GET"
+        mock_request.url = "http://milmovelocal:8080/internal/users/logged_in"
+        mock_request.body = '{"moveID": "123"}'
+
+        msg = format_request_display_message(request=mock_request)
+
+        assert mock_request.method in msg
+        assert mock_request.url in msg
+
+        assert str(mock_json.dumps.return_value) in msg
+
+
+@patch("utils.request.format_response_display_message", autospec=True)
+@patch("utils.request.format_request_display_message", autospec=True)
+@patch("utils.request.logger", autospec=True)
+class TestLogResponseFailure:
+    """
+    Tests for log_response_failure
+    """
+
+    def test_defaults_to_include_calling_function_name_in_log(
+        self, mock_logger: MagicMock, _mock_request_formatter: MagicMock, _mock_response_formatter: MagicMock
+    ) -> None:
+        mock_response = create_autospec(RestResponseContextManager)
+        mock_response.request = create_autospec(PreparedRequest)
+
+        log_response_failure(response=mock_response)
+
+        mock_logger.error.assert_called_once()
+
+        assert "test_defaults_to_include_calling_function_name_in_log failed" in mock_logger.error.call_args[0][0]
+
+    def test_can_override_task_name_in_log(
+        self, mock_logger: MagicMock, _mock_request_formatter: MagicMock, _mock_response_formatter: MagicMock
+    ) -> None:
+        mock_response = create_autospec(RestResponseContextManager)
+        mock_response.request = create_autospec(PreparedRequest)
+
+        task_name = "my_task"
+        log_response_failure(response=mock_response, task_name=task_name)
+
+        mock_logger.error.assert_called_once()
+
+        assert f"{task_name} failed" in mock_logger.error.call_args[0][0]
+        assert "test_can_override_task_name_in_log" not in mock_logger.error.call_args[0][0]
+
+    def test_includes_formatted_response_in_log(
+        self, mock_logger: MagicMock, _mock_request_formatter: MagicMock, mock_response_formatter: MagicMock
+    ) -> None:
+        mock_response = create_autospec(RestResponseContextManager)
+        mock_response.request = create_autospec(PreparedRequest)
+
+        log_response_failure(response=mock_response)
+
+        mock_logger.error.assert_called_once()
+
+        assert str(mock_response_formatter.return_value) in mock_logger.error.call_args[0][0]
+
+    def test_includes_formatted_request_in_log(
+        self, mock_logger: MagicMock, mock_request_formatter: MagicMock, _mock_response_formatter: MagicMock
+    ) -> None:
+        mock_response = create_autospec(RestResponseContextManager)
+        mock_response.request = create_autospec(PreparedRequest)
+
+        log_response_failure(response=mock_response)
+
+        mock_logger.error.assert_called_once()
+
+        assert str(mock_request_formatter.return_value) in mock_logger.error.call_args[0][0]
