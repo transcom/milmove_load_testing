@@ -811,10 +811,11 @@ An example `TaskSet` for this project might be:
 Example of a TaskSet file...
 """
 import logging
+from http import HTTPStatus
 
 from locust import tag, task
 
-from utils.request import log_response_info, log_response_failure
+from utils.request import log_response_failure, log_response_info
 from utils.rest import RestResponseContextManager
 from utils.task import RestTaskSet
 
@@ -857,7 +858,7 @@ class PrimeTasks(RestTaskSet):
       # This function helps us log the response status code uniformly across requests.
       log_response_info(response=resp)
 
-      if resp.status_code == 200:
+      if resp.status_code == HTTPStatus.OK:
         logger.info(f"\nℹ️ {resp.js=}\n")
       else:
         # This function helps us log info about the response and request when there are errors.
@@ -1026,11 +1027,13 @@ Example of a TaskSet file using the fake data generator...
 """
 import logging
 import random
+from http import HTTPStatus
 
 from locust import tag, task
 
 from utils.constants import ZERO_UUID
 from utils.parsers import APIKey, get_api_fake_data_generator
+from utils.request import log_response_failure, log_response_info
 from utils.rest import RestResponseContextManager
 from utils.task import RestTaskSet
 
@@ -1067,14 +1070,19 @@ class SupportTasks(RestTaskSet):
       # `RestResponseContextManager`, which then lets it know what type hints to suggest below.
       resp: RestResponseContextManager
 
-      # Lastly, validate the response and/or log any relevant info:
-      logger.info(f"ℹ️ Status code: {resp.status_code}")
+      # This function helps us log the response status code uniformly across requests.
+      log_response_info(response=resp)
 
-      if isinstance(resp.js, list) and resp.js:
+      if resp.status_code == HTTPStatus.OK:
         moves = resp.js
       else:
         # if you wanted to, you could mark this load test as a failure by doing this:
         resp.failure("No moves found!")
+
+        # This function helps us log info about the response and request when there are errors.
+        log_response_failure(response=resp)
+
+        return
 
     # You can filter more if you need a specific move
     move_to_use = random.choice(moves)
@@ -1110,7 +1118,7 @@ class SupportTasks(RestTaskSet):
     with self.rest(method="POST", url=create_shipment_path, data=payload, **request_kwargs) as resp:
       resp: RestResponseContextManager
 
-      logger.info(f"ℹ️ Status code: {resp.status_code}")
+      log_response_info(response=resp)
 
       # Do whatever else you need to here.
 ```

@@ -5,6 +5,7 @@ Place to store auth-related code, e.g. for dealing with certs or session tokens.
 import logging
 import os
 from enum import Enum
+from http import HTTPStatus
 
 from requests import Session
 
@@ -107,4 +108,4 @@ def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user
 
     resp = session.post(url=url, data=payload)
 
-    return resp.status_code == 200
+    return resp.status_code == HTTPStatus.OK
