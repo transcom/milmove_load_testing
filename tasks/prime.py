@@ -5,11 +5,11 @@ import logging
 import random
 from copy import deepcopy
 from datetime import datetime
+from http import HTTPStatus
 from typing import Dict, Union
 
 from locust import tag, task
 
-from tasks.base import check_response
 from utils.auth import UserType, create_user
 from utils.constants import (
     MOVE_TASK_ORDER,
@@ -21,7 +21,8 @@ from utils.constants import (
     ZERO_UUID,
 )
 from utils.parsers import APIKey, get_api_fake_data_generator
-from utils.rest import parse_response_json
+from utils.request import log_response_failure, log_response_info
+from utils.rest import RestResponseContextManager, parse_response_json
 from utils.task import RestTaskSet
 from utils.types import JSONArray, JSONObject
 
@@ -157,6 +158,8 @@ class PrimeDataStorageMixin:
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            resp: RestResponseContextManager
+
             move_details: JSONObject = resp.js
 
         # Get the values we need from the move and set them in self.default_move_ids.
@@ -404,13 +407,22 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/mto-service-items")
 
         with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            mto_service_items, success = check_response(
-                resp, f"createMTOServiceItem {payload['reServiceCode']}", payload
-            )
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MTO_SERVICE_ITEM, mto_service_items)
-            return mto_service_items
+            task_name = f"create_mto_service_item {payload['reServiceCode']}"
+
+            log_response_info(response=resp, task_name=task_name)
+
+            if resp.status_code == HTTPStatus.OK:
+                mto_service_items = resp.js
+
+                self.add_stored(MTO_SERVICE_ITEM, mto_service_items)
+
+                return mto_service_items
+
+            resp.failure("Unable to create MTO service item.")
+
+            log_response_failure(response=resp, task_name=task_name)
 
     @tag(MTO_SHIPMENT, "createMTOShipment")
     @task
@@ -459,11 +471,20 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/mto-shipments")
 
         with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            mto_shipment, success = check_response(resp, "createMTOShipment", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MTO_SHIPMENT, mto_shipment)
-            return mto_shipment
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                mto_shipment = resp.js
+
+                self.add_stored(MTO_SHIPMENT, mto_shipment)
+
+                return mto_shipment
+
+            resp.failure("Unable to create MTO shipment.")
+
+            log_response_failure(response=resp)
 
     @tag(MTO_SHIPMENT, "createMTOShipment", "expectedFailure")
     @task
@@ -508,7 +529,16 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            check_response(resp, "createMTOShipmentFailure", payload, "422")
+            resp: RestResponseContextManager
+
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.UNPROCESSABLE_ENTITY:
+                resp.success()
+            else:
+                resp.failure("Got an unexpected result for creating a shipment with duplicate agents.")
+
+                log_response_failure(response=resp)
 
     @tag(PAYMENT_REQUEST, "createUpload")
     @task
@@ -528,8 +558,15 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
 
         request_kwargs.pop("headers")  # don't want the JSON headers for this one
 
-        with self.rest(method="POST", url=url, files=upload_file, **request_kwargs) as resp:
-            check_response(resp, "createUpload")
+        with self.client.post(url=url, files=upload_file, catch_response=True, **request_kwargs) as resp:
+            resp: RestResponseContextManager
+
+            log_response_info(response=resp)
+
+            if resp.status_code != HTTPStatus.CREATED:
+                resp.failure("Unable to create an upload.")
+
+                log_response_failure(response=resp)
 
     @tag(PAYMENT_REQUEST, "createPaymentRequest")
     @task
@@ -563,11 +600,20 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/payment-requests")
 
         with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            payment_request, success = check_response(resp, "createPaymentRequest", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(PAYMENT_REQUEST, payment_request)
-            return payment_request
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.CREATED:
+                payment_request = resp.js
+
+                self.add_stored(PAYMENT_REQUEST, payment_request)
+
+                return payment_request
+
+            resp.failure("Unable to create payment request.")
+
+            log_response_failure(response=resp)
 
     @tag(MTO_SHIPMENT, "updateMTOShipment")
     @task
@@ -613,11 +659,20 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = mto_shipment["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_mto_shipment, success = check_response(resp, "updateMTOShipment", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
-            return new_mto_shipment
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_mto_shipment = resp.js
+
+                self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
+
+                return new_mto_shipment
+
+            resp.failure("Unable to update MTO shipment.")
+
+            log_response_failure(response=resp)
 
     @tag(MTO_SHIPMENT, "updateMTOShipmentAddress")
     @task
@@ -653,14 +708,23 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
 
         # update mto_shipment address
         with self.rest(method="PUT", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            updated_address, success = check_response(resp, "updateMTOShipmentAddress", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            # we only got the address, so we're gonna pop it back into the shipment to store
-            updated_shipment = deepcopy(mto_shipment)
-            updated_shipment[field] = updated_address
-            self.update_stored(MTO_SHIPMENT, mto_shipment, updated_shipment)
-            return updated_shipment
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                # we only got the address, so we're gonna pop it back into the shipment to store
+                updated_shipment = deepcopy(mto_shipment)
+
+                updated_shipment[field] = resp.js
+
+                self.update_stored(MTO_SHIPMENT, mto_shipment, updated_shipment)
+
+                return updated_shipment
+
+            resp.failure("Unable to update MTO shipment address.")
+
+            log_response_failure(response=resp)
 
     @tag(MTO_AGENT, "updateMTOAgent")
     @task
@@ -697,14 +761,22 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = mto_agent["eTag"]
 
         with self.rest(method="PUT", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            updated_agent, success = check_response(resp, "updateMTOAgent", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            # we only got the agent, so we're gonna pop it back into the shipment to store
-            new_shipment = deepcopy(mto_shipment)
-            new_shipment["agents"][0] = updated_agent
-            self.update_stored(MTO_SHIPMENT, mto_shipment, new_shipment)
-            return new_shipment
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                # we only got the agent, so we're gonna pop it back into the shipment to store
+                new_shipment = deepcopy(mto_shipment)
+                new_shipment["agents"][0] = resp.js
+
+                self.update_stored(MTO_SHIPMENT, mto_shipment, new_shipment)
+
+                return new_shipment
+
+            resp.failure("Unable to update MTO shipment agent.")
+
+            log_response_failure(response=resp)
 
     @tag(MTO_SERVICE_ITEM, "updateMTOServiceItem")
     @task
@@ -751,11 +823,20 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = mto_service_item["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            updated_service_item, success = check_response(resp, f"updateMTOServiceItem {re_service_code}", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.update_stored(MTO_SERVICE_ITEM, mto_service_item, updated_service_item)
-            return updated_service_item
+            task_name = f"update_mto_service_item {re_service_code}"
+
+            log_response_info(response=resp, task_name=task_name)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.update_stored(MTO_SERVICE_ITEM, mto_service_item, resp.js)
+
+                return resp.js
+
+            resp.failure("Unable to update MTO service item.")
+
+            log_response_failure(response=resp, task_name=task_name)
 
     @tag(MOVE_TASK_ORDER, "updateMTOPostCounselingInformation")
     @task
@@ -783,11 +864,20 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = move_task_order["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_mto, success = check_response(resp, "updateMTOPostCounselingInformation", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
-            return new_mto
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_mto = resp.js
+
+                self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
+
+                return new_mto
+
+            resp.failure("Unable to post counseling information.")
+
+            log_response_failure(response=resp)
 
 
 @tag("support")
@@ -822,11 +912,19 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            move_details, success = check_response(resp, "getMoveTaskOrder")
+            resp: RestResponseContextManager
 
-        if not move_details:
-            logger.debug("updateMTOShipmentStatus: ⚠️ No mto_shipment found.")
-            return None  # can't run this task
+            log_response_info(response=resp)
+
+            if resp.status_code != HTTPStatus.OK:
+                resp.failure("Unable to retrieve MTO.")
+
+                log_response_failure(response=resp)
+
+                return
+
+            move_details: JSONObject = resp.js
+
         for fetched_mto_shipment in move_details["mtoShipments"]:
             if fetched_mto_shipment["id"] != mto_shipment["id"]:
                 continue
@@ -861,11 +959,19 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
             request_kwargs["headers"]["If-Match"] = fetched_mto_shipment["eTag"]
 
             with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-                new_mto_shipment, success = check_response(resp, "updateMTOShipmentStatus", payload)
+                resp: RestResponseContextManager
 
-            if success:
-                self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
-                return mto_shipment
+                log_response_info(response=resp)
+
+                if resp.status_code == HTTPStatus.OK:
+                    new_mto_shipment = resp.js
+                    self.update_stored(MTO_SHIPMENT, mto_shipment, new_mto_shipment)
+
+                    return mto_shipment
+
+                resp.failure("Unable to update MTO shipment status.")
+
+                log_response_failure(response=resp)
 
     @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
     # run this task less frequently than the others since this is testing an expected failure
@@ -902,7 +1008,16 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = mto_shipment["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            check_response(resp, "updateMTOShipmentStatusFailure", payload, "422")
+            resp: RestResponseContextManager
+
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.UNPROCESSABLE_ENTITY:
+                resp.success()
+            else:
+                resp.failure("Got an unexpected result for updating a shipment with an invalid status.")
+
+                log_response_failure(response=resp)
 
     @tag(MOVE_TASK_ORDER, "createMoveTaskOrder")
     @task(2)
@@ -941,26 +1056,43 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
         url, request_kwargs = self.request_preparer.prep_support_request(endpoint="/move-task-orders")
 
         with self.rest(method="POST", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            json_body, success = check_response(resp, "createMoveTaskOrder", payload)
+            resp: RestResponseContextManager
 
-        if not success:
-            return  # no point continuing if it didn't work out
+            log_response_info(response=resp)
 
-        move_task_order_id = json_body["id"]
+            if resp.status_code != HTTPStatus.CREATED:
+                resp.failure("Unable to create an MTO.")
+
+                log_response_failure(response=resp)
+
+                return
+
+            move: JSONObject = resp.js
+
+        move_task_order_id = move["id"]
 
         url, request_kwargs = self.request_preparer.prep_support_request(
             endpoint=f"/move-task-orders/{move_task_order_id}/available-to-prime",
             endpoint_name="/move-task-orders/{moveTaskOrderID}/available-to-prime",
         )
 
-        request_kwargs["headers"]["If-Match"] = json_body["eTag"]
+        request_kwargs["headers"]["If-Match"] = move["eTag"]
 
         with self.rest(method="PATCH", url=url, **request_kwargs) as resp:
-            new_mto, success = check_response(resp, "makeMoveTaskOrderAvailable")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MOVE_TASK_ORDER, new_mto)
-            return new_mto
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_mto: JSONObject = resp.js
+
+                self.add_stored(MOVE_TASK_ORDER, new_mto)
+
+                return new_mto
+
+            resp.failure("Unable to make MTO available to prime.")
+
+            log_response_failure(response=resp)
 
     # @tag(MTO_SERVICE_ITEM, "updateMTOServiceItemStatus")
     @task(2)
@@ -988,11 +1120,20 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = mto_service_item["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            mto_service_item, success = check_response(resp, "updateMTOServiceItemStatus", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.update_stored(MTO_SERVICE_ITEM, mto_service_item, mto_service_item)
-            return mto_service_item
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                mto_service_item = resp.js
+
+                self.update_stored(MTO_SERVICE_ITEM, mto_service_item, mto_service_item)
+
+                return mto_service_item
+
+            resp.failure("Unable to update MTO service item status.")
+
+            log_response_failure(response=resp)
 
     @tag(PAYMENT_REQUEST, "updatePaymentRequestStatus")
     @task(2)
@@ -1017,11 +1158,20 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = payment_request["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_payment_request, success = check_response(resp, "updatePaymentRequestStatus", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.update_stored(PAYMENT_REQUEST, payment_request, new_payment_request)
-            return new_payment_request
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_payment_request = resp.js
+
+                self.update_stored(PAYMENT_REQUEST, payment_request, new_payment_request)
+
+                return new_payment_request
+
+            resp.failure("Unable to update payment request status.")
+
+            log_response_failure(response=resp)
 
     @tag(MOVE_TASK_ORDER, "getMoveTaskOrder")
     @task(2)
@@ -1039,8 +1189,17 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            new_mto, success = check_response(resp, "getMoveTaskOrder")
+            resp: RestResponseContextManager
 
-        if success:
-            self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
-            return new_mto
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_mto: JSONObject = resp.js
+
+                self.update_stored(MOVE_TASK_ORDER, move_task_order, new_mto)
+
+                return new_mto
+
+            resp.failure("Unable to get MTO.")
+
+            log_response_failure(response=resp)
