@@ -3,11 +3,11 @@
 import json
 import logging
 import random
+from http import HTTPStatus
 from typing import Dict, Set
 
 from locust import tag, task
 
-from tasks.base import check_response
 from utils.auth import UserType, create_user
 from utils.constants import (
     CUSTOMER,
@@ -20,7 +20,10 @@ from utils.constants import (
     QUEUES,
 )
 from utils.parsers import APIKey, get_api_fake_data_generator
+from utils.request import log_response_failure, log_response_info
+from utils.rest import RestResponseContextManager
 from utils.task import RestTaskSet
+from utils.types import JSONObject
 
 
 logger = logging.getLogger(__name__)
@@ -142,11 +145,20 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            new_mto, success = check_response(resp, "getMove")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MOVE_TASK_ORDER, new_mto)
-        return new_mto
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_mto = resp.js
+
+                self.add_stored(MOVE_TASK_ORDER, new_mto)
+
+                return new_mto
+
+            resp.failure("Unable to get move.")
+
+            log_response_failure(response=resp)
 
     @tag(QUEUES, "getServicesCounselingQueue")
     @task
@@ -162,11 +174,19 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            moves, success = check_response(resp, "getServicesCounselingQueue")
+            resp: RestResponseContextManager
 
-        if success:
-            # these are not full move models and will be those in needs counseling status
-            self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                moves: JSONObject = resp.js
+
+                # these are not full move models and will be those in needs counseling status
+                self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
+            else:
+                resp.failure("Unable to get moves queue.")
+
+                log_response_failure(response=resp)
 
     @tag(ORDER, "getOrder")
     @task
@@ -191,10 +211,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            order, success = check_response(resp, "getOrder")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(ORDER, order)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(ORDER, resp.js)
+            else:
+                resp.failure("Unable to get orders.")
+
+                log_response_failure(response=resp)
 
     @tag(CUSTOMER, "getCustomer")
     @task
@@ -215,10 +241,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            customer, success = check_response(resp, "getCustomer")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(CUSTOMER, customer)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(CUSTOMER, resp.js)
+            else:
+                resp.failure("Unable to get customer.")
+
+                log_response_failure(response=resp)
 
     @tag(MTO_SHIPMENT, "listMTOShipments")
     @task
@@ -239,10 +271,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            shipments, success = check_response(resp, "listMTOShipments")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MTO_SHIPMENT, shipments)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(MTO_SHIPMENT, resp.js)
+            else:
+                resp.failure("Unable to get shipments.")
+
+                log_response_failure(response=resp)
 
     @tag(ORDER, "updateOrder")
     @task
@@ -284,10 +322,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = order["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_order, success = check_response(resp, "updateOrder", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(ORDER, new_order)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(ORDER, resp.js)
+            else:
+                resp.failure("Unable to update orders.")
+
+                log_response_failure(response=resp)
 
     @tag(ORDER, "updateAllowance")
     @task
@@ -318,11 +362,20 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = order["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_order, success = check_response(resp, "updateAllowance", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(ORDER, new_order)
-            self.add_stored(CUSTOMER, new_order["customer"])
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_order = resp.js
+
+                self.add_stored(ORDER, new_order)
+
+                self.add_stored(CUSTOMER, new_order["customer"])
+            else:
+                resp.failure("Unable to update allowance.")
+
+                log_response_failure(response=resp)
 
     @tag(CUSTOMER, "updateCustomer")
     @task
@@ -357,10 +410,16 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = customer["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_customer, success = check_response(resp, "updateCustomer", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(CUSTOMER, new_customer)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(CUSTOMER, resp.js)
+            else:
+                resp.failure("Unable to update customer.")
+
+                log_response_failure(response=resp)
 
 
 class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
@@ -384,7 +443,7 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         Gets the user info for the currently logged in user.
         """
         url, request_kwargs = self.request_preparer.prep_internal_request(
-            endpoint="/users/logged_in", include_prefix=False
+            endpoint="/internal/users/logged_in", include_prefix=False
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
@@ -409,11 +468,20 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            new_mto, success = check_response(resp, "getMove")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MOVE_TASK_ORDER, new_mto)
-        return new_mto
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_mto: JSONObject = resp.js
+
+                self.add_stored(MOVE_TASK_ORDER, new_mto)
+
+                return new_mto
+            else:
+                resp.failure("Unable to get move.")
+
+                log_response_failure(response=resp)
 
     @tag(QUEUES, "getMovesQueue")
     @task
@@ -427,14 +495,23 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            moves, success = check_response(resp, "getMovesQueue")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
+            log_response_info(response=resp)
 
-            # destination duty stations don't have to be in the office user's GBLOC
-            destination_duty_station_ids = [move["destinationDutyStation"]["id"] for move in moves["queueMoves"]]
-            self.default_mto_ids["destinationDutyStationID"].update(destination_duty_station_ids)
+            if resp.status_code == HTTPStatus.OK:
+                moves: JSONObject = resp.js
+
+                self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
+
+                # destination duty stations don't have to be in the office user's GBLOC
+                destination_duty_station_ids = [move["destinationDutyLocation"]["id"] for move in moves["queueMoves"]]
+
+                self.default_mto_ids["destinationDutyStationID"].update(destination_duty_station_ids)
+            else:
+                resp.failure("Unable to get moves queue.")
+
+                log_response_failure(response=resp)
 
     @tag(ORDER, "getOrder")
     @task
@@ -459,13 +536,22 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            order, success = check_response(resp, "getOrder")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(ORDER, order)
-            # the origin duty station is not in the queue response and we can't use the destination
-            # because they could be outside of the office user's GBLOC
-            self.default_mto_ids["originDutyStationID"].add(order["originDutyStation"]["id"])
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                order: JSONObject = resp.js
+
+                self.add_stored(ORDER, order)
+
+                # the origin duty station is not in the queue response and we can't use the destination
+                # because they could be outside of the office user's GBLOC
+                self.default_mto_ids["originDutyStationID"].add(order["originDutyStation"]["id"])
+            else:
+                resp.failure("Unable to get orders.")
+
+                log_response_failure(response=resp)
 
     @tag(MTO_SHIPMENT, "listMTOShipments")
     @task
@@ -486,10 +572,16 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            shipments, success = check_response(resp, "listMTOShipments")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MTO_SHIPMENT, shipments)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(MTO_SHIPMENT, resp.js)
+            else:
+                resp.failure("Unable to get shipments.")
+
+                log_response_failure(response=resp)
 
     @tag(MTO_SERVICE_ITEM, "listMTOServiceItems")
     @task
@@ -510,10 +602,16 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            service_items, success = check_response(resp, "listMTOServiceItems")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(MTO_SERVICE_ITEM, service_items)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(MTO_SERVICE_ITEM, resp.js)
+            else:
+                resp.failure("Unable to get service items.")
+
+                log_response_failure(response=resp)
 
     @tag(CUSTOMER, "getCustomer")
     @task
@@ -534,10 +632,16 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         with self.rest(method="GET", url=url, **request_kwargs) as resp:
-            customer, success = check_response(resp, "getCustomer")
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(CUSTOMER, customer)
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                self.add_stored(CUSTOMER, resp.js)
+            else:
+                resp.failure("Unable get customer.")
+
+                log_response_failure(response=resp)
 
     @tag(ORDER, "updateOrder")
     @task
@@ -584,11 +688,19 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = order["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_order, success = check_response(resp, "updateOrder", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(ORDER, new_order)
-            self.add_stored(CUSTOMER, new_order["customer"])
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_order: JSONObject = resp.js
+
+                self.add_stored(ORDER, new_order)
+                self.add_stored(CUSTOMER, new_order["customer"])
+            else:
+                resp.failure("Unable to update orders.")
+
+                log_response_failure(response=resp)
 
     @tag(ORDER, "updateAllowance")
     @task
@@ -619,8 +731,17 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
         request_kwargs["headers"]["If-Match"] = order["eTag"]
 
         with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
-            new_order, success = check_response(resp, "updateAllowance", payload)
+            resp: RestResponseContextManager
 
-        if success:
-            self.add_stored(ORDER, new_order)
-            self.add_stored(CUSTOMER, new_order["customer"])
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                new_order: JSONObject = resp.js
+
+                self.add_stored(ORDER, new_order)
+
+                self.add_stored(CUSTOMER, new_order["customer"])
+            else:
+                resp.failure("Unable to update allowance.")
+
+                log_response_failure(response=resp)
