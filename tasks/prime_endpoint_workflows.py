@@ -42,7 +42,8 @@ class PrimeEndpointWorkflowsTasks(PrimeTasks, SupportTasks):
         move_task_order = self.get_stored(MOVE_TASK_ORDER)
         if not move_task_order:
             if not self.has_all_default_mto_ids():
-                self.list_moves()
+                logger.error("Missing default MTO IDs.")
+                self.interrupt()
             move_task_order = self.create_move_task_order()
         if not move_task_order:
             logger.debug(f"{self.workflow_title} ⚠️ No move_task_order returned or created")
