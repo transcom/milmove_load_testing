@@ -905,7 +905,7 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
 
     # You can add the expectedFailure tag so that they can all be run if needed.
 
-    @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure", "testingTag")
+    @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
     @task
     def update_mto_shipment_with_invalid_status(self) -> None:
         """
