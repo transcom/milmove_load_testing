@@ -58,6 +58,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Making Requests Outside A User Or TaskSet Class](#making-requests-outside-a-user-or-taskset-class)
   * [TaskSets](#tasksets)
     * [Logging In As A Customer or Office User](#logging-in-as-a-customer-or-office-user)
+    * [Expected Failures](#expected-failures)
   * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
   * [Fake Data Generation](#fake-data-generation)
     * [API Parsers](#api-parsers)
@@ -993,6 +994,154 @@ thing you need to provide is the `user_type` you want to create.
 
 There are multiple other ways to organize and link tasks together, but using our `RestTaskSet` class
 is the main recommendation in this repo.
+
+#### Expected Failures
+
+There may be times that you want to create a load test that you expect to fail. E.g. if you want a
+load test to cover an endpoint that will reject the request because of some error (eTag, bad data,
+etc.). If you want to do that, you can do something like this (it's a bit long because of setup):
+
+```python
+# -*- coding: utf-8 -*-
+"""
+Example of a TaskSet file...
+"""
+import json
+import logging
+import random
+from copy import deepcopy
+from http import HTTPStatus
+
+from locust import tag, task
+
+from utils.base import is_local
+from utils.constants import MTO_SHIPMENT
+from utils.parsers import APIKey, get_api_fake_data_generator
+from utils.request import log_response_failure, log_response_info
+from utils.rest import RestResponseContextManager
+from utils.task import RestTaskSet
+from utils.types import JSONArray, JSONObject
+
+
+logger = logging.getLogger(__name__)
+fake_data_generator = get_api_fake_data_generator()
+
+
+# tags are useful to add at a TaskSet and task level to enable running only specific load tests.
+@tag('mainTasks')
+class PrimeTasks(RestTaskSet):
+  """
+  Description of the flow for these tasks here.
+  """
+
+  @task
+  def stop(self) -> None:
+    """
+    This ensures that at some point, the user will stop running the tasks in this task set.
+    """
+    self.interrupt()
+
+  # You can add the expectedFailure tag so that they can all be run if needed.
+  @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
+  @task
+  def update_mto_shipment_with_invalid_status(self) -> None:
+    """
+    Tries updating an MTO shipment to an invalid status.
+    """
+    # Need a move to work with first. For the sake of this example, we'll get a random move that is
+    # available to prime.
+    url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+
+    if is_local(env=self.env):
+      request_kwargs["timeout"] = 15  # set a timeout of 15sec if we're running locally for this endpoint
+
+    with self.rest(method="GET", url=url, **request_kwargs) as resp:
+      resp: RestResponseContextManager
+
+      log_response_info(response=resp)
+
+      if resp.status_code == HTTPStatus.OK:
+        moves: JSONArray = resp.js
+      else:
+        resp.failure("Unable to get moves available to prime.")
+
+        log_response_failure(response=resp)
+
+        return
+
+    move = random.choice(moves)
+
+    # Now we need to retrieve the shipments for this move
+    url, request_kwargs = self.request_preparer.prep_prime_request(
+      endpoint=f"/move-task-orders/{move['id']}",
+      endpoint_name="/move-task-orders/{moveID}",
+    )
+
+    with self.rest(method="GET", url=url, **request_kwargs) as resp:
+      resp: RestResponseContextManager
+
+      log_response_info(response=resp)
+
+      if resp.status_code == HTTPStatus.OK:
+        move: JSONObject = resp.js
+      else:
+        resp.failure("Unable to get the move.")
+
+        log_response_failure(response=resp)
+
+        return
+
+    # Since we're going to try setting an invalid status that the shipments we recieved above can't
+    # be in, we'll just grab a random one.
+
+    mto_shipment = deepcopy(random.choice(move['mtoShipments']))
+
+    overrides = {"status": "DRAFT"}
+
+    # Generate fake payload based on the endpoint's required fields
+    payload = fake_data_generator.generate_fake_request_data(
+      api_key=APIKey.PRIME,
+      path="/mto-shipments/{mtoShipmentID}/status",
+      method="patch",
+      overrides=overrides,
+    )
+
+    # Note that we have an em dash plus "expected failure" to put these in a separate locust group
+    # than the regular shipment status updates.
+    url, request_kwargs = self.request_preparer.prep_prime_request(
+      endpoint=f"/mto-shipments/{mto_shipment['id']}/status",
+      endpoint_name="/mto-shipments/{mtoShipmentID}/status — expected failure",
+    )
+
+    request_kwargs["headers"]["If-Match"] = mto_shipment["eTag"]
+
+    with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+      resp: RestResponseContextManager
+
+      log_response_info(response=resp)
+
+      if resp.status_code == HTTPStatus.UNPROCESSABLE_ENTITY:
+        # Note that by default, locust would fail this request because its status code is > 400 so
+        # we need to explicitly mark it as a failure.
+        resp.success()
+      else:
+        # If we get any other status code, we didn't get the expected request failure, so let's mark
+        # it as a load test failure.
+        resp.failure("Got an unexpected result for updating a shipment with an invalid status.")
+
+        log_response_failure(response=resp)
+```
+
+The main things to note are:
+
+* Adding a tag for expected failures: `expectedFailure`
+* Appending `— expected failure` to the `endpoint_name`
+  * Note that if it's an endpoint you wouldn't normally have to specify the `endpoint_name` for,
+    e.g. `/moves`, you'll need te specify `endpoint_name=/moves — expected failure`.
+* Checking for the bad status code you expect, e.g. `HTTPStatus.UNPROCESSABLE_ENTITY`, a.k.a. `422`
+  * Using `resp.success()` if you got the expected bad status code.
+  * Using `resp.failure(<reason>)` and `log_response_failure(response=resp)` if you get any other
+    status code.
 
 ### Adding tasks to existing load tests
 
