@@ -11,6 +11,7 @@ from typing import Dict, Union
 from locust import tag, task
 
 from utils.auth import UserType, create_user
+from utils.base import is_local
 from utils.constants import (
     MOVE_TASK_ORDER,
     MTO_AGENT,
@@ -377,6 +378,29 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
 
         # Set local variables with needed info to create a move
         self.set_default_mto_ids(move_id)
+
+    @tag(MOVE_TASK_ORDER, "getMoves")
+    @task(2)
+    def get_moves(self) -> None:
+        """
+        Retrieves moves available to the Prime
+        """
+        url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+
+        if is_local(env=self.env):
+            request_kwargs["timeout"] = 15  # set a timeout of 15sec if we're running locally for this endpoint
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            resp: RestResponseContextManager
+
+            log_response_info(response=resp)
+
+            if resp.status_code != HTTPStatus.OK:
+                resp.failure("Unable to get moves available to prime.")
+
+                log_response_failure(response=resp)
+
+                return
 
     @tag(MTO_SERVICE_ITEM, "createMTOServiceItem")
     @task
@@ -878,6 +902,97 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
             resp.failure("Unable to post counseling information.")
 
             log_response_failure(response=resp)
+
+    # You can add the expectedFailure tag so that they can all be run if needed.
+
+    @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure", "testingTag")
+    @task
+    def update_mto_shipment_with_invalid_status(self) -> None:
+        """
+        Tries updating an MTO shipment to an invalid status.
+        """
+        # Need a move to work with first. We'll get a random move that is available to prime.
+        url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+
+        if is_local(env=self.env):
+            request_kwargs["timeout"] = 15  # set a timeout of 15sec if we're running locally for this endpoint
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            resp: RestResponseContextManager
+
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                moves: JSONArray = resp.js
+            else:
+                resp.failure("Unable to get moves available to prime.")
+
+                log_response_failure(response=resp)
+
+                return
+
+        move = random.choice(moves)
+
+        # Now we need to retrieve the shipments for this move
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/move-task-orders/{move['id']}",
+            endpoint_name="/move-task-orders/{moveID}",
+        )
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            resp: RestResponseContextManager
+
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.OK:
+                move: JSONObject = resp.js
+            else:
+                resp.failure("Unable to get the move.")
+
+                log_response_failure(response=resp)
+
+                return
+
+        # Since we're going to try setting an invalid status that the shipments we recieved above
+        # can't be in, we'll just grab a random one.
+        mto_shipment = deepcopy(random.choice(move["mtoShipments"]))
+
+        overrides = {"status": "DRAFT"}
+
+        # Generate fake payload based on the endpoint's required fields
+        payload = fake_data_generator.generate_fake_request_data(
+            api_key=APIKey.PRIME,
+            path="/mto-shipments/{mtoShipmentID}/status",
+            method="patch",
+            overrides=overrides,
+        )
+
+        # Note that we have an em dash plus "expected failure" to put these in a separate locust group
+        # than the regular shipment status updates.
+        url, request_kwargs = self.request_preparer.prep_prime_request(
+            endpoint=f"/mto-shipments/{mto_shipment['id']}/status",
+            endpoint_name="/mto-shipments/{mtoShipmentID}/status — expected failure",
+        )
+
+        request_kwargs["headers"]["If-Match"] = mto_shipment["eTag"]
+
+        with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+            resp: RestResponseContextManager
+
+            log_response_info(response=resp)
+
+            if resp.status_code == HTTPStatus.UNPROCESSABLE_ENTITY:
+                # Note that by default, locust would fail this request because its status code is >
+                # 400 so
+                # we need to explicitly mark it as a failure.
+                resp.success()
+            else:
+                # If we get any other status code, we didn't get the expected request failure,
+                # so let's mark
+                # it as a load test failure.
+                resp.failure("Got an unexpected result for updating a shipment with an invalid status.")
+
+                log_response_failure(response=resp)
 
 
 @tag("support")
