@@ -999,7 +999,7 @@ is the main recommendation in this repo.
 
 There may be times that you want to create a load test that you expect to fail. E.g. if you want a
 load test to cover an endpoint that will reject the request because of some error (eTag, bad data,
-etc.). If you want to do that, you can do something like this (it's a bit long because of setup):
+etc.). If you want to do that, you can do something like this:
 
 ```python
 # -*- coding: utf-8 -*-
@@ -1048,54 +1048,14 @@ class PrimeTasks(RestTaskSet):
     """
     Tries updating an MTO shipment to an invalid status.
     """
-    # Need a move to work with first. For the sake of this example, we'll get a random move that is
-    # available to prime.
-    url, request_kwargs = self.request_preparer.prep_prime_request(endpoint="/moves")
+    # For the sake of brevity, this example won't include the full setup. You can look at the real
+    # PrimeTasks.update_mto_shipment_with_invalid_status method to see the full version.
 
-    if is_local(env=self.env):
-      request_kwargs["timeout"] = 15  # set a timeout of 15sec if we're running locally for this endpoint
+    # This is not how a real mto_shipment would look, but just doing this for the sake of this
+    # example.
+    mto_shipment = {'id': 'TEST123', 'eTag': 12354519}
 
-    with self.rest(method="GET", url=url, **request_kwargs) as resp:
-      resp: RestResponseContextManager
-
-      log_response_info(response=resp)
-
-      if resp.status_code == HTTPStatus.OK:
-        moves: JSONArray = resp.js
-      else:
-        resp.failure("Unable to get moves available to prime.")
-
-        log_response_failure(response=resp)
-
-        return
-
-    move = random.choice(moves)
-
-    # Now we need to retrieve the shipments for this move
-    url, request_kwargs = self.request_preparer.prep_prime_request(
-      endpoint=f"/move-task-orders/{move['id']}",
-      endpoint_name="/move-task-orders/{moveID}",
-    )
-
-    with self.rest(method="GET", url=url, **request_kwargs) as resp:
-      resp: RestResponseContextManager
-
-      log_response_info(response=resp)
-
-      if resp.status_code == HTTPStatus.OK:
-        move: JSONObject = resp.js
-      else:
-        resp.failure("Unable to get the move.")
-
-        log_response_failure(response=resp)
-
-        return
-
-    # Since we're going to try setting an invalid status that the shipments we recieved above can't
-    # be in, we'll just grab a random one.
-
-    mto_shipment = deepcopy(random.choice(move['mtoShipments']))
-
+    # This is an invalid status for a shipment to change to through this endpoint.
     overrides = {"status": "DRAFT"}
 
     # Generate fake payload based on the endpoint's required fields
