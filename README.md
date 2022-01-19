@@ -58,6 +58,7 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
       * [Making Requests Outside A User Or TaskSet Class](#making-requests-outside-a-user-or-taskset-class)
   * [TaskSets](#tasksets)
     * [Logging In As A Customer or Office User](#logging-in-as-a-customer-or-office-user)
+    * [Expected Failures](#expected-failures)
   * [Adding tasks to existing load tests](#adding-tasks-to-existing-load-tests)
   * [Fake Data Generation](#fake-data-generation)
     * [API Parsers](#api-parsers)
@@ -811,10 +812,11 @@ An example `TaskSet` for this project might be:
 Example of a TaskSet file...
 """
 import logging
+from http import HTTPStatus
 
 from locust import tag, task
 
-from utils.request import log_response_info, log_response_failure
+from utils.request import log_response_failure, log_response_info
 from utils.rest import RestResponseContextManager
 from utils.task import RestTaskSet
 
@@ -857,7 +859,7 @@ class PrimeTasks(RestTaskSet):
       # This function helps us log the response status code uniformly across requests.
       log_response_info(response=resp)
 
-      if resp.status_code == 200:
+      if resp.status_code == HTTPStatus.OK:
         logger.info(f"\nℹ️ {resp.js=}\n")
       else:
         # This function helps us log info about the response and request when there are errors.
@@ -993,6 +995,114 @@ thing you need to provide is the `user_type` you want to create.
 There are multiple other ways to organize and link tasks together, but using our `RestTaskSet` class
 is the main recommendation in this repo.
 
+#### Expected Failures
+
+There may be times that you want to create a load test that you expect to fail. E.g. if you want a
+load test to cover an endpoint that will reject the request because of some error (eTag, bad data,
+etc.). If you want to do that, you can do something like this:
+
+```python
+# -*- coding: utf-8 -*-
+"""
+Example of a TaskSet file...
+"""
+import json
+import logging
+import random
+from copy import deepcopy
+from http import HTTPStatus
+
+from locust import tag, task
+
+from utils.base import is_local
+from utils.constants import MTO_SHIPMENT
+from utils.parsers import APIKey, get_api_fake_data_generator
+from utils.request import log_response_failure, log_response_info
+from utils.rest import RestResponseContextManager
+from utils.task import RestTaskSet
+from utils.types import JSONArray, JSONObject
+
+
+logger = logging.getLogger(__name__)
+fake_data_generator = get_api_fake_data_generator()
+
+
+# tags are useful to add at a TaskSet and task level to enable running only specific load tests.
+@tag('mainTasks')
+class PrimeTasks(RestTaskSet):
+  """
+  Description of the flow for these tasks here.
+  """
+
+  @task
+  def stop(self) -> None:
+    """
+    This ensures that at some point, the user will stop running the tasks in this task set.
+    """
+    self.interrupt()
+
+  # You can add the expectedFailure tag so that they can all be run if needed.
+  @tag(MTO_SHIPMENT, "updateMTOShipmentStatus", "expectedFailure")
+  @task
+  def update_mto_shipment_with_invalid_status(self) -> None:
+    """
+    Tries updating an MTO shipment to an invalid status.
+    """
+    # For the sake of brevity, this example won't include the full setup. You can look at the real
+    # PrimeTasks.update_mto_shipment_with_invalid_status method to see the full version.
+
+    # This is not how a real mto_shipment would look, but just doing this for the sake of this
+    # example.
+    mto_shipment = {'id': 'TEST123', 'eTag': 12354519}
+
+    # This is an invalid status for a shipment to change to through this endpoint.
+    overrides = {"status": "DRAFT"}
+
+    # Generate fake payload based on the endpoint's required fields
+    payload = fake_data_generator.generate_fake_request_data(
+      api_key=APIKey.PRIME,
+      path="/mto-shipments/{mtoShipmentID}/status",
+      method="patch",
+      overrides=overrides,
+    )
+
+    # Note that we have an em dash plus "expected failure" to put these in a separate locust group
+    # than the regular shipment status updates.
+    url, request_kwargs = self.request_preparer.prep_prime_request(
+      endpoint=f"/mto-shipments/{mto_shipment['id']}/status",
+      endpoint_name="/mto-shipments/{mtoShipmentID}/status — expected failure",
+    )
+
+    request_kwargs["headers"]["If-Match"] = mto_shipment["eTag"]
+
+    with self.rest(method="PATCH", url=url, data=json.dumps(payload), **request_kwargs) as resp:
+      resp: RestResponseContextManager
+
+      log_response_info(response=resp)
+
+      if resp.status_code == HTTPStatus.UNPROCESSABLE_ENTITY:
+        # Note that by default, locust would fail this request because its status code is > 400 so
+        # we need to explicitly mark it as a failure.
+        resp.success()
+      else:
+        # If we get any other status code, we didn't get the expected request failure, so let's mark
+        # it as a load test failure.
+        resp.failure("Got an unexpected result for updating a shipment with an invalid status.")
+
+        log_response_failure(response=resp)
+```
+
+The main things to note are:
+
+* Adding a tag for expected failures: `expectedFailure`
+* Appending `— expected failure` to the `endpoint_name`
+  * Note that if it's an endpoint you wouldn't normally have to specify the `endpoint_name` for,
+    e.g. `/moves`, you'll need te specify `endpoint_name=/moves — expected failure`.
+* Checking for the bad status code you expect, e.g. `HTTPStatus.UNPROCESSABLE_ENTITY`, a.k.a. `422`
+  * Using `resp.success()` if you got the expected bad status code.
+  * Using `resp.failure(<reason>)` and `log_response_failure(response=resp)` if you get any other
+    status code.
+
 ### Adding tasks to existing load tests
 
 If you want to add a load test, here are the general steps (more detailed information can be found
@@ -1026,11 +1136,13 @@ Example of a TaskSet file using the fake data generator...
 """
 import logging
 import random
+from http import HTTPStatus
 
 from locust import tag, task
 
 from utils.constants import ZERO_UUID
 from utils.parsers import APIKey, get_api_fake_data_generator
+from utils.request import log_response_failure, log_response_info
 from utils.rest import RestResponseContextManager
 from utils.task import RestTaskSet
 
@@ -1067,14 +1179,19 @@ class SupportTasks(RestTaskSet):
       # `RestResponseContextManager`, which then lets it know what type hints to suggest below.
       resp: RestResponseContextManager
 
-      # Lastly, validate the response and/or log any relevant info:
-      logger.info(f"ℹ️ Status code: {resp.status_code}")
+      # This function helps us log the response status code uniformly across requests.
+      log_response_info(response=resp)
 
-      if isinstance(resp.js, list) and resp.js:
+      if resp.status_code == HTTPStatus.OK:
         moves = resp.js
       else:
         # if you wanted to, you could mark this load test as a failure by doing this:
         resp.failure("No moves found!")
+
+        # This function helps us log info about the response and request when there are errors.
+        log_response_failure(response=resp)
+
+        return
 
     # You can filter more if you need a specific move
     move_to_use = random.choice(moves)
@@ -1110,7 +1227,7 @@ class SupportTasks(RestTaskSet):
     with self.rest(method="POST", url=create_shipment_path, data=payload, **request_kwargs) as resp:
       resp: RestResponseContextManager
 
-      logger.info(f"ℹ️ Status code: {resp.status_code}")
+      log_response_info(response=resp)
 
       # Do whatever else you need to here.
 ```
