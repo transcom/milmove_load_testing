@@ -4,13 +4,15 @@ Tests for utils/auth.py
 """
 from pathlib import Path
 from unittest import mock
+from unittest.mock import MagicMock
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
-from utils.auth import remove_certs, set_up_certs
+from utils.auth import UserType, create_user, remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv
 from utils.constants import DP3_CERT_KEY_PEM_FILENAME
+from utils.request import MilMoveRequestPreparer
 
 
 class TestSetUpCerts:
@@ -102,3 +104,65 @@ class TestRemoveCerts:
             assert len(list(tmp_path.iterdir())) == 0
 
             assert not cert_key_pem.exists()
+
+
+class TestCreateUser:
+    """
+    Tests for create_user
+    """
+
+    @pytest.mark.parametrize(
+        "user_type,base_domain",
+        (
+            (UserType.MILMOVE, "http://milmovelocal:8080"),
+            (UserType.SERVICE_COUNSELOR, "http://officelocal:8080"),
+            (UserType.TOO, "http://officelocal:8080"),
+            (UserType.TIO, "http://officelocal:8080"),
+        ),
+    )
+    def test_makes_expected_requests(self, user_type: UserType, base_domain: str) -> None:
+        mock_session = MagicMock()
+
+        request_preparer = MilMoveRequestPreparer(env=MilMoveEnv.LOCAL)
+
+        create_user(request_preparer=request_preparer, session=mock_session, user_type=user_type)
+
+        mock_session.get.assert_called_once_with(url=f"{base_domain}/devlocal-auth/login")
+        mock_session.post.assert_called_once_with(
+            url=f"{base_domain}/devlocal-auth/create",
+            data={
+                "userType": user_type.value,
+                "gorilla.csrf.Token": mock_session.cookies.get.return_value,
+            },
+        )
+
+    def test_sets_csrf_token_in_headers(self) -> None:
+        mock_session = MagicMock()
+
+        request_preparer = MilMoveRequestPreparer(env=MilMoveEnv.LOCAL)
+
+        create_user(request_preparer=request_preparer, session=mock_session, user_type=UserType.MILMOVE)
+
+        mock_session.headers.update.assert_called_once_with({"x-csrf-token": mock_session.cookies.get.return_value})
+
+    @pytest.mark.parametrize(
+        "status_code,expected_result",
+        (
+            (200, True),
+            (400, False),
+            (401, False),
+            (403, False),
+            (500, False),
+        ),
+    )
+    def test_returns_bool_indicating_success_based_on_status_code(
+        self, status_code: int, expected_result: bool
+    ) -> None:
+        mock_session = MagicMock()
+        mock_session.post.return_value.status_code = status_code
+
+        request_preparer = MilMoveRequestPreparer(env=MilMoveEnv.LOCAL)
+
+        success = create_user(request_preparer=request_preparer, session=mock_session, user_type=UserType.MILMOVE)
+
+        assert success == expected_result

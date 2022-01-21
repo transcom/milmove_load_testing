@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """ TaskSets and tasks for the MilMove interface. """
-import json
 import logging
 
 from locust import task
 
-from utils.task import LoginTaskSet
+from utils.auth import UserType, create_user
+from utils.task import RestTaskSet
 
 
 logger = logging.getLogger(__name__)
 
 
-class MilMoveTasks(LoginTaskSet):
+class MilMoveTasks(RestTaskSet):
     """
     Set of tasks that can be called for the MilMove interface.
     """
@@ -20,21 +20,18 @@ class MilMoveTasks(LoginTaskSet):
         """
         Creates a login right at the start of the TaskSet and stops task execution if the login fails.
         """
-        super().on_start()  # sets the csrf token
+        success = create_user(request_preparer=self.request_preparer, session=self.client, user_type=UserType.MILMOVE)
 
-        resp = self._create_login(user_type="milmove", session_token_name="mil_session_token")
-        if resp.status_code != 200:
-            self.interrupt()  # if we didn't successfully log in, there's no point attempting the other tasks
+        if not success:
+            logger.error("Failed to create a user")
+            self.interrupt()
 
     @task
     def get_user_info(self):
         """
         Gets the user info for the currently logged in user.
         """
-        resp = self.client.get("/internal/users/logged_in")
-        try:
-            json_body = json.loads(resp.content)
-        except json.JSONDecodeError:
-            logger.exception("Non-JSON response")
-        else:
-            logger.info(f"ℹ️ User email: {json_body.get('email', 'None')}")
+        url, request_kwargs = self.request_preparer.prep_internal_request(endpoint="/users/logged_in")
+
+        with self.rest(method="GET", url=url, **request_kwargs) as resp:
+            logger.info(f"ℹ️ User email: {resp.js.get('email', 'None')}")
