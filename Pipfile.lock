@@ -331,11 +331,11 @@
         },
         "locust": {
             "hashes": [
-                "sha256:8527e0c4eff0b27f2368a96bd6036a379049d3efd17b7750ea1a54d5e23017fe",
-                "sha256:da04bcf2248d07e47a05a3997ffc54aaf3215f7f4ca87acf5b7ec65bbef92694"
+                "sha256:16ce1c4ae40a00cefce82a00e5fab582e3f80d680fff65550b411d41d438f972",
+                "sha256:99ac7d731e4b97731c8887f82c05006ee4f1b1828944c4ce3c44db7d5b3296d2"
             ],
             "index": "pypi",
-            "version": "==2.5.1"
+            "version": "==2.6.0"
         },
         "markupsafe": {
             "hashes": [
@@ -1014,11 +1014,11 @@
         },
         "identify": {
             "hashes": [
-                "sha256:6b4b5031f69c48bf93a646b90de9b381c6b5f560df4cbe0ed3cf7650ae741e4d",
-                "sha256:aa68609c7454dbcaae60a01ff6b8df1de9b39fe6e50b1f6107ec81dcda624aa6"
+                "sha256:d11469ff952a4d7fd7f9be520d335dc450f585d474b39b5dfb86a500831ab6c7",
+                "sha256:d27d10099844741c277b45d809bd452db0d70a9b41ea3cd93799ebbbcc6dcb29"
             ],
-            "markers": "python_full_version >= '3.6.1'",
-            "version": "==2.4.4"
+            "markers": "python_version >= '3.7'",
+            "version": "==2.4.5"
         },
         "idna": {
             "hashes": [
