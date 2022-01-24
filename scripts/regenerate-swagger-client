@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -eu
+
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+main_dir=$(cd -- "${script_dir}/.." &>/dev/null && pwd)
+
+mymove_dir=${MYMOVE_DIR:-${main_dir}/../mymove}
+
+cd "${main_dir}"
+mkdir -p openapi_client
+
+# set _JAVA_OPTIONS and the runtime memory because java in a container
+# doesn't always pick up the memory limits correctly
+for client in ghc internal prime; do
+  rm -rf openapi_client/${client}
+  docker run -it --rm  --platform linux/amd64 \
+         -v "${mymove_dir}:/a" \
+         -v "${main_dir}:/b" \
+         -m 1g \
+         -e "_JAVA_OPTIONS=-Xbatch -Xms1g -Xmx1g -Xint" \
+         openapitools/openapi-generator-cli:v5.4.0 \
+         generate \
+         -g python \
+         -i "/a/swagger/${client}.yaml" \
+         -o "/b/openapi_client/${client}" \
+         "--additional-properties=packageName=${client}_client"
+done
+
+pipenv install

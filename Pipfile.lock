@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "575f08549c44201d831458d4d47b6db3bceb752b270af07fb4fc31cbd6bf8696"
+            "sha256": "cfa55cc40163781231bf05aeb83861ec9bc3826681522f1c45bf301f2c0d03c8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -244,6 +244,10 @@
             ],
             "version": "==1.5.3"
         },
+        "ghc-client": {
+            "editable": true,
+            "path": "./openapi_client/ghc"
+        },
         "greenlet": {
             "hashes": [
                 "sha256:0051c6f1f27cb756ffc0ffbac7d2cd48cb0362ac1736871399a739b2885134d3",
@@ -313,12 +317,16 @@
             "markers": "python_version >= '3'",
             "version": "==3.3"
         },
+        "internal-client": {
+            "editable": true,
+            "path": "./openapi_client/internal"
+        },
         "itsdangerous": {
             "hashes": [
                 "sha256:29285842166554469a56d427addc0843914172343784cb909695fdbe90a3e129",
                 "sha256:d848fcb8bc7d507c4546b448574e8a44fc4ea2ba84ebf8d783290d53e81992f5"
             ],
-            "markers": "python_full_version >= '3.7.0'",
+            "markers": "python_version >= '3.7'",
             "version": "==2.1.0"
         },
         "jinja2": {
@@ -334,7 +342,7 @@
                 "sha256:636694eb41b3535ed608fe04129f26542b59ed99808b4f688aa32dcf55317a83",
                 "sha256:77281a1f71684953ee8b3d488371b162419767973789272434bbc3f29d9c8823"
             ],
-            "markers": "python_full_version >= '3.7.0'",
+            "markers": "python_version >= '3.7'",
             "version": "==4.4.0"
         },
         "locust": {
@@ -388,7 +396,7 @@
                 "sha256:fabbe18087c3d33c5824cb145ffca52eccd053061df1d79d4b66dafa5ad2a5ea",
                 "sha256:fc3150f85e2dbcf99e65238c842d1cfe69d3e7649b19864c1cc043213d9cd730"
             ],
-            "markers": "python_full_version >= '3.7.0'",
+            "markers": "python_version >= '3.7'",
             "version": "==2.1.0"
         },
         "msgpack": {
@@ -435,7 +443,7 @@
                 "sha256:2c64907728c3ef78e23711c8840a423f0b241588c9ed929855e4b2d1bb0cf5f2",
                 "sha256:9bae709212a19222892cabcc60cafd903cbf4b220223f48583afa3c0e3cc6fc4"
             ],
-            "markers": "python_full_version >= '3.7.0' and python_full_version < '4.0.0'",
+            "markers": "python_version >= '3.7' and python_full_version < '4.0.0'",
             "version": "==0.2.3"
         },
         "openapi-spec-validator": {
@@ -456,6 +464,10 @@
             ],
             "index": "pypi",
             "version": "==0.21.8.0"
+        },
+        "prime-client": {
+            "editable": true,
+            "path": "./openapi_client/prime"
         },
         "psutil": {
             "hashes": [
@@ -519,7 +531,7 @@
                 "sha256:f87cc2863ef33c709e237d4b5f4502a62a00fab450c9e020892e8e2ede5847f5",
                 "sha256:fd8da6d0124efa2f67d86fa70c851022f87c98e205f0594e1fae044e7119a5a6"
             ],
-            "markers": "python_full_version >= '3.7.0'",
+            "markers": "python_version >= '3.7'",
             "version": "==0.18.1"
         },
         "python-dateutil": {

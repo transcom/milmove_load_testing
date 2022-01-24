@@ -5,11 +5,13 @@ repos:
     hooks:
       - id: black
         language_version: python3.9
+        exclude: ^openapi_client
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 4.0.1
     hooks:
       - id: flake8
+        exclude: ^openapi_client
 
   - repo: git://github.com/trussworks/pre-commit-hooks
     rev: v1.1.1
@@ -29,13 +31,15 @@ repos:
       - id: detect-private-key
         exclude: devlocal-*
       - id: fix-encoding-pragma
+        exclude: openapi_client
       - id: trailing-whitespace
+        exclude: openapi_client
 
   - repo: git://github.com/igorshubovych/markdownlint-cli
     rev: v0.27.1
     hooks:
       - id: markdownlint
-        entry: markdownlint --ignore .github/*.md
+        entry: markdownlint --ignore .github/*.md --ignore openapi_client/**/*
 
   - repo: git://github.com/detailyang/pre-commit-shell
     rev: 1.0.5

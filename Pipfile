@@ -9,6 +9,9 @@ locust = ">=1"
 prance = {version = "==0.21.8.0", extras = ["cli", "osv"]}
 Faker = "*"
 zipcodes = "*"
+internal-client = {editable = true, path = "./openapi_client/internal"}
+ghc-client = {editable = true, path = "./openapi_client/ghc"}
+prime-client = {editable = true, path = "./openapi_client/prime"}
 
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
