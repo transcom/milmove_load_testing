@@ -5,7 +5,6 @@ from datetime import datetime
 
 import pytest
 from faker import Faker
-from faker.generator import Generator
 
 from utils.constants import DataType
 from utils.fake_data import MilMoveData, MilMoveProvider
@@ -21,13 +20,15 @@ class TestMilMoveProvider:
         """Initialize the MilMoveProvide that will be tested."""
         cls.fake = Faker()
         cls.fake.add_provider(MilMoveProvider)
-        cls.provider = MilMoveProvider(Generator())
+
+        # Grab the initialized provider to make it easier to check some data.
+        cls.provider: MilMoveProvider = cls.fake.factories[0].provider(name=MilMoveProvider.__provider__)
 
     def test_init(self):
         """
         Tests that the __init__ from the setup_class method worked correctly.
         """
-        assert self.provider.current_name == {"first_name": "", "last_name": ""}
+        assert self.provider.current_name == {"first_name": "", "middle_name": "", "last_name": ""}
         assert self.provider.first_name_used is True
         assert self.provider.last_name_used is True
         assert self.provider.safe_data is not None
@@ -66,35 +67,65 @@ class TestMilMoveProvider:
         """
         self.provider._set_safe_name()
         assert self.provider.current_name["first_name"] != ""
+        # Can't make assertion on the middle name because some of the names don't have one.
         assert self.provider.current_name["last_name"] != ""
         assert self.provider.first_name_used is False
+        assert self.provider.middle_name_used is False
         assert self.provider.last_name_used is False
 
     def test_safe_first_name(self):
         """
         Tests the first name is a string and does not equal the current first name
         """
-        fake_name = self.fake.safe_first_name()
-        found = False
+        valid_first_names = {name["first_name"] for name in self.provider.safe_data["names"]}
 
-        for name in self.provider.safe_data["names"]:
-            if name["first_name"] == fake_name:
-                found = True
+        fake_name1 = self.fake.safe_first_name()
 
-        assert found
+        assert fake_name1 in valid_first_names
+        assert fake_name1 == self.provider.current_name["first_name"]
+
+        fake_name2 = self.fake.safe_first_name()
+
+        assert fake_name1 != self.provider.current_name["first_name"]
+        assert fake_name2 == self.provider.current_name["first_name"]
+
+        assert fake_name2 in valid_first_names
+
+    def test_safe_middle_name(self):
+        """
+        Tests the middle name is a string and does not equal the current middle name
+        """
+        valid_middle_names = {name["middle_name"] for name in self.provider.safe_data["names"]}
+
+        fake_name1 = self.fake.safe_middle_name()
+
+        assert fake_name1 in valid_middle_names
+        assert fake_name1 == self.provider.current_name["middle_name"]
+
+        fake_name2 = self.fake.safe_middle_name()
+
+        assert fake_name1 != self.provider.current_name["middle_name"]
+        assert fake_name2 == self.provider.current_name["middle_name"]
+
+        assert fake_name2 in valid_middle_names
 
     def test_safe_last_name(self):
         """
         Tests the last name is a string and does not equal the current last name
         """
-        fake_name = self.fake.safe_last_name()
-        found = False
+        valid_last_names = {name["last_name"] for name in self.provider.safe_data["names"]}
 
-        for name in self.provider.safe_data["names"]:
-            if name["last_name"] == fake_name:
-                found = True
+        fake_name1 = self.fake.safe_last_name()
 
-        assert found
+        assert fake_name1 in valid_last_names
+        assert fake_name1 == self.provider.current_name["last_name"]
+
+        fake_name2 = self.fake.safe_last_name()
+
+        assert fake_name1 != self.provider.current_name["last_name"]
+        assert fake_name2 == self.provider.current_name["last_name"]
+
+        assert fake_name2 in valid_last_names
 
     def test_safe_street_address(self):
         """
