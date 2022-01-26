@@ -2,6 +2,7 @@
 """ TaskSets and tasks for the MilMove interface. """
 import json
 import logging
+import random
 from http import HTTPStatus
 from typing import Optional
 
@@ -125,12 +126,14 @@ class MilMoveTasks(RestTaskSet):
         # Now we can add name info. The url and request_kwargs will actually be the same, so we only
         # need to prepare the payload.
 
+        suffix = random.choice([milmove_faker.get_fake_data_for_type(data_type=DataType.SUFFIX), ""])
+
         payload = {
             "id": service_member_id,
             "first_name": milmove_faker.get_fake_data_for_type(data_type=DataType.FIRST_NAME),
-            "middle_name": milmove_faker.get_fake_data_for_type(data_type=DataType.FIRST_NAME),
+            "middle_name": milmove_faker.get_fake_data_for_type(data_type=DataType.MIDDLE_NAME),
             "last_name": milmove_faker.get_fake_data_for_type(data_type=DataType.LAST_NAME),
-            "suffix": "",
+            "suffix": suffix,
         }
 
         with self.rest(method="PATCH", url=sm_url, data=json.dumps(payload), **sm_request_kwargs) as resp:
