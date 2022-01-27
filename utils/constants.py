@@ -43,8 +43,11 @@ class DataType(Enum):
 
     FIRST_NAME = "firstName"
     FIRST_NAME_VARIANT = "first_name"  # matches older swagger format
+    MIDDLE_NAME = "middleName"
+    MIDDLE_NAME_VARIANT = "middle_name"
     LAST_NAME = "lastName"
     LAST_NAME_VARIANT = "last_name"  # matches older swagger format
+    SUFFIX = "suffix"
     PHONE = "phone"
     EMAIL = "email"
     STREET_ADDRESS = "streetAddress"

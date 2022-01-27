@@ -13,11 +13,14 @@ from faker.providers.date_time import Provider as DateProvider  # extends BasePr
 
 from utils.constants import DataType, STATIC_FILES, ZERO_UUID
 
+
 logger = logging.getLogger(__name__)
 
 
 class MilMoveProvider(AddressProvider, DateProvider):
     """Faker Provider class for sending back customized MilMove data."""
+
+    __provider__ = "milmove"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,8 +28,9 @@ class MilMoveProvider(AddressProvider, DateProvider):
         with open(STATIC_FILES / "fake_data.json") as f:
             self.safe_data = json.load(f)
 
-        self.current_name = {"first_name": "", "last_name": ""}
+        self.current_name = {"first_name": "", "middle_name": "", "last_name": ""}
         self.first_name_used = True
+        self.middle_name_used = True
         self.last_name_used = True
 
     def safe_phone_number(self):
@@ -59,9 +63,9 @@ class MilMoveProvider(AddressProvider, DateProvider):
         Randomly selects a safe full name to use.
         """
         random_name = self.random_element(self.safe_data["names"])
-        self.first_name_used, self.last_name_used = False, False
+        self.first_name_used = self.middle_name_used = self.last_name_used = False
 
-        self.current_name.update({"first_name": random_name["first_name"], "last_name": random_name["last_name"]})
+        self.current_name.update(random_name)
 
     def safe_first_name(self):
         """
@@ -72,6 +76,16 @@ class MilMoveProvider(AddressProvider, DateProvider):
 
         self.first_name_used = True
         return self.current_name["first_name"]
+
+    def safe_middle_name(self):
+        """
+        Returns a safe middle name as a string.
+        """
+        if self.middle_name_used:
+            self._set_safe_name()
+
+        self.middle_name_used = True
+        return self.current_name["middle_name"]
 
     def safe_last_name(self):
         """
@@ -143,8 +157,11 @@ class MilMoveData:
         self.data_types = {
             DataType.FIRST_NAME: self.fake.safe_first_name,
             DataType.FIRST_NAME_VARIANT: self.fake.safe_first_name,
+            DataType.MIDDLE_NAME: self.fake.safe_middle_name,
+            DataType.MIDDLE_NAME_VARIANT: self.fake.safe_middle_name,
             DataType.LAST_NAME: self.fake.safe_last_name,
             DataType.LAST_NAME_VARIANT: self.fake.safe_last_name,
+            DataType.SUFFIX: self.fake.suffix,
             DataType.PHONE: self.fake.safe_phone_number,
             DataType.EMAIL: self.fake.safe_email,
             DataType.STREET_ADDRESS: self.fake.safe_street_address,
