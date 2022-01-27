@@ -104,7 +104,11 @@ class TestMilMoveProvider:
 
         fake_name2 = self.fake.safe_middle_name()
 
-        assert fake_name1 != self.provider.current_name["middle_name"]
+        # A lot of the fake names have blank middle names, so we only want to check that they aren't
+        # equal if at least one of them isn't blank.
+        if fake_name1 or fake_name2:
+            assert fake_name1 != self.provider.current_name["middle_name"]
+
         assert fake_name2 == self.provider.current_name["middle_name"]
 
         assert fake_name2 in valid_middle_names
