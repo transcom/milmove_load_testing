@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Tests utils/fake_data.py """
 import re
+from copy import deepcopy
 from datetime import datetime
 
 import pytest
@@ -63,15 +64,30 @@ class TestMilMoveProvider:
 
     def test__set_safe_name(self):
         """
-        Tests the current name does not equal empty strings and sets variables to false
+        Tests the current name does not equal empty strings and sets variables to false. Also ensure
+        that we do change the same from the previous one.
         """
+        # We'll set only two names in the safe data to increase the likelihood of the same one being
+        # picked twice. This way we can be more sure that this is working properly. This way we can
+        # also make it so that "all" names have a middle name, which lets us make assertions on it.
+        self.provider.safe_data["names"] = [
+            {"first_name": "Jason", "middle_name": "Theodore", "last_name": "Ash"},
+            {"first_name": "Nevaeh", "middle_name": "Evans", "last_name": "Wilson"},
+        ]
+
         self.provider._set_safe_name()
         assert self.provider.current_name["first_name"] != ""
-        # Can't make assertion on the middle name because some of the names don't have one.
+        assert self.provider.current_name["middle_name"] != ""
         assert self.provider.current_name["last_name"] != ""
         assert self.provider.first_name_used is False
         assert self.provider.middle_name_used is False
         assert self.provider.last_name_used is False
+
+        previous_name = deepcopy(self.provider.current_name)
+
+        self.provider._set_safe_name()
+
+        assert self.provider.current_name != previous_name
 
     def test_safe_first_name(self):
         """

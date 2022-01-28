@@ -60,9 +60,12 @@ class MilMoveProvider(AddressProvider, DateProvider):
 
     def _set_safe_name(self):
         """
-        Randomly selects a safe full name to use.
+        Randomly selects a safe full name to use and ensure it is at least different from the
+        previous name being used.
         """
-        random_name = self.random_element(self.safe_data["names"])
+        while (random_name := self.random_element(self.safe_data["names"])) == self.current_name:
+            continue  # New random name was the same as the name we were already using so try again.
+
         self.first_name_used = self.middle_name_used = self.last_name_used = False
 
         self.current_name.update(random_name)
