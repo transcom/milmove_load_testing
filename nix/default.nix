@@ -1,11 +1,6 @@
-# to install
-# nix-env -f nix -i
+# use ./nix/update.sh to install
 #
-# use
-#
-# https://ahobson.github.io/nix-package-search/#/search
-#
-# to find rev for specific package version
+# use https://ahobson.github.io/nix-package-search/#/search to find rev for specific package version
 
 let
   pkgs = import <nixpkgs> {};
@@ -19,7 +14,7 @@ in buildEnv {
       name = "editorconfig-core-c-0.12.1";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "c8ff5bc6f74a2960fab5ae417cd2bb055eab1002";
+      rev = "0093e4e6a9998f1ff59e79ec31f2341770b7bebb";
     }) {}).editorconfig-core-c
 
     (import (builtins.fetchGit {
@@ -27,8 +22,8 @@ in buildEnv {
       name = "python3-3.9.6";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "c8ff5bc6f74a2960fab5ae417cd2bb055eab1002";
-    }) {}).python3
+      rev = "2f216e02f453cf64cb3b06c1e564ea53bdc01fa0";
+    }) {}).python39Full
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
@@ -43,7 +38,7 @@ in buildEnv {
       name = "shellcheck-0.7.2";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "8e1eab9eae4278c9bb1dcae426848a581943db5a";
+      rev = "7cf6cbe49a4f9efa0607437447d256bbd206b0c4";
     }) {}).shellcheck
 
     (import (builtins.fetchGit {
@@ -51,7 +46,7 @@ in buildEnv {
       name = "aws-vault-6.3.1";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "253aecf69ed7595aaefabde779aa6449195bebb7";
+      rev = "3453b89f4bba270e2d82f6248b09b9595bb47f4b";
     }) {}).aws-vault
 
     (import (builtins.fetchGit {
@@ -59,7 +54,7 @@ in buildEnv {
       name = "awscli2-2.2.14";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "14b0f20fa1f56438b74100513c9b1f7c072cf789";
+      rev = "b3519ced7d0de81573ee0f0874657c76f2d944b5";
     }) {}).awscli2
 
     (import (builtins.fetchGit {
@@ -67,7 +62,7 @@ in buildEnv {
       name = "chamber-2.10.2";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
+      rev = "e63d487cd80754ca9ce18d66fa09e0bcb7dce3f7";
     }) {}).chamber
 
     (import (builtins.fetchGit {
@@ -75,7 +70,7 @@ in buildEnv {
       name = "jq-1.6";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
+      rev = "0093e4e6a9998f1ff59e79ec31f2341770b7bebb";
     }) {}).jq
 
 ];
