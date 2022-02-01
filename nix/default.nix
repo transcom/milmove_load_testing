@@ -14,7 +14,7 @@ in buildEnv {
       name = "editorconfig-core-c-0.12.1";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "0093e4e6a9998f1ff59e79ec31f2341770b7bebb";
+      rev = "c8ff5bc6f74a2960fab5ae417cd2bb055eab1002";
     }) {}).editorconfig-core-c
 
     (import (builtins.fetchGit {
@@ -38,7 +38,7 @@ in buildEnv {
       name = "shellcheck-0.7.2";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "7cf6cbe49a4f9efa0607437447d256bbd206b0c4";
+      rev = "8e1eab9eae4278c9bb1dcae426848a581943db5a";
     }) {}).shellcheck
 
     (import (builtins.fetchGit {
@@ -46,7 +46,7 @@ in buildEnv {
       name = "aws-vault-6.3.1";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "3453b89f4bba270e2d82f6248b09b9595bb47f4b";
+      rev = "253aecf69ed7595aaefabde779aa6449195bebb7";
     }) {}).aws-vault
 
     (import (builtins.fetchGit {
@@ -54,7 +54,7 @@ in buildEnv {
       name = "awscli2-2.2.14";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "b3519ced7d0de81573ee0f0874657c76f2d944b5";
+      rev = "14b0f20fa1f56438b74100513c9b1f7c072cf789";
     }) {}).awscli2
 
     (import (builtins.fetchGit {
@@ -62,7 +62,7 @@ in buildEnv {
       name = "chamber-2.10.2";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "e63d487cd80754ca9ce18d66fa09e0bcb7dce3f7";
+      rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
     }) {}).chamber
 
     (import (builtins.fetchGit {
@@ -70,7 +70,7 @@ in buildEnv {
       name = "jq-1.6";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "0093e4e6a9998f1ff59e79ec31f2341770b7bebb";
+      rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
     }) {}).jq
 
 ];
