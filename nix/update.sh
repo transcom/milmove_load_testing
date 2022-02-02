@@ -9,7 +9,7 @@ if [ ! -v NIX_PROFILE ]; then
 fi
 
 # make sure this is set, as we unset it for most projects
-export NIX_SSL_CERT_FILE=$HOME/.nix-profile/etc/ssl/certs/ca-bundle.crt
+#export NIX_SSL_CERT_FILE=$HOME/.nix-profile/etc/ssl/certs/ca-bundle.crt
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # install packages
