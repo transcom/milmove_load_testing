@@ -22,6 +22,7 @@ responses = "*"
 pre-commit = "*"
 python-lsp-server = "*"
 pytest-cov = "*"
+pyright = "*"
 
 [requires]
 python_full_version = "3.9.6"
