@@ -5,7 +5,12 @@ from enum import Enum
 import importlib
 from queue import Queue, Empty
 from typing import TypedDict, TYPE_CHECKING, Optional
+from utils.base import MilMoveEnv
 from utils.openapi_client import FlowSessionManager
+
+# import utils.auth after openapi_client as it imports locust, which
+# monkeypatches ssl
+from utils.auth import remove_certs, set_up_certs
 
 FlowContext = dict
 
@@ -83,6 +88,17 @@ class QueuableFlow(ABC):
         return SerializedFlow(
             module_name=self.__module__, class_name=self.__class__.__name__, flow_context=self.flow_context
         )
+
+    def run_entire_flow(self, milmove_env: MilMoveEnv) -> None:
+        try:
+            set_up_certs(env=milmove_env)
+
+            flow_session_manager = FlowSessionManager(milmove_env, None)
+
+            while self.run(flow_session_manager):
+                pass
+        finally:
+            remove_certs(env=milmove_env)
 
 
 class SequenceQueableFlow(QueuableFlow):

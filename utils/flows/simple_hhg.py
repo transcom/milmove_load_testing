@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from utils.flows import FlowContext, FlowStep, FlowSequence, SequenceQueableFlow, WorkerQueueType
-from utils.openapi_client import FlowSessionManager
 
 from utils.flows.steps.milmove import do_hhg_create_move
 from utils.flows.steps.service_counselor import do_hhg_sc_review
@@ -26,9 +25,6 @@ class SimpleHHGFlow(SequenceQueableFlow):
 if __name__ == "__main__":
     from utils.base import MilMoveEnv
 
-    milmove_env = MilMoveEnv(os.getenv("MILMOVE_ENV", MilMoveEnv.LOCAL))
-    flow_session_manager = FlowSessionManager(milmove_env, None)
-
     f = SimpleHHGFlow()
-    while f.run(flow_session_manager):
-        pass
+    milmove_env = MilMoveEnv(os.getenv("MILMOVE_ENV", MilMoveEnv.LOCAL))
+    f.run_entire_flow(milmove_env)
