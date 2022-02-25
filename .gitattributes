@@ -1,0 +1,7 @@
+cat .gitattributes
+# README: https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes
+# It's best practice to treat generated files as if they were binary files
+# so that they don't show up when you perform a git diff on changed files.
+
+# Generated openapi files from scripts/regenerate-swagger-client
+openapi_client/**/* binary
