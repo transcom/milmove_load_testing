@@ -4,6 +4,7 @@ from utils.auth import UserType
 from utils.openapi_client import FlowSessionManager
 
 import datetime
+from faker import Faker
 
 from internal_client.api import users_api
 from internal_client.api import service_members_api
@@ -53,32 +54,37 @@ def do_hhg_create_move(
         duty_location_with_counseling_in_KKFA_gbloc,
         _check_return_type=False,
     )
+
+    fake = Faker()
+    first_name = fake.first_name()
+    last_name = fake.last_name()
+    state = "CA"
+    zip_in_KKFA_gbloc = "90210"
     duty_station_id = old_locations.value[0]["id"]
     residential_address = Address(
-        street_address1="123 Any Street",
-        street_address2="P.O. Box 12345",
-        city="Beverly Hills",
-        state="CA",
-        postal_code="90210",
+        street_address1=fake.street_address(),
+        city=fake.city(),
+        state=state,
+        postal_code=zip_in_KKFA_gbloc,
     )
 
     sm_pdata = PatchServiceMemberPayload(
-        edipi="9999009999",
+        edipi=fake.unique.numerify("##########"),
         affiliation=Affiliation("ARMY"),
         rank=ServiceMemberRank("E_1"),
-        first_name="First",
-        last_name="Last",
-        telephone="212-555-1212",
+        first_name=first_name,
+        last_name=last_name,
+        telephone=fake.numerify("2##-555-####"),
         email_is_preferred=True,
         personal_email=user["email"],
         current_station_id=duty_station_id,
         residential_address=residential_address,
         backup_mailing_address=Address(
-            street_address1="987 Any Avenue",
-            street_address2="P.O. Box 9876",
-            city="Fairfield",
-            state="CA",
-            postal_code="94535",
+            street_address1=fake.street_address(),
+            street_address2="P.O. Box " + fake.building_number(),
+            city=fake.city(),
+            state=state,
+            postal_code=fake.postcode(),
         ),
     )
 
@@ -89,10 +95,10 @@ def do_hhg_create_move(
     backup_contacts_api_client.create_service_member_backup_contact(
         sm_id,
         CreateServiceMemberBackupContactPayload(
-            name="Backup Context",
-            email="backup@example.com",
+            name=fake.name(),
+            email=fake.ascii_safe_email(),
             permission=BackupContactPermission("NONE"),
-            telephone="212-555-9999",
+            telephone=fake.numerify("3##-555-####"),
         ),
     )
 
@@ -153,7 +159,7 @@ For a HHG shipment, I am entitled to move a certain amount of HHG by weight ...
         SubmitMoveForApprovalPayload(
             certificate=CreateSignedCertificationPayload(
                 date=datetime.datetime.now(),
-                signature="Firstname Lastname",
+                signature=f"{first_name} {last_name}",
                 certification_text=hhg_certification_text,
                 certification_type=SignedCertificationTypeCreate("SHIPMENT"),
             ),
