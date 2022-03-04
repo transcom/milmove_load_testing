@@ -13,8 +13,12 @@ import sys
 import unittest
 
 import internal_client
+from internal_client.model.address import Address
 from internal_client.model.affiliation import Affiliation
+from internal_client.model.transportation_office import TransportationOffice
+globals()['Address'] = Address
 globals()['Affiliation'] = Affiliation
+globals()['TransportationOffice'] = TransportationOffice
 from internal_client.model.duty_location_payload import DutyLocationPayload
 
 

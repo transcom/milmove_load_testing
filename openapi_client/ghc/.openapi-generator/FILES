@@ -45,6 +45,11 @@ docs/MTOShipmentType.md
 docs/MTOShipments.md
 docs/Move.md
 docs/MoveApi.md
+docs/MoveAuditHistories.md
+docs/MoveAuditHistory.md
+docs/MoveAuditHistoryItem.md
+docs/MoveAuditHistoryItems.md
+docs/MoveHistory.md
 docs/MoveStatus.md
 docs/MoveTaskOrder.md
 docs/MoveTaskOrderApi.md
@@ -149,6 +154,11 @@ ghc_client/model/grade.py
 ghc_client/model/inline_object.py
 ghc_client/model/loa_type.py
 ghc_client/model/move.py
+ghc_client/model/move_audit_histories.py
+ghc_client/model/move_audit_history.py
+ghc_client/model/move_audit_history_item.py
+ghc_client/model/move_audit_history_items.py
+ghc_client/model/move_history.py
 ghc_client/model/move_status.py
 ghc_client/model/move_task_order.py
 ghc_client/model/move_task_orders.py
@@ -245,6 +255,11 @@ test/test_inline_object.py
 test/test_loa_type.py
 test/test_move.py
 test/test_move_api.py
+test/test_move_audit_histories.py
+test/test_move_audit_history.py
+test/test_move_audit_history_item.py
+test/test_move_audit_history_items.py
+test/test_move_history.py
 test/test_move_status.py
 test/test_move_task_order.py
 test/test_move_task_order_api.py

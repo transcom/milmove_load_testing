@@ -127,7 +127,7 @@ class PatchServiceMemberPayload(ModelNormal):
             'personal_email': (str, none_type,),  # noqa: E501
             'phone_is_preferred': (bool, none_type,),  # noqa: E501
             'email_is_preferred': (bool, none_type,),  # noqa: E501
-            'current_station_id': (str, none_type,),  # noqa: E501
+            'current_location_id': (str, none_type,),  # noqa: E501
             'residential_address': (Address,),  # noqa: E501
             'backup_mailing_address': (Address,),  # noqa: E501
         }
@@ -151,7 +151,7 @@ class PatchServiceMemberPayload(ModelNormal):
         'personal_email': 'personal_email',  # noqa: E501
         'phone_is_preferred': 'phone_is_preferred',  # noqa: E501
         'email_is_preferred': 'email_is_preferred',  # noqa: E501
-        'current_station_id': 'current_station_id',  # noqa: E501
+        'current_location_id': 'current_location_id',  # noqa: E501
         'residential_address': 'residential_address',  # noqa: E501
         'backup_mailing_address': 'backup_mailing_address',  # noqa: E501
     }
@@ -210,7 +210,7 @@ class PatchServiceMemberPayload(ModelNormal):
             personal_email (str, none_type): [optional]  # noqa: E501
             phone_is_preferred (bool, none_type): [optional]  # noqa: E501
             email_is_preferred (bool, none_type): [optional]  # noqa: E501
-            current_station_id (str, none_type): [optional]  # noqa: E501
+            current_location_id (str, none_type): [optional]  # noqa: E501
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
         """
@@ -307,7 +307,7 @@ class PatchServiceMemberPayload(ModelNormal):
             personal_email (str, none_type): [optional]  # noqa: E501
             phone_is_preferred (bool, none_type): [optional]  # noqa: E501
             email_is_preferred (bool, none_type): [optional]  # noqa: E501
-            current_station_id (str, none_type): [optional]  # noqa: E501
+            current_location_id (str, none_type): [optional]  # noqa: E501
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
         """

@@ -99,8 +99,8 @@ class UpdateOrderPayload(ModelNormal):
             'issue_date': (date,),  # noqa: E501
             'report_by_date': (date,),  # noqa: E501
             'orders_type': (OrdersType,),  # noqa: E501
-            'origin_duty_station_id': (str,),  # noqa: E501
-            'new_duty_station_id': (str,),  # noqa: E501
+            'origin_duty_location_id': (str,),  # noqa: E501
+            'new_duty_location_id': (str,),  # noqa: E501
             'orders_type_detail': (OrdersTypeDetail,),  # noqa: E501
             'orders_number': (str, none_type,),  # noqa: E501
             'tac': (str, none_type,),  # noqa: E501
@@ -120,8 +120,8 @@ class UpdateOrderPayload(ModelNormal):
         'issue_date': 'issueDate',  # noqa: E501
         'report_by_date': 'reportByDate',  # noqa: E501
         'orders_type': 'ordersType',  # noqa: E501
-        'origin_duty_station_id': 'originDutyStationId',  # noqa: E501
-        'new_duty_station_id': 'newDutyStationId',  # noqa: E501
+        'origin_duty_location_id': 'originDutyLocationId',  # noqa: E501
+        'new_duty_location_id': 'newDutyLocationId',  # noqa: E501
         'orders_type_detail': 'ordersTypeDetail',  # noqa: E501
         'orders_number': 'ordersNumber',  # noqa: E501
         'tac': 'tac',  # noqa: E501
@@ -139,15 +139,15 @@ class UpdateOrderPayload(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, issue_date, report_by_date, orders_type, origin_duty_station_id, new_duty_station_id, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, issue_date, report_by_date, orders_type, origin_duty_location_id, new_duty_location_id, *args, **kwargs):  # noqa: E501
         """UpdateOrderPayload - a model defined in OpenAPI
 
         Args:
             issue_date (date): The date and time that these orders were cut.
             report_by_date (date): Report By Date
             orders_type (OrdersType):
-            origin_duty_station_id (str):
-            new_duty_station_id (str):
+            origin_duty_location_id (str):
+            new_duty_location_id (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -218,8 +218,8 @@ class UpdateOrderPayload(ModelNormal):
         self.issue_date = issue_date
         self.report_by_date = report_by_date
         self.orders_type = orders_type
-        self.origin_duty_station_id = origin_duty_station_id
-        self.new_duty_station_id = new_duty_station_id
+        self.origin_duty_location_id = origin_duty_location_id
+        self.new_duty_location_id = new_duty_location_id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -240,15 +240,15 @@ class UpdateOrderPayload(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, issue_date, report_by_date, orders_type, origin_duty_station_id, new_duty_station_id, *args, **kwargs):  # noqa: E501
+    def __init__(self, issue_date, report_by_date, orders_type, origin_duty_location_id, new_duty_location_id, *args, **kwargs):  # noqa: E501
         """UpdateOrderPayload - a model defined in OpenAPI
 
         Args:
             issue_date (date): The date and time that these orders were cut.
             report_by_date (date): Report By Date
             orders_type (OrdersType):
-            origin_duty_station_id (str):
-            new_duty_station_id (str):
+            origin_duty_location_id (str):
+            new_duty_location_id (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -317,8 +317,8 @@ class UpdateOrderPayload(ModelNormal):
         self.issue_date = issue_date
         self.report_by_date = report_by_date
         self.orders_type = orders_type
-        self.origin_duty_station_id = origin_duty_station_id
-        self.new_duty_station_id = new_duty_station_id
+        self.origin_duty_location_id = origin_duty_location_id
+        self.new_duty_location_id = new_duty_location_id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \

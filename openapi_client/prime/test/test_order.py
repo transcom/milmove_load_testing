@@ -14,10 +14,10 @@ import unittest
 
 import prime_client
 from prime_client.model.customer import Customer
-from prime_client.model.duty_station import DutyStation
+from prime_client.model.duty_location import DutyLocation
 from prime_client.model.entitlements import Entitlements
 globals()['Customer'] = Customer
-globals()['DutyStation'] = DutyStation
+globals()['DutyLocation'] = DutyLocation
 globals()['Entitlements'] = Entitlements
 from prime_client.model.order import Order
 

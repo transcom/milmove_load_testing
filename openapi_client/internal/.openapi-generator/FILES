@@ -19,6 +19,7 @@ docs/CertificationApi.md
 docs/ClientError.md
 docs/CreateGenericMoveDocumentPayload.md
 docs/CreateMovingExpenseDocumentPayload.md
+docs/CreatePPMShipment.md
 docs/CreatePersonallyProcuredMovePayload.md
 docs/CreateReimbursement.md
 docs/CreateServiceMemberBackupContactPayload.md
@@ -35,7 +36,6 @@ docs/DpsAuthApi.md
 docs/DutyLocationPayload.md
 docs/DutyLocationsApi.md
 docs/DutyLocationsPayload.md
-docs/DutyStationPayload.md
 docs/EntitlementsApi.md
 docs/Error.md
 docs/ExpenseSummaryPayload.md
@@ -77,6 +77,8 @@ docs/OrdersType.md
 docs/OrdersTypeDetail.md
 docs/PPMEstimateRange.md
 docs/PPMIncentive.md
+docs/PPMShipment.md
+docs/PPMShipmentStatus.md
 docs/PPMSitEstimate.md
 docs/PPMStatus.md
 docs/PatchMovePayload.md
@@ -106,6 +108,7 @@ docs/SubmitPersonallyProcuredMovePayload.md
 docs/TShirtSize.md
 docs/TransportationOffice.md
 docs/TransportationOfficesApi.md
+docs/UpdatePPMShipment.md
 docs/UpdatePersonallyProcuredMovePayload.md
 docs/UpdateServiceMemberBackupContactPayload.md
 docs/UpdateShipment.md
@@ -156,6 +159,7 @@ internal_client/model/client_error.py
 internal_client/model/create_generic_move_document_payload.py
 internal_client/model/create_moving_expense_document_payload.py
 internal_client/model/create_personally_procured_move_payload.py
+internal_client/model/create_ppm_shipment.py
 internal_client/model/create_reimbursement.py
 internal_client/model/create_service_member_backup_contact_payload.py
 internal_client/model/create_service_member_payload.py
@@ -168,7 +172,6 @@ internal_client/model/document_payload.py
 internal_client/model/dps_auth_cookie_url_payload.py
 internal_client/model/duty_location_payload.py
 internal_client/model/duty_locations_payload.py
-internal_client/model/duty_station_payload.py
 internal_client/model/error.py
 internal_client/model/expense_summary_payload.py
 internal_client/model/expense_summary_payload_grand_total.py
@@ -210,6 +213,8 @@ internal_client/model/personally_procured_move_payload.py
 internal_client/model/post_document_payload.py
 internal_client/model/ppm_estimate_range.py
 internal_client/model/ppm_incentive.py
+internal_client/model/ppm_shipment.py
+internal_client/model/ppm_shipment_status.py
 internal_client/model/ppm_sit_estimate.py
 internal_client/model/ppm_status.py
 internal_client/model/rate_engine_postal_code_payload.py
@@ -229,6 +234,7 @@ internal_client/model/submit_personally_procured_move_payload.py
 internal_client/model/t_shirt_size.py
 internal_client/model/transportation_office.py
 internal_client/model/update_personally_procured_move_payload.py
+internal_client/model/update_ppm_shipment.py
 internal_client/model/update_service_member_backup_contact_payload.py
 internal_client/model/update_shipment.py
 internal_client/model/upload_payload.py
@@ -260,6 +266,7 @@ test/test_client_error.py
 test/test_create_generic_move_document_payload.py
 test/test_create_moving_expense_document_payload.py
 test/test_create_personally_procured_move_payload.py
+test/test_create_ppm_shipment.py
 test/test_create_reimbursement.py
 test/test_create_service_member_backup_contact_payload.py
 test/test_create_service_member_payload.py
@@ -275,7 +282,6 @@ test/test_dps_auth_cookie_url_payload.py
 test/test_duty_location_payload.py
 test/test_duty_locations_api.py
 test/test_duty_locations_payload.py
-test/test_duty_station_payload.py
 test/test_entitlements_api.py
 test/test_error.py
 test/test_expense_summary_payload.py
@@ -325,6 +331,8 @@ test/test_postal_codes_api.py
 test/test_ppm_api.py
 test/test_ppm_estimate_range.py
 test/test_ppm_incentive.py
+test/test_ppm_shipment.py
+test/test_ppm_shipment_status.py
 test/test_ppm_sit_estimate.py
 test/test_ppm_status.py
 test/test_queues_api.py
@@ -347,6 +355,7 @@ test/test_t_shirt_size.py
 test/test_transportation_office.py
 test/test_transportation_offices_api.py
 test/test_update_personally_procured_move_payload.py
+test/test_update_ppm_shipment.py
 test/test_update_service_member_backup_contact_payload.py
 test/test_update_shipment.py
 test/test_upload_payload.py

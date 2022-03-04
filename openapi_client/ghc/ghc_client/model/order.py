@@ -111,8 +111,8 @@ class Order(ModelNormal):
             'grade': (Grade,),  # noqa: E501
             'agency': (Branch,),  # noqa: E501
             'entitlement': (Entitlements,),  # noqa: E501
-            'destination_duty_station': (DutyLocation,),  # noqa: E501
-            'origin_duty_station': (DutyLocation,),  # noqa: E501
+            'destination_duty_location': (DutyLocation,),  # noqa: E501
+            'origin_duty_location': (DutyLocation,),  # noqa: E501
             'move_task_order_id': (str,),  # noqa: E501
             'uploaded_order_id': (str,),  # noqa: E501
             'uploaded_amended_order_id': (str, none_type,),  # noqa: E501
@@ -147,8 +147,8 @@ class Order(ModelNormal):
         'grade': 'grade',  # noqa: E501
         'agency': 'agency',  # noqa: E501
         'entitlement': 'entitlement',  # noqa: E501
-        'destination_duty_station': 'destinationDutyStation',  # noqa: E501
-        'origin_duty_station': 'originDutyStation',  # noqa: E501
+        'destination_duty_location': 'destinationDutyLocation',  # noqa: E501
+        'origin_duty_location': 'originDutyLocation',  # noqa: E501
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
         'uploaded_order_id': 'uploaded_order_id',  # noqa: E501
         'uploaded_amended_order_id': 'uploadedAmendedOrderID',  # noqa: E501
@@ -220,8 +220,8 @@ class Order(ModelNormal):
             grade (Grade): [optional]  # noqa: E501
             agency (Branch): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
-            destination_duty_station (DutyLocation): [optional]  # noqa: E501
-            origin_duty_station (DutyLocation): [optional]  # noqa: E501
+            destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location (DutyLocation): [optional]  # noqa: E501
             move_task_order_id (str): [optional]  # noqa: E501
             uploaded_order_id (str): [optional]  # noqa: E501
             uploaded_amended_order_id (str, none_type): [optional]  # noqa: E501
@@ -329,8 +329,8 @@ class Order(ModelNormal):
             grade (Grade): [optional]  # noqa: E501
             agency (Branch): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
-            destination_duty_station (DutyLocation): [optional]  # noqa: E501
-            origin_duty_station (DutyLocation): [optional]  # noqa: E501
+            destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location (DutyLocation): [optional]  # noqa: E501
             move_task_order_id (str): [optional]  # noqa: E501
             uploaded_order_id (str): [optional]  # noqa: E501
             uploaded_amended_order_id (str, none_type): [optional]  # noqa: E501

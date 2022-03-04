@@ -32,10 +32,10 @@ from prime_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from prime_client.model.customer import Customer
-    from prime_client.model.duty_station import DutyStation
+    from prime_client.model.duty_location import DutyLocation
     from prime_client.model.entitlements import Entitlements
     globals()['Customer'] = Customer
-    globals()['DutyStation'] = DutyStation
+    globals()['DutyLocation'] = DutyLocation
     globals()['Entitlements'] = Entitlements
 
 
@@ -99,8 +99,8 @@ class Order(ModelNormal):
             'customer': (Customer,),  # noqa: E501
             'customer_id': (str,),  # noqa: E501
             'entitlement': (Entitlements,),  # noqa: E501
-            'destination_duty_station': (DutyStation,),  # noqa: E501
-            'origin_duty_station': (DutyStation,),  # noqa: E501
+            'destination_duty_location': (DutyLocation,),  # noqa: E501
+            'origin_duty_location': (DutyLocation,),  # noqa: E501
             'report_by_date': (date,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
@@ -118,8 +118,8 @@ class Order(ModelNormal):
         'customer': 'customer',  # noqa: E501
         'customer_id': 'customerID',  # noqa: E501
         'entitlement': 'entitlement',  # noqa: E501
-        'destination_duty_station': 'destinationDutyStation',  # noqa: E501
-        'origin_duty_station': 'originDutyStation',  # noqa: E501
+        'destination_duty_location': 'destinationDutyLocation',  # noqa: E501
+        'origin_duty_location': 'originDutyLocation',  # noqa: E501
         'report_by_date': 'reportByDate',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
@@ -175,8 +175,8 @@ class Order(ModelNormal):
             customer (Customer): [optional]  # noqa: E501
             customer_id (str): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
-            destination_duty_station (DutyStation): [optional]  # noqa: E501
-            origin_duty_station (DutyStation): [optional]  # noqa: E501
+            destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location (DutyLocation): [optional]  # noqa: E501
             report_by_date (date): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
@@ -272,8 +272,8 @@ class Order(ModelNormal):
             customer (Customer): [optional]  # noqa: E501
             customer_id (str): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
-            destination_duty_station (DutyStation): [optional]  # noqa: E501
-            origin_duty_station (DutyStation): [optional]  # noqa: E501
+            destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location (DutyLocation): [optional]  # noqa: E501
             report_by_date (date): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """

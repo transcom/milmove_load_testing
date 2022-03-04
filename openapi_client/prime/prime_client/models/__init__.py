@@ -16,7 +16,7 @@ from prime_client.model.create_payment_request import CreatePaymentRequest
 from prime_client.model.create_sit_extension import CreateSITExtension
 from prime_client.model.customer import Customer
 from prime_client.model.destination_type import DestinationType
-from prime_client.model.duty_station import DutyStation
+from prime_client.model.duty_location import DutyLocation
 from prime_client.model.entitlements import Entitlements
 from prime_client.model.error import Error
 from prime_client.model.excess_weight_record import ExcessWeightRecord

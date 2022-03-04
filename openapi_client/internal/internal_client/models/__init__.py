@@ -20,6 +20,7 @@ from internal_client.model.category_expense_summary import CategoryExpenseSummar
 from internal_client.model.client_error import ClientError
 from internal_client.model.create_generic_move_document_payload import CreateGenericMoveDocumentPayload
 from internal_client.model.create_moving_expense_document_payload import CreateMovingExpenseDocumentPayload
+from internal_client.model.create_ppm_shipment import CreatePPMShipment
 from internal_client.model.create_personally_procured_move_payload import CreatePersonallyProcuredMovePayload
 from internal_client.model.create_reimbursement import CreateReimbursement
 from internal_client.model.create_service_member_backup_contact_payload import CreateServiceMemberBackupContactPayload
@@ -33,7 +34,6 @@ from internal_client.model.dept_indicator import DeptIndicator
 from internal_client.model.document_payload import DocumentPayload
 from internal_client.model.duty_location_payload import DutyLocationPayload
 from internal_client.model.duty_locations_payload import DutyLocationsPayload
-from internal_client.model.duty_station_payload import DutyStationPayload
 from internal_client.model.error import Error
 from internal_client.model.expense_summary_payload import ExpenseSummaryPayload
 from internal_client.model.expense_summary_payload_grand_total import ExpenseSummaryPayloadGrandTotal
@@ -69,6 +69,8 @@ from internal_client.model.orders_type import OrdersType
 from internal_client.model.orders_type_detail import OrdersTypeDetail
 from internal_client.model.ppm_estimate_range import PPMEstimateRange
 from internal_client.model.ppm_incentive import PPMIncentive
+from internal_client.model.ppm_shipment import PPMShipment
+from internal_client.model.ppm_shipment_status import PPMShipmentStatus
 from internal_client.model.ppm_sit_estimate import PPMSitEstimate
 from internal_client.model.ppm_status import PPMStatus
 from internal_client.model.patch_move_payload import PatchMovePayload
@@ -93,6 +95,7 @@ from internal_client.model.submit_move_for_approval_payload import SubmitMoveFor
 from internal_client.model.submit_personally_procured_move_payload import SubmitPersonallyProcuredMovePayload
 from internal_client.model.t_shirt_size import TShirtSize
 from internal_client.model.transportation_office import TransportationOffice
+from internal_client.model.update_ppm_shipment import UpdatePPMShipment
 from internal_client.model.update_personally_procured_move_payload import UpdatePersonallyProcuredMovePayload
 from internal_client.model.update_service_member_backup_contact_payload import UpdateServiceMemberBackupContactPayload
 from internal_client.model.update_shipment import UpdateShipment

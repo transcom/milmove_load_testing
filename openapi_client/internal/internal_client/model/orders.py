@@ -33,14 +33,14 @@ from internal_client.exceptions import ApiAttributeError
 def lazy_import():
     from internal_client.model.dept_indicator import DeptIndicator
     from internal_client.model.document_payload import DocumentPayload
-    from internal_client.model.duty_station_payload import DutyStationPayload
+    from internal_client.model.duty_location_payload import DutyLocationPayload
     from internal_client.model.index_moves_payload import IndexMovesPayload
     from internal_client.model.orders_status import OrdersStatus
     from internal_client.model.orders_type import OrdersType
     from internal_client.model.orders_type_detail import OrdersTypeDetail
     globals()['DeptIndicator'] = DeptIndicator
     globals()['DocumentPayload'] = DocumentPayload
-    globals()['DutyStationPayload'] = DutyStationPayload
+    globals()['DutyLocationPayload'] = DutyLocationPayload
     globals()['IndexMovesPayload'] = IndexMovesPayload
     globals()['OrdersStatus'] = OrdersStatus
     globals()['OrdersType'] = OrdersType
@@ -107,14 +107,14 @@ class Orders(ModelNormal):
             'orders_type': (OrdersType,),  # noqa: E501
             'has_dependents': (bool,),  # noqa: E501
             'spouse_has_pro_gear': (bool,),  # noqa: E501
-            'new_duty_station': (DutyStationPayload,),  # noqa: E501
+            'new_duty_location': (DutyLocationPayload,),  # noqa: E501
             'uploaded_orders': (DocumentPayload,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'grade': (str, none_type,),  # noqa: E501
             'status': (OrdersStatus,),  # noqa: E501
             'orders_type_detail': (OrdersTypeDetail,),  # noqa: E501
-            'origin_duty_station': (DutyStationPayload,),  # noqa: E501
+            'origin_duty_location': (DutyLocationPayload,),  # noqa: E501
             'uploaded_amended_orders': (DocumentPayload,),  # noqa: E501
             'uploaded_amended_orders_id': (str,),  # noqa: E501
             'moves': (IndexMovesPayload,),  # noqa: E501
@@ -138,14 +138,14 @@ class Orders(ModelNormal):
         'orders_type': 'orders_type',  # noqa: E501
         'has_dependents': 'has_dependents',  # noqa: E501
         'spouse_has_pro_gear': 'spouse_has_pro_gear',  # noqa: E501
-        'new_duty_station': 'new_duty_station',  # noqa: E501
+        'new_duty_location': 'new_duty_location',  # noqa: E501
         'uploaded_orders': 'uploaded_orders',  # noqa: E501
         'created_at': 'created_at',  # noqa: E501
         'updated_at': 'updated_at',  # noqa: E501
         'grade': 'grade',  # noqa: E501
         'status': 'status',  # noqa: E501
         'orders_type_detail': 'orders_type_detail',  # noqa: E501
-        'origin_duty_station': 'origin_duty_station',  # noqa: E501
+        'origin_duty_location': 'origin_duty_location',  # noqa: E501
         'uploaded_amended_orders': 'uploaded_amended_orders',  # noqa: E501
         'uploaded_amended_orders_id': 'uploaded_amended_orders_id',  # noqa: E501
         'moves': 'moves',  # noqa: E501
@@ -163,7 +163,7 @@ class Orders(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, id, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_station, uploaded_orders, created_at, updated_at, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_location, uploaded_orders, created_at, updated_at, *args, **kwargs):  # noqa: E501
         """Orders - a model defined in OpenAPI
 
         Args:
@@ -174,7 +174,7 @@ class Orders(ModelNormal):
             orders_type (OrdersType):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
-            new_duty_station (DutyStationPayload):
+            new_duty_location (DutyLocationPayload):
             uploaded_orders (DocumentPayload):
             created_at (datetime):
             updated_at (datetime):
@@ -213,7 +213,7 @@ class Orders(ModelNormal):
             grade (str, none_type): [optional]  # noqa: E501
             status (OrdersStatus): [optional]  # noqa: E501
             orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
-            origin_duty_station (DutyStationPayload): [optional]  # noqa: E501
+            origin_duty_location (DutyLocationPayload): [optional]  # noqa: E501
             uploaded_amended_orders (DocumentPayload): [optional]  # noqa: E501
             uploaded_amended_orders_id (str): [optional]  # noqa: E501
             moves (IndexMovesPayload): [optional]  # noqa: E501
@@ -256,7 +256,7 @@ class Orders(ModelNormal):
         self.orders_type = orders_type
         self.has_dependents = has_dependents
         self.spouse_has_pro_gear = spouse_has_pro_gear
-        self.new_duty_station = new_duty_station
+        self.new_duty_location = new_duty_location
         self.uploaded_orders = uploaded_orders
         self.created_at = created_at
         self.updated_at = updated_at
@@ -280,7 +280,7 @@ class Orders(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, id, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_station, uploaded_orders, created_at, updated_at, *args, **kwargs):  # noqa: E501
+    def __init__(self, id, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_location, uploaded_orders, created_at, updated_at, *args, **kwargs):  # noqa: E501
         """Orders - a model defined in OpenAPI
 
         Args:
@@ -291,7 +291,7 @@ class Orders(ModelNormal):
             orders_type (OrdersType):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
-            new_duty_station (DutyStationPayload):
+            new_duty_location (DutyLocationPayload):
             uploaded_orders (DocumentPayload):
             created_at (datetime):
             updated_at (datetime):
@@ -330,7 +330,7 @@ class Orders(ModelNormal):
             grade (str, none_type): [optional]  # noqa: E501
             status (OrdersStatus): [optional]  # noqa: E501
             orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
-            origin_duty_station (DutyStationPayload): [optional]  # noqa: E501
+            origin_duty_location (DutyLocationPayload): [optional]  # noqa: E501
             uploaded_amended_orders (DocumentPayload): [optional]  # noqa: E501
             uploaded_amended_orders_id (str): [optional]  # noqa: E501
             moves (IndexMovesPayload): [optional]  # noqa: E501
@@ -371,7 +371,7 @@ class Orders(ModelNormal):
         self.orders_type = orders_type
         self.has_dependents = has_dependents
         self.spouse_has_pro_gear = spouse_has_pro_gear
-        self.new_duty_station = new_duty_station
+        self.new_duty_location = new_duty_location
         self.uploaded_orders = uploaded_orders
         self.created_at = created_at
         self.updated_at = updated_at

@@ -17,10 +17,12 @@ from internal_client.model.address import Address
 from internal_client.model.mto_agents import MTOAgents
 from internal_client.model.mto_shipment_status import MTOShipmentStatus
 from internal_client.model.mto_shipment_type import MTOShipmentType
+from internal_client.model.ppm_shipment import PPMShipment
 globals()['Address'] = Address
 globals()['MTOAgents'] = MTOAgents
 globals()['MTOShipmentStatus'] = MTOShipmentStatus
 globals()['MTOShipmentType'] = MTOShipmentType
+globals()['PPMShipment'] = PPMShipment
 from internal_client.model.mto_shipment import MTOShipment
 
 

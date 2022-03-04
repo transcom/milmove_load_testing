@@ -14,9 +14,11 @@ import unittest
 
 import internal_client
 from internal_client.model.address import Address
+from internal_client.model.create_ppm_shipment import CreatePPMShipment
 from internal_client.model.mto_agents import MTOAgents
 from internal_client.model.mto_shipment_type import MTOShipmentType
 globals()['Address'] = Address
+globals()['CreatePPMShipment'] = CreatePPMShipment
 globals()['MTOAgents'] = MTOAgents
 globals()['MTOShipmentType'] = MTOShipmentType
 from internal_client.model.create_shipment import CreateShipment

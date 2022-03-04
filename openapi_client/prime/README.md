@@ -117,7 +117,7 @@ Class | Method | HTTP request | Description
  - [CreateSITExtension](docs/CreateSITExtension.md)
  - [Customer](docs/Customer.md)
  - [DestinationType](docs/DestinationType.md)
- - [DutyStation](docs/DutyStation.md)
+ - [DutyLocation](docs/DutyLocation.md)
  - [Entitlements](docs/Entitlements.md)
  - [Error](docs/Error.md)
  - [ExcessWeightRecord](docs/ExcessWeightRecord.md)

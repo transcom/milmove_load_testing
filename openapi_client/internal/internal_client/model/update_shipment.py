@@ -35,10 +35,12 @@ def lazy_import():
     from internal_client.model.mto_agents import MTOAgents
     from internal_client.model.mto_shipment_status import MTOShipmentStatus
     from internal_client.model.mto_shipment_type import MTOShipmentType
+    from internal_client.model.update_ppm_shipment import UpdatePPMShipment
     globals()['Address'] = Address
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOShipmentStatus'] = MTOShipmentStatus
     globals()['MTOShipmentType'] = MTOShipmentType
+    globals()['UpdatePPMShipment'] = UpdatePPMShipment
 
 
 class UpdateShipment(ModelNormal):
@@ -96,6 +98,7 @@ class UpdateShipment(ModelNormal):
         return {
             'status': (MTOShipmentStatus,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
+            'ppm_shipment': (UpdatePPMShipment,),  # noqa: E501
             'requested_pickup_date': (date,),  # noqa: E501
             'requested_delivery_date': (date,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
@@ -114,6 +117,7 @@ class UpdateShipment(ModelNormal):
     attribute_map = {
         'status': 'status',  # noqa: E501
         'shipment_type': 'shipmentType',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
         'requested_pickup_date': 'requestedPickupDate',  # noqa: E501
         'requested_delivery_date': 'requestedDeliveryDate',  # noqa: E501
         'customer_remarks': 'customerRemarks',  # noqa: E501
@@ -167,6 +171,7 @@ class UpdateShipment(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             status (MTOShipmentStatus): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
+            ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
             requested_pickup_date (date): [optional]  # noqa: E501
             requested_delivery_date (date): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
@@ -258,6 +263,7 @@ class UpdateShipment(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             status (MTOShipmentStatus): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
+            ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
             requested_pickup_date (date): [optional]  # noqa: E501
             requested_delivery_date (date): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501

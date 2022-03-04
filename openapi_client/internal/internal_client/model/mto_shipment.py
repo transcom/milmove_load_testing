@@ -35,10 +35,12 @@ def lazy_import():
     from internal_client.model.mto_agents import MTOAgents
     from internal_client.model.mto_shipment_status import MTOShipmentStatus
     from internal_client.model.mto_shipment_type import MTOShipmentType
+    from internal_client.model.ppm_shipment import PPMShipment
     globals()['Address'] = Address
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOShipmentStatus'] = MTOShipmentStatus
     globals()['MTOShipmentType'] = MTOShipmentType
+    globals()['PPMShipment'] = PPMShipment
 
 
 class MTOShipment(ModelNormal):
@@ -102,6 +104,7 @@ class MTOShipment(ModelNormal):
             'requested_delivery_date': (date, none_type,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
+            'ppm_shipment': (PPMShipment,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
             'status': (MTOShipmentStatus,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
@@ -125,6 +128,7 @@ class MTOShipment(ModelNormal):
         'requested_delivery_date': 'requestedDeliveryDate',  # noqa: E501
         'agents': 'agents',  # noqa: E501
         'customer_remarks': 'customerRemarks',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
         'shipment_type': 'shipmentType',  # noqa: E501
         'status': 'status',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
@@ -190,6 +194,7 @@ class MTOShipment(ModelNormal):
             requested_delivery_date (date, none_type): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
+            ppm_shipment (PPMShipment): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             status (MTOShipmentStatus): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
@@ -286,6 +291,7 @@ class MTOShipment(ModelNormal):
             requested_delivery_date (date, none_type): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
+            ppm_shipment (PPMShipment): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             status (MTOShipmentStatus): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501

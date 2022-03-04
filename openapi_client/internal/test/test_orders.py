@@ -15,14 +15,14 @@ import unittest
 import internal_client
 from internal_client.model.dept_indicator import DeptIndicator
 from internal_client.model.document_payload import DocumentPayload
-from internal_client.model.duty_station_payload import DutyStationPayload
+from internal_client.model.duty_location_payload import DutyLocationPayload
 from internal_client.model.index_moves_payload import IndexMovesPayload
 from internal_client.model.orders_status import OrdersStatus
 from internal_client.model.orders_type import OrdersType
 from internal_client.model.orders_type_detail import OrdersTypeDetail
 globals()['DeptIndicator'] = DeptIndicator
 globals()['DocumentPayload'] = DocumentPayload
-globals()['DutyStationPayload'] = DutyStationPayload
+globals()['DutyLocationPayload'] = DutyLocationPayload
 globals()['IndexMovesPayload'] = IndexMovesPayload
 globals()['OrdersStatus'] = OrdersStatus
 globals()['OrdersType'] = OrdersType

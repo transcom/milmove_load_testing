@@ -31,6 +31,13 @@ class TestMoveApi(unittest.TestCase):
         """
         pass
 
+    def test_get_move_history(self):
+        """Test case for get_move_history
+
+        Returns the history of an identified move  # noqa: E501
+        """
+        pass
+
     def test_set_financial_review_flag(self):
         """Test case for set_financial_review_flag
 

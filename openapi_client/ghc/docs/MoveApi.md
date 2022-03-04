@@ -5,6 +5,7 @@ All URIs are relative to */ghc/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_move**](MoveApi.md#get_move) | **GET** /move/{locator} | Returns a given move
+[**get_move_history**](MoveApi.md#get_move_history) | **GET** /move/{locator}/history | Returns the history of an identified move
 [**set_financial_review_flag**](MoveApi.md#set_financial_review_flag) | **POST** /moves/{moveID}/financial-review-flag | Flags a move for financial office review
 
 
@@ -73,6 +74,79 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successfully retrieved the individual move |  -  |
+**400** | The request payload is invalid |  -  |
+**401** | The request was denied |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_move_history**
+> MoveHistory get_move_history(locator)
+
+Returns the history of an identified move
+
+Returns the history for a given move for a unique alphanumeric locator string
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import move_api
+from ghc_client.model.error import Error
+from ghc_client.model.move_history import MoveHistory
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = move_api.MoveApi(api_client)
+    locator = "locator_example" # str | Code used to identify a move in the system
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Returns the history of an identified move
+        api_response = api_instance.get_move_history(locator)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling MoveApi->get_move_history: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **locator** | **str**| Code used to identify a move in the system |
+
+### Return type
+
+[**MoveHistory**](MoveHistory.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully retrieved the individual move history |  -  |
 **400** | The request payload is invalid |  -  |
 **401** | The request was denied |  -  |
 **403** | The request was denied |  -  |

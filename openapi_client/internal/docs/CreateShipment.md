@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **move_task_order_id** | **str** |  | 
 **shipment_type** | [**MTOShipmentType**](MTOShipmentType.md) |  | 
+**ppm_shipment** | [**CreatePPMShipment**](CreatePPMShipment.md) |  | [optional] 
 **requested_pickup_date** | **date** |  | [optional] 
 **requested_delivery_date** | **date** |  | [optional] 
 **customer_remarks** | **str, none_type** |  | [optional] 

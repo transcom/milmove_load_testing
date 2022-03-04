@@ -17,7 +17,7 @@ Name | Type | Description | Notes
 **personal_email** | **str, none_type** |  | [optional] 
 **phone_is_preferred** | **bool, none_type** |  | [optional] 
 **email_is_preferred** | **bool, none_type** |  | [optional] 
-**current_station_id** | **str, none_type** |  | [optional] 
+**current_location_id** | **str, none_type** |  | [optional] 
 **residential_address** | [**Address**](Address.md) |  | [optional] 
 **backup_mailing_address** | [**Address**](Address.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]

@@ -86,6 +86,7 @@ Class | Method | HTTP request | Description
 *CustomerApi* | [**update_customer**](docs/CustomerApi.md#update_customer) | **PATCH** /customer/{customerID} | Updates customer info
 *GhcDocumentsApi* | [**get_document**](docs/GhcDocumentsApi.md#get_document) | **GET** /documents/{documentId} | Returns a document
 *MoveApi* | [**get_move**](docs/MoveApi.md#get_move) | **GET** /move/{locator} | Returns a given move
+*MoveApi* | [**get_move_history**](docs/MoveApi.md#get_move_history) | **GET** /move/{locator}/history | Returns the history of an identified move
 *MoveApi* | [**set_financial_review_flag**](docs/MoveApi.md#set_financial_review_flag) | **POST** /moves/{moveID}/financial-review-flag | Flags a move for financial office review
 *MoveTaskOrderApi* | [**get_entitlements**](docs/MoveTaskOrderApi.md#get_entitlements) | **GET** /move-task-orders/{moveTaskOrderID}/entitlements | Gets entitlements for a move by ID
 *MoveTaskOrderApi* | [**get_move_task_order**](docs/MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveTaskOrderID} | Gets a move by ID
@@ -177,6 +178,11 @@ Class | Method | HTTP request | Description
  - [MTOShipmentType](docs/MTOShipmentType.md)
  - [MTOShipments](docs/MTOShipments.md)
  - [Move](docs/Move.md)
+ - [MoveAuditHistories](docs/MoveAuditHistories.md)
+ - [MoveAuditHistory](docs/MoveAuditHistory.md)
+ - [MoveAuditHistoryItem](docs/MoveAuditHistoryItem.md)
+ - [MoveAuditHistoryItems](docs/MoveAuditHistoryItems.md)
+ - [MoveHistory](docs/MoveHistory.md)
  - [MoveStatus](docs/MoveStatus.md)
  - [MoveTaskOrder](docs/MoveTaskOrder.md)
  - [MoveTaskOrders](docs/MoveTaskOrders.md)

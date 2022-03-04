@@ -467,7 +467,7 @@ with ghc_client.ApiClient() as api_client:
                 organizational_clothing_and_individual_equipment=True,
                 e_tag="e_tag_example",
             ),
-            destination_duty_station=DutyLocation(
+            destination_duty_location=DutyLocation(
                 id="c56a4180-65aa-42ec-a945-5fd21dec0538",
                 name="Fort Bragg North Station",
                 address_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -483,7 +483,7 @@ with ghc_client.ApiClient() as api_client:
                 ),
                 e_tag="e_tag_example",
             ),
-            origin_duty_station=DutyLocation(
+            origin_duty_location=DutyLocation(
                 id="c56a4180-65aa-42ec-a945-5fd21dec0538",
                 name="Fort Bragg North Station",
                 address_id="c56a4180-65aa-42ec-a945-5fd21dec0538",

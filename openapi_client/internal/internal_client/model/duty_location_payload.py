@@ -31,8 +31,12 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from internal_client.model.address import Address
     from internal_client.model.affiliation import Affiliation
+    from internal_client.model.transportation_office import TransportationOffice
+    globals()['Address'] = Address
     globals()['Affiliation'] = Affiliation
+    globals()['TransportationOffice'] = TransportationOffice
 
 
 class DutyLocationPayload(ModelNormal):
@@ -94,7 +98,9 @@ class DutyLocationPayload(ModelNormal):
             'affiliation': (Affiliation,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
+            'address': (Address,),  # noqa: E501
             'transportation_office_id': (str, none_type,),  # noqa: E501
+            'transportation_office': (TransportationOffice,),  # noqa: E501
         }
 
     @cached_property
@@ -109,7 +115,9 @@ class DutyLocationPayload(ModelNormal):
         'affiliation': 'affiliation',  # noqa: E501
         'created_at': 'created_at',  # noqa: E501
         'updated_at': 'updated_at',  # noqa: E501
+        'address': 'address',  # noqa: E501
         'transportation_office_id': 'transportation_office_id',  # noqa: E501
+        'transportation_office': 'transportation_office',  # noqa: E501
     }
 
     read_only_vars = {
@@ -161,7 +169,9 @@ class DutyLocationPayload(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            address (Address): [optional]  # noqa: E501
             transportation_office_id (str, none_type): [optional]  # noqa: E501
+            transportation_office (TransportationOffice): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -257,7 +267,9 @@ class DutyLocationPayload(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            address (Address): [optional]  # noqa: E501
             transportation_office_id (str, none_type): [optional]  # noqa: E501
+            transportation_office (TransportationOffice): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

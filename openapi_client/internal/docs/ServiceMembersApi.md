@@ -52,7 +52,7 @@ with internal_client.ApiClient() as api_client:
         personal_email="john_bob@example.com",
         phone_is_preferred=True,
         email_is_preferred=True,
-        current_station_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+        current_location_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
         residential_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
             street_address1="123 Main Ave",
@@ -161,7 +161,7 @@ with internal_client.ApiClient() as api_client:
         personal_email="john_bob@example.com",
         phone_is_preferred=True,
         email_is_preferred=True,
-        current_station_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+        current_location_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
         residential_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
             street_address1="123 Main Ave",

@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **status** | [**MTOShipmentStatus**](MTOShipmentStatus.md) |  | [optional] 
 **shipment_type** | [**MTOShipmentType**](MTOShipmentType.md) |  | [optional] 
+**ppm_shipment** | [**UpdatePPMShipment**](UpdatePPMShipment.md) |  | [optional] 
 **requested_pickup_date** | **date** |  | [optional] 
 **requested_delivery_date** | **date** |  | [optional] 
 **customer_remarks** | **str, none_type** |  | [optional] 

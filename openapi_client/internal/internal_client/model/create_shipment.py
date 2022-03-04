@@ -32,9 +32,11 @@ from internal_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from internal_client.model.address import Address
+    from internal_client.model.create_ppm_shipment import CreatePPMShipment
     from internal_client.model.mto_agents import MTOAgents
     from internal_client.model.mto_shipment_type import MTOShipmentType
     globals()['Address'] = Address
+    globals()['CreatePPMShipment'] = CreatePPMShipment
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOShipmentType'] = MTOShipmentType
 
@@ -94,6 +96,7 @@ class CreateShipment(ModelNormal):
         return {
             'move_task_order_id': (str,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
+            'ppm_shipment': (CreatePPMShipment,),  # noqa: E501
             'requested_pickup_date': (date,),  # noqa: E501
             'requested_delivery_date': (date,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
@@ -112,6 +115,7 @@ class CreateShipment(ModelNormal):
     attribute_map = {
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
         'shipment_type': 'shipmentType',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
         'requested_pickup_date': 'requestedPickupDate',  # noqa: E501
         'requested_delivery_date': 'requestedDeliveryDate',  # noqa: E501
         'customer_remarks': 'customerRemarks',  # noqa: E501
@@ -167,6 +171,7 @@ class CreateShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            ppm_shipment (CreatePPMShipment): [optional]  # noqa: E501
             requested_pickup_date (date): [optional]  # noqa: E501
             requested_delivery_date (date): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
@@ -262,6 +267,7 @@ class CreateShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            ppm_shipment (CreatePPMShipment): [optional]  # noqa: E501
             requested_pickup_date (date): [optional]  # noqa: E501
             requested_delivery_date (date): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501

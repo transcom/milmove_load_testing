@@ -60,7 +60,9 @@ def do_hhg_create_move(
     last_name = fake.last_name()
     state = "CA"
     zip_in_KKFA_gbloc = "90210"
-    duty_station_id = old_locations.value[0]["id"]
+    duty_location_id = old_locations.value[0]["id"]
+    if not duty_location_id:
+        raise Exception("Cannot find duty location: " + duty_location_with_counseling_in_KKFA_gbloc)
     residential_address = Address(
         street_address1=fake.street_address(),
         city=fake.city(),
@@ -77,7 +79,7 @@ def do_hhg_create_move(
         telephone=fake.numerify("2##-555-####"),
         email_is_preferred=True,
         personal_email=user["email"],
-        current_station_id=duty_station_id,
+        current_location_id=duty_location_id,
         residential_address=residential_address,
         backup_mailing_address=Address(
             street_address1=fake.street_address(),
@@ -102,11 +104,14 @@ def do_hhg_create_move(
         ),
     )
 
+    new_duty_location_name = "Fort Gordon"
     new_locations = duty_locations_api_client.search_duty_locations(
-        "Fort Gordon",
+        new_duty_location_name,
         _check_return_type=False,
     )
-    new_duty_station_id = new_locations.value[0]["id"]
+    new_duty_location_id = new_locations.value[0]["id"]
+    if not duty_location_id:
+        raise Exception("Cannot find duty location: " + new_duty_location_name)
     issue_date = user.service_member.created_at
     odt = OrdersTypeDetail(value=None, _check_type=False)
 
@@ -119,7 +124,7 @@ def do_hhg_create_move(
             orders_type=OrdersType("PERMANENT_CHANGE_OF_STATION"),
             has_dependents=False,
             spouse_has_pro_gear=False,
-            new_duty_station_id=new_duty_station_id,
+            new_duty_location_id=new_duty_location_id,
             orders_type_detail=odt,
             department_indicator=DeptIndicator("ARMY"),
         ),

@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **requested_delivery_date** | **date, none_type** |  | [optional] [readonly] 
 **agents** | [**MTOAgents**](MTOAgents.md) |  | [optional] 
 **customer_remarks** | **str, none_type** |  | [optional] [readonly] 
+**ppm_shipment** | [**PPMShipment**](PPMShipment.md) |  | [optional] 
 **shipment_type** | [**MTOShipmentType**](MTOShipmentType.md) |  | [optional] 
 **status** | [**MTOShipmentStatus**](MTOShipmentStatus.md) |  | [optional] 
 **pickup_address** | [**Address**](Address.md) |  | [optional] 

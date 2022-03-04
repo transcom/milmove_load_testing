@@ -7,8 +7,8 @@ Name | Type | Description | Notes
 **issue_date** | **date** | The date and time that these orders were cut. | 
 **report_by_date** | **date** | Report By Date | 
 **orders_type** | [**OrdersType**](OrdersType.md) |  | 
-**origin_duty_station_id** | **str** |  | 
-**new_duty_station_id** | **str** |  | 
+**origin_duty_location_id** | **str** |  | 
+**new_duty_location_id** | **str** |  | 
 **orders_type_detail** | [**OrdersTypeDetail**](OrdersTypeDetail.md) |  | [optional] 
 **orders_number** | **str, none_type** |  | [optional] 
 **tac** | **str, none_type** |  | [optional] 

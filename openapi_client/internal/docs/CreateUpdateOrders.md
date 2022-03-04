@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **orders_type** | [**OrdersType**](OrdersType.md) |  | 
 **has_dependents** | **bool** |  | 
 **spouse_has_pro_gear** | **bool** |  | 
-**new_duty_station_id** | **str** |  | 
+**new_duty_location_id** | **str** |  | 
 **orders_type_detail** | [**OrdersTypeDetail**](OrdersTypeDetail.md) |  | [optional] 
 **orders_number** | **str, none_type** |  | [optional] 
 **tac** | **str, none_type** |  | [optional] 

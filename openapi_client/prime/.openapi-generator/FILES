@@ -10,7 +10,7 @@ docs/CreatePaymentRequest.md
 docs/CreateSITExtension.md
 docs/Customer.md
 docs/DestinationType.md
-docs/DutyStation.md
+docs/DutyLocation.md
 docs/Entitlements.md
 docs/Error.md
 docs/ExcessWeightRecord.md
@@ -95,7 +95,7 @@ prime_client/model/create_payment_request.py
 prime_client/model/create_sit_extension.py
 prime_client/model/customer.py
 prime_client/model/destination_type.py
-prime_client/model/duty_station.py
+prime_client/model/duty_location.py
 prime_client/model/entitlements.py
 prime_client/model/error.py
 prime_client/model/excess_weight_record.py
@@ -172,7 +172,7 @@ test/test_create_payment_request.py
 test/test_create_sit_extension.py
 test/test_customer.py
 test/test_destination_type.py
-test/test_duty_station.py
+test/test_duty_location.py
 test/test_entitlements.py
 test/test_error.py
 test/test_excess_weight_record.py

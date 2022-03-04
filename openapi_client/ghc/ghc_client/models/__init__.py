@@ -48,6 +48,11 @@ from ghc_client.model.mto_shipment_status import MTOShipmentStatus
 from ghc_client.model.mto_shipment_type import MTOShipmentType
 from ghc_client.model.mto_shipments import MTOShipments
 from ghc_client.model.move import Move
+from ghc_client.model.move_audit_histories import MoveAuditHistories
+from ghc_client.model.move_audit_history import MoveAuditHistory
+from ghc_client.model.move_audit_history_item import MoveAuditHistoryItem
+from ghc_client.model.move_audit_history_items import MoveAuditHistoryItems
+from ghc_client.model.move_history import MoveHistory
 from ghc_client.model.move_status import MoveStatus
 from ghc_client.model.move_task_order import MoveTaskOrder
 from ghc_client.model.move_task_orders import MoveTaskOrders

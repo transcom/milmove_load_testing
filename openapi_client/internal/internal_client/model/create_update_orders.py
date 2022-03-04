@@ -98,7 +98,7 @@ class CreateUpdateOrders(ModelNormal):
             'orders_type': (OrdersType,),  # noqa: E501
             'has_dependents': (bool,),  # noqa: E501
             'spouse_has_pro_gear': (bool,),  # noqa: E501
-            'new_duty_station_id': (str,),  # noqa: E501
+            'new_duty_location_id': (str,),  # noqa: E501
             'orders_type_detail': (OrdersTypeDetail,),  # noqa: E501
             'orders_number': (str, none_type,),  # noqa: E501
             'tac': (str, none_type,),  # noqa: E501
@@ -118,7 +118,7 @@ class CreateUpdateOrders(ModelNormal):
         'orders_type': 'orders_type',  # noqa: E501
         'has_dependents': 'has_dependents',  # noqa: E501
         'spouse_has_pro_gear': 'spouse_has_pro_gear',  # noqa: E501
-        'new_duty_station_id': 'new_duty_station_id',  # noqa: E501
+        'new_duty_location_id': 'new_duty_location_id',  # noqa: E501
         'orders_type_detail': 'orders_type_detail',  # noqa: E501
         'orders_number': 'orders_number',  # noqa: E501
         'tac': 'tac',  # noqa: E501
@@ -133,7 +133,7 @@ class CreateUpdateOrders(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_station_id, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_location_id, *args, **kwargs):  # noqa: E501
         """CreateUpdateOrders - a model defined in OpenAPI
 
         Args:
@@ -143,7 +143,7 @@ class CreateUpdateOrders(ModelNormal):
             orders_type (OrdersType):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
-            new_duty_station_id (str):
+            new_duty_location_id (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -214,7 +214,7 @@ class CreateUpdateOrders(ModelNormal):
         self.orders_type = orders_type
         self.has_dependents = has_dependents
         self.spouse_has_pro_gear = spouse_has_pro_gear
-        self.new_duty_station_id = new_duty_station_id
+        self.new_duty_location_id = new_duty_location_id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -235,7 +235,7 @@ class CreateUpdateOrders(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_station_id, *args, **kwargs):  # noqa: E501
+    def __init__(self, service_member_id, issue_date, report_by_date, orders_type, has_dependents, spouse_has_pro_gear, new_duty_location_id, *args, **kwargs):  # noqa: E501
         """CreateUpdateOrders - a model defined in OpenAPI
 
         Args:
@@ -245,7 +245,7 @@ class CreateUpdateOrders(ModelNormal):
             orders_type (OrdersType):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
-            new_duty_station_id (str):
+            new_duty_location_id (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -314,7 +314,7 @@ class CreateUpdateOrders(ModelNormal):
         self.orders_type = orders_type
         self.has_dependents = has_dependents
         self.spouse_has_pro_gear = spouse_has_pro_gear
-        self.new_duty_station_id = new_duty_station_id
+        self.new_duty_location_id = new_duty_location_id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
