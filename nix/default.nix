@@ -73,5 +73,17 @@ in buildEnv {
       rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
     }) {}).jq
 
-];
+    (import (builtins.fetchGit {
+      # Descriptive name to make the store path easier to identify
+      name = "circleci-cli-0.1.15663";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = "23cedc3088a628e1f5454cab6864f9b1a059e1ba";
+    }) {}).circleci-cli
+  ];
+
+  # the pre-commit hooks expects the binary to be `circleci`
+  postBuild = ''
+  ln -s $out/bin/circleci-cli $out/bin/circleci
+  '';
 }

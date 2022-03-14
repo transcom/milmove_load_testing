@@ -1,0 +1,80 @@
+# flake8: noqa
+
+# import all models into this package
+# if you have many models here with many references from one model to another this may
+# raise a RecursionError
+# to avoid this, import only the models that you directly need like:
+# from from prime_client.model.pet import Pet
+# or import this package, but before doing it, use:
+# import sys
+# sys.setrecursionlimit(n)
+
+from prime_client.model.address import Address
+from prime_client.model.client_error import ClientError
+from prime_client.model.create_mto_shipment import CreateMTOShipment
+from prime_client.model.create_payment_request import CreatePaymentRequest
+from prime_client.model.create_sit_extension import CreateSITExtension
+from prime_client.model.customer import Customer
+from prime_client.model.destination_type import DestinationType
+from prime_client.model.duty_location import DutyLocation
+from prime_client.model.entitlements import Entitlements
+from prime_client.model.error import Error
+from prime_client.model.excess_weight_record import ExcessWeightRecord
+from prime_client.model.excess_weight_record_all_of import ExcessWeightRecordAllOf
+from prime_client.model.inline_object import InlineObject
+from prime_client.model.list_move import ListMove
+from prime_client.model.list_moves import ListMoves
+from prime_client.model.mto_agent import MTOAgent
+from prime_client.model.mto_agent_type import MTOAgentType
+from prime_client.model.mto_agents import MTOAgents
+from prime_client.model.mto_service_item import MTOServiceItem
+from prime_client.model.mto_service_item_basic import MTOServiceItemBasic
+from prime_client.model.mto_service_item_basic_all_of import MTOServiceItemBasicAllOf
+from prime_client.model.mto_service_item_dest_sit import MTOServiceItemDestSIT
+from prime_client.model.mto_service_item_dest_sit_all_of import MTOServiceItemDestSITAllOf
+from prime_client.model.mto_service_item_dimension import MTOServiceItemDimension
+from prime_client.model.mto_service_item_domestic_crating import MTOServiceItemDomesticCrating
+from prime_client.model.mto_service_item_domestic_crating_all_of import MTOServiceItemDomesticCratingAllOf
+from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
+from prime_client.model.mto_service_item_origin_sit import MTOServiceItemOriginSIT
+from prime_client.model.mto_service_item_origin_sit_all_of import MTOServiceItemOriginSITAllOf
+from prime_client.model.mto_service_item_shuttle import MTOServiceItemShuttle
+from prime_client.model.mto_service_item_shuttle_all_of import MTOServiceItemShuttleAllOf
+from prime_client.model.mto_service_item_status import MTOServiceItemStatus
+from prime_client.model.mto_shipment import MTOShipment
+from prime_client.model.mto_shipment_type import MTOShipmentType
+from prime_client.model.mto_shipments import MTOShipments
+from prime_client.model.move_task_order import MoveTaskOrder
+from prime_client.model.order import Order
+from prime_client.model.payment_request import PaymentRequest
+from prime_client.model.payment_request_status import PaymentRequestStatus
+from prime_client.model.payment_requests import PaymentRequests
+from prime_client.model.payment_service_item import PaymentServiceItem
+from prime_client.model.payment_service_item_param import PaymentServiceItemParam
+from prime_client.model.payment_service_item_params import PaymentServiceItemParams
+from prime_client.model.payment_service_item_status import PaymentServiceItemStatus
+from prime_client.model.payment_service_items import PaymentServiceItems
+from prime_client.model.proof_of_service_docs import ProofOfServiceDocs
+from prime_client.model.re_service_code import ReServiceCode
+from prime_client.model.reweigh import Reweigh
+from prime_client.model.reweigh_requester import ReweighRequester
+from prime_client.model.sit_extension import SITExtension
+from prime_client.model.sit_extensions import SITExtensions
+from prime_client.model.service_item import ServiceItem
+from prime_client.model.service_item_param_name import ServiceItemParamName
+from prime_client.model.service_item_param_origin import ServiceItemParamOrigin
+from prime_client.model.service_item_param_type import ServiceItemParamType
+from prime_client.model.service_item_params import ServiceItemParams
+from prime_client.model.storage_facility import StorageFacility
+from prime_client.model.update_mto_service_item import UpdateMTOServiceItem
+from prime_client.model.update_mto_service_item_model_type import UpdateMTOServiceItemModelType
+from prime_client.model.update_mto_service_item_sit import UpdateMTOServiceItemSIT
+from prime_client.model.update_mto_service_item_sit_all_of import UpdateMTOServiceItemSITAllOf
+from prime_client.model.update_mto_service_item_shuttle import UpdateMTOServiceItemShuttle
+from prime_client.model.update_mto_service_item_shuttle_all_of import UpdateMTOServiceItemShuttleAllOf
+from prime_client.model.update_mto_shipment import UpdateMTOShipment
+from prime_client.model.update_mto_shipment_status import UpdateMTOShipmentStatus
+from prime_client.model.update_reweigh import UpdateReweigh
+from prime_client.model.upload import Upload
+from prime_client.model.validation_error import ValidationError
+from prime_client.model.validation_error_all_of import ValidationErrorAllOf

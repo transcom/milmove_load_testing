@@ -31,3 +31,6 @@ Brewfile.lock.json
 
 # nix
 .nix-disable
+
+# tmp dir for misc, uh, temporary things
+/tmp
