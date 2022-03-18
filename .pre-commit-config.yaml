@@ -46,3 +46,11 @@ repos:
     hooks:
       - id: shell-lint
         args: [-x]
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: pipenv run pyright
+        language: system
+        pass_filenames: false
+        types: [python]

@@ -1,3 +1,6 @@
 [tool.black]
 line-length = 120
 force_exclude = '^/openapi_client'
+
+[tool.pyright]
+include = ['utils/flows']

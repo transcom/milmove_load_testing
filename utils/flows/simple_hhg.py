@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from utils.flows import FlowContext, FlowStep, FlowSequence, SequenceQueableFlow, WorkerQueueType
+from typing import Optional
 
 from utils.flows.steps.milmove import do_flow_create_single_hhg, do_flow_create_double_hhg, do_flow_create_nts
 from utils.flows.steps.service_counselor import do_hhg_sc_review
@@ -10,7 +11,7 @@ import os
 
 
 class SingleHHGFlow(SequenceQueableFlow):
-    def __init__(self, flow_context: FlowContext = None) -> None:
+    def __init__(self, flow_context: Optional[FlowContext] = None) -> None:
         super().__init__(flow_context)
 
     def flow_steps(self) -> FlowSequence:
@@ -23,7 +24,7 @@ class SingleHHGFlow(SequenceQueableFlow):
 
 
 class DoubleHHGFlow(SequenceQueableFlow):
-    def __init__(self, flow_context: FlowContext = None) -> None:
+    def __init__(self, flow_context: Optional[FlowContext] = None) -> None:
         super().__init__(flow_context)
 
     def flow_steps(self) -> FlowSequence:
@@ -36,7 +37,7 @@ class DoubleHHGFlow(SequenceQueableFlow):
 
 
 class NTSFlow(SequenceQueableFlow):
-    def __init__(self, flow_context: FlowContext = None) -> None:
+    def __init__(self, flow_context: Optional[FlowContext] = None) -> None:
         super().__init__(flow_context)
 
     def flow_steps(self) -> FlowSequence:
@@ -49,7 +50,7 @@ class NTSFlow(SequenceQueableFlow):
 
 
 class SingleHHGMultiplePaymentRequestFlow(SequenceQueableFlow):
-    def __init__(self, flow_context: FlowContext = None) -> None:
+    def __init__(self, flow_context: Optional[FlowContext] = None) -> None:
         super().__init__(flow_context)
 
     def flow_steps(self) -> FlowSequence:
