@@ -33,11 +33,11 @@ from internal_client.model.create_signed_certification_payload import CreateSign
 from internal_client.model.signed_certification_type_create import SignedCertificationTypeCreate
 from internal_client.model.dept_indicator import DeptIndicator
 
+hhg_shipment_code = "HHG"
+nts_shipment_code = "HHG_INTO_NTS_DOMESTIC"
 
-def do_hhg_create_move(
-    flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
-) -> None:
+
+def do_create_move(flow_context: FlowContext, flow_session_manager: FlowSessionManager, shipment_code: str) -> None:
     """
     Creates a move. Can raise internal_client.ApiException
     """
@@ -141,32 +141,46 @@ def do_hhg_create_move(
     move_id = current_move["id"]
     flow_context["move_id"] = move_id
     moves_api_client = moves_api.MovesApi(api_client)
-    moves_api_client.patch_move(move_id, PatchMovePayload(selected_move_type=SelectedMoveType("HHG")))
+    moves_api_client.patch_move(move_id, PatchMovePayload(selected_move_type=SelectedMoveType(shipment_code)))
 
     mto_shipment_api_client = mto_shipment_api.MtoShipmentApi(api_client)
     mto_shipment_api_client.create_mto_shipment(
         body=CreateShipment(
             move_task_order_id=move_id,
-            shipment_type=MTOShipmentType("HHG"),
+            shipment_type=MTOShipmentType(shipment_code),
             requested_pickup_date=(issue_date + datetime.timedelta(days=1)).date(),
             requested_delivery_date=(issue_date + datetime.timedelta(days=7)).date(),
             pickup_address=residential_address,
         )
     )
 
-    hhg_certification_text = """
-**Financial Liability**
+    certification_text = """
+    **Financial Liability**
 
-For a HHG shipment, I am entitled to move a certain amount of HHG by weight ...
-"""
+    For a HHG shipment, I am entitled to move a certain amount of HHG by weight ...
+    """
     moves_api_client.submit_move_for_approval(
         move_id,
         SubmitMoveForApprovalPayload(
             certificate=CreateSignedCertificationPayload(
                 date=datetime.datetime.now(),
                 signature=f"{first_name} {last_name}",
-                certification_text=hhg_certification_text,
+                certification_text=certification_text,
                 certification_type=SignedCertificationTypeCreate("SHIPMENT"),
             ),
         ),
     )
+
+
+def do_hhg_create_move(
+    flow_context: FlowContext,
+    flow_session_manager: FlowSessionManager,
+) -> None:
+    do_create_move(flow_context, flow_session_manager, hhg_shipment_code)
+
+
+def do_nts_create_move(
+    flow_context: FlowContext,
+    flow_session_manager: FlowSessionManager,
+) -> None:
+    do_create_move(flow_context, flow_session_manager, nts_shipment_code)

@@ -3,6 +3,7 @@ from locust import task, TaskSet
 
 from utils.flows import MemoryFlowQueue, QueuableFlow, WorkerQueueType
 from utils.flows.simple_hhg import SimpleHHGFlow
+from utils.flows.simple_nts import SimpleNTSFlow
 from utils.openapi_client import FlowSessionManager
 from utils.request import MilMoveRequestMixin
 
@@ -47,6 +48,24 @@ class MilMoveHHGQueueTasks(QueueTaskSet):
         """
 
         f = SimpleHHGFlow()
+        self.start_flow(f)
+
+
+class MilMoveNTSQueueTasks(QueueTaskSet):
+    """
+    Set of tasks that can be called for the MilMove interface.
+    """
+
+    def on_start(self):
+        """ """
+
+    @task
+    def start_milmove_flow(self):
+        """
+        Start a flow and put it on the queue
+        """
+
+        f = SimpleNTSFlow()
         self.start_flow(f)
 
 

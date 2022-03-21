@@ -6,7 +6,14 @@ from locust.env import Environment, RunnerType
 
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv
-from tasks.queue import MilMoveHHGQueueTasks, ServiceCounselorQueueTasks, TOOQueueTasks, TIOQueueTasks, PrimeQueueTasks
+from tasks.queue import (
+    MilMoveHHGQueueTasks,
+    MilMoveNTSQueueTasks,
+    ServiceCounselorQueueTasks,
+    TOOQueueTasks,
+    TIOQueueTasks,
+    PrimeQueueTasks,
+)
 
 
 class MilMoveHHGUser(HttpUser):
@@ -15,6 +22,15 @@ class MilMoveHHGUser(HttpUser):
     """
 
     tasks = {MilMoveHHGQueueTasks: 1}
+    wait_time = between(0.25, 9)
+
+
+class MilMoveNTSUser(HttpUser):
+    """
+    Tests the internal HHG API.
+    """
+
+    tasks = {MilMoveNTSQueueTasks: 1}
     wait_time = between(0.25, 9)
 
 
@@ -122,6 +138,13 @@ def on_locust_command(parser, **_kwargs):
         help="Weight for MilMove HHG user",
     )
     parser.add_argument(
+        "--milmove-nts-user-weight",
+        env_var="MILMOVE_NTS_USER_WEIGHT",
+        type=int,
+        default=1,
+        help="Weight for MilMove NTS user",
+    )
+    parser.add_argument(
         "--services-counselor-user-weight",
         env_var="SERVICES_COUNSELOR_USER_WEIGHT",
         type=int,
@@ -135,12 +158,14 @@ def on_locust_command(parser, **_kwargs):
 @events.test_start.add_listener
 def on_test_start(environment, **_kwargs):
     milmove_hhg_class = MilMoveHHGUser
+    milmove_nts_class = MilMoveNTSUser
     prime_class = PrimeUser
     tio_class = TIOUser
     too_class = TOOUser
     services_counselor_class = ServiceCounselorUser
 
     milmove_hhg_class.weight = environment.parsed_options.milmove_hhg_user_weight
+    milmove_nts_class.weight = environment.parsed_options.milmove_nts_user_weight
     prime_class.weight = environment.parsed_options.prime_user_weight
     services_counselor_class.weight = environment.parsed_options.services_counselor_user_weight
     tio_class.weight = environment.parsed_options.tio_user_weight
@@ -148,6 +173,7 @@ def on_test_start(environment, **_kwargs):
 
     environment.user_classes = [
         milmove_hhg_class,
+        milmove_nts_class,
         prime_class,
         services_counselor_class,
         tio_class,
