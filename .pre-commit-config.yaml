@@ -13,14 +13,14 @@ repos:
       - id: flake8
         exclude: ^openapi_client
 
-  - repo: git://github.com/trussworks/pre-commit-hooks
+  - repo: https://github.com/trussworks/pre-commit-hooks
     rev: v1.1.1
     hooks:
       - id: circleci-validate
       - id: markdown-toc
       - id: hadolint
 
-  - repo: git://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:
       - id: check-ast
@@ -35,13 +35,13 @@ repos:
       - id: trailing-whitespace
         exclude: openapi_client
 
-  - repo: git://github.com/igorshubovych/markdownlint-cli
+  - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.27.1
     hooks:
       - id: markdownlint
         entry: markdownlint --ignore .github/*.md --ignore openapi_client/**/*
 
-  - repo: git://github.com/detailyang/pre-commit-shell
+  - repo: https://github.com/detailyang/pre-commit-shell
     rev: 1.0.5
     hooks:
       - id: shell-lint
