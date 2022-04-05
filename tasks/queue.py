@@ -2,7 +2,7 @@
 from locust import task, TaskSet
 
 from utils.flows import MemoryFlowQueue, QueuableFlow, WorkerQueueType
-from utils.flows.simple_hhg import SimpleHHGFlow
+from utils.flows.simple_hhg import SingleHHGFlow, DoubleHHGFlow, NTSFlow
 from utils.openapi_client import FlowSessionManager
 from utils.request import MilMoveRequestMixin
 
@@ -40,13 +40,19 @@ class MilMoveHHGQueueTasks(QueueTaskSet):
     def on_start(self):
         """ """
 
-    @task
-    def start_milmove_flow(self):
-        """
-        Start a flow and put it on the queue
-        """
+    @task(2)
+    def start_single_hhg_flow(self):
+        f = SingleHHGFlow()
+        self.start_flow(f)
 
-        f = SimpleHHGFlow()
+    @task(1)
+    def start_double_hhg_flow(self):
+        f = DoubleHHGFlow()
+        self.start_flow(f)
+
+    @task(1)
+    def start_nts_flow(self):
+        f = NTSFlow()
         self.start_flow(f)
 
 
