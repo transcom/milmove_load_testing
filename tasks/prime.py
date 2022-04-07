@@ -283,7 +283,7 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
             "orders_type": "PERMANENT_CHANGE_OF_STATION",
             "has_dependents": False,
             "spouse_has_pro_gear": False,
-            "new_duty_station_id": duty_locations[1]["id"],
+            "new_duty_location_id": duty_locations[1]["id"],
             "orders_number": None,
             "tac": None,
             "sac": None,
