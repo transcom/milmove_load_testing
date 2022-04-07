@@ -235,7 +235,7 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
             "edipi": "9999999999",
             "personal_email": email,
             "email_is_preferred": True,
-            "current_station_id": duty_locations[0]["id"],
+            "current_location_id": duty_locations[0]["id"],
         }
 
         payload = fake_data_generator.generate_fake_request_data(
