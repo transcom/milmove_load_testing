@@ -44,8 +44,8 @@ class PrimeDataStorageMixin:
     # contains the ID values needed when creating moves using createMoveTaskOrder:
     default_mto_ids: Dict[str, str] = {
         "contractorID": "",
-        "destinationDutyStationID": "",
-        "originDutyStationID": "",
+        "destinationDutyLocationID": "",
+        "originDutyLocationID": "",
         "uploadedOrdersID": "",
     }
     local_store: Dict[str, list] = {
@@ -136,8 +136,8 @@ class PrimeDataStorageMixin:
         Given a list of Move Task Orders, gets the four ID values needed to create more MTOs:
           - contractorID
           - uploadedOrdersID
-          - destinationDutyStationID
-          - originDutyStationID
+          - destinationDutyLocationID
+          - originDutyLocationID
 
         To get these values, this function hits the getMoveTaskOrder endpoint in the Support API to get all of the
         details on an MTO. The Prime API doesn't have access to all of this info, which is why we need to use the
@@ -172,11 +172,11 @@ class PrimeDataStorageMixin:
             self.default_mto_ids["uploadedOrdersID"] = order_details.get(
                 "uploadedOrdersID", self.default_mto_ids["uploadedOrdersID"]
             )
-            self.default_mto_ids["destinationDutyStationID"] = order_details.get(
-                "destinationDutyStationID", self.default_mto_ids["destinationDutyStationID"]
+            self.default_mto_ids["destinationDutyLocationID"] = order_details.get(
+                "destinationDutyLocationID", self.default_mto_ids["destinationDutyLocationID"]
             )
-            self.default_mto_ids["originDutyStationID"] = order_details.get(
-                "originDutyStationID", self.default_mto_ids["originDutyStationID"]
+            self.default_mto_ids["originDutyLocationID"] = order_details.get(
+                "originDutyLocationID", self.default_mto_ids["originDutyLocationID"]
             )
 
     def has_all_default_mto_ids(self) -> bool:
@@ -235,7 +235,7 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
             "edipi": "9999999999",
             "personal_email": email,
             "email_is_preferred": True,
-            "current_station_id": duty_locations[0]["id"],
+            "current_location_id": duty_locations[0]["id"],
         }
 
         payload = fake_data_generator.generate_fake_request_data(
@@ -283,7 +283,7 @@ class PrimeTasks(PrimeDataStorageMixin, RestTaskSet):
             "orders_type": "PERMANENT_CHANGE_OF_STATION",
             "has_dependents": False,
             "spouse_has_pro_gear": False,
-            "new_duty_station_id": duty_locations[1]["id"],
+            "new_duty_location_id": duty_locations[1]["id"],
             "orders_number": None,
             "tac": None,
             "sac": None,
@@ -1152,8 +1152,8 @@ class SupportTasks(PrimeDataStorageMixin, RestTaskSet):
                 "status": "APPROVED",
                 "tac": "F8J1",
                 # We need these objects to exist
-                "destinationDutyStationID": self.default_mto_ids["destinationDutyStationID"],
-                "originDutyStationID": self.default_mto_ids["originDutyStationID"],
+                "destinationDutyLocationID": self.default_mto_ids["destinationDutyLocationID"],
+                "originDutyLocationID": self.default_mto_ids["originDutyLocationID"],
                 "uploadedOrdersID": self.default_mto_ids["uploadedOrdersID"],
                 # To avoid the overrides being inserted into these nested objects...
                 "entitlement": {},

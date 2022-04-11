@@ -201,7 +201,7 @@ class MilMoveTasks(RestTaskSet):
         # Don't care too much about which one for this load test, so just grabbing the first one.
         origin_duty_location = duty_locations[0]
 
-        payload = {"id": service_member_id, "current_station_id": origin_duty_location["id"]}
+        payload = {"id": service_member_id, "current_location_id": origin_duty_location["id"]}
 
         with self.rest(method="PATCH", url=sm_url, data=json.dumps(payload), **sm_request_kwargs) as resp:
             resp: RestResponseContextManager

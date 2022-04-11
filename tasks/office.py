@@ -40,8 +40,8 @@ class OfficeDataStorageMixin:
 
     DATA_LIST_MAX: int = 100
     default_mto_ids: Dict[str, Set] = {
-        "destinationDutyStationID": set(),
-        "originDutyStationID": set(),
+        "destinationDutyLocationID": set(),
+        "originDutyLocationID": set(),
     }
     local_store: Dict[str, Dict[str, Dict]] = {
         CUSTOMER: {},
@@ -303,15 +303,15 @@ class ServicesCounselorTasks(OfficeDataStorageMixin, RestTaskSet):
         )
 
         payload = {key: payload[key] for key in ["issueDate", "reportByDate", "ordersType"]}
-        if self.default_mto_ids.get("originDutyStationID"):
-            payload["originDutyStationId"] = random.choice(list(self.default_mto_ids["originDutyStationID"]))
+        if self.default_mto_ids.get("originDutyLocationID"):
+            payload["originDutyLocationId"] = random.choice(list(self.default_mto_ids["originDutyLocationID"]))
         else:
-            payload["originDutyStationId"] = order["originDutyStation"]["id"]
+            payload["originDutyLocationId"] = order["originDutyLocation"]["id"]
 
-        if self.default_mto_ids.get("destinationDutyStationID"):
-            payload["newDutyStationId"] = random.choice(list(self.default_mto_ids["destinationDutyStationID"]))
+        if self.default_mto_ids.get("destinationDutyLocationID"):
+            payload["newDutyLocationId"] = random.choice(list(self.default_mto_ids["destinationDutyLocationID"]))
         else:
-            payload["newDutyStationId"] = order["destinationDutyStation"]["id"]
+            payload["newDutyLocationId"] = order["destinationDutyLocation"]["id"]
 
         # The request may result in validation errors if the underlying move is no longer in needs counseling status
         url, request_kwargs = self.request_preparer.prep_ghc_request(
@@ -504,10 +504,10 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
 
                 self.add_stored(MOVE_TASK_ORDER, moves["queueMoves"])
 
-                # destination duty stations don't have to be in the office user's GBLOC
-                destination_duty_station_ids = [move["destinationDutyLocation"]["id"] for move in moves["queueMoves"]]
+                # destination duty locations don't have to be in the office user's GBLOC
+                destination_duty_location_ids = [move["destinationDutyLocation"]["id"] for move in moves["queueMoves"]]
 
-                self.default_mto_ids["destinationDutyStationID"].update(destination_duty_station_ids)
+                self.default_mto_ids["destinationDutyLocationID"].update(destination_duty_location_ids)
             else:
                 resp.failure("Unable to get moves queue.")
 
@@ -545,9 +545,9 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
 
                 self.add_stored(ORDER, order)
 
-                # the origin duty station is not in the queue response and we can't use the destination
+                # the origin duty location is not in the queue response and we can't use the destination
                 # because they could be outside of the office user's GBLOC
-                self.default_mto_ids["originDutyStationID"].add(order["originDutyStation"]["id"])
+                self.default_mto_ids["originDutyLocationID"].add(order["originDutyLocation"]["id"])
             else:
                 resp.failure("Unable to get orders.")
 
@@ -670,15 +670,15 @@ class TOOTasks(OfficeDataStorageMixin, RestTaskSet):
             require_all=True,
         )
 
-        if self.default_mto_ids.get("originDutyStationID"):
-            payload["originDutyStationId"] = random.choice(list(self.default_mto_ids["originDutyStationID"]))
+        if self.default_mto_ids.get("originDutyLocationID"):
+            payload["originDutyLocationId"] = random.choice(list(self.default_mto_ids["originDutyLocationID"]))
         else:
-            payload["originDutyStationId"] = order["originDutyStation"]["id"]
+            payload["originDutyLocationId"] = order["originDutyLocation"]["id"]
 
-        if self.default_mto_ids.get("destinationDutyStationID"):
-            payload["newDutyStationId"] = random.choice(list(self.default_mto_ids["destinationDutyStationID"]))
+        if self.default_mto_ids.get("destinationDutyLocationID"):
+            payload["newDutyLocationId"] = random.choice(list(self.default_mto_ids["destinationDutyLocationID"]))
         else:
-            payload["newDutyStationId"] = order["destinationDutyStation"]["id"]
+            payload["newDutyLocationId"] = order["destinationDutyLocation"]["id"]
 
         url, request_kwargs = self.request_preparer.prep_ghc_request(
             endpoint=f"/orders/{order['id']}",

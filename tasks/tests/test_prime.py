@@ -200,8 +200,8 @@ class TestPrimeDataStorageMixin:
                 "json": {
                     "order": {
                         "uploadedOrdersID": "upload1",
-                        "destinationDutyStationID": "",  # purposefully blank, will not count for end of loop
-                        "originDutyStationID": "origin1",
+                        "destinationDutyLocationID": "",  # purposefully blank, will not count for end of loop
+                        "originDutyLocationID": "origin1",
                     },
                 },
             },
@@ -210,8 +210,8 @@ class TestPrimeDataStorageMixin:
                 "status": 200,
                 "json": {
                     "order": {
-                        "destinationDutyStationID": "destination2",
-                        "originDutyStationID": "origin2",
+                        "destinationDutyLocationID": "destination2",
+                        "originDutyLocationID": "origin2",
                     }
                 },
             },
@@ -241,8 +241,8 @@ class TestPrimeDataStorageMixin:
 
         expected_ids = {
             "contractorID": "contractor0",
-            "destinationDutyStationID": "destination2",
-            "originDutyStationID": "origin2",
+            "destinationDutyLocationID": "destination2",
+            "originDutyLocationID": "origin2",
             "uploadedOrdersID": "upload1",
         }
 
@@ -254,8 +254,8 @@ class TestPrimeDataStorageMixin:
                 "json": {
                     "order": {
                         "uploadedOrdersID": "upload101",
-                        "destinationDutyStationID": "destination101",
-                        "originDutyStationID": "origin101",
+                        "destinationDutyLocationID": "destination101",
+                        "originDutyLocationID": "origin101",
                     },
                 },
             }
