@@ -3,7 +3,7 @@ from utils.flows import FlowContext
 from utils.auth import UserType
 from utils.openapi_client import FlowSessionManager
 
-import datetime
+from datetime import datetime, timedelta
 from faker import Faker
 
 from internal_client.api import users_api
@@ -34,10 +34,26 @@ from internal_client.model.signed_certification_type_create import SignedCertifi
 from internal_client.model.dept_indicator import DeptIndicator
 
 
-def do_hhg_create_move(
-    flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
-) -> None:
+def create_hhg_shipment(move_id: str, issue_date: datetime, pickup_address: Address) -> CreateShipment:
+    return CreateShipment(
+        move_task_order_id=move_id,
+        shipment_type=MTOShipmentType("HHG"),
+        requested_pickup_date=(issue_date + timedelta(days=1)).date(),
+        requested_delivery_date=(issue_date + timedelta(days=7)).date(),
+        pickup_address=pickup_address,
+    )
+
+
+def create_nts_shipment(move_id: str, issue_date: datetime, pickup_address: Address) -> CreateShipment:
+    return CreateShipment(
+        move_task_order_id=move_id,
+        shipment_type=MTOShipmentType("HHG_INTO_NTS_DOMESTIC"),
+        requested_pickup_date=(issue_date + timedelta(days=1)).date(),
+        pickup_address=pickup_address,
+    )
+
+
+def start_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManager, shipments: list[str]) -> None:
     """
     Creates a move. Can raise internal_client.ApiException
     """
@@ -120,7 +136,7 @@ def do_hhg_create_move(
         CreateUpdateOrders(
             service_member_id=sm_id,
             issue_date=issue_date.date(),
-            report_by_date=(issue_date + datetime.timedelta(days=7)).date(),
+            report_by_date=(issue_date + timedelta(days=7)).date(),
             orders_type=OrdersType("PERMANENT_CHANGE_OF_STATION"),
             has_dependents=False,
             spouse_has_pro_gear=False,
@@ -144,15 +160,14 @@ def do_hhg_create_move(
     moves_api_client.patch_move(move_id, PatchMovePayload(selected_move_type=SelectedMoveType("HHG")))
 
     mto_shipment_api_client = mto_shipment_api.MtoShipmentApi(api_client)
-    mto_shipment_api_client.create_mto_shipment(
-        body=CreateShipment(
-            move_task_order_id=move_id,
-            shipment_type=MTOShipmentType("HHG"),
-            requested_pickup_date=(issue_date + datetime.timedelta(days=1)).date(),
-            requested_delivery_date=(issue_date + datetime.timedelta(days=7)).date(),
-            pickup_address=residential_address,
-        )
-    )
+
+    for shipmentType in shipments:
+        shipment = {
+            "HHG": create_hhg_shipment(move_id, issue_date, residential_address),
+            "NTS": create_nts_shipment(move_id, issue_date, residential_address),
+        }.get(shipmentType, create_hhg_shipment(move_id, issue_date, residential_address))
+
+        mto_shipment_api_client.create_mto_shipment(body=shipment)
 
     hhg_certification_text = """
 **Financial Liability**
@@ -163,10 +178,31 @@ For a HHG shipment, I am entitled to move a certain amount of HHG by weight ...
         move_id,
         SubmitMoveForApprovalPayload(
             certificate=CreateSignedCertificationPayload(
-                date=datetime.datetime.now(),
+                date=datetime.now(),
                 signature=f"{first_name} {last_name}",
                 certification_text=hhg_certification_text,
                 certification_type=SignedCertificationTypeCreate("SHIPMENT"),
             ),
         ),
     )
+
+
+def do_flow_create_single_hhg(
+    flow_context: FlowContext,
+    flow_session_manager: FlowSessionManager,
+) -> None:
+    start_flow(flow_context, flow_session_manager, ["HHG"])
+
+
+def do_flow_create_double_hhg(
+    flow_context: FlowContext,
+    flow_session_manager: FlowSessionManager,
+) -> None:
+    start_flow(flow_context, flow_session_manager, ["HHG", "HHG"])
+
+
+def do_flow_create_nts(
+    flow_context: FlowContext,
+    flow_session_manager: FlowSessionManager,
+) -> None:
+    start_flow(flow_context, flow_session_manager, ["NTS"])

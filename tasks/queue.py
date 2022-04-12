@@ -2,7 +2,7 @@
 from locust import task, TaskSet
 
 from utils.flows import MemoryFlowQueue, QueuableFlow, WorkerQueueType
-from utils.flows.simple_hhg import SimpleHHGFlow
+from utils.flows.simple_hhg import SingleHHGFlow, DoubleHHGFlow, NTSFlow
 from utils.openapi_client import FlowSessionManager
 from utils.request import MilMoveRequestMixin
 
@@ -34,19 +34,38 @@ class QueueTaskSet(MilMoveRequestMixin, TaskSet):
 
 class MilMoveHHGQueueTasks(QueueTaskSet):
     """
-    Set of tasks that can be called for the MilMove interface.
+    Creates tasks that traverse the entire flow, from customer through TIO. These tasks largely only differ
+    based on what kind of shipment(s) the customer is adding to their move. Weighted randomness determines how
+    frequently the various customer shipment types are selected.
+
+    See http://docs.locust.io/en/stable/writing-a-locustfile.html#task-decorator for more info
     """
 
     def on_start(self):
         """ """
 
-    @task
-    def start_milmove_flow(self):
+    @task(2)
+    def start_single_hhg_flow(self):
         """
-        Start a flow and put it on the queue
+        Kicks off a flow where the customer creates a single HHG shipment
         """
+        f = SingleHHGFlow()
+        self.start_flow(f)
 
-        f = SimpleHHGFlow()
+    @task(1)
+    def start_double_hhg_flow(self):
+        """
+        Kicks off a flow where the customer creates two seperate HHG shipments
+        """
+        f = DoubleHHGFlow()
+        self.start_flow(f)
+
+    @task(1)
+    def start_nts_flow(self):
+        """
+        Kicks off a flow where the customer creates a single NTS shipment
+        """
+        f = NTSFlow()
         self.start_flow(f)
 
 
