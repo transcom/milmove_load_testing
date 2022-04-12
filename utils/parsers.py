@@ -487,8 +487,8 @@ class SupportAPIParser(PrimeAPIParser):
             # Cannot create certain nested objects with this endpoint, instead the caller should pass in an ID
             # (in overrides)
             move_orders.pop("uploadedOrders", None)
-            move_orders.pop("originDutyStation", None)
-            move_orders.pop("destinationDutyStation", None)
+            move_orders.pop("originDutyLocation", None)
+            move_orders.pop("destinationDutyLocation", None)
 
             move_orders.pop("id", None)  # id will be returned on creation
             move_orders.pop("customerID", None)  # customerID will be returned on creation
