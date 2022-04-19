@@ -126,7 +126,7 @@ with ghc_client.ApiClient() as api_client:
     body = CounselingUpdateAllowancePayload(
         grade=Grade("E_1"),
         dependents_authorized=True,
-        agency=Branch("ARMY"),
+        agency=Affiliation("ARMY"),
         pro_gear_weight=2000,
         pro_gear_weight_spouse=2000,
         required_medical_equipment_weight=2000,
@@ -450,7 +450,7 @@ with ghc_client.ApiClient() as api_client:
         authorized_weight=2000,
         grade=Grade("E_1"),
         dependents_authorized=True,
-        agency=Branch("ARMY"),
+        agency=Affiliation("ARMY"),
         pro_gear_weight=2000,
         pro_gear_weight_spouse=500,
         required_medical_equipment_weight=2000,

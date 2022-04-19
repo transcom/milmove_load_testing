@@ -1,7 +1,7 @@
 """
-    my.move.mil
+    MilMove Internal API
 
-    The internal/website API for my.move.mil  # noqa: E501
+    The Internal API is a RESTful API that enables the Customer application for MilMove.  All endpoints are located under `/internal`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: ppp@truss.works

@@ -3,8 +3,6 @@
 .openapi-generator-ignore
 .travis.yml
 README.md
-docs/AccessCode.md
-docs/AccesscodeApi.md
 docs/Address.md
 docs/AddressesApi.md
 docs/Affiliation.md
@@ -44,7 +42,6 @@ docs/IndexEntitlements.md
 docs/IndexMovesPayload.md
 docs/IndexPersonallyProcuredMovePayload.md
 docs/IndexServiceMemberBackupContactsPayload.md
-docs/InlineObject.md
 docs/InlineResponse200.md
 docs/InvalidRequestResponsePayload.md
 docs/LoggedInUserPayload.md
@@ -121,7 +118,6 @@ docs/WeightTicketSetType.md
 git_push.sh
 internal_client/__init__.py
 internal_client/api/__init__.py
-internal_client/api/accesscode_api.py
 internal_client/api/addresses_api.py
 internal_client/api/backup_contacts_api.py
 internal_client/api/calendar_api.py
@@ -147,7 +143,6 @@ internal_client/apis/__init__.py
 internal_client/configuration.py
 internal_client/exceptions.py
 internal_client/model/__init__.py
-internal_client/model/access_code.py
 internal_client/model/address.py
 internal_client/model/affiliation.py
 internal_client/model/approve_personally_procured_move_payload.py
@@ -179,7 +174,6 @@ internal_client/model/index_entitlements.py
 internal_client/model/index_moves_payload.py
 internal_client/model/index_personally_procured_move_payload.py
 internal_client/model/index_service_member_backup_contacts_payload.py
-internal_client/model/inline_object.py
 internal_client/model/inline_response200.py
 internal_client/model/invalid_request_response_payload.py
 internal_client/model/logged_in_user_payload.py
@@ -249,8 +243,6 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
-test/test_access_code.py
-test/test_accesscode_api.py
 test/test_address.py
 test/test_addresses_api.py
 test/test_affiliation.py
@@ -290,7 +282,6 @@ test/test_index_entitlements.py
 test/test_index_moves_payload.py
 test/test_index_personally_procured_move_payload.py
 test/test_index_service_member_backup_contacts_payload.py
-test/test_inline_object.py
 test/test_inline_response200.py
 test/test_invalid_request_response_payload.py
 test/test_logged_in_user_payload.py

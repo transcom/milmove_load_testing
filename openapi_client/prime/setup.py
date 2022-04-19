@@ -1,7 +1,7 @@
 """
-    Milmove Prime API
+    MilMove Prime API
 
-    The Prime API is a RESTful API that enables the Prime contractor to request information about upcoming moves, update the details and status of those moves, and make payment requests. It uses Mutual TLS for authentication procedures.  All endpoints are located at `primelocal/prime/v1/`.   # noqa: E501
+    The Prime API is a RESTful API that enables the Prime contractor to request information about upcoming moves, update the details and status of those moves, and make payment requests. It uses Mutual TLS for authentication procedures.  All endpoints are located at `/prime/v1/`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -28,17 +28,17 @@ REQUIRES = [
 setup(
     name=NAME,
     version=VERSION,
-    description="Milmove Prime API",
+    description="MilMove Prime API",
     author="OpenAPI Generator community",
     author_email="dp3@truss.works",
     url="",
-    keywords=["OpenAPI", "OpenAPI-Generator", "Milmove Prime API"],
+    keywords=["OpenAPI", "OpenAPI-Generator", "MilMove Prime API"],
     python_requires=">=3.6",
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
     license="MIT",
     long_description="""\
-    The Prime API is a RESTful API that enables the Prime contractor to request information about upcoming moves, update the details and status of those moves, and make payment requests. It uses Mutual TLS for authentication procedures.  All endpoints are located at &#x60;primelocal/prime/v1/&#x60;.   # noqa: E501
+    The Prime API is a RESTful API that enables the Prime contractor to request information about upcoming moves, update the details and status of those moves, and make payment requests. It uses Mutual TLS for authentication procedures.  All endpoints are located at &#x60;/prime/v1/&#x60;.   # noqa: E501
     """
 )

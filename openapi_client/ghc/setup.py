@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -28,17 +28,17 @@ REQUIRES = [
 setup(
     name=NAME,
     version=VERSION,
-    description="move.mil API",
+    description="MilMove GHC API",
     author="OpenAPI Generator community",
     author_email="dp3@truss.works",
     url="",
-    keywords=["OpenAPI", "OpenAPI-Generator", "move.mil API"],
+    keywords=["OpenAPI", "OpenAPI-Generator", "MilMove GHC API"],
     python_requires=">=3.6",
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
     license="MIT",
     long_description="""\
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under &#x60;/ghc/v1&#x60;.   # noqa: E501
     """
 )

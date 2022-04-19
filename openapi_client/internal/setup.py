@@ -1,7 +1,7 @@
 """
-    my.move.mil
+    MilMove Internal API
 
-    The internal/website API for my.move.mil  # noqa: E501
+    The Internal API is a RESTful API that enables the Customer application for MilMove.  All endpoints are located under `/internal`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: ppp@truss.works
@@ -28,17 +28,17 @@ REQUIRES = [
 setup(
     name=NAME,
     version=VERSION,
-    description="my.move.mil",
+    description="MilMove Internal API",
     author="OpenAPI Generator community",
     author_email="ppp@truss.works",
     url="",
-    keywords=["OpenAPI", "OpenAPI-Generator", "my.move.mil"],
+    keywords=["OpenAPI", "OpenAPI-Generator", "MilMove Internal API"],
     python_requires=">=3.6",
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
     license="MIT",
     long_description="""\
-    The internal/website API for my.move.mil  # noqa: E501
+    The Internal API is a RESTful API that enables the Customer application for MilMove.  All endpoints are located under &#x60;/internal&#x60;.   # noqa: E501
     """
 )

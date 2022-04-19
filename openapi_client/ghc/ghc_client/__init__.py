@@ -1,9 +1,9 @@
 # flake8: noqa
 
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works

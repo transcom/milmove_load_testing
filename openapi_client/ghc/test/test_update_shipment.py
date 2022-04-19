@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -15,13 +15,13 @@ import unittest
 import ghc_client
 from ghc_client.model.address import Address
 from ghc_client.model.destination_type import DestinationType
-from ghc_client.model.loa_type import LOAType
+from ghc_client.model.loa_type_nullable import LOATypeNullable
 from ghc_client.model.mto_agents import MTOAgents
 from ghc_client.model.mto_shipment_type import MTOShipmentType
 from ghc_client.model.storage_facility import StorageFacility
 globals()['Address'] = Address
 globals()['DestinationType'] = DestinationType
-globals()['LOAType'] = LOAType
+globals()['LOATypeNullable'] = LOATypeNullable
 globals()['MTOAgents'] = MTOAgents
 globals()['MTOShipmentType'] = MTOShipmentType
 globals()['StorageFacility'] = StorageFacility

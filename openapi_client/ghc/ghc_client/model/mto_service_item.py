@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -99,19 +99,19 @@ class MTOServiceItem(ModelNormal):
         lazy_import()
         return {
             'move_task_order_id': (str,),  # noqa: E501
-            'mto_shipment_id': (str,),  # noqa: E501
             're_service_id': (str,),  # noqa: E501
             're_service_code': (str,),  # noqa: E501
             're_service_name': (str,),  # noqa: E501
-            'description': (str,),  # noqa: E501
-            'reason': (str,),  # noqa: E501
-            'pickup_postal_code': (str,),  # noqa: E501
             'id': (str,),  # noqa: E501
+            'mto_shipment_id': (str, none_type,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'customer_contacts': (MTOServiceItemCustomerContacts,),  # noqa: E501
             'deleted_at': (date,),  # noqa: E501
+            'description': (str, none_type,),  # noqa: E501
             'dimensions': (MTOServiceItemDimensions,),  # noqa: E501
+            'reason': (str, none_type,),  # noqa: E501
             'rejection_reason': (str, none_type,),  # noqa: E501
+            'pickup_postal_code': (str, none_type,),  # noqa: E501
             'sit_postal_code': (str, none_type,),  # noqa: E501
             'sit_entry_date': (datetime, none_type,),  # noqa: E501
             'sit_departure_date': (datetime, none_type,),  # noqa: E501
@@ -135,19 +135,19 @@ class MTOServiceItem(ModelNormal):
 
     attribute_map = {
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
-        'mto_shipment_id': 'mtoShipmentID',  # noqa: E501
         're_service_id': 'reServiceID',  # noqa: E501
         're_service_code': 'reServiceCode',  # noqa: E501
         're_service_name': 'reServiceName',  # noqa: E501
-        'description': 'description',  # noqa: E501
-        'reason': 'reason',  # noqa: E501
-        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
         'id': 'id',  # noqa: E501
+        'mto_shipment_id': 'mtoShipmentID',  # noqa: E501
         'created_at': 'createdAt',  # noqa: E501
         'customer_contacts': 'customerContacts',  # noqa: E501
         'deleted_at': 'deletedAt',  # noqa: E501
+        'description': 'description',  # noqa: E501
         'dimensions': 'dimensions',  # noqa: E501
+        'reason': 'reason',  # noqa: E501
         'rejection_reason': 'rejectionReason',  # noqa: E501
+        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
         'sit_postal_code': 'SITPostalCode',  # noqa: E501
         'sit_entry_date': 'sitEntryDate',  # noqa: E501
         'sit_departure_date': 'sitDepartureDate',  # noqa: E501
@@ -172,18 +172,14 @@ class MTOServiceItem(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, move_task_order_id, mto_shipment_id, re_service_id, re_service_code, re_service_name, description, reason, pickup_postal_code, id, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, move_task_order_id, re_service_id, re_service_code, re_service_name, id, *args, **kwargs):  # noqa: E501
         """MTOServiceItem - a model defined in OpenAPI
 
         Args:
             move_task_order_id (str):
-            mto_shipment_id (str):
             re_service_id (str):
             re_service_code (str):
             re_service_name (str):
-            description (str):
-            reason (str):
-            pickup_postal_code (str):
             id (str):
 
         Keyword Args:
@@ -217,11 +213,15 @@ class MTOServiceItem(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            mto_shipment_id (str, none_type): [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
             customer_contacts (MTOServiceItemCustomerContacts): [optional]  # noqa: E501
             deleted_at (date): [optional]  # noqa: E501
+            description (str, none_type): [optional]  # noqa: E501
             dimensions (MTOServiceItemDimensions): [optional]  # noqa: E501
+            reason (str, none_type): [optional]  # noqa: E501
             rejection_reason (str, none_type): [optional]  # noqa: E501
+            pickup_postal_code (str, none_type): [optional]  # noqa: E501
             sit_postal_code (str, none_type): [optional]  # noqa: E501
             sit_entry_date (datetime, none_type): [optional]  # noqa: E501
             sit_departure_date (datetime, none_type): [optional]  # noqa: E501
@@ -264,13 +264,9 @@ class MTOServiceItem(ModelNormal):
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
         self.move_task_order_id = move_task_order_id
-        self.mto_shipment_id = mto_shipment_id
         self.re_service_id = re_service_id
         self.re_service_code = re_service_code
         self.re_service_name = re_service_name
-        self.description = description
-        self.reason = reason
-        self.pickup_postal_code = pickup_postal_code
         self.id = id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
@@ -292,18 +288,14 @@ class MTOServiceItem(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, move_task_order_id, mto_shipment_id, re_service_id, re_service_code, re_service_name, description, reason, pickup_postal_code, id, *args, **kwargs):  # noqa: E501
+    def __init__(self, move_task_order_id, re_service_id, re_service_code, re_service_name, id, *args, **kwargs):  # noqa: E501
         """MTOServiceItem - a model defined in OpenAPI
 
         Args:
             move_task_order_id (str):
-            mto_shipment_id (str):
             re_service_id (str):
             re_service_code (str):
             re_service_name (str):
-            description (str):
-            reason (str):
-            pickup_postal_code (str):
             id (str):
 
         Keyword Args:
@@ -337,11 +329,15 @@ class MTOServiceItem(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            mto_shipment_id (str, none_type): [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
             customer_contacts (MTOServiceItemCustomerContacts): [optional]  # noqa: E501
             deleted_at (date): [optional]  # noqa: E501
+            description (str, none_type): [optional]  # noqa: E501
             dimensions (MTOServiceItemDimensions): [optional]  # noqa: E501
+            reason (str, none_type): [optional]  # noqa: E501
             rejection_reason (str, none_type): [optional]  # noqa: E501
+            pickup_postal_code (str, none_type): [optional]  # noqa: E501
             sit_postal_code (str, none_type): [optional]  # noqa: E501
             sit_entry_date (datetime, none_type): [optional]  # noqa: E501
             sit_departure_date (datetime, none_type): [optional]  # noqa: E501
@@ -382,13 +378,9 @@ class MTOServiceItem(ModelNormal):
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
         self.move_task_order_id = move_task_order_id
-        self.mto_shipment_id = mto_shipment_id
         self.re_service_id = re_service_id
         self.re_service_code = re_service_code
         self.re_service_name = re_service_name
-        self.description = description
-        self.reason = reason
-        self.pickup_postal_code = pickup_postal_code
         self.id = id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \

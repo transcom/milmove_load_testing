@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -33,13 +33,13 @@ from ghc_client.exceptions import ApiAttributeError
 def lazy_import():
     from ghc_client.model.address import Address
     from ghc_client.model.destination_type import DestinationType
-    from ghc_client.model.loa_type import LOAType
+    from ghc_client.model.loa_type_nullable import LOATypeNullable
     from ghc_client.model.mto_agents import MTOAgents
     from ghc_client.model.mto_shipment_type import MTOShipmentType
     from ghc_client.model.storage_facility import StorageFacility
     globals()['Address'] = Address
     globals()['DestinationType'] = DestinationType
-    globals()['LOAType'] = LOAType
+    globals()['LOATypeNullable'] = LOATypeNullable
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOShipmentType'] = MTOShipmentType
     globals()['StorageFacility'] = StorageFacility
@@ -109,8 +109,8 @@ class UpdateShipment(ModelNormal):
             'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
-            'tac_type': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type,),  # noqa: E501
-            'sac_type': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'tac_type': (LOATypeNullable,),  # noqa: E501
+            'sac_type': (LOATypeNullable,),  # noqa: E501
             'uses_external_vendor': (bool, none_type,),  # noqa: E501
             'service_order_number': (str, none_type,),  # noqa: E501
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
@@ -194,8 +194,8 @@ class UpdateShipment(ModelNormal):
             destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
-            tac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
-            sac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            tac_type (LOATypeNullable): [optional]  # noqa: E501
+            sac_type (LOATypeNullable): [optional]  # noqa: E501
             uses_external_vendor (bool, none_type): [optional]  # noqa: E501
             service_order_number (str, none_type): [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
@@ -292,8 +292,8 @@ class UpdateShipment(ModelNormal):
             destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
-            tac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
-            sac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            tac_type (LOATypeNullable): [optional]  # noqa: E501
+            sac_type (LOATypeNullable): [optional]  # noqa: E501
             uses_external_vendor (bool, none_type): [optional]  # noqa: E501
             service_order_number (str, none_type): [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501

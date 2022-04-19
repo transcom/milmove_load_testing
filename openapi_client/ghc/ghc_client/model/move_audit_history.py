@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -29,10 +29,6 @@ from ghc_client.model_utils import (  # noqa: F401
 )
 from ghc_client.exceptions import ApiAttributeError
 
-
-def lazy_import():
-    from ghc_client.model.move_audit_history_items import MoveAuditHistoryItems
-    globals()['MoveAuditHistoryItems'] = MoveAuditHistoryItems
 
 
 class MoveAuditHistory(ModelNormal):
@@ -63,6 +59,11 @@ class MoveAuditHistory(ModelNormal):
     }
 
     validations = {
+        ('session_user_telephone',): {
+            'regex': {
+                'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$',  # noqa: E501
+            },
+        },
     }
 
     @cached_property
@@ -71,7 +72,6 @@ class MoveAuditHistory(ModelNormal):
         This must be a method because a model may have properties that are
         of type self, this must run after the class is loaded
         """
-        lazy_import()
         return (bool, date, datetime, dict, float, int, list, str, none_type,)  # noqa: E501
 
     _nullable = False
@@ -86,7 +86,6 @@ class MoveAuditHistory(ModelNormal):
             openapi_types (dict): The key is attribute name
                 and the value is attribute type.
         """
-        lazy_import()
         return {
             'id': (str,),  # noqa: E501
             'schema_name': (str,),  # noqa: E501
@@ -94,6 +93,12 @@ class MoveAuditHistory(ModelNormal):
             'rel_id': (int,),  # noqa: E501
             'object_id': (str, none_type,),  # noqa: E501
             'session_user_id': (str, none_type,),  # noqa: E501
+            'session_user_first_name': (str, none_type,),  # noqa: E501
+            'session_user_last_name': (str, none_type,),  # noqa: E501
+            'session_user_email': (str, none_type,),  # noqa: E501
+            'session_user_telephone': (str, none_type,),  # noqa: E501
+            'context': ({str: (str,)}, none_type,),  # noqa: E501
+            'context_id': (str, none_type,),  # noqa: E501
             'event_name': (str, none_type,),  # noqa: E501
             'action_tstamp_tx': (datetime,),  # noqa: E501
             'action_tstamp_stm': (datetime,),  # noqa: E501
@@ -101,8 +106,8 @@ class MoveAuditHistory(ModelNormal):
             'transaction_id': (int, none_type,),  # noqa: E501
             'client_query': (str, none_type,),  # noqa: E501
             'action': (str,),  # noqa: E501
-            'old_values': (MoveAuditHistoryItems,),  # noqa: E501
-            'changed_values': (MoveAuditHistoryItems,),  # noqa: E501
+            'old_values': ({str: (str,)}, none_type,),  # noqa: E501
+            'changed_values': ({str: (str,)}, none_type,),  # noqa: E501
             'statement_only': (bool,),  # noqa: E501
         }
 
@@ -118,6 +123,12 @@ class MoveAuditHistory(ModelNormal):
         'rel_id': 'relId',  # noqa: E501
         'object_id': 'objectId',  # noqa: E501
         'session_user_id': 'sessionUserId',  # noqa: E501
+        'session_user_first_name': 'sessionUserFirstName',  # noqa: E501
+        'session_user_last_name': 'sessionUserLastName',  # noqa: E501
+        'session_user_email': 'sessionUserEmail',  # noqa: E501
+        'session_user_telephone': 'sessionUserTelephone',  # noqa: E501
+        'context': 'context',  # noqa: E501
+        'context_id': 'contextId',  # noqa: E501
         'event_name': 'eventName',  # noqa: E501
         'action_tstamp_tx': 'actionTstampTx',  # noqa: E501
         'action_tstamp_stm': 'actionTstampStm',  # noqa: E501
@@ -177,6 +188,12 @@ class MoveAuditHistory(ModelNormal):
             rel_id (int): relation OID. Table OID (object identifier). Changes with drop/create.. [optional]  # noqa: E501
             object_id (str, none_type): id column for the tableName where the data was changed. [optional]  # noqa: E501
             session_user_id (str, none_type): [optional]  # noqa: E501
+            session_user_first_name (str, none_type): [optional]  # noqa: E501
+            session_user_last_name (str, none_type): [optional]  # noqa: E501
+            session_user_email (str, none_type): [optional]  # noqa: E501
+            session_user_telephone (str, none_type): [optional]  # noqa: E501
+            context ({str: (str,)}, none_type): [optional]  # noqa: E501
+            context_id (str, none_type): id column for the context table the record belongs to. [optional]  # noqa: E501
             event_name (str, none_type): API endpoint name that was called to make the change. [optional]  # noqa: E501
             action_tstamp_tx (datetime): Transaction start timestamp for tx in which audited event occurred. [optional]  # noqa: E501
             action_tstamp_stm (datetime): Statement start timestamp for tx in which audited event occurred. [optional]  # noqa: E501
@@ -184,8 +201,8 @@ class MoveAuditHistory(ModelNormal):
             transaction_id (int, none_type): Identifier of transaction that made the change. May wrap, but unique paired with action_tstamp_tx.. [optional]  # noqa: E501
             client_query (str, none_type): Record the text of the client query that triggered the audit event. [optional]  # noqa: E501
             action (str): Action type; I = insert, D = delete, U = update, T = truncate. [optional]  # noqa: E501
-            old_values (MoveAuditHistoryItems): [optional]  # noqa: E501
-            changed_values (MoveAuditHistoryItems): [optional]  # noqa: E501
+            old_values ({str: (str,)}, none_type): A list of (old/previous) MoveAuditHistoryItem's for a record before the change.. [optional]  # noqa: E501
+            changed_values ({str: (str,)}, none_type): A list of (changed/updated) MoveAuditHistoryItem's for a record after the change.. [optional]  # noqa: E501
             statement_only (bool): true if audit event is from an FOR EACH STATEMENT trigger, false for FOR EACH ROW'. [optional]  # noqa: E501
         """
 
@@ -274,6 +291,12 @@ class MoveAuditHistory(ModelNormal):
             rel_id (int): relation OID. Table OID (object identifier). Changes with drop/create.. [optional]  # noqa: E501
             object_id (str, none_type): id column for the tableName where the data was changed. [optional]  # noqa: E501
             session_user_id (str, none_type): [optional]  # noqa: E501
+            session_user_first_name (str, none_type): [optional]  # noqa: E501
+            session_user_last_name (str, none_type): [optional]  # noqa: E501
+            session_user_email (str, none_type): [optional]  # noqa: E501
+            session_user_telephone (str, none_type): [optional]  # noqa: E501
+            context ({str: (str,)}, none_type): [optional]  # noqa: E501
+            context_id (str, none_type): id column for the context table the record belongs to. [optional]  # noqa: E501
             event_name (str, none_type): API endpoint name that was called to make the change. [optional]  # noqa: E501
             action_tstamp_tx (datetime): Transaction start timestamp for tx in which audited event occurred. [optional]  # noqa: E501
             action_tstamp_stm (datetime): Statement start timestamp for tx in which audited event occurred. [optional]  # noqa: E501
@@ -281,8 +304,8 @@ class MoveAuditHistory(ModelNormal):
             transaction_id (int, none_type): Identifier of transaction that made the change. May wrap, but unique paired with action_tstamp_tx.. [optional]  # noqa: E501
             client_query (str, none_type): Record the text of the client query that triggered the audit event. [optional]  # noqa: E501
             action (str): Action type; I = insert, D = delete, U = update, T = truncate. [optional]  # noqa: E501
-            old_values (MoveAuditHistoryItems): [optional]  # noqa: E501
-            changed_values (MoveAuditHistoryItems): [optional]  # noqa: E501
+            old_values ({str: (str,)}, none_type): A list of (old/previous) MoveAuditHistoryItem's for a record before the change.. [optional]  # noqa: E501
+            changed_values ({str: (str,)}, none_type): A list of (changed/updated) MoveAuditHistoryItem's for a record after the change.. [optional]  # noqa: E501
             statement_only (bool): true if audit event is from an FOR EACH STATEMENT trigger, false for FOR EACH ROW'. [optional]  # noqa: E501
         """
 

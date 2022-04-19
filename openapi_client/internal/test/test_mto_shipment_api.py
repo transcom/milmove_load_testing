@@ -1,7 +1,7 @@
 """
-    my.move.mil
+    MilMove Internal API
 
-    The internal/website API for my.move.mil  # noqa: E501
+    The Internal API is a RESTful API that enables the Customer application for MilMove.  All endpoints are located under `/internal`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: ppp@truss.works
@@ -28,6 +28,13 @@ class TestMtoShipmentApi(unittest.TestCase):
         """Test case for create_mto_shipment
 
         createMTOShipment  # noqa: E501
+        """
+        pass
+
+    def test_delete_shipment(self):
+        """Test case for delete_shipment
+
+        Soft deletes a shipment by ID  # noqa: E501
         """
         pass
 

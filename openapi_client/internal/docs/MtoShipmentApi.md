@@ -5,6 +5,7 @@ All URIs are relative to */internal*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_mto_shipment**](MtoShipmentApi.md#create_mto_shipment) | **POST** /mto_shipments | createMTOShipment
+[**delete_shipment**](MtoShipmentApi.md#delete_shipment) | **DELETE** /mto-shipments/{mtoShipmentId} | Soft deletes a shipment by ID
 [**list_mto_shipments**](MtoShipmentApi.md#list_mto_shipments) | **GET** /moves/{moveTaskOrderID}/mto_shipments | Gets all shipments for a move task order
 [**update_mto_shipment**](MtoShipmentApi.md#update_mto_shipment) | **PATCH** /mto-shipments/{mtoShipmentId} | updateMTOShipment
 
@@ -151,6 +152,80 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **delete_shipment**
+> delete_shipment(mto_shipment_id)
+
+Soft deletes a shipment by ID
+
+Soft deletes a shipment by ID
+
+### Example
+
+
+```python
+import time
+import internal_client
+from internal_client.api import mto_shipment_api
+from internal_client.model.error import Error
+from internal_client.model.validation_error import ValidationError
+from internal_client.model.client_error import ClientError
+from pprint import pprint
+# Defining the host is optional and defaults to /internal
+# See configuration.py for a list of all supported configuration parameters.
+configuration = internal_client.Configuration(
+    host = "/internal"
+)
+
+
+# Enter a context with an instance of the API client
+with internal_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = mto_shipment_api.MtoShipmentApi(api_client)
+    mto_shipment_id = "mtoShipmentId_example" # str | ID of the shipment to be deleted
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Soft deletes a shipment by ID
+        api_instance.delete_shipment(mto_shipment_id)
+    except internal_client.ApiException as e:
+        print("Exception when calling MtoShipmentApi->delete_shipment: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **mto_shipment_id** | **str**| ID of the shipment to be deleted |
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**204** | Successfully soft deleted the shipment |  -  |
+**400** | The request payload is invalid. |  -  |
+**403** | The request was denied. |  -  |
+**404** | The requested resource wasn&#39;t found. |  -  |
+**409** | The request could not be processed because of conflict in the current state of the resource. |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **list_mto_shipments**
 > MTOShipments list_mto_shipments(move_task_order_id)
 
@@ -274,6 +349,8 @@ with internal_client.ApiClient() as api_client:
             pro_gear_weight=1,
             spouse_pro_gear_weight=1,
             estimated_incentive=1,
+            advance=1,
+            advance_requested=True,
         ),
         requested_pickup_date=dateutil_parser('1970-01-01').date(),
         requested_delivery_date=dateutil_parser('1970-01-01').date(),

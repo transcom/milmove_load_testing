@@ -1,7 +1,7 @@
 """
-    my.move.mil
+    MilMove Internal API
 
-    The internal/website API for my.move.mil  # noqa: E501
+    The Internal API is a RESTful API that enables the Customer application for MilMove.  All endpoints are located under `/internal`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: ppp@truss.works
@@ -774,11 +774,11 @@ class Endpoint(object):
         """ This method is invoked when endpoints are called
         Example:
 
-        api_instance = AccesscodeApi()
-        api_instance.claim_access_code  # this is an instance of the class Endpoint
-        api_instance.claim_access_code()  # this invokes api_instance.claim_access_code.__call__()
+        api_instance = AddressesApi()
+        api_instance.show_address  # this is an instance of the class Endpoint
+        api_instance.show_address()  # this invokes api_instance.show_address.__call__()
         which then invokes the callable functions stored in that endpoint at
-        api_instance.claim_access_code.callable or self.callable in this class
+        api_instance.show_address.callable or self.callable in this class
 
         """
         return self.callable(self, *args, **kwargs)

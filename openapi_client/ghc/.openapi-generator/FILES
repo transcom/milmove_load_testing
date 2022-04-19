@@ -4,9 +4,9 @@
 .travis.yml
 README.md
 docs/Address.md
+docs/Affiliation.md
 docs/ApproveSITExtension.md
 docs/BackupContact.md
-docs/Branch.md
 docs/ClientError.md
 docs/Contractor.md
 docs/CounselingUpdateAllowancePayload.md
@@ -29,6 +29,7 @@ docs/GhcDocumentsApi.md
 docs/Grade.md
 docs/InlineObject.md
 docs/LOAType.md
+docs/LOATypeNullable.md
 docs/MTOAgent.md
 docs/MTOAgents.md
 docs/MTOApprovalServiceItemCodes.md
@@ -50,6 +51,7 @@ docs/MoveAuditHistory.md
 docs/MoveAuditHistoryItem.md
 docs/MoveAuditHistoryItems.md
 docs/MoveHistory.md
+docs/MoveHistoryResult.md
 docs/MoveStatus.md
 docs/MoveTaskOrder.md
 docs/MoveTaskOrderApi.md
@@ -130,9 +132,9 @@ ghc_client/configuration.py
 ghc_client/exceptions.py
 ghc_client/model/__init__.py
 ghc_client/model/address.py
+ghc_client/model/affiliation.py
 ghc_client/model/approve_sit_extension.py
 ghc_client/model/backup_contact.py
-ghc_client/model/branch.py
 ghc_client/model/client_error.py
 ghc_client/model/contractor.py
 ghc_client/model/counseling_update_allowance_payload.py
@@ -153,12 +155,14 @@ ghc_client/model/gbloc.py
 ghc_client/model/grade.py
 ghc_client/model/inline_object.py
 ghc_client/model/loa_type.py
+ghc_client/model/loa_type_nullable.py
 ghc_client/model/move.py
 ghc_client/model/move_audit_histories.py
 ghc_client/model/move_audit_history.py
 ghc_client/model/move_audit_history_item.py
 ghc_client/model/move_audit_history_items.py
 ghc_client/model/move_history.py
+ghc_client/model/move_history_result.py
 ghc_client/model/move_status.py
 ghc_client/model/move_task_order.py
 ghc_client/model/move_task_orders.py
@@ -228,9 +232,9 @@ setup.py
 test-requirements.txt
 test/__init__.py
 test/test_address.py
+test/test_affiliation.py
 test/test_approve_sit_extension.py
 test/test_backup_contact.py
-test/test_branch.py
 test/test_client_error.py
 test/test_contractor.py
 test/test_counseling_update_allowance_payload.py
@@ -253,6 +257,7 @@ test/test_ghc_documents_api.py
 test/test_grade.py
 test/test_inline_object.py
 test/test_loa_type.py
+test/test_loa_type_nullable.py
 test/test_move.py
 test/test_move_api.py
 test/test_move_audit_histories.py
@@ -260,6 +265,7 @@ test/test_move_audit_history.py
 test/test_move_audit_history_item.py
 test/test_move_audit_history_items.py
 test/test_move_history.py
+test/test_move_history_result.py
 test/test_move_status.py
 test/test_move_task_order.py
 test/test_move_task_order_api.py

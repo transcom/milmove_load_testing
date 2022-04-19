@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **pro_gear_weight** | **int, none_type** |  | [optional] 
 **spouse_pro_gear_weight** | **int, none_type** |  | [optional] 
 **estimated_incentive** | **int, none_type** |  | [optional] 
+**advance** | **int, none_type** | The amount request for an advance, or null if no advance is requested  | [optional] 
+**advance_requested** | **bool, none_type** | Indicates whether an advance has been requested for the PPM shipment.  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
