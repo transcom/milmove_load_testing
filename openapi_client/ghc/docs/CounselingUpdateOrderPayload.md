@@ -9,6 +9,9 @@ Name | Type | Description | Notes
 **orders_type** | [**OrdersType**](OrdersType.md) |  | 
 **origin_duty_location_id** | **str** |  | 
 **new_duty_location_id** | **str** |  | 
+**orders_type_detail** | [**OrdersTypeDetail**](OrdersTypeDetail.md) |  | [optional] 
+**orders_number** | **str, none_type** |  | [optional] 
+**department_indicator** | [**DeptIndicator**](DeptIndicator.md) |  | [optional] 
 **tac** | **str, none_type** |  | [optional] 
 **sac** | **str** |  | [optional] 
 **nts_tac** | **str** |  | [optional] 

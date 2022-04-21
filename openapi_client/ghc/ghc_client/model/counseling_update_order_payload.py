@@ -31,8 +31,12 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from ghc_client.model.dept_indicator import DeptIndicator
     from ghc_client.model.orders_type import OrdersType
+    from ghc_client.model.orders_type_detail import OrdersTypeDetail
+    globals()['DeptIndicator'] = DeptIndicator
     globals()['OrdersType'] = OrdersType
+    globals()['OrdersTypeDetail'] = OrdersTypeDetail
 
 
 class CounselingUpdateOrderPayload(ModelNormal):
@@ -97,6 +101,9 @@ class CounselingUpdateOrderPayload(ModelNormal):
             'orders_type': (OrdersType,),  # noqa: E501
             'origin_duty_location_id': (str,),  # noqa: E501
             'new_duty_location_id': (str,),  # noqa: E501
+            'orders_type_detail': (OrdersTypeDetail,),  # noqa: E501
+            'orders_number': (str, none_type,),  # noqa: E501
+            'department_indicator': (DeptIndicator,),  # noqa: E501
             'tac': (str, none_type,),  # noqa: E501
             'sac': (str,),  # noqa: E501
             'nts_tac': (str,),  # noqa: E501
@@ -114,6 +121,9 @@ class CounselingUpdateOrderPayload(ModelNormal):
         'orders_type': 'ordersType',  # noqa: E501
         'origin_duty_location_id': 'originDutyLocationId',  # noqa: E501
         'new_duty_location_id': 'newDutyLocationId',  # noqa: E501
+        'orders_type_detail': 'ordersTypeDetail',  # noqa: E501
+        'orders_number': 'ordersNumber',  # noqa: E501
+        'department_indicator': 'departmentIndicator',  # noqa: E501
         'tac': 'tac',  # noqa: E501
         'sac': 'sac',  # noqa: E501
         'nts_tac': 'ntsTac',  # noqa: E501
@@ -168,6 +178,9 @@ class CounselingUpdateOrderPayload(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
+            orders_number (str, none_type): [optional]  # noqa: E501
+            department_indicator (DeptIndicator): [optional]  # noqa: E501
             tac (str, none_type): [optional]  # noqa: E501
             sac (str): [optional]  # noqa: E501
             nts_tac (str): [optional]  # noqa: E501
@@ -265,6 +278,9 @@ class CounselingUpdateOrderPayload(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
+            orders_number (str, none_type): [optional]  # noqa: E501
+            department_indicator (DeptIndicator): [optional]  # noqa: E501
             tac (str, none_type): [optional]  # noqa: E501
             sac (str): [optional]  # noqa: E501
             nts_tac (str): [optional]  # noqa: E501
