@@ -31,13 +31,6 @@ class TestEntitlementsApi(unittest.TestCase):
         """
         pass
 
-    def test_validate_entitlement(self):
-        """Test case for validate_entitlement
-
-        Validates that the stored weight estimate is below the allotted entitlement range for a service member  # noqa: E501
-        """
-        pass
-
 
 if __name__ == '__main__':
     unittest.main()

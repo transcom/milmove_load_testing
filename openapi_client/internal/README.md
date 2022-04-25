@@ -96,7 +96,6 @@ Class | Method | HTTP request | Description
 *DpsAuthApi* | [**get_cookie_url**](docs/DpsAuthApi.md#get_cookie_url) | **POST** /dps_auth/cookie_url | Returns the URL to redirect to that begins DPS auth
 *DutyLocationsApi* | [**search_duty_locations**](docs/DutyLocationsApi.md#search_duty_locations) | **GET** /duty_locations | Returns the duty locations matching the search query
 *EntitlementsApi* | [**index_entitlements**](docs/EntitlementsApi.md#index_entitlements) | **GET** /entitlements | List weight weights allotted by entitlement
-*EntitlementsApi* | [**validate_entitlement**](docs/EntitlementsApi.md#validate_entitlement) | **GET** /entitlements/{moveId} | Validates that the stored weight estimate is below the allotted entitlement range for a service member
 *MoveDocsApi* | [**create_generic_move_document**](docs/MoveDocsApi.md#create_generic_move_document) | **POST** /moves/{moveId}/move_documents | Creates a move document
 *MoveDocsApi* | [**create_moving_expense_document**](docs/MoveDocsApi.md#create_moving_expense_document) | **POST** /moves/{moveId}/moving_expense_documents | Creates a moving expense document
 *MoveDocsApi* | [**create_weight_ticket_document**](docs/MoveDocsApi.md#create_weight_ticket_document) | **POST** /moves/{moveId}/weight_ticket | Creates a weight ticket document

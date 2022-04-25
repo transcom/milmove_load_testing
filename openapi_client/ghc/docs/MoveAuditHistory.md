@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 **session_user_last_name** | **str, none_type** |  | [optional] 
 **session_user_email** | **str, none_type** |  | [optional] 
 **session_user_telephone** | **str, none_type** |  | [optional] 
-**context** | **{str: (str,)}, none_type** |  | [optional] 
+**context** | **[{str: (str,)}], none_type** |  | [optional] 
 **context_id** | **str, none_type** | id column for the context table the record belongs to | [optional] 
 **event_name** | **str, none_type** | API endpoint name that was called to make the change | [optional] 
 **action_tstamp_tx** | **datetime** | Transaction start timestamp for tx in which audited event occurred | [optional] 
