@@ -34,13 +34,16 @@ from internal_client.model.signed_certification_type_create import SignedCertifi
 from internal_client.model.dept_indicator import DeptIndicator
 
 
-def create_hhg_shipment(move_id: str, issue_date: datetime, pickup_address: Address) -> CreateShipment:
+def create_hhg_shipment(
+    move_id: str, issue_date: datetime, pickup_address: Address, destination_address: Address
+) -> CreateShipment:
     return CreateShipment(
         move_task_order_id=move_id,
         shipment_type=MTOShipmentType("HHG"),
         requested_pickup_date=(issue_date + timedelta(days=1)).date(),
         requested_delivery_date=(issue_date + timedelta(days=7)).date(),
         pickup_address=pickup_address,
+        destination_address=destination_address,
     )
 
 
@@ -74,16 +77,30 @@ def start_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManag
     fake = Faker()
     first_name = fake.first_name()
     last_name = fake.last_name()
-    state = "CA"
-    zip_in_KKFA_gbloc = "90210"
     duty_location_id = old_locations.value[0]["id"]
     if not duty_location_id:
         raise Exception("Cannot find duty location: " + duty_location_with_counseling_in_KKFA_gbloc)
+
+    # When the prime attempts to update the shipment later on, the distance between the origin and
+    # destination addresses is calculated by a call to the HERE api. If the API cannot find a route
+    # between them (which it often can't for randomly generated addresses), then it fails the request
+    # and prevents the prime from updating the shipment.
+    # So for now, I'm just hardcoding these addresses that work. In the future, if we remove the HERE
+    # api and just use postal codes to estimate distances, we can switch back to random addresses.
+    state = "CA"
+    zip_in_KKFA_gbloc = "90210"
     residential_address = Address(
-        street_address1=fake.street_address(),
-        city=fake.city(),
+        street_address1="3373 NW Martin Luther King Jr Blvd",
+        city="Beverly Hills",
         state=state,
         postal_code=zip_in_KKFA_gbloc,
+    )
+
+    destination_address = Address(
+        street_address1="3373 NW Martin Luther King Jr Blvd",
+        city="Augusta",
+        state="GA",
+        postal_code="30815",
     )
 
     sm_pdata = PatchServiceMemberPayload(
@@ -156,6 +173,7 @@ def start_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManag
 
     move_id = current_move["id"]
     flow_context["move_id"] = move_id
+    flow_context["locator"] = current_move["locator"]
     moves_api_client = moves_api.MovesApi(api_client)
     moves_api_client.patch_move(move_id, PatchMovePayload(selected_move_type=SelectedMoveType("HHG")))
 
@@ -163,9 +181,9 @@ def start_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManag
 
     for shipmentType in shipments:
         shipment = {
-            "HHG": create_hhg_shipment(move_id, issue_date, residential_address),
+            "HHG": create_hhg_shipment(move_id, issue_date, residential_address, destination_address),
             "NTS": create_nts_shipment(move_id, issue_date, residential_address),
-        }.get(shipmentType, create_hhg_shipment(move_id, issue_date, residential_address))
+        }.get(shipmentType, create_hhg_shipment(move_id, issue_date, residential_address, destination_address))
 
         mto_shipment_api_client.create_mto_shipment(body=shipment)
 
