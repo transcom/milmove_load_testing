@@ -3,8 +3,8 @@ from utils.flows import FlowContext, FlowStep, FlowSequence, SequenceQueableFlow
 
 from utils.flows.steps.milmove import do_flow_create_single_hhg, do_flow_create_double_hhg, do_flow_create_nts
 from utils.flows.steps.service_counselor import do_hhg_sc_review
-from utils.flows.steps.too import do_hhg_too_approve
-from utils.flows.steps.prime import do_hhg_prime_service_items
+from utils.flows.steps.too import do_hhg_too_approve, do_hhg_too_approve_service_items
+from utils.flows.steps.prime import do_hhg_prime_service_items, do_hhg_request_payment_for_service_items
 
 import os
 
@@ -45,6 +45,21 @@ class NTSFlow(SequenceQueableFlow):
             FlowStep(callback=do_hhg_sc_review, queue=WorkerQueueType.SERVICE_COUNSELOR),
             FlowStep(callback=do_hhg_too_approve, queue=WorkerQueueType.TOO),
             FlowStep(callback=do_hhg_prime_service_items, queue=WorkerQueueType.PRIME),
+        ]
+
+
+class SingleHHGMultiplePaymentRequestFlow(SequenceQueableFlow):
+    def __init__(self, flow_context: FlowContext = None) -> None:
+        super().__init__(flow_context)
+
+    def flow_steps(self) -> FlowSequence:
+        return [
+            FlowStep(callback=do_flow_create_single_hhg, queue=WorkerQueueType.SERVICE_MEMBER),
+            FlowStep(callback=do_hhg_sc_review, queue=WorkerQueueType.SERVICE_COUNSELOR),
+            FlowStep(callback=do_hhg_too_approve, queue=WorkerQueueType.TOO),
+            FlowStep(callback=do_hhg_prime_service_items, queue=WorkerQueueType.PRIME),
+            FlowStep(callback=do_hhg_too_approve_service_items, queue=WorkerQueueType.TOO),
+            FlowStep(callback=do_hhg_request_payment_for_service_items, queue=WorkerQueueType.PRIME),
         ]
 
 

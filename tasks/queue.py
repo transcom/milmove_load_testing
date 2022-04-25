@@ -2,7 +2,7 @@
 from locust import task, TaskSet
 
 from utils.flows import MemoryFlowQueue, QueuableFlow, WorkerQueueType
-from utils.flows.simple_hhg import SingleHHGFlow, DoubleHHGFlow, NTSFlow
+from utils.flows.simple_hhg import SingleHHGFlow, DoubleHHGFlow, NTSFlow, SingleHHGMultiplePaymentRequestFlow
 from utils.openapi_client import FlowSessionManager
 from utils.request import MilMoveRequestMixin
 
@@ -66,6 +66,15 @@ class MilMoveHHGQueueTasks(QueueTaskSet):
         Kicks off a flow where the customer creates a single NTS shipment
         """
         f = NTSFlow()
+        self.start_flow(f)
+
+    @task(1)
+    def start_hhg_multiple_payment_request_flow(self):
+        """
+        Kicks off a flow where the customer creates a HHG shipment and the Prime
+        creates multiple payment requests for it.
+        """
+        f = SingleHHGMultiplePaymentRequestFlow()
         self.start_flow(f)
 
 
