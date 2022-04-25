@@ -18,6 +18,12 @@ def do_hhg_sc_review(
     if move_id is None:
         raise Exception("move_id is None in flow_context")
 
+    if "locator" not in flow_context:
+        raise Exception("Cannot find locator in flow_context")
+    locator = flow_context["locator"]
+    if locator is None:
+        raise Exception("locator is None in flow_context")
+
     api_client = flow_session_manager.ghc_api_client(UserType.SERVICE_COUNSELOR)
 
     queues_api_client = queues_api.QueuesApi(api_client)
@@ -26,6 +32,7 @@ def do_hhg_sc_review(
 
     scq = queues_api_client.get_services_counseling_queue(
         per_page=100,
+        locator=locator,
         _check_return_type=False,
     )
     moves = [m for m in scq.queue_moves if m["id"] == move_id]
