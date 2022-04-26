@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -31,7 +31,7 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from ghc_client.model.branch import Branch
+    from ghc_client.model.affiliation import Affiliation
     from ghc_client.model.customer import Customer
     from ghc_client.model.dept_indicator import DeptIndicator
     from ghc_client.model.duty_location import DutyLocation
@@ -39,7 +39,7 @@ def lazy_import():
     from ghc_client.model.grade import Grade
     from ghc_client.model.orders_type import OrdersType
     from ghc_client.model.orders_type_detail import OrdersTypeDetail
-    globals()['Branch'] = Branch
+    globals()['Affiliation'] = Affiliation
     globals()['Customer'] = Customer
     globals()['DeptIndicator'] = DeptIndicator
     globals()['DutyLocation'] = DutyLocation
@@ -109,7 +109,7 @@ class Order(ModelNormal):
             'first_name': (str,),  # noqa: E501
             'last_name': (str,),  # noqa: E501
             'grade': (Grade,),  # noqa: E501
-            'agency': (Branch,),  # noqa: E501
+            'agency': (Affiliation,),  # noqa: E501
             'entitlement': (Entitlements,),  # noqa: E501
             'destination_duty_location': (DutyLocation,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
@@ -218,7 +218,7 @@ class Order(ModelNormal):
             first_name (str): [optional]  # noqa: E501
             last_name (str): [optional]  # noqa: E501
             grade (Grade): [optional]  # noqa: E501
-            agency (Branch): [optional]  # noqa: E501
+            agency (Affiliation): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
@@ -327,7 +327,7 @@ class Order(ModelNormal):
             first_name (str): [optional]  # noqa: E501
             last_name (str): [optional]  # noqa: E501
             grade (Grade): [optional]  # noqa: E501
-            agency (Branch): [optional]  # noqa: E501
+            agency (Affiliation): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501

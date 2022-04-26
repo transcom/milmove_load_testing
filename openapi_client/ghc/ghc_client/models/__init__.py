@@ -10,9 +10,9 @@
 # sys.setrecursionlimit(n)
 
 from ghc_client.model.address import Address
+from ghc_client.model.affiliation import Affiliation
 from ghc_client.model.approve_sit_extension import ApproveSITExtension
 from ghc_client.model.backup_contact import BackupContact
-from ghc_client.model.branch import Branch
 from ghc_client.model.client_error import ClientError
 from ghc_client.model.contractor import Contractor
 from ghc_client.model.counseling_update_allowance_payload import CounselingUpdateAllowancePayload
@@ -33,6 +33,7 @@ from ghc_client.model.gbloc import GBLOC
 from ghc_client.model.grade import Grade
 from ghc_client.model.inline_object import InlineObject
 from ghc_client.model.loa_type import LOAType
+from ghc_client.model.loa_type_nullable import LOATypeNullable
 from ghc_client.model.mto_agent import MTOAgent
 from ghc_client.model.mto_agents import MTOAgents
 from ghc_client.model.mto_approval_service_item_codes import MTOApprovalServiceItemCodes
@@ -53,6 +54,7 @@ from ghc_client.model.move_audit_history import MoveAuditHistory
 from ghc_client.model.move_audit_history_item import MoveAuditHistoryItem
 from ghc_client.model.move_audit_history_items import MoveAuditHistoryItems
 from ghc_client.model.move_history import MoveHistory
+from ghc_client.model.move_history_result import MoveHistoryResult
 from ghc_client.model.move_status import MoveStatus
 from ghc_client.model.move_task_order import MoveTaskOrder
 from ghc_client.model.move_task_orders import MoveTaskOrders

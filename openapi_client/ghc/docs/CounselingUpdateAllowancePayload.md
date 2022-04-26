@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **grade** | [**Grade**](Grade.md) |  | [optional] 
 **dependents_authorized** | **bool, none_type** |  | [optional] 
-**agency** | [**Branch**](Branch.md) |  | [optional] 
+**agency** | [**Affiliation**](Affiliation.md) |  | [optional] 
 **pro_gear_weight** | **int, none_type** | unit is in lbs | [optional] 
 **pro_gear_weight_spouse** | **int, none_type** | unit is in lbs | [optional] 
 **required_medical_equipment_weight** | **int** | unit is in lbs | [optional] 

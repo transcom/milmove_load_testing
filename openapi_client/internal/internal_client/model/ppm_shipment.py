@@ -1,7 +1,7 @@
 """
-    my.move.mil
+    MilMove Internal API
 
-    The internal/website API for my.move.mil  # noqa: E501
+    The Internal API is a RESTful API that enables the Customer application for MilMove.  All endpoints are located under `/internal`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: ppp@truss.works
@@ -130,9 +130,8 @@ class PPMShipment(ModelNormal):
             'pro_gear_weight': (int, none_type,),  # noqa: E501
             'spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'estimated_incentive': (int, none_type,),  # noqa: E501
+            'advance': (int, none_type,),  # noqa: E501
             'advance_requested': (bool, none_type,),  # noqa: E501
-            'advance_id': (str, none_type,),  # noqa: E501
-            'advance_worksheet_id': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -163,9 +162,8 @@ class PPMShipment(ModelNormal):
         'pro_gear_weight': 'proGearWeight',  # noqa: E501
         'spouse_pro_gear_weight': 'spouseProGearWeight',  # noqa: E501
         'estimated_incentive': 'estimatedIncentive',  # noqa: E501
+        'advance': 'advance',  # noqa: E501
         'advance_requested': 'advanceRequested',  # noqa: E501
-        'advance_id': 'advanceId',  # noqa: E501
-        'advance_worksheet_id': 'advanceWorksheetId',  # noqa: E501
     }
 
     read_only_vars = {
@@ -174,8 +172,6 @@ class PPMShipment(ModelNormal):
         'created_at',  # noqa: E501
         'updated_at',  # noqa: E501
         'e_tag',  # noqa: E501
-        'advance_id',  # noqa: E501
-        'advance_worksheet_id',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -240,9 +236,8 @@ class PPMShipment(ModelNormal):
             pro_gear_weight (int, none_type): [optional]  # noqa: E501
             spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             estimated_incentive (int, none_type): [optional]  # noqa: E501
-            advance_requested (bool, none_type): [optional]  # noqa: E501
-            advance_id (str, none_type): [optional]  # noqa: E501
-            advance_worksheet_id (str, none_type): [optional]  # noqa: E501
+            advance (int, none_type): The amount request for an advance, or null if no advance is requested . [optional]  # noqa: E501
+            advance_requested (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -351,9 +346,8 @@ class PPMShipment(ModelNormal):
             pro_gear_weight (int, none_type): [optional]  # noqa: E501
             spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             estimated_incentive (int, none_type): [optional]  # noqa: E501
-            advance_requested (bool, none_type): [optional]  # noqa: E501
-            advance_id (str, none_type): [optional]  # noqa: E501
-            advance_worksheet_id (str, none_type): [optional]  # noqa: E501
+            advance (int, none_type): The amount request for an advance, or null if no advance is requested . [optional]  # noqa: E501
+            advance_requested (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

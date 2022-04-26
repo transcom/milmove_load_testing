@@ -83,7 +83,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_move_history**
-> MoveHistory get_move_history(locator)
+> MoveHistoryResult get_move_history(locator)
 
 Returns the history of an identified move
 
@@ -97,7 +97,7 @@ import time
 import ghc_client
 from ghc_client.api import move_api
 from ghc_client.model.error import Error
-from ghc_client.model.move_history import MoveHistory
+from ghc_client.model.move_history_result import MoveHistoryResult
 from pprint import pprint
 # Defining the host is optional and defaults to /ghc/v1
 # See configuration.py for a list of all supported configuration parameters.
@@ -111,11 +111,22 @@ with ghc_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = move_api.MoveApi(api_client)
     locator = "locator_example" # str | Code used to identify a move in the system
+    page = 1 # int | requested page of results (optional)
+    per_page = 1 # int | results per page (optional)
 
     # example passing only required values which don't have defaults set
     try:
         # Returns the history of an identified move
         api_response = api_instance.get_move_history(locator)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling MoveApi->get_move_history: %s\n" % e)
+
+    # example passing only required values which don't have defaults set
+    # and optional values
+    try:
+        # Returns the history of an identified move
+        api_response = api_instance.get_move_history(locator, page=page, per_page=per_page)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling MoveApi->get_move_history: %s\n" % e)
@@ -127,10 +138,12 @@ with ghc_client.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **locator** | **str**| Code used to identify a move in the system |
+ **page** | **int**| requested page of results | [optional]
+ **per_page** | **int**| results per page | [optional]
 
 ### Return type
 
-[**MoveHistory**](MoveHistory.md)
+[**MoveHistoryResult**](MoveHistoryResult.md)
 
 ### Authorization
 

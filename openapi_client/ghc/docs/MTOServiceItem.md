@@ -5,19 +5,19 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **move_task_order_id** | **str** |  | 
-**mto_shipment_id** | **str** |  | 
 **re_service_id** | **str** |  | 
 **re_service_code** | **str** |  | 
 **re_service_name** | **str** |  | 
-**description** | **str** |  | 
-**reason** | **str** |  | 
-**pickup_postal_code** | **str** |  | 
 **id** | **str** |  | 
+**mto_shipment_id** | **str, none_type** |  | [optional] 
 **created_at** | **datetime** |  | [optional] 
 **customer_contacts** | [**MTOServiceItemCustomerContacts**](MTOServiceItemCustomerContacts.md) |  | [optional] 
 **deleted_at** | **date** |  | [optional] 
+**description** | **str, none_type** |  | [optional] 
 **dimensions** | [**MTOServiceItemDimensions**](MTOServiceItemDimensions.md) |  | [optional] 
+**reason** | **str, none_type** |  | [optional] 
 **rejection_reason** | **str, none_type** |  | [optional] 
+**pickup_postal_code** | **str, none_type** |  | [optional] 
 **sit_postal_code** | **str, none_type** |  | [optional] [readonly] 
 **sit_entry_date** | **datetime, none_type** |  | [optional] 
 **sit_departure_date** | **datetime, none_type** |  | [optional] 

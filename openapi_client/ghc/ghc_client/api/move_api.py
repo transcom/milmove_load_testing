@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -25,7 +25,7 @@ from ghc_client.model_utils import (  # noqa: F401
 from ghc_client.model.error import Error
 from ghc_client.model.inline_object import InlineObject
 from ghc_client.model.move import Move
-from ghc_client.model.move_history import MoveHistory
+from ghc_client.model.move_history_result import MoveHistoryResult
 from ghc_client.model.validation_error import ValidationError
 
 
@@ -91,7 +91,7 @@ class MoveApi(object):
         )
         self.get_move_history_endpoint = _Endpoint(
             settings={
-                'response_type': (MoveHistory,),
+                'response_type': (MoveHistoryResult,),
                 'auth': [],
                 'endpoint_path': '/move/{locator}/history',
                 'operation_id': 'get_move_history',
@@ -101,6 +101,8 @@ class MoveApi(object):
             params_map={
                 'all': [
                     'locator',
+                    'page',
+                    'per_page',
                 ],
                 'required': [
                     'locator',
@@ -120,12 +122,20 @@ class MoveApi(object):
                 'openapi_types': {
                     'locator':
                         (str,),
+                    'page':
+                        (int,),
+                    'per_page':
+                        (int,),
                 },
                 'attribute_map': {
                     'locator': 'locator',
+                    'page': 'page',
+                    'per_page': 'perPage',
                 },
                 'location_map': {
                     'locator': 'path',
+                    'page': 'query',
+                    'per_page': 'query',
                 },
                 'collection_format_map': {
                 }
@@ -295,6 +305,8 @@ class MoveApi(object):
             locator (str): Code used to identify a move in the system
 
         Keyword Args:
+            page (int): requested page of results. [optional]
+            per_page (int): results per page. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -323,7 +335,7 @@ class MoveApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            MoveHistory
+            MoveHistoryResult
                 If the method is called asynchronously, returns the request
                 thread.
         """

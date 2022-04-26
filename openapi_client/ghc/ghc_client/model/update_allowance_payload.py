@@ -1,7 +1,7 @@
 """
-    move.mil API
+    MilMove GHC API
 
-    The API for move.mil  # noqa: E501
+    The GHC API is a RESTful API that enables the Office application for MilMove.  All endpoints are located under `/ghc/v1`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: dp3@truss.works
@@ -31,9 +31,9 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from ghc_client.model.branch import Branch
+    from ghc_client.model.affiliation import Affiliation
     from ghc_client.model.grade import Grade
-    globals()['Branch'] = Branch
+    globals()['Affiliation'] = Affiliation
     globals()['Grade'] = Grade
 
 
@@ -110,7 +110,7 @@ class UpdateAllowancePayload(ModelNormal):
             'authorized_weight': (int, none_type,),  # noqa: E501
             'grade': (Grade,),  # noqa: E501
             'dependents_authorized': (bool, none_type,),  # noqa: E501
-            'agency': (Branch,),  # noqa: E501
+            'agency': (Affiliation,),  # noqa: E501
             'pro_gear_weight': (int, none_type,),  # noqa: E501
             'pro_gear_weight_spouse': (int, none_type,),  # noqa: E501
             'required_medical_equipment_weight': (int,),  # noqa: E501
@@ -179,7 +179,7 @@ class UpdateAllowancePayload(ModelNormal):
             authorized_weight (int, none_type): unit is in lbs. [optional]  # noqa: E501
             grade (Grade): [optional]  # noqa: E501
             dependents_authorized (bool, none_type): [optional]  # noqa: E501
-            agency (Branch): [optional]  # noqa: E501
+            agency (Affiliation): [optional]  # noqa: E501
             pro_gear_weight (int, none_type): unit is in lbs. [optional]  # noqa: E501
             pro_gear_weight_spouse (int, none_type): unit is in lbs. [optional]  # noqa: E501
             required_medical_equipment_weight (int): unit is in lbs. [optional]  # noqa: E501
@@ -269,7 +269,7 @@ class UpdateAllowancePayload(ModelNormal):
             authorized_weight (int, none_type): unit is in lbs. [optional]  # noqa: E501
             grade (Grade): [optional]  # noqa: E501
             dependents_authorized (bool, none_type): [optional]  # noqa: E501
-            agency (Branch): [optional]  # noqa: E501
+            agency (Affiliation): [optional]  # noqa: E501
             pro_gear_weight (int, none_type): unit is in lbs. [optional]  # noqa: E501
             pro_gear_weight_spouse (int, none_type): unit is in lbs. [optional]  # noqa: E501
             required_medical_equipment_weight (int): unit is in lbs. [optional]  # noqa: E501

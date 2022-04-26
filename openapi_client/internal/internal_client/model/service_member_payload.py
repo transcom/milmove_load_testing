@@ -1,7 +1,7 @@
 """
-    my.move.mil
+    MilMove Internal API
 
-    The internal/website API for my.move.mil  # noqa: E501
+    The Internal API is a RESTful API that enables the Customer application for MilMove.  All endpoints are located under `/internal`.   # noqa: E501
 
     The version of the OpenAPI document: 0.0.1
     Contact: ppp@truss.works
@@ -127,7 +127,6 @@ class ServiceMemberPayload(ModelNormal):
             'is_profile_complete': (bool,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
-            'requires_access_code': (bool,),  # noqa: E501
             'edipi': (str, none_type,),  # noqa: E501
             'orders': ([Orders],),  # noqa: E501
             'affiliation': (Affiliation,),  # noqa: E501
@@ -159,7 +158,6 @@ class ServiceMemberPayload(ModelNormal):
         'is_profile_complete': 'is_profile_complete',  # noqa: E501
         'created_at': 'created_at',  # noqa: E501
         'updated_at': 'updated_at',  # noqa: E501
-        'requires_access_code': 'requires_access_code',  # noqa: E501
         'edipi': 'edipi',  # noqa: E501
         'orders': 'orders',  # noqa: E501
         'affiliation': 'affiliation',  # noqa: E501
@@ -187,7 +185,7 @@ class ServiceMemberPayload(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, id, user_id, is_profile_complete, created_at, updated_at, requires_access_code, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, user_id, is_profile_complete, created_at, updated_at, *args, **kwargs):  # noqa: E501
         """ServiceMemberPayload - a model defined in OpenAPI
 
         Args:
@@ -196,7 +194,6 @@ class ServiceMemberPayload(ModelNormal):
             is_profile_complete (bool):
             created_at (datetime):
             updated_at (datetime):
-            requires_access_code (bool):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -279,7 +276,6 @@ class ServiceMemberPayload(ModelNormal):
         self.is_profile_complete = is_profile_complete
         self.created_at = created_at
         self.updated_at = updated_at
-        self.requires_access_code = requires_access_code
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -300,7 +296,7 @@ class ServiceMemberPayload(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, id, user_id, is_profile_complete, created_at, updated_at, requires_access_code, *args, **kwargs):  # noqa: E501
+    def __init__(self, id, user_id, is_profile_complete, created_at, updated_at, *args, **kwargs):  # noqa: E501
         """ServiceMemberPayload - a model defined in OpenAPI
 
         Args:
@@ -309,7 +305,6 @@ class ServiceMemberPayload(ModelNormal):
             is_profile_complete (bool):
             created_at (datetime):
             updated_at (datetime):
-            requires_access_code (bool):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -390,7 +385,6 @@ class ServiceMemberPayload(ModelNormal):
         self.is_profile_complete = is_profile_complete
         self.created_at = created_at
         self.updated_at = updated_at
-        self.requires_access_code = requires_access_code
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \

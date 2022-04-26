@@ -353,6 +353,7 @@ import time
 import ghc_client
 from ghc_client.api import shipment_api
 from ghc_client.model.error import Error
+from ghc_client.model.validation_error import ValidationError
 from pprint import pprint
 # Defining the host is optional and defaults to /ghc/v1
 # See configuration.py for a list of all supported configuration parameters.
@@ -401,8 +402,11 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **204** | Successfully soft deleted the shipment |  -  |
+**400** | The request payload is invalid |  -  |
 **403** | The request was denied |  -  |
 **404** | The requested resource wasn&#39;t found |  -  |
+**409** | Conflict error |  -  |
+**422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

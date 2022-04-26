@@ -9,7 +9,6 @@ Name | Type | Description | Notes
 **is_profile_complete** | **bool** |  | 
 **created_at** | **datetime** |  | 
 **updated_at** | **datetime** |  | 
-**requires_access_code** | **bool** |  | 
 **edipi** | **str, none_type** |  | [optional] 
 **orders** | [**[Orders]**](Orders.md) |  | [optional] 
 **affiliation** | [**Affiliation**](Affiliation.md) |  | [optional] 

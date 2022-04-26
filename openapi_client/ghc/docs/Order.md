@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **first_name** | **str** |  | [optional] [readonly] 
 **last_name** | **str** |  | [optional] [readonly] 
 **grade** | [**Grade**](Grade.md) |  | [optional] 
-**agency** | [**Branch**](Branch.md) |  | [optional] 
+**agency** | [**Affiliation**](Affiliation.md) |  | [optional] 
 **entitlement** | [**Entitlements**](Entitlements.md) |  | [optional] 
 **destination_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 
 **origin_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 

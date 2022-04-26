@@ -451,7 +451,7 @@ with ghc_client.ApiClient() as api_client:
             ),
             move_code="H2XFJF",
             grade=Grade("E_1"),
-            agency=Branch("ARMY"),
+            agency=Affiliation("ARMY"),
             entitlement=Entitlements(
                 id="571008b1-b0de-454d-b843-d71be9f02c04",
                 authorized_weight=2000,
