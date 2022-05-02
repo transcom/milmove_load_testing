@@ -194,6 +194,8 @@ Class | Method | HTTP request | Description
  - [Order](docs/Order.md)
  - [OrdersType](docs/OrdersType.md)
  - [OrdersTypeDetail](docs/OrdersTypeDetail.md)
+ - [PPMShipment](docs/PPMShipment.md)
+ - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
  - [PatchMTOServiceItemStatusPayload](docs/PatchMTOServiceItemStatusPayload.md)
  - [PaymentRequest](docs/PaymentRequest.md)
  - [PaymentRequestStatus](docs/PaymentRequestStatus.md)

@@ -20,6 +20,7 @@ from ghc_client.model.mto_agents import MTOAgents
 from ghc_client.model.mto_service_items import MTOServiceItems
 from ghc_client.model.mto_shipment_status import MTOShipmentStatus
 from ghc_client.model.mto_shipment_type import MTOShipmentType
+from ghc_client.model.ppm_shipment import PPMShipment
 from ghc_client.model.reweigh import Reweigh
 from ghc_client.model.sit_extensions import SITExtensions
 from ghc_client.model.sit_status import SITStatus
@@ -31,6 +32,7 @@ globals()['MTOAgents'] = MTOAgents
 globals()['MTOServiceItems'] = MTOServiceItems
 globals()['MTOShipmentStatus'] = MTOShipmentStatus
 globals()['MTOShipmentType'] = MTOShipmentType
+globals()['PPMShipment'] = PPMShipment
 globals()['Reweigh'] = Reweigh
 globals()['SITExtensions'] = SITExtensions
 globals()['SITStatus'] = SITStatus

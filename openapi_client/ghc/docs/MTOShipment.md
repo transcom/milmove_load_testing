@@ -43,6 +43,7 @@ Name | Type | Description | Notes
 **uses_external_vendor** | **bool** |  | [optional] 
 **service_order_number** | **str, none_type** |  | [optional] 
 **storage_facility** | [**StorageFacility**](StorageFacility.md) |  | [optional] 
+**ppm_shipment** | [**PPMShipment**](PPMShipment.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -58,7 +58,6 @@ from prime_client.api import move_task_order_api
 from prime_client.model.client_error import ClientError
 from prime_client.model.error import Error
 from prime_client.model.excess_weight_record import ExcessWeightRecord
-from prime_client.model.inline_object import InlineObject
 from prime_client.model.list_moves import ListMoves
 from prime_client.model.move_task_order import MoveTaskOrder
 from prime_client.model.validation_error import ValidationError
@@ -123,7 +122,6 @@ Class | Method | HTTP request | Description
  - [Error](docs/Error.md)
  - [ExcessWeightRecord](docs/ExcessWeightRecord.md)
  - [ExcessWeightRecordAllOf](docs/ExcessWeightRecordAllOf.md)
- - [InlineObject](docs/InlineObject.md)
  - [ListMove](docs/ListMove.md)
  - [ListMoves](docs/ListMoves.md)
  - [MTOAgent](docs/MTOAgent.md)
@@ -148,6 +146,8 @@ Class | Method | HTTP request | Description
  - [MTOShipments](docs/MTOShipments.md)
  - [MoveTaskOrder](docs/MoveTaskOrder.md)
  - [Order](docs/Order.md)
+ - [PPMShipment](docs/PPMShipment.md)
+ - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
  - [PaymentRequest](docs/PaymentRequest.md)
  - [PaymentRequestStatus](docs/PaymentRequestStatus.md)
  - [PaymentRequests](docs/PaymentRequests.md)

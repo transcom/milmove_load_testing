@@ -21,7 +21,6 @@ from prime_client.model.entitlements import Entitlements
 from prime_client.model.error import Error
 from prime_client.model.excess_weight_record import ExcessWeightRecord
 from prime_client.model.excess_weight_record_all_of import ExcessWeightRecordAllOf
-from prime_client.model.inline_object import InlineObject
 from prime_client.model.list_move import ListMove
 from prime_client.model.list_moves import ListMoves
 from prime_client.model.mto_agent import MTOAgent
@@ -46,6 +45,8 @@ from prime_client.model.mto_shipment_type import MTOShipmentType
 from prime_client.model.mto_shipments import MTOShipments
 from prime_client.model.move_task_order import MoveTaskOrder
 from prime_client.model.order import Order
+from prime_client.model.ppm_shipment import PPMShipment
+from prime_client.model.ppm_shipment_status import PPMShipmentStatus
 from prime_client.model.payment_request import PaymentRequest
 from prime_client.model.payment_request_status import PaymentRequestStatus
 from prime_client.model.payment_requests import PaymentRequests

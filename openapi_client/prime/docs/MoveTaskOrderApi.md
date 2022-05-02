@@ -234,7 +234,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **update_mto_post_counseling_information**
-> MoveTaskOrder update_mto_post_counseling_information(move_task_order_id, if_match, body)
+> MoveTaskOrder update_mto_post_counseling_information(move_task_order_id, if_match)
 
 updateMTOPostCounselingInformation
 
@@ -249,7 +249,6 @@ import prime_client
 from prime_client.api import move_task_order_api
 from prime_client.model.move_task_order import MoveTaskOrder
 from prime_client.model.validation_error import ValidationError
-from prime_client.model.inline_object import InlineObject
 from prime_client.model.error import Error
 from prime_client.model.client_error import ClientError
 from pprint import pprint
@@ -266,17 +265,11 @@ with prime_client.ApiClient() as api_client:
     api_instance = move_task_order_api.MoveTaskOrderApi(api_client)
     move_task_order_id = "moveTaskOrderID_example" # str | ID of move task order to use.
     if_match = "If-Match_example" # str | Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
-    body = InlineObject(
-        move_task_order_id="move_task_order_id_example",
-        ppm_type="FULL",
-        ppm_estimated_weight=1,
-        point_of_contact="point_of_contact_example",
-    ) # InlineObject | 
 
     # example passing only required values which don't have defaults set
     try:
         # updateMTOPostCounselingInformation
-        api_response = api_instance.update_mto_post_counseling_information(move_task_order_id, if_match, body)
+        api_response = api_instance.update_mto_post_counseling_information(move_task_order_id, if_match)
         pprint(api_response)
     except prime_client.ApiException as e:
         print("Exception when calling MoveTaskOrderApi->update_mto_post_counseling_information: %s\n" % e)
@@ -289,7 +282,6 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **move_task_order_id** | **str**| ID of move task order to use. |
  **if_match** | **str**| Optimistic locking is implemented via the &#x60;If-Match&#x60; header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a &#x60;412 Precondition Failed&#x60; error.  |
- **body** | [**InlineObject**](InlineObject.md)|  |
 
 ### Return type
 
@@ -301,7 +293,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 
@@ -313,6 +305,7 @@ No authorization required
 **401** | The request was denied. |  -  |
 **403** | The request was denied. |  -  |
 **404** | The requested resource wasn&#39;t found. |  -  |
+**409** | The request could not be processed because of conflict in the current state of the resource. |  -  |
 **412** | Precondition failed, likely due to a stale eTag (If-Match). Fetch the request again to get the updated eTag value. |  -  |
 **422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
 **500** | A server error occurred. |  -  |

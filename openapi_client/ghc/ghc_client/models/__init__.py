@@ -61,6 +61,8 @@ from ghc_client.model.move_task_orders import MoveTaskOrders
 from ghc_client.model.order import Order
 from ghc_client.model.orders_type import OrdersType
 from ghc_client.model.orders_type_detail import OrdersTypeDetail
+from ghc_client.model.ppm_shipment import PPMShipment
+from ghc_client.model.ppm_shipment_status import PPMShipmentStatus
 from ghc_client.model.patch_mto_service_item_status_payload import PatchMTOServiceItemStatusPayload
 from ghc_client.model.payment_request import PaymentRequest
 from ghc_client.model.payment_request_status import PaymentRequestStatus

@@ -63,6 +63,8 @@ docs/Order.md
 docs/OrderApi.md
 docs/OrdersType.md
 docs/OrdersTypeDetail.md
+docs/PPMShipment.md
+docs/PPMShipmentStatus.md
 docs/PatchMTOServiceItemStatusPayload.md
 docs/PaymentRequest.md
 docs/PaymentRequestStatus.md
@@ -192,6 +194,8 @@ ghc_client/model/payment_service_item_param.py
 ghc_client/model/payment_service_item_params.py
 ghc_client/model/payment_service_item_status.py
 ghc_client/model/payment_service_items.py
+ghc_client/model/ppm_shipment.py
+ghc_client/model/ppm_shipment_status.py
 ghc_client/model/proof_of_service_doc.py
 ghc_client/model/proof_of_service_docs.py
 ghc_client/model/queue_move.py
@@ -302,6 +306,8 @@ test/test_payment_service_item_param.py
 test/test_payment_service_item_params.py
 test/test_payment_service_item_status.py
 test/test_payment_service_items.py
+test/test_ppm_shipment.py
+test/test_ppm_shipment_status.py
 test/test_proof_of_service_doc.py
 test/test_proof_of_service_docs.py
 test/test_queue_move.py

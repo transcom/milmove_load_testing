@@ -109,6 +109,7 @@ class MoveTaskOrder(ModelNormal):
             'reference_id': (str,),  # noqa: E501
             'available_to_prime_at': (datetime, none_type,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
+            'prime_counseling_completed_at': (datetime, none_type,),  # noqa: E501
             'ppm_type': (str,),  # noqa: E501
             'ppm_estimated_weight': (int,),  # noqa: E501
             'excess_weight_qualified_at': (datetime, none_type,),  # noqa: E501
@@ -134,6 +135,7 @@ class MoveTaskOrder(ModelNormal):
         'reference_id': 'referenceId',  # noqa: E501
         'available_to_prime_at': 'availableToPrimeAt',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
+        'prime_counseling_completed_at': 'primeCounselingCompletedAt',  # noqa: E501
         'ppm_type': 'ppmType',  # noqa: E501
         'ppm_estimated_weight': 'ppmEstimatedWeight',  # noqa: E501
         'excess_weight_qualified_at': 'excessWeightQualifiedAt',  # noqa: E501
@@ -147,6 +149,7 @@ class MoveTaskOrder(ModelNormal):
         'created_at',  # noqa: E501
         'available_to_prime_at',  # noqa: E501
         'updated_at',  # noqa: E501
+        'prime_counseling_completed_at',  # noqa: E501
         'excess_weight_qualified_at',  # noqa: E501
         'excess_weight_acknowledged_at',  # noqa: E501
         'excess_weight_upload_id',  # noqa: E501
@@ -204,6 +207,7 @@ class MoveTaskOrder(ModelNormal):
             reference_id (str): [optional]  # noqa: E501
             available_to_prime_at (datetime, none_type): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
+            prime_counseling_completed_at (datetime, none_type): [optional]  # noqa: E501
             ppm_type (str): [optional]  # noqa: E501
             ppm_estimated_weight (int): [optional]  # noqa: E501
             excess_weight_qualified_at (datetime, none_type): [optional]  # noqa: E501
@@ -307,6 +311,7 @@ class MoveTaskOrder(ModelNormal):
             reference_id (str): [optional]  # noqa: E501
             available_to_prime_at (datetime, none_type): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
+            prime_counseling_completed_at (datetime, none_type): [optional]  # noqa: E501
             ppm_type (str): [optional]  # noqa: E501
             ppm_estimated_weight (int): [optional]  # noqa: E501
             excess_weight_qualified_at (datetime, none_type): [optional]  # noqa: E501

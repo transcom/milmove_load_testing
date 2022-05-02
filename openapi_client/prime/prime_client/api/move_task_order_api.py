@@ -25,7 +25,6 @@ from prime_client.model_utils import (  # noqa: F401
 from prime_client.model.client_error import ClientError
 from prime_client.model.error import Error
 from prime_client.model.excess_weight_record import ExcessWeightRecord
-from prime_client.model.inline_object import InlineObject
 from prime_client.model.list_moves import ListMoves
 from prime_client.model.move_task_order import MoveTaskOrder
 from prime_client.model.validation_error import ValidationError
@@ -208,12 +207,10 @@ class MoveTaskOrderApi(object):
                 'all': [
                     'move_task_order_id',
                     'if_match',
-                    'body',
                 ],
                 'required': [
                     'move_task_order_id',
                     'if_match',
-                    'body',
                 ],
                 'nullable': [
                 ],
@@ -232,8 +229,6 @@ class MoveTaskOrderApi(object):
                         (str,),
                     'if_match':
                         (str,),
-                    'body':
-                        (InlineObject,),
                 },
                 'attribute_map': {
                     'move_task_order_id': 'moveTaskOrderID',
@@ -242,7 +237,6 @@ class MoveTaskOrderApi(object):
                 'location_map': {
                     'move_task_order_id': 'path',
                     'if_match': 'header',
-                    'body': 'body',
                 },
                 'collection_format_map': {
                 }
@@ -251,9 +245,7 @@ class MoveTaskOrderApi(object):
                 'accept': [
                     'application/json'
                 ],
-                'content_type': [
-                    'application/json'
-                ]
+                'content_type': [],
             },
             api_client=api_client
         )
@@ -496,7 +488,6 @@ class MoveTaskOrderApi(object):
         self,
         move_task_order_id,
         if_match,
-        body,
         **kwargs
     ):
         """updateMTOPostCounselingInformation  # noqa: E501
@@ -505,13 +496,12 @@ class MoveTaskOrderApi(object):
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.update_mto_post_counseling_information(move_task_order_id, if_match, body, async_req=True)
+        >>> thread = api.update_mto_post_counseling_information(move_task_order_id, if_match, async_req=True)
         >>> result = thread.get()
 
         Args:
             move_task_order_id (str): ID of move task order to use.
             if_match (str): Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
-            body (InlineObject):
 
         Keyword Args:
             _return_http_data_only (bool): response data without head status
@@ -574,7 +564,5 @@ class MoveTaskOrderApi(object):
             move_task_order_id
         kwargs['if_match'] = \
             if_match
-        kwargs['body'] = \
-            body
         return self.update_mto_post_counseling_information_endpoint.call_with_http_info(**kwargs)
 
