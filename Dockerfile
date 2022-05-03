@@ -24,6 +24,7 @@ COPY locustfiles /app/locustfiles
 COPY static /app/static
 COPY tasks /app/tasks
 COPY utils /app/utils
+COPY fixtures /app/fixtures
 
 EXPOSE 8089 5557
 
