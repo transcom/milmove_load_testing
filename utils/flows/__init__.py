@@ -59,7 +59,7 @@ class QueuableFlow(ABC):
     flow_context: FlowContext
     queue: Optional[WorkerQueueType]
 
-    def __init__(self, flow_context: FlowContext = None) -> None:
+    def __init__(self, flow_context: Optional[FlowContext] = None) -> None:
         """ """
         if flow_context:
             self.flow_context = flow_context
@@ -102,7 +102,7 @@ class QueuableFlow(ABC):
 
 
 class SequenceQueableFlow(QueuableFlow):
-    def __init__(self, flow_context: FlowContext = None) -> None:
+    def __init__(self, flow_context: Optional[FlowContext] = None) -> None:
         super().__init__(flow_context)
 
     @abstractmethod
