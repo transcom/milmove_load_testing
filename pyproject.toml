@@ -4,3 +4,6 @@ force_exclude = '^/openapi_client'
 
 [tool.pyright]
 include = ['utils/flows']
+
+[tool.pytest.ini_options]
+norecursedirs = ["openapi_client"]

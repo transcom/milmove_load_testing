@@ -256,13 +256,13 @@ This project uses [`pytest`](https://docs.pytest.org/en/stable/) as its testing 
 the tests use the command:
 
 ```shell
-pytest --ignore=openapi_client
+pytest
 ```
 
 To see verbose output and any print statements in the tests, use:
 
 ```shell
-pytest -v -s --ignore=openapi_client
+pytest -v -s
 ```
 
 To run a specific test, use:
