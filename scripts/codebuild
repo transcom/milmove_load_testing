@@ -51,7 +51,7 @@ raw_task_definition=$(aws ecs describe-task-definition \
 # LOCUSTFILE can be set in the build overrides of the CodeBuild config
 # The leading colon indicates this line only modifies the LOCUSTFILE
 # environment variable and has no other effects
-: "${LOCUSTFILE:=/app/locustfiles/prime.py}"
+: "${LOCUSTFILE:=/app/locustfiles/all.py}"
 
 # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
 cpu="1024"

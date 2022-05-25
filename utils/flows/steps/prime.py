@@ -39,9 +39,13 @@ def do_hhg_prime_service_items(
     move = mto_api_client.get_move_task_order(move_id)
     mto_shipment_id = move.mto_shipments.value[0].id
 
-    # Having both the dates >10 days in the future is one of the ways to pass date validation
-    scheduled_pickup_date = datetime.date.today() + datetime.timedelta(days=11)
-    actual_pickup_date = datetime.date.today() + datetime.timedelta(days=12)
+    # Having both the dates >10 days in the future is one of the ways
+    # to pass date validation
+    #
+    # To bypass any local timezone problems, use 12 and 13 days as 11
+    # days could hit a boundary condition
+    scheduled_pickup_date = datetime.date.today() + datetime.timedelta(days=12)
+    actual_pickup_date = datetime.date.today() + datetime.timedelta(days=13)
 
     payload = UpdateMTOShipment(
         prime_estimated_weight=1000,

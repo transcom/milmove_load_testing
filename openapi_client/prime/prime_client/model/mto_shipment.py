@@ -36,6 +36,7 @@ def lazy_import():
     from prime_client.model.mto_agents import MTOAgents
     from prime_client.model.mto_service_item import MTOServiceItem
     from prime_client.model.mto_shipment_type import MTOShipmentType
+    from prime_client.model.ppm_shipment import PPMShipment
     from prime_client.model.reweigh import Reweigh
     from prime_client.model.sit_extensions import SITExtensions
     from prime_client.model.storage_facility import StorageFacility
@@ -44,6 +45,7 @@ def lazy_import():
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOServiceItem'] = MTOServiceItem
     globals()['MTOShipmentType'] = MTOShipmentType
+    globals()['PPMShipment'] = PPMShipment
     globals()['Reweigh'] = Reweigh
     globals()['SITExtensions'] = SITExtensions
     globals()['StorageFacility'] = StorageFacility
@@ -138,6 +140,7 @@ class MTOShipment(ModelNormal):
             'diversion': (bool,),  # noqa: E501
             'status': (str,),  # noqa: E501
             'rejection_reason': (str, none_type,),  # noqa: E501
+            'ppm_shipment': (PPMShipment,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
@@ -178,6 +181,7 @@ class MTOShipment(ModelNormal):
         'diversion': 'diversion',  # noqa: E501
         'status': 'status',  # noqa: E501
         'rejection_reason': 'rejectionReason',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
         'created_at': 'createdAt',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
@@ -267,6 +271,7 @@ class MTOShipment(ModelNormal):
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             status (str): The status of a shipment, indicating where it is in the TOO's approval process. Can only be updated by the contractor in special circumstances. . [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this shipment was rejected by the TOO.. [optional]  # noqa: E501
+            ppm_shipment (PPMShipment): [optional]  # noqa: E501
             e_tag (str): A hash unique to this shipment that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
@@ -380,6 +385,7 @@ class MTOShipment(ModelNormal):
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             status (str): The status of a shipment, indicating where it is in the TOO's approval process. Can only be updated by the contractor in special circumstances. . [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this shipment was rejected by the TOO.. [optional]  # noqa: E501
+            ppm_shipment (PPMShipment): [optional]  # noqa: E501
             e_tag (str): A hash unique to this shipment that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501

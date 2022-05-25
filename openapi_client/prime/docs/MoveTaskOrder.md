@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **reference_id** | **str** |  | [optional] 
 **available_to_prime_at** | **datetime, none_type** |  | [optional] [readonly] 
 **updated_at** | **datetime** |  | [optional] [readonly] 
+**prime_counseling_completed_at** | **datetime, none_type** |  | [optional] [readonly] 
 **ppm_type** | **str** |  | [optional] 
 **ppm_estimated_weight** | **int** |  | [optional] 
 **excess_weight_qualified_at** | **datetime, none_type** |  | [optional] [readonly] 

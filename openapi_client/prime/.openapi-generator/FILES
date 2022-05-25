@@ -15,7 +15,6 @@ docs/Entitlements.md
 docs/Error.md
 docs/ExcessWeightRecord.md
 docs/ExcessWeightRecordAllOf.md
-docs/InlineObject.md
 docs/ListMove.md
 docs/ListMoves.md
 docs/MTOAgent.md
@@ -43,6 +42,8 @@ docs/MoveTaskOrderApi.md
 docs/MtoServiceItemApi.md
 docs/MtoShipmentApi.md
 docs/Order.md
+docs/PPMShipment.md
+docs/PPMShipmentStatus.md
 docs/PaymentRequest.md
 docs/PaymentRequestApi.md
 docs/PaymentRequestStatus.md
@@ -100,7 +101,6 @@ prime_client/model/entitlements.py
 prime_client/model/error.py
 prime_client/model/excess_weight_record.py
 prime_client/model/excess_weight_record_all_of.py
-prime_client/model/inline_object.py
 prime_client/model/list_move.py
 prime_client/model/list_moves.py
 prime_client/model/move_task_order.py
@@ -133,6 +133,8 @@ prime_client/model/payment_service_item_param.py
 prime_client/model/payment_service_item_params.py
 prime_client/model/payment_service_item_status.py
 prime_client/model/payment_service_items.py
+prime_client/model/ppm_shipment.py
+prime_client/model/ppm_shipment_status.py
 prime_client/model/proof_of_service_docs.py
 prime_client/model/re_service_code.py
 prime_client/model/reweigh.py
@@ -177,7 +179,6 @@ test/test_entitlements.py
 test/test_error.py
 test/test_excess_weight_record.py
 test/test_excess_weight_record_all_of.py
-test/test_inline_object.py
 test/test_list_move.py
 test/test_list_moves.py
 test/test_move_task_order.py
@@ -214,6 +215,8 @@ test/test_payment_service_item_param.py
 test/test_payment_service_item_params.py
 test/test_payment_service_item_status.py
 test/test_payment_service_items.py
+test/test_ppm_shipment.py
+test/test_ppm_shipment_status.py
 test/test_proof_of_service_docs.py
 test/test_re_service_code.py
 test/test_reweigh.py

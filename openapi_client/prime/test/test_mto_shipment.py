@@ -18,6 +18,7 @@ from prime_client.model.destination_type import DestinationType
 from prime_client.model.mto_agents import MTOAgents
 from prime_client.model.mto_service_item import MTOServiceItem
 from prime_client.model.mto_shipment_type import MTOShipmentType
+from prime_client.model.ppm_shipment import PPMShipment
 from prime_client.model.reweigh import Reweigh
 from prime_client.model.sit_extensions import SITExtensions
 from prime_client.model.storage_facility import StorageFacility
@@ -26,6 +27,7 @@ globals()['DestinationType'] = DestinationType
 globals()['MTOAgents'] = MTOAgents
 globals()['MTOServiceItem'] = MTOServiceItem
 globals()['MTOShipmentType'] = MTOShipmentType
+globals()['PPMShipment'] = PPMShipment
 globals()['Reweigh'] = Reweigh
 globals()['SITExtensions'] = SITExtensions
 globals()['StorageFacility'] = StorageFacility

@@ -32,6 +32,7 @@ Name | Type | Description | Notes
 **diversion** | **bool** | This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion.  | [optional] 
 **status** | **str** | The status of a shipment, indicating where it is in the TOO&#39;s approval process. Can only be updated by the contractor in special circumstances.  | [optional] [readonly] 
 **rejection_reason** | **str, none_type** | The reason why this shipment was rejected by the TOO. | [optional] [readonly] 
+**ppm_shipment** | [**PPMShipment**](PPMShipment.md) |  | [optional] 
 **e_tag** | **str** | A hash unique to this shipment that should be used as the \&quot;If-Match\&quot; header for any updates. | [optional] [readonly] 
 **created_at** | **datetime** |  | [optional] [readonly] 
 **updated_at** | **datetime** |  | [optional] [readonly] 

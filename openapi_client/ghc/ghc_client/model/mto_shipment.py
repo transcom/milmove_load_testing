@@ -38,6 +38,7 @@ def lazy_import():
     from ghc_client.model.mto_service_items import MTOServiceItems
     from ghc_client.model.mto_shipment_status import MTOShipmentStatus
     from ghc_client.model.mto_shipment_type import MTOShipmentType
+    from ghc_client.model.ppm_shipment import PPMShipment
     from ghc_client.model.reweigh import Reweigh
     from ghc_client.model.sit_extensions import SITExtensions
     from ghc_client.model.sit_status import SITStatus
@@ -49,6 +50,7 @@ def lazy_import():
     globals()['MTOServiceItems'] = MTOServiceItems
     globals()['MTOShipmentStatus'] = MTOShipmentStatus
     globals()['MTOShipmentType'] = MTOShipmentType
+    globals()['PPMShipment'] = PPMShipment
     globals()['Reweigh'] = Reweigh
     globals()['SITExtensions'] = SITExtensions
     globals()['SITStatus'] = SITStatus
@@ -147,6 +149,7 @@ class MTOShipment(ModelNormal):
             'uses_external_vendor': (bool,),  # noqa: E501
             'service_order_number': (str, none_type,),  # noqa: E501
             'storage_facility': (StorageFacility,),  # noqa: E501
+            'ppm_shipment': (PPMShipment,),  # noqa: E501
         }
 
     @cached_property
@@ -194,6 +197,7 @@ class MTOShipment(ModelNormal):
         'uses_external_vendor': 'usesExternalVendor',  # noqa: E501
         'service_order_number': 'serviceOrderNumber',  # noqa: E501
         'storage_facility': 'storageFacility',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
     }
 
     read_only_vars = {
@@ -277,6 +281,7 @@ class MTOShipment(ModelNormal):
             uses_external_vendor (bool): [optional]  # noqa: E501
             service_order_number (str, none_type): [optional]  # noqa: E501
             storage_facility (StorageFacility): [optional]  # noqa: E501
+            ppm_shipment (PPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -397,6 +402,7 @@ class MTOShipment(ModelNormal):
             uses_external_vendor (bool): [optional]  # noqa: E501
             service_order_number (str, none_type): [optional]  # noqa: E501
             storage_facility (StorageFacility): [optional]  # noqa: E501
+            ppm_shipment (PPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

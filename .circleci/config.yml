@@ -24,8 +24,6 @@ jobs:
     executor: primary
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: false
       - restore_cache:
           keys:
             - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
@@ -71,9 +69,21 @@ jobs:
           paths:
             - ~/.local/bin
 
+  # `build` confirms a docker build works
+  build:
+    executor: primary
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - run:
+          name: docker build
+          command: |
+            docker build -t milmove_load_testing:local .
 workflows:
   version: 2
 
   main:
     jobs:
       - test
+      - build
