@@ -305,7 +305,7 @@ pytest -v -s
 To run a specific test, use:
 
 ```shell
-pytest utils/tests/test_parsers.py
+pytest utils/tests/test_rest.py
 ```
 
 For more instructions and examples, please

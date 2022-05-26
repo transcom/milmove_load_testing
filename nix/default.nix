@@ -19,18 +19,18 @@ in buildEnv {
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
-      name = "python3-3.9.9";
+      name = "python3-3.10.4";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "3fdeef8a7ee81787a099cfb57bd91f24c5ec587d";
-    }) {}).python39Full
+      rev = "41cc1d5d9584103be4108c1815c350e07c807036";
+    }) {}).python310
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
-      name = "pipenv-2021.5.29";
+      name = "pipenv-2022.4.8";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "fe296b79b4c803fec51410a987a11f077715a845";
+      rev = "41cc1d5d9584103be4108c1815c350e07c807036";
     }) {}).pipenv
 
     (import (builtins.fetchGit {

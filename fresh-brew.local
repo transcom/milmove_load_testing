@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-python_version="3.9.6"
+python_version="3.10.4"
 
 ##### START OF HELPER FUNCTIONS #####
 

@@ -1,4 +1,4 @@
-FROM python:3.9.6
+FROM python:3.10.4
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -7,7 +7,7 @@ ENV PIPENV_SITE_PACKAGES 1
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir pipenv==2021.5.29
+RUN pip install --no-cache-dir pipenv==2022.4.8
 
 # Copy over and install Pipfiles and use pip to install requirements
 # outside of virtualenv
