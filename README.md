@@ -82,9 +82,6 @@ Each of these files can be thought of as a different test case for the system, a
 provides a number of [config options](https://docs.locust.io/en/stable/configuration.html) to allow
 you to manipulate which users and/or tasks run from any given locustfile.
 
-In particular, our `locustfiles/all.py` combines all our `User`
-classes into a single run.
-
 As of 2022-05-25, the `locustfiles/queue.py` is the recommended way to
 run the load tests.
 

@@ -12,7 +12,6 @@ internal-client = {editable = true, path = "./openapi_client/internal"}
 ghc-client = {editable = true, path = "./openapi_client/ghc"}
 prime-client = {editable = true, path = "./openapi_client/prime"}
 pyright = "*"
-prance = "*"
 swagger-spec-validator = "*"
 
 [dev-packages]

@@ -145,7 +145,7 @@ def format_failure_msg_from_exception(exc: ExceptionType, response_text: str = "
     exception_type = type(exc)
     traceback_obj = exc.__traceback__
 
-    traceback_list = traceback.format_exception(etype=exception_type, value=exc, tb=traceback_obj)
+    traceback_list = traceback.format_exception(None, value=exc, tb=traceback_obj)
 
     # We want a shorter message than the full traceback, so we'll just collect some useful tidbits
     # We'll grab file name, line number, and func name for each stack.
