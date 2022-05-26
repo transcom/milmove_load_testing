@@ -27,6 +27,8 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
   * [`static/`](#static)
   * [`tasks/`](#tasks)
   * [`utils/`](#utils)
+  * [`utils/flows/`](#utilsflows)
+  * [`utils/flows/steps`](#utilsflowssteps)
 * [Getting Started](#getting-started)
   * [Base Installation](#base-installation)
     * [Setup: Pyenv and Pipenv](#setup-pyenv-and-pipenv)
@@ -36,8 +38,10 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
   * [Updating Python Dependencies](#updating-python-dependencies)
   * [Unsupported Setup](#unsupported-setup)
   * [Troubleshooting](#troubleshooting)
+* [Running Locust Locally](#running-locust-locally)
 * [Running Tests](#running-tests)
   * [Unit Tests](#unit-tests)
+* [Reports](#reports)
 
 <!-- Regenerate with "pre-commit run -a markdown-toc" -->
 
@@ -78,7 +82,11 @@ Each of these files can be thought of as a different test case for the system, a
 provides a number of [config options](https://docs.locust.io/en/stable/configuration.html) to allow
 you to manipulate which users and/or tasks run from any given locustfile.
 
-In particular, our `locustfiles/all.py` combines all our `User` classes into a single run.
+In particular, our `locustfiles/all.py` combines all our `User`
+classes into a single run.
+
+As of 2022-05-25, the `locustfiles/queue.py` is the recommended way to
+run the load tests.
 
 ### `scripts/`
 
@@ -113,6 +121,21 @@ to [Writing a locustfile](https://docs.locust.io/en/stable/writing-a-locustfile.
 This directory contains python code and utilities that help us run our load tests. For example, the
 code we use to manage authenticating to the Prime API. Mixin classes, helper functions, and
 constants are located here.
+
+### `utils/flows/`
+
+This directory contains different move "flows" that exercise a move
+end to end through the system through the different roles (service
+member, service counselor, TOO, prime).
+
+You can run a flow outside of locust when developing/testing. For
+example, try
+
+  PYTHONPATH=$PWD python utils/flows/simple_hhg.py
+
+### `utils/flows/steps`
+
+This directory contains steps to support each flow.
 
 ## Getting Started
 
@@ -237,6 +260,20 @@ If you encounter compiler issues while installing the required Python version, t
 brew unlink binutils
 ```
 
+## Running Locust Locally
+
+To run locust on your local machine against a milmove instance running
+on your local machine, use `make server_run` in the milmove directory
+and then in another  shell in this repo, run
+
+  locust -f locustfiles/queue.py --host local -u 10
+
+Or, to run headless for 30 seconds and print the results, do
+
+  locust -f locustfiles/queue.py --host local -u 10 -t 30s --headless
+
+You should always see 0% failures.
+
 ## Running Tests
 
 There are two types of tests in this repository:
@@ -273,3 +310,8 @@ pytest utils/tests/test_parsers.py
 
 For more instructions and examples, please
 read [pytest's documentation](https://docs.pytest.org/en/stable/).
+
+## Reports
+
+We store reports from running against the loadtest environment in
+[confluence](https://dp3.atlassian.net/wiki/spaces/MT/pages/1469546505/Reports+and+metrics).
