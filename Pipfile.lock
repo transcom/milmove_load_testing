@@ -700,7 +700,7 @@
         },
         "sanitized-package": {
             "editable": true,
-            "path": "./openapi_client/prime"
+            "path": "./openapi_client/internal"
         },
         "semver": {
             "hashes": [
@@ -1188,11 +1188,11 @@
         },
         "pyright": {
             "hashes": [
-                "sha256:26ad23aef696b0e44bb1d4afb3d97dd278b51a4b72631b2040164273d46b4e39",
-                "sha256:6a9aaf49967ac5fe18235b4521de6d4a9ae44042b56a8409b627970e52d1522a"
+                "sha256:b7989a32462131b5edb1940944b6e1cfb660ae490c3a86c3221a39a643eb8663",
+                "sha256:f30138654f57d041e4af27e71a737de502d7475c5b588ab5a9990c1a30a0b6f9"
             ],
             "index": "pypi",
-            "version": "==1.1.230"
+            "version": "==1.1.249"
         },
         "pytest": {
             "hashes": [
@@ -1317,7 +1317,7 @@
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
-            "markers": "python_version < '3.11'",
+            "markers": "python_version >= '3.7'",
             "version": "==2.0.1"
         },
         "typing-extensions": {
