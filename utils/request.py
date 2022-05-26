@@ -110,7 +110,7 @@ class MilMoveRequestPreparer:
         """
         if is_local(env=self.env):
             base_domain = self.form_base_domain(
-                local_port="8080",
+                local_port=os.getenv("LOCAL_PORT", "8080"),
                 local_protocol="http",
                 local_subdomain="officelocal",
             )
@@ -154,7 +154,7 @@ class MilMoveRequestPreparer:
         """
         if is_local(env=self.env):
             base_domain = self.form_base_domain(
-                local_port="8080",
+                local_port=os.getenv("LOCAL_PORT", "8080"),
                 local_protocol="http",
                 local_subdomain="milmovelocal",
             )
