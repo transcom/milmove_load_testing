@@ -718,7 +718,7 @@
         },
         "sanitized-package": {
             "editable": true,
-            "path": "./openapi_client/prime"
+            "path": "./openapi_client/ghc"
         },
         "semver": {
             "hashes": [
@@ -1221,11 +1221,11 @@
         },
         "pyright": {
             "hashes": [
-                "sha256:26ad23aef696b0e44bb1d4afb3d97dd278b51a4b72631b2040164273d46b4e39",
-                "sha256:6a9aaf49967ac5fe18235b4521de6d4a9ae44042b56a8409b627970e52d1522a"
+                "sha256:465250aabcdaec63e30632ccd17498a2df90dd8cdeafd5564a714ee4fae166d9",
+                "sha256:6dbc1f32a88d65be8a3cacb17cb890a1b379f6374447f9511686d570109b533e"
             ],
             "index": "pypi",
-            "version": "==1.1.230"
+            "version": "==1.1.260"
         },
         "pytest": {
             "hashes": [
