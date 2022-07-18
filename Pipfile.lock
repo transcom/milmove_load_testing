@@ -132,11 +132,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:66db859b6abe376d02e805ad81eb8dcfce38f0945f17ee7cdf74ed349985ea52",
-                "sha256:fe969607836ce7100e38b88dcb598aacb733d895e6e9401894dd603e35623000"
+                "sha256:8e94a749d2f3d9b367f61eb33be6a534f0a2d305c54e912ee6618370e3278db7",
+                "sha256:a126fa66f54e65a67f913dcc698c9d023def7277882536bde2968fcac701bfd5"
             ],
             "index": "pypi",
-            "version": "==13.3.2"
+            "version": "==13.15.0"
         },
         "flask": {
             "hashes": [
@@ -708,7 +708,7 @@
         },
         "sanitized-package": {
             "editable": true,
-            "path": "./openapi_client/ghc"
+            "path": "./openapi_client/internal"
         },
         "semver": {
             "hashes": [
