@@ -878,7 +878,7 @@
         },
         "sanitized-package": {
             "editable": true,
-            "path": "./openapi_client/internal"
+            "path": "./openapi_client/ghc"
         },
         "semver": {
             "hashes": [
@@ -1228,6 +1228,14 @@
             ],
             "version": "==0.3.6"
         },
+        "docstring-to-markdown": {
+            "hashes": [
+                "sha256:12f75b0c7b7572defea2d9e24b57ef7ac38c3e26e91c0e5547cfc02b1c168bf6",
+                "sha256:a2cd520599d1499d4a5d4eb16dea5bdebe32e5627504fb417d5733570f3d4d0b"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==0.10"
+        },
         "exceptiongroup": {
             "hashes": [
                 "sha256:542adf9dea4055530d6e1279602fa5cb11dab2395fa650b8674eaec35fc4a828",
@@ -1426,11 +1434,11 @@
         },
         "python-lsp-server": {
             "hashes": [
-                "sha256:77aac9861b0e23cafb251f116448157e6c45957e625097ed4846891281cffc18",
-                "sha256:e5c094c19925022a27c4068f414b2bb653243f8fb0d768e39735289d7a89380d"
+                "sha256:7ea502b1d392888efb841cbfdabb33e6ec96e44ab4cb81dd38aacefe657b1abf",
+                "sha256:d75cdff9027c4212e5b9e861e9a0219219c8e2c69508d9f24949951dabd0dc1b"
             ],
             "index": "pypi",
-            "version": "==1.5.0"
+            "version": "==1.6.0"
         },
         "pyyaml": {
             "hashes": [
@@ -1515,7 +1523,7 @@
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
-            "markers": "python_version < '3.11'",
+            "markers": "python_full_version < '3.11.0a7'",
             "version": "==2.0.1"
         },
         "types-toml": {
