@@ -469,11 +469,11 @@
         },
         "locust": {
             "hashes": [
-                "sha256:4f9e7a06934da7d747251dab5d66ec2aeecec2834d1f6f7793ce64976949096a",
-                "sha256:875bb048b9845ba2592a65a9583a22a56d7910101cbd831fc4214548c8b54b18"
+                "sha256:4d558153594c3a5b4d59d8451e03a442b4b9d4c65137d5767c3575d3a1c16fcb",
+                "sha256:d18dc8c75763af5ccb1e88aa9c479826bf79f27335afb7114ededf3abfa219f4"
             ],
             "index": "pypi",
-            "version": "==2.13.1"
+            "version": "==2.14.0"
         },
         "markupsafe": {
             "hashes": [
