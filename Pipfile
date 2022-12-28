@@ -16,7 +16,7 @@ prime-client = {editable = true, path = "./openapi_client/prime"}
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
 # this version should match what is in .pre-commit-config.yaml as well
-black = "==22.10.0"
+black = "==22.12.0"
 flake8 = "*"
 pytest = "*"
 pytest-mock = "*"
