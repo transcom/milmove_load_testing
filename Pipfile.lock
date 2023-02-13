@@ -564,11 +564,11 @@
         },
         "locust": {
             "hashes": [
-                "sha256:4668c129a7f51538bcd2ca025a4e62809d289b57b705872400359ee9df499725",
-                "sha256:862144315eed78ac7dbdfb7d6b09b00f0726e77040ef362071bbc7ac8b15bd1f"
+                "sha256:058a184438498787c74accf9cfdb32b8db9ce9a1b96894eb045ba2158ce1a62f",
+                "sha256:cc555d80c92dfbbfc99ab87cec1b454108aa1d2e6e12c4e37fa755a36ad8b9a0"
             ],
             "index": "pypi",
-            "version": "==2.14.1"
+            "version": "==2.14.2"
         },
         "markupsafe": {
             "hashes": [
@@ -1000,7 +1000,7 @@
         },
         "sanitized-package": {
             "editable": true,
-            "path": "./openapi_client/prime"
+            "path": "./openapi_client/internal"
         },
         "semver": {
             "hashes": [
