@@ -1578,11 +1578,11 @@
         },
         "pyright": {
             "hashes": [
-                "sha256:9397fdfcbc684fe5b87abbf9c27f540fe3b8d75999a5f187519cae1d065be38c",
-                "sha256:afc05309e775a9869c864da4e8c0c7a3e3be9d8fe202e780c3bae981bbb13936"
+                "sha256:94a26bf56ba4eef582dffa61be20aa913db3096f4ee102c4c86592f0bced857d",
+                "sha256:b492371519706459324eb2b468e2f57ae943568469b5353dbd2e44b281677198"
             ],
             "index": "pypi",
-            "version": "==1.1.293"
+            "version": "==1.1.298"
         },
         "pytest": {
             "hashes": [
