@@ -31,6 +31,13 @@ class TestMtoShipmentApi(unittest.TestCase):
         """
         pass
 
+    def test_get_shipment(self):
+        """Test case for get_shipment
+
+        fetches a shipment by ID  # noqa: E501
+        """
+        pass
+
     def test_list_mto_shipments(self):
         """Test case for list_mto_shipments
 

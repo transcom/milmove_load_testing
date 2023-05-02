@@ -106,7 +106,7 @@ class UpdateCustomerPayload(ModelNormal):
             'email': (str, none_type,),  # noqa: E501
             'suffix': (str, none_type,),  # noqa: E501
             'middle_name': (str, none_type,),  # noqa: E501
-            'current_address': (Address,),  # noqa: E501
+            'current_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'backup_contact': (BackupContact,),  # noqa: E501
         }
 
@@ -173,7 +173,7 @@ class UpdateCustomerPayload(ModelNormal):
             email (str, none_type): [optional]  # noqa: E501
             suffix (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
-            current_address (Address): [optional]  # noqa: E501
+            current_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
             backup_contact (BackupContact): [optional]  # noqa: E501
         """
 
@@ -262,7 +262,7 @@ class UpdateCustomerPayload(ModelNormal):
             email (str, none_type): [optional]  # noqa: E501
             suffix (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
-            current_address (Address): [optional]  # noqa: E501
+            current_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
             backup_contact (BackupContact): [optional]  # noqa: E501
         """
 

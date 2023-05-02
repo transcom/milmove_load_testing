@@ -60,6 +60,7 @@ class MTOShipmentType(ModelSimple):
             'HHG_OUTOF_NTS_DOMESTIC': "HHG_OUTOF_NTS_DOMESTIC",
             'INTERNATIONAL_HHG': "INTERNATIONAL_HHG",
             'INTERNATIONAL_UB': "INTERNATIONAL_UB",
+            'PPM': "PPM",
         },
     }
 
@@ -111,10 +112,10 @@ class MTOShipmentType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", ]  # noqa: E501
+            args[0] (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "PPM", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", ]  # noqa: E501
+            value (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "PPM", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -201,10 +202,10 @@ class MTOShipmentType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", ]  # noqa: E501
+            args[0] (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "PPM", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", ]  # noqa: E501
+            value (str):, must be one of ["HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "PPM", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

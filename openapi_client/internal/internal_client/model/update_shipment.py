@@ -99,13 +99,15 @@ class UpdateShipment(ModelNormal):
             'status': (MTOShipmentStatus,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
             'ppm_shipment': (UpdatePPMShipment,),  # noqa: E501
-            'requested_pickup_date': (date,),  # noqa: E501
-            'requested_delivery_date': (date,),  # noqa: E501
+            'requested_pickup_date': (date, none_type,),  # noqa: E501
+            'requested_delivery_date': (date, none_type,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
             'secondary_pickup_address': (Address,),  # noqa: E501
+            'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
             'secondary_delivery_address': (Address,),  # noqa: E501
+            'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
         }
 
@@ -123,8 +125,10 @@ class UpdateShipment(ModelNormal):
         'customer_remarks': 'customerRemarks',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
+        'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
         'secondary_delivery_address': 'secondaryDeliveryAddress',  # noqa: E501
+        'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
         'agents': 'agents',  # noqa: E501
     }
 
@@ -172,13 +176,15 @@ class UpdateShipment(ModelNormal):
             status (MTOShipmentStatus): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
-            requested_pickup_date (date): [optional]  # noqa: E501
-            requested_delivery_date (date): [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
         """
 
@@ -264,13 +270,15 @@ class UpdateShipment(ModelNormal):
             status (MTOShipmentStatus): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
-            requested_pickup_date (date): [optional]  # noqa: E501
-            requested_delivery_date (date): [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
         """
 

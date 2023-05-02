@@ -21,10 +21,9 @@ Name | Type | Description | Notes
 **action_tstamp_stm** | **datetime** | Statement start timestamp for tx in which audited event occurred | [optional] 
 **action_tstamp_clk** | **datetime** | Wall clock time at which audited event&#39;s trigger call occurred | [optional] 
 **transaction_id** | **int, none_type** | Identifier of transaction that made the change. May wrap, but unique paired with action_tstamp_tx. | [optional] 
-**client_query** | **str, none_type** | Record the text of the client query that triggered the audit event | [optional] 
 **action** | **str** | Action type; I &#x3D; insert, D &#x3D; delete, U &#x3D; update, T &#x3D; truncate | [optional] 
-**old_values** | **{str: (str,)}, none_type** | A list of (old/previous) MoveAuditHistoryItem&#39;s for a record before the change. | [optional] 
-**changed_values** | **{str: (str,)}, none_type** | A list of (changed/updated) MoveAuditHistoryItem&#39;s for a record after the change. | [optional] 
+**old_values** | **bool, date, datetime, dict, float, int, list, str, none_type** | A list of (old/previous) MoveAuditHistoryItem&#39;s for a record before the change. | [optional] 
+**changed_values** | **bool, date, datetime, dict, float, int, list, str, none_type** | A list of (changed/updated) MoveAuditHistoryItem&#39;s for a record after the change. | [optional] 
 **statement_only** | **bool** | true if audit event is from an FOR EACH STATEMENT trigger, false for FOR EACH ROW&#39; | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

@@ -31,8 +31,8 @@ from prime_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from prime_client.model.upload import Upload
-    globals()['Upload'] = Upload
+    from prime_client.model.upload_with_omissions import UploadWithOmissions
+    globals()['UploadWithOmissions'] = UploadWithOmissions
 
 
 class ProofOfServiceDocs(ModelNormal):
@@ -88,7 +88,7 @@ class ProofOfServiceDocs(ModelNormal):
         """
         lazy_import()
         return {
-            'uploads': ([Upload],),  # noqa: E501
+            'uploads': ([UploadWithOmissions],),  # noqa: E501
         }
 
     @cached_property
@@ -141,7 +141,7 @@ class ProofOfServiceDocs(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            uploads ([Upload]): [optional]  # noqa: E501
+            uploads ([UploadWithOmissions]): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -223,7 +223,7 @@ class ProofOfServiceDocs(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            uploads ([Upload]): [optional]  # noqa: E501
+            uploads ([UploadWithOmissions]): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

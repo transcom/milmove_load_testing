@@ -5,6 +5,7 @@ All URIs are relative to */ghc/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_mto_shipment**](MtoShipmentApi.md#create_mto_shipment) | **POST** /mto-shipments | createMTOShipment
+[**get_shipment**](MtoShipmentApi.md#get_shipment) | **GET** /shipments/{shipmentID} | fetches a shipment by ID
 [**list_mto_shipments**](MtoShipmentApi.md#list_mto_shipments) | **GET** /move_task_orders/{moveTaskOrderID}/mto_shipments | Gets all shipments for a move task order
 [**update_mto_shipment**](MtoShipmentApi.md#update_mto_shipment) | **PATCH** /move_task_orders/{moveTaskOrderID}/mto_shipments/{shipmentID} | updateMTOShipment
 
@@ -131,6 +132,22 @@ with ghc_client.ApiClient() as api_client:
             phone="748-072-8880",
             email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
         ),
+        ppm_shipment=CreatePPMShipment(
+            expected_departure_date=dateutil_parser('1970-01-01').date(),
+            pickup_postal_code="90210",
+            secondary_pickup_postal_code="90210",
+            destination_postal_code="90210",
+            secondary_destination_postal_code="90210",
+            sit_expected=True,
+            sit_location={},
+            sit_estimated_weight=2000,
+            sit_estimated_entry_date=dateutil_parser('1970-01-01').date(),
+            sit_estimated_departure_date=dateutil_parser('1970-01-01').date(),
+            estimated_weight=4200,
+            has_pro_gear=True,
+            pro_gear_weight=1,
+            spouse_pro_gear_weight=1,
+        ),
     ) # CreateMTOShipment |  (optional)
 
     # example passing only required values which don't have defaults set
@@ -170,6 +187,80 @@ No authorization required
 |-------------|-------------|------------------|
 **200** | Successfully created a MTO shipment. |  -  |
 **400** | The request payload is invalid |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_shipment**
+> MTOShipment get_shipment(shipment_id)
+
+fetches a shipment by ID
+
+fetches a shipment by ID
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import mto_shipment_api
+from ghc_client.model.error import Error
+from ghc_client.model.mto_shipment import MTOShipment
+from ghc_client.model.validation_error import ValidationError
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = mto_shipment_api.MtoShipmentApi(api_client)
+    shipment_id = "shipmentID_example" # str | ID of the shipment to be fetched
+
+    # example passing only required values which don't have defaults set
+    try:
+        # fetches a shipment by ID
+        api_response = api_instance.get_shipment(shipment_id)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling MtoShipmentApi->get_shipment: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **shipment_id** | **str**| ID of the shipment to be fetched |
+
+### Return type
+
+[**MTOShipment**](MTOShipment.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully fetched the shipment |  -  |
+**400** | The request payload is invalid |  -  |
+**403** | The request was denied |  -  |
 **404** | The requested resource wasn&#39;t found |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
@@ -328,6 +419,36 @@ with ghc_client.ApiClient() as api_client:
             lot_number="lot_number_example",
             phone="748-072-8880",
             email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
+        ),
+        ppm_shipment=UpdatePPMShipment(
+            expected_departure_date=dateutil_parser('1970-01-01').date(),
+            actual_move_date=dateutil_parser('1970-01-01').date(),
+            pickup_postal_code="90210",
+            secondary_pickup_postal_code="90210",
+            destination_postal_code="90210",
+            secondary_destination_postal_code="90210",
+            w2_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
+            sit_expected=True,
+            sit_location={},
+            sit_estimated_weight=2000,
+            sit_estimated_entry_date=dateutil_parser('1970-01-01').date(),
+            sit_estimated_departure_date=dateutil_parser('1970-01-01').date(),
+            estimated_weight=4200,
+            has_pro_gear=True,
+            pro_gear_weight=1,
+            spouse_pro_gear_weight=1,
+            has_requested_advance=True,
+            advance_amount_requested=1,
+            advance_status=PPMAdvanceStatus("APPROVED"),
         ),
     ) # UpdateShipment |  (optional)
 

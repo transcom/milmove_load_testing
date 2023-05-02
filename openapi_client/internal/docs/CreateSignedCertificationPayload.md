@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **signature** | **str** |  | 
 **certification_text** | **str** |  | 
 **personally_procured_move_id** | **str, none_type** |  | [optional] 
+**ppm_id** | **str, none_type** | The PPM Shipment ID to associate with the assigned certificate.  | [optional] 
 **certification_type** | [**SignedCertificationTypeCreate**](SignedCertificationTypeCreate.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

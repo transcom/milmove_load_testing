@@ -22,7 +22,7 @@ from ghc_client.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
-from ghc_client.model.document_payload import DocumentPayload
+from ghc_client.model.document import Document
 from ghc_client.model.error import Error
 from ghc_client.model.validation_error import ValidationError
 
@@ -40,7 +40,7 @@ class GhcDocumentsApi(object):
         self.api_client = api_client
         self.get_document_endpoint = _Endpoint(
             settings={
-                'response_type': (DocumentPayload,),
+                'response_type': (Document,),
                 'auth': [],
                 'endpoint_path': '/documents/{documentId}',
                 'operation_id': 'get_document',
@@ -134,7 +134,7 @@ class GhcDocumentsApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            DocumentPayload
+            Document
                 If the method is called asynchronously, returns the request
                 thread.
         """

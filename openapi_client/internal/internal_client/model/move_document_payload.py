@@ -31,12 +31,12 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from internal_client.model.document_payload import DocumentPayload
+    from internal_client.model.document import Document
     from internal_client.model.move_document_status import MoveDocumentStatus
     from internal_client.model.move_document_type import MoveDocumentType
     from internal_client.model.moving_expense_type import MovingExpenseType
     from internal_client.model.weight_ticket_set_type import WeightTicketSetType
-    globals()['DocumentPayload'] = DocumentPayload
+    globals()['Document'] = Document
     globals()['MoveDocumentStatus'] = MoveDocumentStatus
     globals()['MoveDocumentType'] = MoveDocumentType
     globals()['MovingExpenseType'] = MovingExpenseType
@@ -111,7 +111,7 @@ class MoveDocumentPayload(ModelNormal):
         return {
             'id': (str,),  # noqa: E501
             'move_id': (str,),  # noqa: E501
-            'document': (DocumentPayload,),  # noqa: E501
+            'document': (Document,),  # noqa: E501
             'title': (str,),  # noqa: E501
             'move_document_type': (MoveDocumentType,),  # noqa: E501
             'status': (MoveDocumentStatus,),  # noqa: E501
@@ -180,7 +180,7 @@ class MoveDocumentPayload(ModelNormal):
         Args:
             id (str):
             move_id (str):
-            document (DocumentPayload):
+            document (Document):
             title (str):
             move_document_type (MoveDocumentType):
             status (MoveDocumentStatus):
@@ -293,7 +293,7 @@ class MoveDocumentPayload(ModelNormal):
         Args:
             id (str):
             move_id (str):
-            document (DocumentPayload):
+            document (Document):
             title (str):
             move_document_type (MoveDocumentType):
             status (MoveDocumentStatus):

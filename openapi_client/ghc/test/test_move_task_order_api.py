@@ -38,13 +38,6 @@ class TestMoveTaskOrderApi(unittest.TestCase):
         """
         pass
 
-    def test_update_move_task_order(self):
-        """Test case for update_move_task_order
-
-        Updates a move by ID  # noqa: E501
-        """
-        pass
-
     def test_update_move_task_order_status(self):
         """Test case for update_move_task_order_status
 

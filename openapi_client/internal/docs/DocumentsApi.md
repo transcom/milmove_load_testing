@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **create_document**
-> DocumentPayload create_document(document_payload)
+> Document create_document(document_payload)
 
 Create a new document
 
@@ -23,7 +23,7 @@ import time
 import internal_client
 from internal_client.api import documents_api
 from internal_client.model.post_document_payload import PostDocumentPayload
-from internal_client.model.document_payload import DocumentPayload
+from internal_client.model.document import Document
 from pprint import pprint
 # Defining the host is optional and defaults to /internal
 # See configuration.py for a list of all supported configuration parameters.
@@ -58,7 +58,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**DocumentPayload**](DocumentPayload.md)
+[**Document**](Document.md)
 
 ### Authorization
 
@@ -81,7 +81,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **show_document**
-> DocumentPayload show_document(document_id)
+> Document show_document(document_id)
 
 Returns a document
 
@@ -95,7 +95,7 @@ import time
 import internal_client
 from internal_client.api import documents_api
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
-from internal_client.model.document_payload import DocumentPayload
+from internal_client.model.document import Document
 from pprint import pprint
 # Defining the host is optional and defaults to /internal
 # See configuration.py for a list of all supported configuration parameters.
@@ -128,7 +128,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**DocumentPayload**](DocumentPayload.md)
+[**Document**](Document.md)
 
 ### Authorization
 

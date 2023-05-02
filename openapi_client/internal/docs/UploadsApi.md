@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 
 # **create_upload**
-> UploadPayload create_upload(file)
+> Upload create_upload(file)
 
 Create a new upload
 
@@ -24,7 +24,7 @@ import time
 import internal_client
 from internal_client.api import uploads_api
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
-from internal_client.model.upload_payload import UploadPayload
+from internal_client.model.upload import Upload
 from pprint import pprint
 # Defining the host is optional and defaults to /internal
 # See configuration.py for a list of all supported configuration parameters.
@@ -68,7 +68,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**UploadPayload**](UploadPayload.md)
+[**Upload**](Upload.md)
 
 ### Authorization
 

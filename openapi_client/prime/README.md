@@ -99,6 +99,7 @@ Class | Method | HTTP request | Description
 *MtoShipmentApi* | [**create_mto_agent**](docs/MtoShipmentApi.md#create_mto_agent) | **POST** /mto-shipments/{mtoShipmentID}/agents | createMTOAgent
 *MtoShipmentApi* | [**create_mto_shipment**](docs/MtoShipmentApi.md#create_mto_shipment) | **POST** /mto-shipments | createMTOShipment
 *MtoShipmentApi* | [**create_sit_extension**](docs/MtoShipmentApi.md#create_sit_extension) | **POST** /mto-shipments/{mtoShipmentID}/sit-extensions | createSITExtension
+*MtoShipmentApi* | [**delete_mto_shipment**](docs/MtoShipmentApi.md#delete_mto_shipment) | **DELETE** /mto-shipments/{mtoShipmentID} | deleteMTOShipment
 *MtoShipmentApi* | [**update_mto_agent**](docs/MtoShipmentApi.md#update_mto_agent) | **PUT** /mto-shipments/{mtoShipmentID}/agents/{agentID} | updateMTOAgent
 *MtoShipmentApi* | [**update_mto_shipment**](docs/MtoShipmentApi.md#update_mto_shipment) | **PATCH** /mto-shipments/{mtoShipmentID} | updateMTOShipment
 *MtoShipmentApi* | [**update_mto_shipment_address**](docs/MtoShipmentApi.md#update_mto_shipment_address) | **PUT** /mto-shipments/{mtoShipmentID}/addresses/{addressID} | updateMTOShipmentAddress
@@ -113,6 +114,7 @@ Class | Method | HTTP request | Description
  - [Address](docs/Address.md)
  - [ClientError](docs/ClientError.md)
  - [CreateMTOShipment](docs/CreateMTOShipment.md)
+ - [CreatePPMShipment](docs/CreatePPMShipment.md)
  - [CreatePaymentRequest](docs/CreatePaymentRequest.md)
  - [CreateSITExtension](docs/CreateSITExtension.md)
  - [Customer](docs/Customer.md)
@@ -146,6 +148,7 @@ Class | Method | HTTP request | Description
  - [MTOShipments](docs/MTOShipments.md)
  - [MoveTaskOrder](docs/MoveTaskOrder.md)
  - [Order](docs/Order.md)
+ - [OrdersType](docs/OrdersType.md)
  - [PPMShipment](docs/PPMShipment.md)
  - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
  - [PaymentRequest](docs/PaymentRequest.md)
@@ -162,6 +165,7 @@ Class | Method | HTTP request | Description
  - [ReweighRequester](docs/ReweighRequester.md)
  - [SITExtension](docs/SITExtension.md)
  - [SITExtensions](docs/SITExtensions.md)
+ - [SITLocationType](docs/SITLocationType.md)
  - [ServiceItem](docs/ServiceItem.md)
  - [ServiceItemParamName](docs/ServiceItemParamName.md)
  - [ServiceItemParamOrigin](docs/ServiceItemParamOrigin.md)
@@ -176,8 +180,9 @@ Class | Method | HTTP request | Description
  - [UpdateMTOServiceItemShuttleAllOf](docs/UpdateMTOServiceItemShuttleAllOf.md)
  - [UpdateMTOShipment](docs/UpdateMTOShipment.md)
  - [UpdateMTOShipmentStatus](docs/UpdateMTOShipmentStatus.md)
+ - [UpdatePPMShipment](docs/UpdatePPMShipment.md)
  - [UpdateReweigh](docs/UpdateReweigh.md)
- - [Upload](docs/Upload.md)
+ - [UploadWithOmissions](docs/UploadWithOmissions.md)
  - [ValidationError](docs/ValidationError.md)
  - [ValidationErrorAllOf](docs/ValidationErrorAllOf.md)
 

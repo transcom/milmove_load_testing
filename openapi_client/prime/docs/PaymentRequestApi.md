@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 createPaymentRequest
 
-Creates a new instance of a paymentRequest. A newly created payment request is assigned the status `PENDING`. A move task order can have multiple payment requests, and a final payment request can be marked using boolean `isFinal`. 
+Creates a new instance of a paymentRequest. A newly created payment request is assigned the status `PENDING`. A move task order can have multiple payment requests, and a final payment request can be marked using boolean `isFinal`.  If a `PENDING` payment request is recalculated, a new payment request is created and the original request is marked with the status `DEPRECATED`.  **NOTE**: In order to create a payment request for most service items, the shipment *must* be updated with the `PrimeActualWeight` value via [updateMTOShipment](#operation/updateMTOShipment). **Fuel Surcharge** service items require `ActualPickupDate` to be updated on the shipment.  To create a paymentRequest for a SIT Delivery mtoServiceItem, the item must first have a final address set via [updateMTOServiceItem](#operation/updateMTOServiceItem). 
 
 ### Example
 
@@ -103,7 +103,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_upload**
-> Upload create_upload(payment_request_id, file)
+> UploadWithOmissions create_upload(payment_request_id, file)
 
 createUpload
 
@@ -116,8 +116,8 @@ createUpload
 import time
 import prime_client
 from prime_client.api import payment_request_api
+from prime_client.model.upload_with_omissions import UploadWithOmissions
 from prime_client.model.validation_error import ValidationError
-from prime_client.model.upload import Upload
 from prime_client.model.error import Error
 from prime_client.model.client_error import ClientError
 from pprint import pprint
@@ -154,7 +154,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Upload**](Upload.md)
+[**UploadWithOmissions**](UploadWithOmissions.md)
 
 ### Authorization
 

@@ -67,8 +67,8 @@ class MoveTaskOrder(ModelNormal):
 
     allowed_values = {
         ('ppm_type',): {
-            'FULL': "FULL",
             'PARTIAL': "PARTIAL",
+            'FULL': "FULL",
         },
     }
 

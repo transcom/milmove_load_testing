@@ -21,6 +21,7 @@ Name | Type | Description | Notes
 **service_order_number** | **str, none_type** |  | [optional] 
 **nts_recorded_weight** | **int, none_type** | The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was. | [optional] 
 **storage_facility** | [**StorageFacility**](StorageFacility.md) |  | [optional] 
+**ppm_shipment** | [**UpdatePPMShipment**](UpdatePPMShipment.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

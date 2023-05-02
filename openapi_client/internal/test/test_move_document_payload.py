@@ -13,12 +13,12 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.document_payload import DocumentPayload
+from internal_client.model.document import Document
 from internal_client.model.move_document_status import MoveDocumentStatus
 from internal_client.model.move_document_type import MoveDocumentType
 from internal_client.model.moving_expense_type import MovingExpenseType
 from internal_client.model.weight_ticket_set_type import WeightTicketSetType
-globals()['DocumentPayload'] = DocumentPayload
+globals()['Document'] = Document
 globals()['MoveDocumentStatus'] = MoveDocumentStatus
 globals()['MoveDocumentType'] = MoveDocumentType
 globals()['MovingExpenseType'] = MovingExpenseType

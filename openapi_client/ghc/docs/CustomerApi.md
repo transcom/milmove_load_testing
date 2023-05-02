@@ -120,16 +120,7 @@ with ghc_client.ApiClient() as api_client:
         email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
         suffix="Jr.",
         middle_name="David",
-        current_address=Address(
-            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
-            street_address1="123 Main Ave",
-            street_address2="Apartment 9000",
-            street_address3="Montmârtre",
-            city="Anytown",
-            state="AL",
-            postal_code="90210",
-            country="USA",
-        ),
+        current_address={},
         backup_contact=BackupContact(
             name="name_example",
             email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",

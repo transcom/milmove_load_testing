@@ -68,6 +68,11 @@ class QueueMove(ModelNormal):
     """
 
     allowed_values = {
+        ('ppm_type',): {
+            'None': None,
+            'FULL': "FULL",
+            'PARTIAL': "PARTIAL",
+        },
     }
 
     validations = {
@@ -101,12 +106,16 @@ class QueueMove(ModelNormal):
             'status': (MoveStatus,),  # noqa: E501
             'locator': (str,),  # noqa: E501
             'submitted_at': (datetime, none_type,),  # noqa: E501
+            'appeared_in_too_at': (datetime, none_type,),  # noqa: E501
             'requested_move_date': (date, none_type,),  # noqa: E501
             'department_indicator': (DeptIndicator,),  # noqa: E501
             'shipments_count': (int,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
             'destination_duty_location': (DutyLocation,),  # noqa: E501
             'origin_gbloc': (GBLOC,),  # noqa: E501
+            'ppm_type': (str, none_type,),  # noqa: E501
+            'closeout_initiated': (datetime, none_type,),  # noqa: E501
+            'closeout_location': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -120,12 +129,16 @@ class QueueMove(ModelNormal):
         'status': 'status',  # noqa: E501
         'locator': 'locator',  # noqa: E501
         'submitted_at': 'submittedAt',  # noqa: E501
+        'appeared_in_too_at': 'appearedInTooAt',  # noqa: E501
         'requested_move_date': 'requestedMoveDate',  # noqa: E501
         'department_indicator': 'departmentIndicator',  # noqa: E501
         'shipments_count': 'shipmentsCount',  # noqa: E501
         'origin_duty_location': 'originDutyLocation',  # noqa: E501
         'destination_duty_location': 'destinationDutyLocation',  # noqa: E501
         'origin_gbloc': 'originGBLOC',  # noqa: E501
+        'ppm_type': 'ppmType',  # noqa: E501
+        'closeout_initiated': 'closeoutInitiated',  # noqa: E501
+        'closeout_location': 'closeoutLocation',  # noqa: E501
     }
 
     read_only_vars = {
@@ -174,12 +187,16 @@ class QueueMove(ModelNormal):
             status (MoveStatus): [optional]  # noqa: E501
             locator (str): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
+            appeared_in_too_at (datetime, none_type): [optional]  # noqa: E501
             requested_move_date (date, none_type): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             shipments_count (int): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_gbloc (GBLOC): [optional]  # noqa: E501
+            ppm_type (str, none_type): [optional]  # noqa: E501
+            closeout_initiated (datetime, none_type): [optional]  # noqa: E501
+            closeout_location (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -266,12 +283,16 @@ class QueueMove(ModelNormal):
             status (MoveStatus): [optional]  # noqa: E501
             locator (str): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
+            appeared_in_too_at (datetime, none_type): [optional]  # noqa: E501
             requested_move_date (date, none_type): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             shipments_count (int): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_gbloc (GBLOC): [optional]  # noqa: E501
+            ppm_type (str, none_type): [optional]  # noqa: E501
+            closeout_initiated (datetime, none_type): [optional]  # noqa: E501
+            closeout_location (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

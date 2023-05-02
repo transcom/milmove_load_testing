@@ -31,13 +31,6 @@ class TestMoveDocsApi(unittest.TestCase):
         """
         pass
 
-    def test_create_moving_expense_document(self):
-        """Test case for create_moving_expense_document
-
-        Creates a moving expense document  # noqa: E501
-        """
-        pass
-
     def test_create_weight_ticket_document(self):
         """Test case for create_weight_ticket_document
 

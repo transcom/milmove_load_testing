@@ -37,12 +37,14 @@ def lazy_import():
     from ghc_client.model.mto_agents import MTOAgents
     from ghc_client.model.mto_shipment_type import MTOShipmentType
     from ghc_client.model.storage_facility import StorageFacility
+    from ghc_client.model.update_ppm_shipment import UpdatePPMShipment
     globals()['Address'] = Address
     globals()['DestinationType'] = DestinationType
     globals()['LOATypeNullable'] = LOATypeNullable
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOShipmentType'] = MTOShipmentType
     globals()['StorageFacility'] = StorageFacility
+    globals()['UpdatePPMShipment'] = UpdatePPMShipment
 
 
 class UpdateShipment(ModelNormal):
@@ -115,6 +117,7 @@ class UpdateShipment(ModelNormal):
             'service_order_number': (str, none_type,),  # noqa: E501
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
             'storage_facility': (StorageFacility,),  # noqa: E501
+            'ppm_shipment': (UpdatePPMShipment,),  # noqa: E501
         }
 
     @cached_property
@@ -140,6 +143,7 @@ class UpdateShipment(ModelNormal):
         'service_order_number': 'serviceOrderNumber',  # noqa: E501
         'nts_recorded_weight': 'ntsRecordedWeight',  # noqa: E501
         'storage_facility': 'storageFacility',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
     }
 
     read_only_vars = {
@@ -200,6 +204,7 @@ class UpdateShipment(ModelNormal):
             service_order_number (str, none_type): [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             storage_facility (StorageFacility): [optional]  # noqa: E501
+            ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -298,6 +303,7 @@ class UpdateShipment(ModelNormal):
             service_order_number (str, none_type): [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             storage_facility (StorageFacility): [optional]  # noqa: E501
+            ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

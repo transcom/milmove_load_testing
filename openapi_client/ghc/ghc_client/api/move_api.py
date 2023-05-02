@@ -23,9 +23,13 @@ from ghc_client.model_utils import (  # noqa: F401
     validate_and_convert_types
 )
 from ghc_client.model.error import Error
+from ghc_client.model.evaluation_report_list import EvaluationReportList
 from ghc_client.model.inline_object import InlineObject
+from ghc_client.model.inline_object1 import InlineObject1
+from ghc_client.model.inline_object2 import InlineObject2
 from ghc_client.model.move import Move
 from ghc_client.model.move_history_result import MoveHistoryResult
+from ghc_client.model.search_moves_result import SearchMovesResult
 from ghc_client.model.validation_error import ValidationError
 
 
@@ -77,6 +81,55 @@ class MoveApi(object):
                 },
                 'location_map': {
                     'locator': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.get_move_counseling_evaluation_reports_list_endpoint = _Endpoint(
+            settings={
+                'response_type': (EvaluationReportList,),
+                'auth': [],
+                'endpoint_path': '/moves/{moveID}/counseling-evaluation-reports-list',
+                'operation_id': 'get_move_counseling_evaluation_reports_list',
+                'http_method': 'GET',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'move_id',
+                ],
+                'required': [
+                    'move_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'move_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'move_id': 'moveID',
+                },
+                'location_map': {
+                    'move_id': 'path',
                 },
                 'collection_format_map': {
                 }
@@ -148,6 +201,103 @@ class MoveApi(object):
             },
             api_client=api_client
         )
+        self.get_move_shipment_evaluation_reports_list_endpoint = _Endpoint(
+            settings={
+                'response_type': (EvaluationReportList,),
+                'auth': [],
+                'endpoint_path': '/moves/{moveID}/shipment-evaluation-reports-list',
+                'operation_id': 'get_move_shipment_evaluation_reports_list',
+                'http_method': 'GET',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'move_id',
+                ],
+                'required': [
+                    'move_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'move_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'move_id': 'moveID',
+                },
+                'location_map': {
+                    'move_id': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.search_moves_endpoint = _Endpoint(
+            settings={
+                'response_type': (SearchMovesResult,),
+                'auth': [],
+                'endpoint_path': '/moves/search',
+                'operation_id': 'search_moves',
+                'http_method': 'POST',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'body',
+                ],
+                'required': [],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'body':
+                        (InlineObject2,),
+                },
+                'attribute_map': {
+                },
+                'location_map': {
+                    'body': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
         self.set_financial_review_flag_endpoint = _Endpoint(
             settings={
                 'response_type': (Move,),
@@ -184,7 +334,7 @@ class MoveApi(object):
                     'if_match':
                         (str,),
                     'body':
-                        (InlineObject,),
+                        (InlineObject1,),
                 },
                 'attribute_map': {
                     'move_id': 'moveID',
@@ -192,6 +342,67 @@ class MoveApi(object):
                 },
                 'location_map': {
                     'move_id': 'path',
+                    'if_match': 'header',
+                    'body': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
+        self.update_closeout_office_endpoint = _Endpoint(
+            settings={
+                'response_type': (Move,),
+                'auth': [],
+                'endpoint_path': '/moves/{locator}/closeout-office',
+                'operation_id': 'update_closeout_office',
+                'http_method': 'PATCH',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'locator',
+                    'if_match',
+                    'body',
+                ],
+                'required': [
+                    'locator',
+                    'if_match',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'locator':
+                        (str,),
+                    'if_match':
+                        (str,),
+                    'body':
+                        (InlineObject,),
+                },
+                'attribute_map': {
+                    'locator': 'locator',
+                    'if_match': 'If-Match',
+                },
+                'location_map': {
+                    'locator': 'path',
                     'if_match': 'header',
                     'body': 'body',
                 },
@@ -287,6 +498,84 @@ class MoveApi(object):
             locator
         return self.get_move_endpoint.call_with_http_info(**kwargs)
 
+    def get_move_counseling_evaluation_reports_list(
+        self,
+        move_id,
+        **kwargs
+    ):
+        """Returns counseling evaluation reports for the specified move that are visible to the current office user  # noqa: E501
+
+        Returns counseling evaluation reports for the specified move that are visible to the current office user  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.get_move_counseling_evaluation_reports_list(move_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            move_id (str): Code used to identify a move in the system
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            EvaluationReportList
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['move_id'] = \
+            move_id
+        return self.get_move_counseling_evaluation_reports_list_endpoint.call_with_http_info(**kwargs)
+
     def get_move_history(
         self,
         locator,
@@ -367,6 +656,158 @@ class MoveApi(object):
             locator
         return self.get_move_history_endpoint.call_with_http_info(**kwargs)
 
+    def get_move_shipment_evaluation_reports_list(
+        self,
+        move_id,
+        **kwargs
+    ):
+        """Returns shipment evaluation reports for the specified move that are visible to the current office user  # noqa: E501
+
+        Returns shipment evaluation reports for the specified move that are visible to the current office user  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.get_move_shipment_evaluation_reports_list(move_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            move_id (str): Code used to identify a move in the system
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            EvaluationReportList
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['move_id'] = \
+            move_id
+        return self.get_move_shipment_evaluation_reports_list_endpoint.call_with_http_info(**kwargs)
+
+    def search_moves(
+        self,
+        **kwargs
+    ):
+        """Search moves by locator, DOD ID, or customer name  # noqa: E501
+
+        Search moves by locator, DOD ID, or customer name. Used by QAE and CSR users.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.search_moves(async_req=True)
+        >>> result = thread.get()
+
+
+        Keyword Args:
+            body (InlineObject2): [optional]
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            SearchMovesResult
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        return self.search_moves_endpoint.call_with_http_info(**kwargs)
+
     def set_financial_review_flag(
         self,
         move_id,
@@ -386,7 +827,7 @@ class MoveApi(object):
 
         Keyword Args:
             if_match (str): [optional]
-            body (InlineObject): [optional]
+            body (InlineObject1): [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -446,4 +887,87 @@ class MoveApi(object):
         kwargs['move_id'] = \
             move_id
         return self.set_financial_review_flag_endpoint.call_with_http_info(**kwargs)
+
+    def update_closeout_office(
+        self,
+        locator,
+        if_match,
+        **kwargs
+    ):
+        """Updates a Move's PPM closeout office for Army and Air Force customers  # noqa: E501
+
+        Sets the transportation office closeout location for where the Move's PPM Shipment documentation will be reviewed by  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.update_closeout_office(locator, if_match, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            locator (str): move code to identify a move to update the PPM shipment's closeout office for Army and Air Force service members
+            if_match (str):
+
+        Keyword Args:
+            body (InlineObject): [optional]
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            Move
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['locator'] = \
+            locator
+        kwargs['if_match'] = \
+            if_match
+        return self.update_closeout_office_endpoint.call_with_http_info(**kwargs)
 

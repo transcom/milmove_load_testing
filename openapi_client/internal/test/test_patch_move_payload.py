@@ -13,8 +13,6 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.selected_move_type import SelectedMoveType
-globals()['SelectedMoveType'] = SelectedMoveType
 from internal_client.model.patch_move_payload import PatchMovePayload
 
 

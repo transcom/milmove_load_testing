@@ -34,9 +34,11 @@ def lazy_import():
     from prime_client.model.customer import Customer
     from prime_client.model.duty_location import DutyLocation
     from prime_client.model.entitlements import Entitlements
+    from prime_client.model.orders_type import OrdersType
     globals()['Customer'] = Customer
     globals()['DutyLocation'] = DutyLocation
     globals()['Entitlements'] = Entitlements
+    globals()['OrdersType'] = OrdersType
 
 
 class Order(ModelNormal):
@@ -101,7 +103,9 @@ class Order(ModelNormal):
             'entitlement': (Entitlements,),  # noqa: E501
             'destination_duty_location': (DutyLocation,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
+            'origin_duty_location_gbloc': (str,),  # noqa: E501
             'report_by_date': (date,),  # noqa: E501
+            'orders_type': (OrdersType,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -120,7 +124,9 @@ class Order(ModelNormal):
         'entitlement': 'entitlement',  # noqa: E501
         'destination_duty_location': 'destinationDutyLocation',  # noqa: E501
         'origin_duty_location': 'originDutyLocation',  # noqa: E501
+        'origin_duty_location_gbloc': 'originDutyLocationGBLOC',  # noqa: E501
         'report_by_date': 'reportByDate',  # noqa: E501
+        'orders_type': 'ordersType',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -177,7 +183,9 @@ class Order(ModelNormal):
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location_gbloc (str): [optional]  # noqa: E501
             report_by_date (date): [optional]  # noqa: E501
+            orders_type (OrdersType): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -274,7 +282,9 @@ class Order(ModelNormal):
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location_gbloc (str): [optional]  # noqa: E501
             report_by_date (date): [optional]  # noqa: E501
+            orders_type (OrdersType): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 

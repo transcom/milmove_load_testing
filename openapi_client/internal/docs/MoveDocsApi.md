@@ -5,7 +5,6 @@ All URIs are relative to */internal*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_generic_move_document**](MoveDocsApi.md#create_generic_move_document) | **POST** /moves/{moveId}/move_documents | Creates a move document
-[**create_moving_expense_document**](MoveDocsApi.md#create_moving_expense_document) | **POST** /moves/{moveId}/moving_expense_documents | Creates a moving expense document
 [**create_weight_ticket_document**](MoveDocsApi.md#create_weight_ticket_document) | **POST** /moves/{moveId}/weight_ticket | Creates a weight ticket document
 [**delete_move_document**](MoveDocsApi.md#delete_move_document) | **DELETE** /move_documents/{moveDocumentId} | Deletes a move document
 [**index_move_documents**](MoveDocsApi.md#index_move_documents) | **GET** /moves/{moveId}/move_documents | Returns a list of all Move Documents associated with this move
@@ -87,94 +86,6 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | returns new move document object |  -  |
-**400** | invalid request |  -  |
-**401** | must be authenticated to use this endpoint |  -  |
-**403** | not authorized to modify this move |  -  |
-**500** | server error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **create_moving_expense_document**
-> MoveDocumentPayload create_moving_expense_document(move_id, create_moving_expense_document_payload)
-
-Creates a moving expense document
-
-Created a moving expense document with the given information
-
-### Example
-
-
-```python
-import time
-import internal_client
-from internal_client.api import move_docs_api
-from internal_client.model.move_document_payload import MoveDocumentPayload
-from internal_client.model.create_moving_expense_document_payload import CreateMovingExpenseDocumentPayload
-from pprint import pprint
-# Defining the host is optional and defaults to /internal
-# See configuration.py for a list of all supported configuration parameters.
-configuration = internal_client.Configuration(
-    host = "/internal"
-)
-
-
-# Enter a context with an instance of the API client
-with internal_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = move_docs_api.MoveDocsApi(api_client)
-    move_id = "moveId_example" # str | UUID of the move
-    create_moving_expense_document_payload = CreateMovingExpenseDocumentPayload(
-        personally_procured_move_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
-        upload_ids=[
-            "c56a4180-65aa-42ec-a945-5fd21dec0538",
-        ],
-        title="very_useful_document.pdf",
-        moving_expense_type=MovingExpenseType("CONTRACTED_EXPENSE"),
-        move_document_type=MoveDocumentType("EXPENSE"),
-        requested_amount_cents=1,
-        payment_method="OTHER",
-        receipt_missing=True,
-        notes="This document is good to go!",
-        storage_start_date=dateutil_parser('Thu Apr 26 00:00:00 UTC 2018').date(),
-        storage_end_date=dateutil_parser('Thu Apr 26 00:00:00 UTC 2018').date(),
-    ) # CreateMovingExpenseDocumentPayload | 
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Creates a moving expense document
-        api_response = api_instance.create_moving_expense_document(move_id, create_moving_expense_document_payload)
-        pprint(api_response)
-    except internal_client.ApiException as e:
-        print("Exception when calling MoveDocsApi->create_moving_expense_document: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **move_id** | **str**| UUID of the move |
- **create_moving_expense_document_payload** | [**CreateMovingExpenseDocumentPayload**](CreateMovingExpenseDocumentPayload.md)|  |
-
-### Return type
-
-[**MoveDocumentPayload**](MoveDocumentPayload.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | returns new moving expense document object |  -  |
 **400** | invalid request |  -  |
 **401** | must be authenticated to use this endpoint |  -  |
 **403** | not authorized to modify this move |  -  |
@@ -443,20 +354,11 @@ with internal_client.ApiClient() as api_client:
         id="c56a4180-65aa-42ec-a945-5fd21dec0538",
         move_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
         personally_procured_move_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
-        document=DocumentPayload(
+        document=Document(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
             service_member_id="service_member_id_example",
             uploads=[
-                UploadPayload(
-                    id="c56a4180-65aa-42ec-a945-5fd21dec0538",
-                    url="https://uploads.domain.test/dir/c56a4180-65aa-42ec-a945-5fd21dec0538",
-                    filename="filename.pdf",
-                    content_type="application/pdf",
-                    checksum="ImGQ2Ush0bDHsaQthV5BnQ==",
-                    bytes=1,
-                    status="INFECTED",
-                    created_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
-                    updated_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
+                Upload(
                 ),
             ],
         ),

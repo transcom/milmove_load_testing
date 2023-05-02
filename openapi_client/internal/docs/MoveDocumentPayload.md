@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **str** |  | 
 **move_id** | **str** |  | 
-**document** | [**DocumentPayload**](DocumentPayload.md) |  | 
+**document** | [**Document**](Document.md) |  | 
 **title** | **str** |  | 
 **move_document_type** | [**MoveDocumentType**](MoveDocumentType.md) |  | 
 **status** | [**MoveDocumentStatus**](MoveDocumentStatus.md) |  | 

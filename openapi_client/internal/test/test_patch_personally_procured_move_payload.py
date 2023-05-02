@@ -13,10 +13,10 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.document_payload import DocumentPayload
+from internal_client.model.document import Document
 from internal_client.model.reimbursement import Reimbursement
 from internal_client.model.t_shirt_size import TShirtSize
-globals()['DocumentPayload'] = DocumentPayload
+globals()['Document'] = Document
 globals()['Reimbursement'] = Reimbursement
 globals()['TShirtSize'] = TShirtSize
 from internal_client.model.patch_personally_procured_move_payload import PatchPersonallyProcuredMovePayload

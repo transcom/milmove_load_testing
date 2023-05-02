@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **id** | **str** |  | [optional] 
 **move_id** | **str** |  | [optional] 
 **customer** | [**Customer**](Customer.md) |  | [optional] 
-**status** | [**PaymentRequestStatus**](PaymentRequestStatus.md) |  | [optional] 
+**status** | [**QueuePaymentRequestStatus**](QueuePaymentRequestStatus.md) |  | [optional] 
 **age** | **float** | Days since the payment request has been requested.  Decimal representation will allow more accurate sorting. | [optional] 
 **submitted_at** | **datetime** |  | [optional] 
 **locator** | **str** |  | [optional] 

@@ -14,9 +14,9 @@ import unittest
 
 import prime_client
 from prime_client.model.excess_weight_record_all_of import ExcessWeightRecordAllOf
-from prime_client.model.upload import Upload
+from prime_client.model.upload_with_omissions import UploadWithOmissions
 globals()['ExcessWeightRecordAllOf'] = ExcessWeightRecordAllOf
-globals()['Upload'] = Upload
+globals()['UploadWithOmissions'] = UploadWithOmissions
 from prime_client.model.excess_weight_record import ExcessWeightRecord
 
 

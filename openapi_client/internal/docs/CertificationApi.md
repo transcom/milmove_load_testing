@@ -42,6 +42,7 @@ with internal_client.ApiClient() as api_client:
         signature="signature_example",
         certification_text="certification_text_example",
         personally_procured_move_id="personally_procured_move_id_example",
+        ppm_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
         certification_type=SignedCertificationTypeCreate("PPM_PAYMENT"),
     ) # CreateSignedCertificationPayload | 
 

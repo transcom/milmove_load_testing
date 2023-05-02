@@ -31,6 +31,13 @@ class TestMoveApi(unittest.TestCase):
         """
         pass
 
+    def test_get_move_counseling_evaluation_reports_list(self):
+        """Test case for get_move_counseling_evaluation_reports_list
+
+        Returns counseling evaluation reports for the specified move that are visible to the current office user  # noqa: E501
+        """
+        pass
+
     def test_get_move_history(self):
         """Test case for get_move_history
 
@@ -38,10 +45,31 @@ class TestMoveApi(unittest.TestCase):
         """
         pass
 
+    def test_get_move_shipment_evaluation_reports_list(self):
+        """Test case for get_move_shipment_evaluation_reports_list
+
+        Returns shipment evaluation reports for the specified move that are visible to the current office user  # noqa: E501
+        """
+        pass
+
+    def test_search_moves(self):
+        """Test case for search_moves
+
+        Search moves by locator, DOD ID, or customer name  # noqa: E501
+        """
+        pass
+
     def test_set_financial_review_flag(self):
         """Test case for set_financial_review_flag
 
         Flags a move for financial office review  # noqa: E501
+        """
+        pass
+
+    def test_update_closeout_office(self):
+        """Test case for update_closeout_office
+
+        Updates a Move's PPM closeout office for Army and Air Force customers  # noqa: E501
         """
         pass
 

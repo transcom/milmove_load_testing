@@ -256,7 +256,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upload_amended_orders**
-> UploadPayload upload_amended_orders(orders_id, file)
+> Upload upload_amended_orders(orders_id, file)
 
 Patch the amended orders for a given order
 
@@ -270,7 +270,7 @@ import time
 import internal_client
 from internal_client.api import orders_api
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
-from internal_client.model.upload_payload import UploadPayload
+from internal_client.model.upload import Upload
 from pprint import pprint
 # Defining the host is optional and defaults to /internal
 # See configuration.py for a list of all supported configuration parameters.
@@ -305,7 +305,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**UploadPayload**](UploadPayload.md)
+[**Upload**](Upload.md)
 
 ### Authorization
 

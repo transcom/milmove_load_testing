@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**create_mto_agent**](MtoShipmentApi.md#create_mto_agent) | **POST** /mto-shipments/{mtoShipmentID}/agents | createMTOAgent
 [**create_mto_shipment**](MtoShipmentApi.md#create_mto_shipment) | **POST** /mto-shipments | createMTOShipment
 [**create_sit_extension**](MtoShipmentApi.md#create_sit_extension) | **POST** /mto-shipments/{mtoShipmentID}/sit-extensions | createSITExtension
+[**delete_mto_shipment**](MtoShipmentApi.md#delete_mto_shipment) | **DELETE** /mto-shipments/{mtoShipmentID} | deleteMTOShipment
 [**update_mto_agent**](MtoShipmentApi.md#update_mto_agent) | **PUT** /mto-shipments/{mtoShipmentID}/agents/{agentID} | updateMTOAgent
 [**update_mto_shipment**](MtoShipmentApi.md#update_mto_shipment) | **PATCH** /mto-shipments/{mtoShipmentID} | updateMTOShipment
 [**update_mto_shipment_address**](MtoShipmentApi.md#update_mto_shipment_address) | **PUT** /mto-shipments/{mtoShipmentID}/addresses/{addressID} | updateMTOShipmentAddress
@@ -152,6 +153,23 @@ with prime_client.ApiClient() as api_client:
         shipment_type=MTOShipmentType("HHG"),
         diversion=True,
         point_of_contact="point_of_contact_example",
+        counselor_remarks="counselor approved",
+        ppm_shipment=CreatePPMShipment(
+            expected_departure_date=dateutil_parser('1970-01-01').date(),
+            pickup_postal_code="90210",
+            secondary_pickup_postal_code="90210",
+            destination_postal_code="90210",
+            secondary_destination_postal_code="90210",
+            sit_expected=True,
+            sit_location={},
+            sit_estimated_weight=2000,
+            sit_estimated_entry_date=dateutil_parser('1970-01-01').date(),
+            sit_estimated_departure_date=dateutil_parser('1970-01-01').date(),
+            estimated_weight=4200,
+            has_pro_gear=True,
+            pro_gear_weight=1,
+            spouse_pro_gear_weight=1,
+        ),
     ) # CreateMTOShipment |  (optional)
 
     # example passing only required values which don't have defaults set
@@ -273,6 +291,80 @@ No authorization required
 **201** | Successfully created the sit extension request. |  -  |
 **400** | The request payload is invalid. |  -  |
 **401** | The request was denied. |  -  |
+**403** | The request was denied. |  -  |
+**404** | The requested resource wasn&#39;t found. |  -  |
+**409** | The request could not be processed because of conflict in the current state of the resource. |  -  |
+**422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
+**500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **delete_mto_shipment**
+> delete_mto_shipment(mto_shipment_id)
+
+deleteMTOShipment
+
+### Functionality This endpoint deletes an individual shipment by ID.  ### Errors * The mtoShipment should be associated with an MTO that is available to prime. * The mtoShipment must be a PPM shipment. * Counseling should not have already been completed for the associated MTO. 
+
+### Example
+
+
+```python
+import time
+import prime_client
+from prime_client.api import mto_shipment_api
+from prime_client.model.validation_error import ValidationError
+from prime_client.model.error import Error
+from prime_client.model.client_error import ClientError
+from pprint import pprint
+# Defining the host is optional and defaults to /prime/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = prime_client.Configuration(
+    host = "/prime/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with prime_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = mto_shipment_api.MtoShipmentApi(api_client)
+    mto_shipment_id = "mtoShipmentID_example" # str | UUID of the shipment to be deleted
+
+    # example passing only required values which don't have defaults set
+    try:
+        # deleteMTOShipment
+        api_instance.delete_mto_shipment(mto_shipment_id)
+    except prime_client.ApiException as e:
+        print("Exception when calling MtoShipmentApi->delete_mto_shipment: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **mto_shipment_id** | **str**| UUID of the shipment to be deleted |
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**204** | Successfully deleted the MTO shipment. |  -  |
+**400** | The request payload is invalid. |  -  |
 **403** | The request was denied. |  -  |
 **404** | The requested resource wasn&#39;t found. |  -  |
 **409** | The request could not be processed because of conflict in the current state of the resource. |  -  |
@@ -407,6 +499,8 @@ with prime_client.ApiClient() as api_client:
         scheduled_pickup_date=dateutil_parser('1970-01-01').date(),
         actual_pickup_date=dateutil_parser('1970-01-01').date(),
         first_available_delivery_date=dateutil_parser('1970-01-01').date(),
+        scheduled_delivery_date=dateutil_parser('1970-01-01').date(),
+        actual_delivery_date=dateutil_parser('1970-01-01').date(),
         prime_estimated_weight=4500,
         prime_actual_weight=4500,
         nts_recorded_weight=4500,
@@ -419,6 +513,23 @@ with prime_client.ApiClient() as api_client:
         shipment_type=MTOShipmentType("HHG"),
         diversion=True,
         point_of_contact="point_of_contact_example",
+        counselor_remarks="counselor approved",
+        ppm_shipment=UpdatePPMShipment(
+            expected_departure_date=dateutil_parser('1970-01-01').date(),
+            pickup_postal_code="90210",
+            secondary_pickup_postal_code="90210",
+            destination_postal_code="90210",
+            secondary_destination_postal_code="90210",
+            sit_expected=True,
+            sit_location={},
+            sit_estimated_weight=2000,
+            sit_estimated_entry_date=dateutil_parser('1970-01-01').date(),
+            sit_estimated_departure_date=dateutil_parser('1970-01-01').date(),
+            estimated_weight=4200,
+            has_pro_gear=True,
+            pro_gear_weight=1,
+            spouse_pro_gear_weight=1,
+        ),
     ) # UpdateMTOShipment | 
 
     # example passing only required values which don't have defaults set

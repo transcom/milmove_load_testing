@@ -45,6 +45,13 @@ class TestMtoShipmentApi(unittest.TestCase):
         """
         pass
 
+    def test_delete_mto_shipment(self):
+        """Test case for delete_mto_shipment
+
+        deleteMTOShipment  # noqa: E501
+        """
+        pass
+
     def test_update_mto_agent(self):
         """Test case for update_mto_agent
 

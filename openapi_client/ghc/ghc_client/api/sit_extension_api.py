@@ -23,7 +23,7 @@ from ghc_client.model_utils import (  # noqa: F401
     validate_and_convert_types
 )
 from ghc_client.model.approve_sit_extension import ApproveSITExtension
-from ghc_client.model.create_sit_extension_as_too import CreateSITExtensionAsTOO
+from ghc_client.model.create_approved_sit_duration_update import CreateApprovedSITDurationUpdate
 from ghc_client.model.deny_sit_extension import DenySITExtension
 from ghc_client.model.error import Error
 from ghc_client.model.mto_shipment import MTOShipment
@@ -109,12 +109,12 @@ class SitExtensionApi(object):
             },
             api_client=api_client
         )
-        self.create_sit_extension_as_too_endpoint = _Endpoint(
+        self.create_approved_sit_duration_update_endpoint = _Endpoint(
             settings={
                 'response_type': (MTOShipment,),
                 'auth': [],
                 'endpoint_path': '/shipments/{shipmentID}/sit-extensions/',
-                'operation_id': 'create_sit_extension_as_too',
+                'operation_id': 'create_approved_sit_duration_update',
                 'http_method': 'POST',
                 'servers': None,
             },
@@ -147,7 +147,7 @@ class SitExtensionApi(object):
                     'if_match':
                         (str,),
                     'body':
-                        (CreateSITExtensionAsTOO,),
+                        (CreateApprovedSITDurationUpdate,),
                 },
                 'attribute_map': {
                     'shipment_id': 'shipmentID',
@@ -330,26 +330,26 @@ class SitExtensionApi(object):
             body
         return self.approve_sit_extension_endpoint.call_with_http_info(**kwargs)
 
-    def create_sit_extension_as_too(
+    def create_approved_sit_duration_update(
         self,
         shipment_id,
         if_match,
         body,
         **kwargs
     ):
-        """Create an approved SIT extension  # noqa: E501
+        """Create an approved SIT Duration Update  # noqa: E501
 
-        TOO can creates an already-approved SIT extension on behalf of a customer  # noqa: E501
+        TOO can creates an already-approved SIT Duration Update on behalf of a customer  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.create_sit_extension_as_too(shipment_id, if_match, body, async_req=True)
+        >>> thread = api.create_approved_sit_duration_update(shipment_id, if_match, body, async_req=True)
         >>> result = thread.get()
 
         Args:
             shipment_id (str): ID of the shipment
-            if_match (str): We want the shipment's eTag rather than the SIT extension eTag as the SIT extension is always associated with a shipment
-            body (CreateSITExtensionAsTOO):
+            if_match (str): We want the shipment's eTag rather than the SIT Duration Update eTag as the SIT Duration Update is always associated with a shipment
+            body (CreateApprovedSITDurationUpdate):
 
         Keyword Args:
             _return_http_data_only (bool): response data without head status
@@ -414,7 +414,7 @@ class SitExtensionApi(object):
             if_match
         kwargs['body'] = \
             body
-        return self.create_sit_extension_as_too_endpoint.call_with_http_info(**kwargs)
+        return self.create_approved_sit_duration_update_endpoint.call_with_http_info(**kwargs)
 
     def deny_sit_extension(
         self,

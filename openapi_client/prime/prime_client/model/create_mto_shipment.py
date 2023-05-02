@@ -32,10 +32,12 @@ from prime_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from prime_client.model.address import Address
+    from prime_client.model.create_ppm_shipment import CreatePPMShipment
     from prime_client.model.mto_agents import MTOAgents
     from prime_client.model.mto_service_item import MTOServiceItem
     from prime_client.model.mto_shipment_type import MTOShipmentType
     globals()['Address'] = Address
+    globals()['CreatePPMShipment'] = CreatePPMShipment
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOServiceItem'] = MTOServiceItem
     globals()['MTOShipmentType'] = MTOShipmentType
@@ -69,6 +71,9 @@ class CreateMTOShipment(ModelNormal):
     }
 
     validations = {
+        ('prime_estimated_weight',): {
+            'inclusive_minimum': 1,
+        },
     }
 
     @cached_property
@@ -95,16 +100,18 @@ class CreateMTOShipment(ModelNormal):
         lazy_import()
         return {
             'move_task_order_id': (str,),  # noqa: E501
-            'requested_pickup_date': (date,),  # noqa: E501
-            'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
-            'prime_estimated_weight': (int,),  # noqa: E501
+            'requested_pickup_date': (date, none_type,),  # noqa: E501
+            'prime_estimated_weight': (int, none_type,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
             'mto_service_items': ([MTOServiceItem],),  # noqa: E501
+            'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
             'point_of_contact': (str,),  # noqa: E501
+            'counselor_remarks': (str, none_type,),  # noqa: E501
+            'ppm_shipment': (CreatePPMShipment,),  # noqa: E501
         }
 
     @cached_property
@@ -114,16 +121,18 @@ class CreateMTOShipment(ModelNormal):
 
     attribute_map = {
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
-        'requested_pickup_date': 'requestedPickupDate',  # noqa: E501
-        'pickup_address': 'pickupAddress',  # noqa: E501
-        'destination_address': 'destinationAddress',  # noqa: E501
         'shipment_type': 'shipmentType',  # noqa: E501
+        'requested_pickup_date': 'requestedPickupDate',  # noqa: E501
         'prime_estimated_weight': 'primeEstimatedWeight',  # noqa: E501
         'customer_remarks': 'customerRemarks',  # noqa: E501
         'agents': 'agents',  # noqa: E501
         'mto_service_items': 'mtoServiceItems',  # noqa: E501
+        'pickup_address': 'pickupAddress',  # noqa: E501
+        'destination_address': 'destinationAddress',  # noqa: E501
         'diversion': 'diversion',  # noqa: E501
         'point_of_contact': 'pointOfContact',  # noqa: E501
+        'counselor_remarks': 'counselorRemarks',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
     }
 
     read_only_vars = {
@@ -133,14 +142,11 @@ class CreateMTOShipment(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, move_task_order_id, requested_pickup_date, pickup_address, destination_address, shipment_type, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, move_task_order_id, shipment_type, *args, **kwargs):  # noqa: E501
         """CreateMTOShipment - a model defined in OpenAPI
 
         Args:
             move_task_order_id (str): The ID of the move this new shipment is for.
-            requested_pickup_date (date): The customer's preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. 
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.
             shipment_type (MTOShipmentType):
 
         Keyword Args:
@@ -174,12 +180,17 @@ class CreateMTOShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            prime_estimated_weight (int): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): The customer's preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. . [optional]  # noqa: E501
+            prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contractor will need to contact the TOO to change it. . [optional]  # noqa: E501
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             mto_service_items ([MTOServiceItem]): A list of service items connected to this shipment.. [optional]  # noqa: E501
+            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.. [optional]  # noqa: E501
+            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.. [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
+            counselor_remarks (str, none_type): [optional]  # noqa: E501
+            ppm_shipment (CreatePPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -208,9 +219,6 @@ class CreateMTOShipment(ModelNormal):
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
         self.move_task_order_id = move_task_order_id
-        self.requested_pickup_date = requested_pickup_date
-        self.pickup_address = pickup_address
-        self.destination_address = destination_address
         self.shipment_type = shipment_type
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
@@ -232,14 +240,11 @@ class CreateMTOShipment(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, move_task_order_id, requested_pickup_date, pickup_address, destination_address, shipment_type, *args, **kwargs):  # noqa: E501
+    def __init__(self, move_task_order_id, shipment_type, *args, **kwargs):  # noqa: E501
         """CreateMTOShipment - a model defined in OpenAPI
 
         Args:
             move_task_order_id (str): The ID of the move this new shipment is for.
-            requested_pickup_date (date): The customer's preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. 
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.
             shipment_type (MTOShipmentType):
 
         Keyword Args:
@@ -273,12 +278,17 @@ class CreateMTOShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            prime_estimated_weight (int): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): The customer's preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. . [optional]  # noqa: E501
+            prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contractor will need to contact the TOO to change it. . [optional]  # noqa: E501
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             mto_service_items ([MTOServiceItem]): A list of service items connected to this shipment.. [optional]  # noqa: E501
+            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.. [optional]  # noqa: E501
+            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.. [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
+            counselor_remarks (str, none_type): [optional]  # noqa: E501
+            ppm_shipment (CreatePPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -305,9 +315,6 @@ class CreateMTOShipment(ModelNormal):
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
         self.move_task_order_id = move_task_order_id
-        self.requested_pickup_date = requested_pickup_date
-        self.pickup_address = pickup_address
-        self.destination_address = destination_address
         self.shipment_type = shipment_type
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \

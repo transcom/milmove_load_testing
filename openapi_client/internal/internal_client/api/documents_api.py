@@ -22,7 +22,7 @@ from internal_client.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
-from internal_client.model.document_payload import DocumentPayload
+from internal_client.model.document import Document
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
 from internal_client.model.post_document_payload import PostDocumentPayload
 
@@ -40,7 +40,7 @@ class DocumentsApi(object):
         self.api_client = api_client
         self.create_document_endpoint = _Endpoint(
             settings={
-                'response_type': (DocumentPayload,),
+                'response_type': (Document,),
                 'auth': [],
                 'endpoint_path': '/documents',
                 'operation_id': 'create_document',
@@ -90,7 +90,7 @@ class DocumentsApi(object):
         )
         self.show_document_endpoint = _Endpoint(
             settings={
-                'response_type': (DocumentPayload,),
+                'response_type': (Document,),
                 'auth': [],
                 'endpoint_path': '/documents/{documentId}',
                 'operation_id': 'show_document',
@@ -184,7 +184,7 @@ class DocumentsApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            DocumentPayload
+            Document
                 If the method is called asynchronously, returns the request
                 thread.
         """
@@ -262,7 +262,7 @@ class DocumentsApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            DocumentPayload
+            Document
                 If the method is called asynchronously, returns the request
                 thread.
         """

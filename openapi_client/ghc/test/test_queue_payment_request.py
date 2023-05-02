@@ -17,12 +17,12 @@ from ghc_client.model.customer import Customer
 from ghc_client.model.dept_indicator import DeptIndicator
 from ghc_client.model.duty_location import DutyLocation
 from ghc_client.model.gbloc import GBLOC
-from ghc_client.model.payment_request_status import PaymentRequestStatus
+from ghc_client.model.queue_payment_request_status import QueuePaymentRequestStatus
 globals()['Customer'] = Customer
 globals()['DeptIndicator'] = DeptIndicator
 globals()['DutyLocation'] = DutyLocation
 globals()['GBLOC'] = GBLOC
-globals()['PaymentRequestStatus'] = PaymentRequestStatus
+globals()['QueuePaymentRequestStatus'] = QueuePaymentRequestStatus
 from ghc_client.model.queue_payment_request import QueuePaymentRequest
 
 

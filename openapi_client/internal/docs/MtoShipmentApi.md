@@ -47,9 +47,9 @@ with internal_client.ApiClient() as api_client:
         ppm_shipment=CreatePPMShipment(
             expected_departure_date=dateutil_parser('1970-01-01').date(),
             pickup_postal_code="90210",
-            secondary_pickup_postal_code="90210",
+            secondary_pickup_postal_code="secondary_pickup_postal_code_example",
             destination_postal_code="90210",
-            secondary_destination_postal_code="90210",
+            secondary_destination_postal_code="secondary_destination_postal_code_example",
             sit_expected=True,
         ),
         requested_pickup_date=dateutil_parser('1970-01-01').date(),
@@ -294,7 +294,6 @@ No authorization required
 **200** | Successfully retrieved all mto shipments for a move task order. |  -  |
 **400** | The request payload is invalid. |  -  |
 **401** | The request was denied. |  -  |
-**404** | The requested resource wasn&#39;t found. |  -  |
 **500** | A server error occurred. |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -339,18 +338,30 @@ with internal_client.ApiClient() as api_client:
             expected_departure_date=dateutil_parser('1970-01-01').date(),
             actual_move_date=dateutil_parser('1970-01-01').date(),
             pickup_postal_code="90210",
-            secondary_pickup_postal_code="90210",
+            secondary_pickup_postal_code="secondary_pickup_postal_code_example",
+            actual_pickup_postal_code="90210",
             destination_postal_code="90210",
-            secondary_destination_postal_code="90210",
+            secondary_destination_postal_code="secondary_destination_postal_code_example",
+            actual_destination_postal_code="90210",
+            w2_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
             sit_expected=True,
             estimated_weight=4200,
-            net_weight=4300,
             has_pro_gear=True,
             pro_gear_weight=1,
             spouse_pro_gear_weight=1,
-            estimated_incentive=1,
-            advance=1,
-            advance_requested=True,
+            has_requested_advance=True,
+            advance_amount_requested=1,
+            has_received_advance=True,
+            advance_amount_received=1,
         ),
         requested_pickup_date=dateutil_parser('1970-01-01').date(),
         requested_delivery_date=dateutil_parser('1970-01-01').date(),
@@ -375,6 +386,7 @@ with internal_client.ApiClient() as api_client:
             postal_code="90210",
             country="USA",
         ),
+        has_secondary_pickup_address=True,
         destination_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
             street_address1="123 Main Ave",
@@ -395,6 +407,7 @@ with internal_client.ApiClient() as api_client:
             postal_code="90210",
             country="USA",
         ),
+        has_secondary_delivery_address=True,
         agents=MTOAgents([
             MTOAgent(
                 id="1f2270c7-7166-40ae-981e-b200ebdf3054",

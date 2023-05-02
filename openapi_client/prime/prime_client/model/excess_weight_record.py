@@ -32,9 +32,9 @@ from prime_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from prime_client.model.excess_weight_record_all_of import ExcessWeightRecordAllOf
-    from prime_client.model.upload import Upload
+    from prime_client.model.upload_with_omissions import UploadWithOmissions
     globals()['ExcessWeightRecordAllOf'] = ExcessWeightRecordAllOf
-    globals()['Upload'] = Upload
+    globals()['UploadWithOmissions'] = UploadWithOmissions
 
 
 class ExcessWeightRecord(ModelComposed):
@@ -357,7 +357,7 @@ class ExcessWeightRecord(ModelComposed):
           ],
           'allOf': [
               ExcessWeightRecordAllOf,
-              Upload,
+              UploadWithOmissions,
           ],
           'oneOf': [
           ],

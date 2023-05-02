@@ -32,10 +32,10 @@ from internal_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from internal_client.model.create_reimbursement import CreateReimbursement
-    from internal_client.model.document_payload import DocumentPayload
+    from internal_client.model.document import Document
     from internal_client.model.t_shirt_size import TShirtSize
     globals()['CreateReimbursement'] = CreateReimbursement
-    globals()['DocumentPayload'] = DocumentPayload
+    globals()['Document'] = Document
     globals()['TShirtSize'] = TShirtSize
 
 
@@ -142,7 +142,7 @@ class CreatePersonallyProcuredMovePayload(ModelNormal):
             'net_weight': (int, none_type,),  # noqa: E501
             'has_requested_advance': (bool,),  # noqa: E501
             'advance': (CreateReimbursement,),  # noqa: E501
-            'advance_worksheet': (DocumentPayload,),  # noqa: E501
+            'advance_worksheet': (Document,),  # noqa: E501
             'has_pro_gear': (str, none_type,),  # noqa: E501
             'has_pro_gear_over_thousand': (str, none_type,),  # noqa: E501
         }
@@ -225,7 +225,7 @@ class CreatePersonallyProcuredMovePayload(ModelNormal):
             net_weight (int, none_type): [optional]  # noqa: E501
             has_requested_advance (bool): [optional]  # noqa: E501
             advance (CreateReimbursement): [optional]  # noqa: E501
-            advance_worksheet (DocumentPayload): [optional]  # noqa: E501
+            advance_worksheet (Document): [optional]  # noqa: E501
             has_pro_gear (str, none_type): [optional]  # noqa: E501
             has_pro_gear_over_thousand (str, none_type): [optional]  # noqa: E501
         """
@@ -322,7 +322,7 @@ class CreatePersonallyProcuredMovePayload(ModelNormal):
             net_weight (int, none_type): [optional]  # noqa: E501
             has_requested_advance (bool): [optional]  # noqa: E501
             advance (CreateReimbursement): [optional]  # noqa: E501
-            advance_worksheet (DocumentPayload): [optional]  # noqa: E501
+            advance_worksheet (Document): [optional]  # noqa: E501
             has_pro_gear (str, none_type): [optional]  # noqa: E501
             has_pro_gear_over_thousand (str, none_type): [optional]  # noqa: E501
         """

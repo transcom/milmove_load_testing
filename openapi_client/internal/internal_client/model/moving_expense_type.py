@@ -61,7 +61,7 @@ class MovingExpenseType(ModelSimple):
             'RENTAL_EQUIPMENT': "RENTAL_EQUIPMENT",
             'STORAGE': "STORAGE",
             'TOLLS': "TOLLS",
-            'WEIGHING_FEES': "WEIGHING_FEES",
+            'WEIGHING_FEE': "WEIGHING_FEE",
         },
     }
 
@@ -113,10 +113,10 @@ class MovingExpenseType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEES", ]  # noqa: E501
+            args[0] (str): Moving Expense Type., must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEE", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEES", ]  # noqa: E501
+            value (str): Moving Expense Type., must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEE", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -203,10 +203,10 @@ class MovingExpenseType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEES", ]  # noqa: E501
+            args[0] (str): Moving Expense Type., must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEE", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEES", ]  # noqa: E501
+            value (str): Moving Expense Type., must be one of ["CONTRACTED_EXPENSE", "GAS", "OIL", "OTHER", "PACKING_MATERIALS", "RENTAL_EQUIPMENT", "STORAGE", "TOLLS", "WEIGHING_FEE", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

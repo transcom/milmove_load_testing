@@ -34,9 +34,11 @@ def lazy_import():
     from ghc_client.model.contractor import Contractor
     from ghc_client.model.move_status import MoveStatus
     from ghc_client.model.order import Order
+    from ghc_client.model.transportation_office import TransportationOffice
     globals()['Contractor'] = Contractor
     globals()['MoveStatus'] = MoveStatus
     globals()['Order'] = Order
+    globals()['TransportationOffice'] = TransportationOffice
 
 
 class Move(ModelNormal):
@@ -108,6 +110,9 @@ class Move(ModelNormal):
             'tio_remarks': (str, none_type,),  # noqa: E501
             'financial_review_flag': (bool,),  # noqa: E501
             'financial_review_remarks': (str, none_type,),  # noqa: E501
+            'closeout_office': (TransportationOffice,),  # noqa: E501
+            'closeout_office_id': (str, none_type,),  # noqa: E501
+            'approvals_requested_at': (datetime, none_type,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'submitted_at': (datetime, none_type,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
@@ -136,6 +141,9 @@ class Move(ModelNormal):
         'tio_remarks': 'tioRemarks',  # noqa: E501
         'financial_review_flag': 'financialReviewFlag',  # noqa: E501
         'financial_review_remarks': 'financialReviewRemarks',  # noqa: E501
+        'closeout_office': 'closeoutOffice',  # noqa: E501
+        'closeout_office_id': 'closeoutOfficeId',  # noqa: E501
+        'approvals_requested_at': 'approvalsRequestedAt',  # noqa: E501
         'created_at': 'createdAt',  # noqa: E501
         'submitted_at': 'submittedAt',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
@@ -201,6 +209,9 @@ class Move(ModelNormal):
             tio_remarks (str, none_type): [optional]  # noqa: E501
             financial_review_flag (bool): This flag is set by office users if a move should be reviewed by a Financial Office. [optional]  # noqa: E501
             financial_review_remarks (str, none_type): [optional]  # noqa: E501
+            closeout_office (TransportationOffice): [optional]  # noqa: E501
+            closeout_office_id (str, none_type): The transportation office that will handle reviewing PPM Closeout documentation for Army and Air Force service members. [optional]  # noqa: E501
+            approvals_requested_at (datetime, none_type): The time at which a move is sent back to the TOO becuase the prime added a new service item for approval. [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
@@ -302,6 +313,9 @@ class Move(ModelNormal):
             tio_remarks (str, none_type): [optional]  # noqa: E501
             financial_review_flag (bool): This flag is set by office users if a move should be reviewed by a Financial Office. [optional]  # noqa: E501
             financial_review_remarks (str, none_type): [optional]  # noqa: E501
+            closeout_office (TransportationOffice): [optional]  # noqa: E501
+            closeout_office_id (str, none_type): The transportation office that will handle reviewing PPM Closeout documentation for Army and Air Force service members. [optional]  # noqa: E501
+            approvals_requested_at (datetime, none_type): The time at which a move is sent back to the TOO becuase the prime added a new service item for approval. [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501

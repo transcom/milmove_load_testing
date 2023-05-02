@@ -13,8 +13,8 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.signed_certification_type import SignedCertificationType
-globals()['SignedCertificationType'] = SignedCertificationType
+from internal_client.model.nullable_signed_certification_type import NullableSignedCertificationType
+globals()['NullableSignedCertificationType'] = NullableSignedCertificationType
 from internal_client.model.signed_certification_payload import SignedCertificationPayload
 
 

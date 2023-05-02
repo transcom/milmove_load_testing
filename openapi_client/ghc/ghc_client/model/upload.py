@@ -87,13 +87,13 @@ class Upload(ModelNormal):
                 and the value is attribute type.
         """
         return {
-            'bytes': (int,),  # noqa: E501
-            'content_type': (str,),  # noqa: E501
-            'created_at': (datetime,),  # noqa: E501
-            'filename': (str,),  # noqa: E501
             'id': (str,),  # noqa: E501
-            'updated_at': (datetime,),  # noqa: E501
             'url': (str,),  # noqa: E501
+            'filename': (str,),  # noqa: E501
+            'content_type': (str,),  # noqa: E501
+            'bytes': (int,),  # noqa: E501
+            'created_at': (datetime,),  # noqa: E501
+            'updated_at': (datetime,),  # noqa: E501
             'status': (str,),  # noqa: E501
         }
 
@@ -103,34 +103,42 @@ class Upload(ModelNormal):
 
 
     attribute_map = {
-        'bytes': 'bytes',  # noqa: E501
-        'content_type': 'contentType',  # noqa: E501
-        'created_at': 'createdAt',  # noqa: E501
-        'filename': 'filename',  # noqa: E501
         'id': 'id',  # noqa: E501
-        'updated_at': 'updatedAt',  # noqa: E501
         'url': 'url',  # noqa: E501
+        'filename': 'filename',  # noqa: E501
+        'content_type': 'contentType',  # noqa: E501
+        'bytes': 'bytes',  # noqa: E501
+        'created_at': 'createdAt',  # noqa: E501
+        'updated_at': 'updatedAt',  # noqa: E501
         'status': 'status',  # noqa: E501
     }
 
     read_only_vars = {
+        'id',  # noqa: E501
+        'url',  # noqa: E501
+        'filename',  # noqa: E501
+        'content_type',  # noqa: E501
+        'bytes',  # noqa: E501
+        'created_at',  # noqa: E501
+        'updated_at',  # noqa: E501
+        'status',  # noqa: E501
     }
 
     _composed_schemas = {}
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, bytes, content_type, created_at, filename, id, updated_at, url, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, url, filename, content_type, bytes, created_at, updated_at, *args, **kwargs):  # noqa: E501
         """Upload - a model defined in OpenAPI
 
         Args:
-            bytes (int):
-            content_type (str):
-            created_at (datetime):
-            filename (str):
             id (str):
-            updated_at (datetime):
             url (str):
+            filename (str):
+            content_type (str):
+            bytes (int):
+            created_at (datetime):
+            updated_at (datetime):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -191,13 +199,13 @@ class Upload(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
-        self.bytes = bytes
-        self.content_type = content_type
-        self.created_at = created_at
-        self.filename = filename
         self.id = id
-        self.updated_at = updated_at
         self.url = url
+        self.filename = filename
+        self.content_type = content_type
+        self.bytes = bytes
+        self.created_at = created_at
+        self.updated_at = updated_at
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -218,17 +226,8 @@ class Upload(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, bytes, content_type, created_at, filename, id, updated_at, url, *args, **kwargs):  # noqa: E501
+    def __init__(self, *args, **kwargs):  # noqa: E501
         """Upload - a model defined in OpenAPI
-
-        Args:
-            bytes (int):
-            content_type (str):
-            created_at (datetime):
-            filename (str):
-            id (str):
-            updated_at (datetime):
-            url (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -287,13 +286,6 @@ class Upload(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
-        self.bytes = bytes
-        self.content_type = content_type
-        self.created_at = created_at
-        self.filename = filename
-        self.id = id
-        self.updated_at = updated_at
-        self.url = url
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \

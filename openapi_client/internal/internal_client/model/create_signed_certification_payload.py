@@ -92,6 +92,7 @@ class CreateSignedCertificationPayload(ModelNormal):
             'signature': (str,),  # noqa: E501
             'certification_text': (str,),  # noqa: E501
             'personally_procured_move_id': (str, none_type,),  # noqa: E501
+            'ppm_id': (str, none_type,),  # noqa: E501
             'certification_type': (SignedCertificationTypeCreate,),  # noqa: E501
         }
 
@@ -105,6 +106,7 @@ class CreateSignedCertificationPayload(ModelNormal):
         'signature': 'signature',  # noqa: E501
         'certification_text': 'certification_text',  # noqa: E501
         'personally_procured_move_id': 'personally_procured_move_id',  # noqa: E501
+        'ppm_id': 'ppm_id',  # noqa: E501
         'certification_type': 'certification_type',  # noqa: E501
     }
 
@@ -155,6 +157,7 @@ class CreateSignedCertificationPayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             personally_procured_move_id (str, none_type): [optional]  # noqa: E501
+            ppm_id (str, none_type): The PPM Shipment ID to associate with the assigned certificate. . [optional]  # noqa: E501
             certification_type (SignedCertificationTypeCreate): [optional]  # noqa: E501
         """
 
@@ -246,6 +249,7 @@ class CreateSignedCertificationPayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             personally_procured_move_id (str, none_type): [optional]  # noqa: E501
+            ppm_id (str, none_type): The PPM Shipment ID to associate with the assigned certificate. . [optional]  # noqa: E501
             certification_type (SignedCertificationTypeCreate): [optional]  # noqa: E501
         """
 

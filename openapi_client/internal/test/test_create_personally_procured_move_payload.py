@@ -14,10 +14,10 @@ import unittest
 
 import internal_client
 from internal_client.model.create_reimbursement import CreateReimbursement
-from internal_client.model.document_payload import DocumentPayload
+from internal_client.model.document import Document
 from internal_client.model.t_shirt_size import TShirtSize
 globals()['CreateReimbursement'] = CreateReimbursement
-globals()['DocumentPayload'] = DocumentPayload
+globals()['Document'] = Document
 globals()['TShirtSize'] = TShirtSize
 from internal_client.model.create_personally_procured_move_payload import CreatePersonallyProcuredMovePayload
 

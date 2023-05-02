@@ -24,6 +24,13 @@ class TestTransportationOfficesApi(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_get_transportation_offices(self):
+        """Test case for get_transportation_offices
+
+        Returns the transportation offices matching the search query  # noqa: E501
+        """
+        pass
+
     def test_show_duty_location_transportation_office(self):
         """Test case for show_duty_location_transportation_office
 
