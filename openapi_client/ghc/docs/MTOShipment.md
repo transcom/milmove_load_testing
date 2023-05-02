@@ -27,6 +27,8 @@ Name | Type | Description | Notes
 **destination_type** | [**DestinationType**](DestinationType.md) |  | [optional] 
 **secondary_pickup_address** | [**Address**](Address.md) |  | [optional] 
 **secondary_delivery_address** | [**Address**](Address.md) |  | [optional] 
+**has_secondary_pickup_address** | **bool, none_type** |  | [optional] 
+**has_secondary_delivery_address** | **bool, none_type** |  | [optional] 
 **customer_remarks** | **str, none_type** |  | [optional] 
 **counselor_remarks** | **str, none_type** | The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address. Counselors enters this information when creating or editing an MTO Shipment. Optional field.  | [optional] 
 **shipment_type** | [**MTOShipmentType**](MTOShipmentType.md) |  | [optional] 

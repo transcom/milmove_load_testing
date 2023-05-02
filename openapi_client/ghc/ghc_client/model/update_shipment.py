@@ -108,7 +108,11 @@ class UpdateShipment(ModelNormal):
             'billable_weight_cap': (int, none_type,),  # noqa: E501
             'billable_weight_justification': (str, none_type,),  # noqa: E501
             'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type,),  # noqa: E501
+            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'secondary_delivery_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'secondary_pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
+            'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
             'tac_type': (LOATypeNullable,),  # noqa: E501
@@ -135,6 +139,10 @@ class UpdateShipment(ModelNormal):
         'billable_weight_justification': 'billableWeightJustification',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
+        'secondary_delivery_address': 'secondaryDeliveryAddress',  # noqa: E501
+        'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
+        'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
+        'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
         'destination_type': 'destinationType',  # noqa: E501
         'agents': 'agents',  # noqa: E501
         'tac_type': 'tacType',  # noqa: E501
@@ -195,7 +203,11 @@ class UpdateShipment(ModelNormal):
             billable_weight_cap (int, none_type): estimated weight of the shuttle service item provided by the prime. [optional]  # noqa: E501
             billable_weight_justification (str, none_type): [optional]  # noqa: E501
             pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
+            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            secondary_delivery_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            secondary_pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             tac_type (LOATypeNullable): [optional]  # noqa: E501
@@ -294,7 +306,11 @@ class UpdateShipment(ModelNormal):
             billable_weight_cap (int, none_type): estimated weight of the shuttle service item provided by the prime. [optional]  # noqa: E501
             billable_weight_justification (str, none_type): [optional]  # noqa: E501
             pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
+            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            secondary_delivery_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            secondary_pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             tac_type (LOATypeNullable): [optional]  # noqa: E501

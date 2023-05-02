@@ -345,7 +345,7 @@ No authorization required
 
 updateMTOShipment
 
-Updates a specified MTO shipment. Required fields include: * MTO Shipment ID required in path * If-Match required in headers * No fields required in body Optional fields include: * New shipment status type * Shipment Type * Customer requested pick-up date * Pick-up Address * Delivery Address * Delivery Address Type * Customer Remarks * Counselor Remarks * Releasing / Receiving agents 
+Updates a specified MTO shipment. Required fields include: * MTO Shipment ID required in path * If-Match required in headers * No fields required in body Optional fields include: * New shipment status type * Shipment Type * Customer requested pick-up date * Pick-up Address * Delivery Address * Secondary Pick-up Address * SecondaryDelivery Address * Delivery Address Type * Customer Remarks * Counselor Remarks * Releasing / Receiving agents 
 
 ### Example
 
@@ -383,6 +383,10 @@ with ghc_client.ApiClient() as api_client:
         billable_weight_justification="more weight than expected",
         pickup_address={},
         destination_address={},
+        secondary_delivery_address={},
+        secondary_pickup_address={},
+        has_secondary_pickup_address=True,
+        has_secondary_delivery_address=True,
         destination_type=DestinationType("OTHER_THAN_AUTHORIZED"),
         agents=MTOAgents([
             MTOAgent(

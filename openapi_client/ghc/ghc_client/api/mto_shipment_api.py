@@ -494,7 +494,7 @@ class MtoShipmentApi(object):
     ):
         """updateMTOShipment  # noqa: E501
 
-        Updates a specified MTO shipment. Required fields include: * MTO Shipment ID required in path * If-Match required in headers * No fields required in body Optional fields include: * New shipment status type * Shipment Type * Customer requested pick-up date * Pick-up Address * Delivery Address * Delivery Address Type * Customer Remarks * Counselor Remarks * Releasing / Receiving agents   # noqa: E501
+        Updates a specified MTO shipment. Required fields include: * MTO Shipment ID required in path * If-Match required in headers * No fields required in body Optional fields include: * New shipment status type * Shipment Type * Customer requested pick-up date * Pick-up Address * Delivery Address * Secondary Pick-up Address * SecondaryDelivery Address * Delivery Address Type * Customer Remarks * Counselor Remarks * Releasing / Receiving agents   # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
