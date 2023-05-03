@@ -253,6 +253,12 @@ class ObjectField(BaseAPIField):
             if field_name not in fake_data and self.has_field(field_name):
                 fake_data[field_name] = overrides[field_name]
 
+        # SIT location on ppm shipments generate nested and this tries to undo that so it's at the top level (prevents a 400)
+        # TODO: spend more time here and come up with a less specific fix (in case it's happening to other object or enum fields).
+        if "sitLocation" in fake_data:
+            if isinstance(fake_data["sitLocation"], dict):
+                fake_data["sitLocation"] = fake_data["sitLocation"]["sitLocation"]
+
         return fake_data
 
     def is_address_object(self):
