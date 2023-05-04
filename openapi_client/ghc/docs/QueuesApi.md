@@ -47,6 +47,8 @@ with ghc_client.ApiClient() as api_client:
     dod_id = "dodID_example" # str |  (optional)
     origin_duty_location = "originDutyLocation_example" # str |  (optional)
     destination_duty_location = "destinationDutyLocation_example" # str |  (optional)
+    appeared_in_too_at = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime |  (optional)
+    requested_move_date = "requestedMoveDate_example" # str | filters the requested pickup date of a shipment on the move (optional)
     status = [
         "SUBMITTED",
     ] # [str] | Filtering for the status. (optional)
@@ -55,7 +57,7 @@ with ghc_client.ApiClient() as api_client:
     # and optional values
     try:
         # Gets queued list of all customer moves by GBLOC origin
-        api_response = api_instance.get_moves_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, status=status)
+        api_response = api_instance.get_moves_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, appeared_in_too_at=appeared_in_too_at, requested_move_date=requested_move_date, status=status)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_moves_queue: %s\n" % e)
@@ -76,6 +78,8 @@ Name | Type | Description  | Notes
  **dod_id** | **str**|  | [optional]
  **origin_duty_location** | **str**|  | [optional]
  **destination_duty_location** | **str**|  | [optional]
+ **appeared_in_too_at** | **datetime**|  | [optional]
+ **requested_move_date** | **str**| filters the requested pickup date of a shipment on the move | [optional]
  **status** | **[str]**| Filtering for the status. | [optional]
 
 ### Return type
@@ -237,15 +241,20 @@ with ghc_client.ApiClient() as api_client:
     submitted_at = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Start of the submitted at date in the user's local time zone converted to UTC (optional)
     origin_gbloc = "originGBLOC_example" # str | filters the GBLOC of the service member's origin duty location (optional)
     origin_duty_location = "originDutyLocation_example" # str | filters the name of the origin duty location on the orders (optional)
+    destination_duty_location = "destinationDutyLocation_example" # str | filters the name of the destination duty location on the orders (optional)
     status = [
         "NEEDS SERVICE COUNSELING",
     ] # [str] | filters the status of the move (optional)
+    needs_ppm_closeout = True # bool | Only used for Services Counseling queue. If true, show PPM moves that are ready for closeout. Otherwise, show all other moves. (optional)
+    ppm_type = "FULL" # str | filters PPM type (optional)
+    closeout_initiated = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Latest date that closeout was initiated on a PPM on the move (optional)
+    closeout_location = "closeoutLocation_example" # str | closeout location (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Gets queued list of all customer moves needing services counseling by GBLOC origin
-        api_response = api_instance.get_services_counseling_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, requested_move_date=requested_move_date, submitted_at=submitted_at, origin_gbloc=origin_gbloc, origin_duty_location=origin_duty_location, status=status)
+        api_response = api_instance.get_services_counseling_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, requested_move_date=requested_move_date, submitted_at=submitted_at, origin_gbloc=origin_gbloc, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, status=status, needs_ppm_closeout=needs_ppm_closeout, ppm_type=ppm_type, closeout_initiated=closeout_initiated, closeout_location=closeout_location)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_services_counseling_queue: %s\n" % e)
@@ -268,7 +277,12 @@ Name | Type | Description  | Notes
  **submitted_at** | **datetime**| Start of the submitted at date in the user&#39;s local time zone converted to UTC | [optional]
  **origin_gbloc** | **str**| filters the GBLOC of the service member&#39;s origin duty location | [optional]
  **origin_duty_location** | **str**| filters the name of the origin duty location on the orders | [optional]
+ **destination_duty_location** | **str**| filters the name of the destination duty location on the orders | [optional]
  **status** | **[str]**| filters the status of the move | [optional]
+ **needs_ppm_closeout** | **bool**| Only used for Services Counseling queue. If true, show PPM moves that are ready for closeout. Otherwise, show all other moves. | [optional]
+ **ppm_type** | **str**| filters PPM type | [optional]
+ **closeout_initiated** | **datetime**| Latest date that closeout was initiated on a PPM on the move | [optional]
+ **closeout_location** | **str**| closeout location | [optional]
 
 ### Return type
 

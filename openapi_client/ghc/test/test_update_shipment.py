@@ -19,12 +19,14 @@ from ghc_client.model.loa_type_nullable import LOATypeNullable
 from ghc_client.model.mto_agents import MTOAgents
 from ghc_client.model.mto_shipment_type import MTOShipmentType
 from ghc_client.model.storage_facility import StorageFacility
+from ghc_client.model.update_ppm_shipment import UpdatePPMShipment
 globals()['Address'] = Address
 globals()['DestinationType'] = DestinationType
 globals()['LOATypeNullable'] = LOATypeNullable
 globals()['MTOAgents'] = MTOAgents
 globals()['MTOShipmentType'] = MTOShipmentType
 globals()['StorageFacility'] = StorageFacility
+globals()['UpdatePPMShipment'] = UpdatePPMShipment
 from ghc_client.model.update_shipment import UpdateShipment
 
 

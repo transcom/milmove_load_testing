@@ -31,8 +31,8 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from internal_client.model.signed_certification_type import SignedCertificationType
-    globals()['SignedCertificationType'] = SignedCertificationType
+    from internal_client.model.nullable_signed_certification_type import NullableSignedCertificationType
+    globals()['NullableSignedCertificationType'] = NullableSignedCertificationType
 
 
 class SignedCertificationPayload(ModelNormal):
@@ -96,7 +96,8 @@ class SignedCertificationPayload(ModelNormal):
             'certification_text': (str,),  # noqa: E501
             'move_id': (str,),  # noqa: E501
             'personally_procured_move_id': (str, none_type,),  # noqa: E501
-            'certification_type': (SignedCertificationType,),  # noqa: E501
+            'ppm_id': (str, none_type,),  # noqa: E501
+            'certification_type': (NullableSignedCertificationType,),  # noqa: E501
         }
 
     @cached_property
@@ -113,6 +114,7 @@ class SignedCertificationPayload(ModelNormal):
         'certification_text': 'certification_text',  # noqa: E501
         'move_id': 'move_id',  # noqa: E501
         'personally_procured_move_id': 'personally_procured_move_id',  # noqa: E501
+        'ppm_id': 'ppm_id',  # noqa: E501
         'certification_type': 'certification_type',  # noqa: E501
     }
 
@@ -167,7 +169,8 @@ class SignedCertificationPayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             personally_procured_move_id (str, none_type): [optional]  # noqa: E501
-            certification_type (SignedCertificationType): [optional]  # noqa: E501
+            ppm_id (str, none_type): The PPM Shipment ID to associate with the assigned certificate. . [optional]  # noqa: E501
+            certification_type (NullableSignedCertificationType): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -266,7 +269,8 @@ class SignedCertificationPayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             personally_procured_move_id (str, none_type): [optional]  # noqa: E501
-            certification_type (SignedCertificationType): [optional]  # noqa: E501
+            ppm_id (str, none_type): The PPM Shipment ID to associate with the assigned certificate. . [optional]  # noqa: E501
+            certification_type (NullableSignedCertificationType): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

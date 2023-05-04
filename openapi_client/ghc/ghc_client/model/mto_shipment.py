@@ -120,9 +120,12 @@ class MTOShipment(ModelNormal):
             'calculated_billable_weight': (int, none_type,),  # noqa: E501
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
             'scheduled_pickup_date': (date, none_type,),  # noqa: E501
-            'requested_pickup_date': (date,),  # noqa: E501
+            'scheduled_delivery_date': (date, none_type,),  # noqa: E501
+            'requested_pickup_date': (date, none_type,),  # noqa: E501
             'actual_pickup_date': (date, none_type,),  # noqa: E501
-            'requested_delivery_date': (date,),  # noqa: E501
+            'actual_delivery_date': (date, none_type,),  # noqa: E501
+            'requested_delivery_date': (date, none_type,),  # noqa: E501
+            'required_delivery_date': (date, none_type,),  # noqa: E501
             'approved_date': (datetime, none_type,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
@@ -130,6 +133,8 @@ class MTOShipment(ModelNormal):
             'destination_type': (DestinationType,),  # noqa: E501
             'secondary_pickup_address': (Address,),  # noqa: E501
             'secondary_delivery_address': (Address,),  # noqa: E501
+            'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
+            'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
             'counselor_remarks': (str, none_type,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
@@ -168,9 +173,12 @@ class MTOShipment(ModelNormal):
         'calculated_billable_weight': 'calculatedBillableWeight',  # noqa: E501
         'nts_recorded_weight': 'ntsRecordedWeight',  # noqa: E501
         'scheduled_pickup_date': 'scheduledPickupDate',  # noqa: E501
+        'scheduled_delivery_date': 'scheduledDeliveryDate',  # noqa: E501
         'requested_pickup_date': 'requestedPickupDate',  # noqa: E501
         'actual_pickup_date': 'actualPickupDate',  # noqa: E501
+        'actual_delivery_date': 'actualDeliveryDate',  # noqa: E501
         'requested_delivery_date': 'requestedDeliveryDate',  # noqa: E501
+        'required_delivery_date': 'requiredDeliveryDate',  # noqa: E501
         'approved_date': 'approvedDate',  # noqa: E501
         'diversion': 'diversion',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
@@ -178,6 +186,8 @@ class MTOShipment(ModelNormal):
         'destination_type': 'destinationType',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
         'secondary_delivery_address': 'secondaryDeliveryAddress',  # noqa: E501
+        'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
+        'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
         'customer_remarks': 'customerRemarks',  # noqa: E501
         'counselor_remarks': 'counselorRemarks',  # noqa: E501
         'shipment_type': 'shipmentType',  # noqa: E501
@@ -252,9 +262,12 @@ class MTOShipment(ModelNormal):
             calculated_billable_weight (int, none_type): [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): [optional]  # noqa: E501
-            requested_pickup_date (date): [optional]  # noqa: E501
+            scheduled_delivery_date (date, none_type): [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): [optional]  # noqa: E501
             actual_pickup_date (date, none_type): [optional]  # noqa: E501
-            requested_delivery_date (date): [optional]  # noqa: E501
+            actual_delivery_date (date, none_type): The actual date that the shipment was delivered to the destination address by the Prime. [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): [optional]  # noqa: E501
+            required_delivery_date (date, none_type): [optional]  # noqa: E501
             approved_date (datetime, none_type): [optional]  # noqa: E501
             diversion (bool): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
@@ -262,6 +275,8 @@ class MTOShipment(ModelNormal):
             destination_type (DestinationType): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address. Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
@@ -373,9 +388,12 @@ class MTOShipment(ModelNormal):
             calculated_billable_weight (int, none_type): [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): [optional]  # noqa: E501
-            requested_pickup_date (date): [optional]  # noqa: E501
+            scheduled_delivery_date (date, none_type): [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): [optional]  # noqa: E501
             actual_pickup_date (date, none_type): [optional]  # noqa: E501
-            requested_delivery_date (date): [optional]  # noqa: E501
+            actual_delivery_date (date, none_type): The actual date that the shipment was delivered to the destination address by the Prime. [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): [optional]  # noqa: E501
+            required_delivery_date (date, none_type): [optional]  # noqa: E501
             approved_date (datetime, none_type): [optional]  # noqa: E501
             diversion (bool): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
@@ -383,6 +401,8 @@ class MTOShipment(ModelNormal):
             destination_type (DestinationType): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address. Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501

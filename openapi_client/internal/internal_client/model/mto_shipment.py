@@ -110,7 +110,9 @@ class MTOShipment(ModelNormal):
             'pickup_address': (Address,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
             'secondary_pickup_address': (Address,),  # noqa: E501
+            'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'secondary_delivery_address': (Address,),  # noqa: E501
+            'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -134,7 +136,9 @@ class MTOShipment(ModelNormal):
         'pickup_address': 'pickupAddress',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
+        'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'secondary_delivery_address': 'secondaryDeliveryAddress',  # noqa: E501
+        'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -200,7 +204,9 @@ class MTOShipment(ModelNormal):
             pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -297,7 +303,9 @@ class MTOShipment(ModelNormal):
             pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 

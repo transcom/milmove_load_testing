@@ -104,10 +104,9 @@ class MoveAuditHistory(ModelNormal):
             'action_tstamp_stm': (datetime,),  # noqa: E501
             'action_tstamp_clk': (datetime,),  # noqa: E501
             'transaction_id': (int, none_type,),  # noqa: E501
-            'client_query': (str, none_type,),  # noqa: E501
             'action': (str,),  # noqa: E501
-            'old_values': ({str: (str,)}, none_type,),  # noqa: E501
-            'changed_values': ({str: (str,)}, none_type,),  # noqa: E501
+            'old_values': (bool, date, datetime, dict, float, int, list, str, none_type,),  # noqa: E501
+            'changed_values': (bool, date, datetime, dict, float, int, list, str, none_type,),  # noqa: E501
             'statement_only': (bool,),  # noqa: E501
         }
 
@@ -134,7 +133,6 @@ class MoveAuditHistory(ModelNormal):
         'action_tstamp_stm': 'actionTstampStm',  # noqa: E501
         'action_tstamp_clk': 'actionTstampClk',  # noqa: E501
         'transaction_id': 'transactionId',  # noqa: E501
-        'client_query': 'clientQuery',  # noqa: E501
         'action': 'action',  # noqa: E501
         'old_values': 'oldValues',  # noqa: E501
         'changed_values': 'changedValues',  # noqa: E501
@@ -199,10 +197,9 @@ class MoveAuditHistory(ModelNormal):
             action_tstamp_stm (datetime): Statement start timestamp for tx in which audited event occurred. [optional]  # noqa: E501
             action_tstamp_clk (datetime): Wall clock time at which audited event's trigger call occurred. [optional]  # noqa: E501
             transaction_id (int, none_type): Identifier of transaction that made the change. May wrap, but unique paired with action_tstamp_tx.. [optional]  # noqa: E501
-            client_query (str, none_type): Record the text of the client query that triggered the audit event. [optional]  # noqa: E501
             action (str): Action type; I = insert, D = delete, U = update, T = truncate. [optional]  # noqa: E501
-            old_values ({str: (str,)}, none_type): A list of (old/previous) MoveAuditHistoryItem's for a record before the change.. [optional]  # noqa: E501
-            changed_values ({str: (str,)}, none_type): A list of (changed/updated) MoveAuditHistoryItem's for a record after the change.. [optional]  # noqa: E501
+            old_values (bool, date, datetime, dict, float, int, list, str, none_type): A list of (old/previous) MoveAuditHistoryItem's for a record before the change.. [optional]  # noqa: E501
+            changed_values (bool, date, datetime, dict, float, int, list, str, none_type): A list of (changed/updated) MoveAuditHistoryItem's for a record after the change.. [optional]  # noqa: E501
             statement_only (bool): true if audit event is from an FOR EACH STATEMENT trigger, false for FOR EACH ROW'. [optional]  # noqa: E501
         """
 
@@ -302,10 +299,9 @@ class MoveAuditHistory(ModelNormal):
             action_tstamp_stm (datetime): Statement start timestamp for tx in which audited event occurred. [optional]  # noqa: E501
             action_tstamp_clk (datetime): Wall clock time at which audited event's trigger call occurred. [optional]  # noqa: E501
             transaction_id (int, none_type): Identifier of transaction that made the change. May wrap, but unique paired with action_tstamp_tx.. [optional]  # noqa: E501
-            client_query (str, none_type): Record the text of the client query that triggered the audit event. [optional]  # noqa: E501
             action (str): Action type; I = insert, D = delete, U = update, T = truncate. [optional]  # noqa: E501
-            old_values ({str: (str,)}, none_type): A list of (old/previous) MoveAuditHistoryItem's for a record before the change.. [optional]  # noqa: E501
-            changed_values ({str: (str,)}, none_type): A list of (changed/updated) MoveAuditHistoryItem's for a record after the change.. [optional]  # noqa: E501
+            old_values (bool, date, datetime, dict, float, int, list, str, none_type): A list of (old/previous) MoveAuditHistoryItem's for a record before the change.. [optional]  # noqa: E501
+            changed_values (bool, date, datetime, dict, float, int, list, str, none_type): A list of (changed/updated) MoveAuditHistoryItem's for a record after the change.. [optional]  # noqa: E501
             statement_only (bool): true if audit event is from an FOR EACH STATEMENT trigger, false for FOR EACH ROW'. [optional]  # noqa: E501
         """
 

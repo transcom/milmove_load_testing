@@ -24,6 +24,13 @@ class TestPpmApi(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_create_moving_expense(self):
+        """Test case for create_moving_expense
+
+        Creates moving expense document  # noqa: E501
+        """
+        pass
+
     def test_create_personally_procured_move(self):
         """Test case for create_personally_procured_move
 
@@ -35,6 +42,48 @@ class TestPpmApi(unittest.TestCase):
         """Test case for create_ppm_attachments
 
         Creates PPM attachments PDF  # noqa: E501
+        """
+        pass
+
+    def test_create_ppm_upload(self):
+        """Test case for create_ppm_upload
+
+        Create a new upload for a PPM weight ticket, pro-gear, or moving expense document  # noqa: E501
+        """
+        pass
+
+    def test_create_pro_gear_weight_ticket(self):
+        """Test case for create_pro_gear_weight_ticket
+
+        Creates a pro-gear weight ticket  # noqa: E501
+        """
+        pass
+
+    def test_create_weight_ticket(self):
+        """Test case for create_weight_ticket
+
+        Creates a weight ticket document  # noqa: E501
+        """
+        pass
+
+    def test_delete_moving_expense(self):
+        """Test case for delete_moving_expense
+
+        Soft deletes a moving expense by ID  # noqa: E501
+        """
+        pass
+
+    def test_delete_pro_gear_weight_ticket(self):
+        """Test case for delete_pro_gear_weight_ticket
+
+        Soft deletes a pro-gear weight line item by ID  # noqa: E501
+        """
+        pass
+
+    def test_delete_weight_ticket(self):
+        """Test case for delete_weight_ticket
+
+        Soft deletes a weight ticket by ID  # noqa: E501
         """
         pass
 
@@ -63,6 +112,13 @@ class TestPpmApi(unittest.TestCase):
         """Test case for request_ppm_payment
 
         Moves the PPM and the move into the PAYMENT_REQUESTED state  # noqa: E501
+        """
+        pass
+
+    def test_resubmit_ppm_shipment_documentation(self):
+        """Test case for resubmit_ppm_shipment_documentation
+
+        Updates signature and routes PPM shipment to service counselor  # noqa: E501
         """
         pass
 
@@ -101,6 +157,20 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
+    def test_submit_ppm_shipment_documentation(self):
+        """Test case for submit_ppm_shipment_documentation
+
+        Saves signature and routes PPM shipment to service counselor  # noqa: E501
+        """
+        pass
+
+    def test_update_moving_expense(self):
+        """Test case for update_moving_expense
+
+        Updates the moving expense  # noqa: E501
+        """
+        pass
+
     def test_update_personally_procured_move(self):
         """Test case for update_personally_procured_move
 
@@ -108,10 +178,17 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
-    def test_update_personally_procured_move_estimate(self):
-        """Test case for update_personally_procured_move_estimate
+    def test_update_pro_gear_weight_ticket(self):
+        """Test case for update_pro_gear_weight_ticket
 
-        Calculates the estimated incentive of a PPM  # noqa: E501
+        Updates a pro-gear weight ticket  # noqa: E501
+        """
+        pass
+
+    def test_update_weight_ticket(self):
+        """Test case for update_weight_ticket
+
+        Updates a weight ticket document  # noqa: E501
         """
         pass
 

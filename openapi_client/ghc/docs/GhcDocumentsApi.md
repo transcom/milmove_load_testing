@@ -8,7 +8,7 @@ Method | HTTP request | Description
 
 
 # **get_document**
-> DocumentPayload get_document(document_id)
+> Document get_document(document_id)
 
 Returns a document
 
@@ -22,8 +22,8 @@ import time
 import ghc_client
 from ghc_client.api import ghc_documents_api
 from ghc_client.model.error import Error
+from ghc_client.model.document import Document
 from ghc_client.model.validation_error import ValidationError
-from ghc_client.model.document_payload import DocumentPayload
 from pprint import pprint
 # Defining the host is optional and defaults to /ghc/v1
 # See configuration.py for a list of all supported configuration parameters.
@@ -56,7 +56,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**DocumentPayload**](DocumentPayload.md)
+[**Document**](Document.md)
 
 ### Authorization
 

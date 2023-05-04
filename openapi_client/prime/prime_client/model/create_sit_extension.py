@@ -68,6 +68,9 @@ class CreateSITExtension(ModelNormal):
     }
 
     validations = {
+        ('requested_days',): {
+            'inclusive_minimum': 1,
+        },
     }
 
     @cached_property

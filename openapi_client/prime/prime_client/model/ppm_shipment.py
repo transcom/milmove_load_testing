@@ -32,7 +32,9 @@ from prime_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from prime_client.model.ppm_shipment_status import PPMShipmentStatus
+    from prime_client.model.sit_location_type import SITLocationType
     globals()['PPMShipmentStatus'] = PPMShipmentStatus
+    globals()['SITLocationType'] = SITLocationType
 
 
 class PPMShipment(ModelNormal):
@@ -68,17 +70,27 @@ class PPMShipment(ModelNormal):
                 'pattern': r'^(\d{5})$',  # noqa: E501
             },
         },
-        ('secondary_pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
         ('destination_postal_code',): {
             'regex': {
                 'pattern': r'^(\d{5})$',  # noqa: E501
             },
         },
+        ('secondary_pickup_postal_code',): {
+            'regex': {
+                'pattern': r'^(\d{5})$',  # noqa: E501
+            },
+        },
+        ('actual_pickup_postal_code',): {
+            'regex': {
+                'pattern': r'^(\d{5})$',  # noqa: E501
+            },
+        },
         ('secondary_destination_postal_code',): {
+            'regex': {
+                'pattern': r'^(\d{5})$',  # noqa: E501
+            },
+        },
+        ('actual_destination_postal_code',): {
             'regex': {
                 'pattern': r'^(\d{5})$',  # noqa: E501
             },
@@ -111,28 +123,35 @@ class PPMShipment(ModelNormal):
             'id': (str,),  # noqa: E501
             'shipment_id': (str,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
-            'updated_at': (datetime,),  # noqa: E501
             'status': (PPMShipmentStatus,),  # noqa: E501
             'expected_departure_date': (date,),  # noqa: E501
+            'pickup_postal_code': (str,),  # noqa: E501
+            'destination_postal_code': (str,),  # noqa: E501
+            'sit_expected': (bool,),  # noqa: E501
+            'e_tag': (str,),  # noqa: E501
+            'updated_at': (datetime,),  # noqa: E501
             'actual_move_date': (date, none_type,),  # noqa: E501
             'submitted_at': (datetime, none_type,),  # noqa: E501
             'reviewed_at': (datetime, none_type,),  # noqa: E501
             'approved_at': (datetime, none_type,),  # noqa: E501
-            'pickup_postal_code': (str,),  # noqa: E501
             'secondary_pickup_postal_code': (str, none_type,),  # noqa: E501
-            'destination_postal_code': (str,),  # noqa: E501
+            'actual_pickup_postal_code': (str, none_type,),  # noqa: E501
             'secondary_destination_postal_code': (str, none_type,),  # noqa: E501
-            'sit_expected': (bool,),  # noqa: E501
+            'actual_destination_postal_code': (str, none_type,),  # noqa: E501
             'estimated_weight': (int, none_type,),  # noqa: E501
-            'net_weight': (int, none_type,),  # noqa: E501
             'has_pro_gear': (bool, none_type,),  # noqa: E501
             'pro_gear_weight': (int, none_type,),  # noqa: E501
             'spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'estimated_incentive': (int, none_type,),  # noqa: E501
-            'advance': (int, none_type,),  # noqa: E501
-            'advance_requested': (bool, none_type,),  # noqa: E501
-            'deleted_at': (datetime, none_type,),  # noqa: E501
-            'e_tag': (str,),  # noqa: E501
+            'has_requested_advance': (bool, none_type,),  # noqa: E501
+            'advance_amount_requested': (int, none_type,),  # noqa: E501
+            'has_received_advance': (bool, none_type,),  # noqa: E501
+            'advance_amount_received': (int, none_type,),  # noqa: E501
+            'sit_location': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'sit_estimated_weight': (int, none_type,),  # noqa: E501
+            'sit_estimated_entry_date': (date, none_type,),  # noqa: E501
+            'sit_estimated_departure_date': (date, none_type,),  # noqa: E501
+            'sit_estimated_cost': (int, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -144,44 +163,62 @@ class PPMShipment(ModelNormal):
         'id': 'id',  # noqa: E501
         'shipment_id': 'shipmentId',  # noqa: E501
         'created_at': 'createdAt',  # noqa: E501
-        'updated_at': 'updatedAt',  # noqa: E501
         'status': 'status',  # noqa: E501
         'expected_departure_date': 'expectedDepartureDate',  # noqa: E501
+        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
+        'destination_postal_code': 'destinationPostalCode',  # noqa: E501
+        'sit_expected': 'sitExpected',  # noqa: E501
+        'e_tag': 'eTag',  # noqa: E501
+        'updated_at': 'updatedAt',  # noqa: E501
         'actual_move_date': 'actualMoveDate',  # noqa: E501
         'submitted_at': 'submittedAt',  # noqa: E501
         'reviewed_at': 'reviewedAt',  # noqa: E501
         'approved_at': 'approvedAt',  # noqa: E501
-        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
         'secondary_pickup_postal_code': 'secondaryPickupPostalCode',  # noqa: E501
-        'destination_postal_code': 'destinationPostalCode',  # noqa: E501
+        'actual_pickup_postal_code': 'actualPickupPostalCode',  # noqa: E501
         'secondary_destination_postal_code': 'secondaryDestinationPostalCode',  # noqa: E501
-        'sit_expected': 'sitExpected',  # noqa: E501
+        'actual_destination_postal_code': 'actualDestinationPostalCode',  # noqa: E501
         'estimated_weight': 'estimatedWeight',  # noqa: E501
-        'net_weight': 'netWeight',  # noqa: E501
         'has_pro_gear': 'hasProGear',  # noqa: E501
         'pro_gear_weight': 'proGearWeight',  # noqa: E501
         'spouse_pro_gear_weight': 'spouseProGearWeight',  # noqa: E501
         'estimated_incentive': 'estimatedIncentive',  # noqa: E501
-        'advance': 'advance',  # noqa: E501
-        'advance_requested': 'advanceRequested',  # noqa: E501
-        'deleted_at': 'deletedAt',  # noqa: E501
-        'e_tag': 'eTag',  # noqa: E501
+        'has_requested_advance': 'hasRequestedAdvance',  # noqa: E501
+        'advance_amount_requested': 'advanceAmountRequested',  # noqa: E501
+        'has_received_advance': 'hasReceivedAdvance',  # noqa: E501
+        'advance_amount_received': 'advanceAmountReceived',  # noqa: E501
+        'sit_location': 'sitLocation',  # noqa: E501
+        'sit_estimated_weight': 'sitEstimatedWeight',  # noqa: E501
+        'sit_estimated_entry_date': 'sitEstimatedEntryDate',  # noqa: E501
+        'sit_estimated_departure_date': 'sitEstimatedDepartureDate',  # noqa: E501
+        'sit_estimated_cost': 'sitEstimatedCost',  # noqa: E501
     }
 
     read_only_vars = {
         'id',  # noqa: E501
         'shipment_id',  # noqa: E501
         'created_at',  # noqa: E501
-        'updated_at',  # noqa: E501
         'e_tag',  # noqa: E501
+        'updated_at',  # noqa: E501
     }
 
     _composed_schemas = {}
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, shipment_id, created_at, status, expected_departure_date, pickup_postal_code, destination_postal_code, sit_expected, e_tag, *args, **kwargs):  # noqa: E501
         """PPMShipment - a model defined in OpenAPI
+
+        Args:
+            id (str): The primary unique identifier of this PPM shipment
+            shipment_id (str): The id of the parent MTOShipment record
+            created_at (datetime): The timestamp of when the PPM shipment was created (UTC)
+            status (PPMShipmentStatus):
+            expected_departure_date (date): Date the customer expects to begin moving from their origin. 
+            pickup_postal_code (str): The postal code of the origin location where goods are being moved from.
+            destination_postal_code (str): The postal code of the destination location where goods are being delivered to.
+            sit_expected (bool): Captures whether some or all of the PPM shipment will require temporary storage at the origin or destination.  Must be set to `true` when providing `sitLocation`, `sitEstimatedWeight`, `sitEstimatedEntryDate`, and `sitEstimatedDepartureDate` values to calculate the `sitEstimatedCost`. 
+            e_tag (str): A hash unique to this shipment that should be used as the \"If-Match\" header for any updates.
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -214,31 +251,29 @@ class PPMShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            id (str): [optional]  # noqa: E501
-            shipment_id (str): [optional]  # noqa: E501
-            created_at (datetime): [optional]  # noqa: E501
-            updated_at (datetime): [optional]  # noqa: E501
-            status (PPMShipmentStatus): [optional]  # noqa: E501
-            expected_departure_date (date): Date the customer expects to move. . [optional]  # noqa: E501
-            actual_move_date (date, none_type): [optional]  # noqa: E501
-            submitted_at (datetime, none_type): [optional]  # noqa: E501
-            reviewed_at (datetime, none_type): [optional]  # noqa: E501
-            approved_at (datetime, none_type): [optional]  # noqa: E501
-            pickup_postal_code (str): zip code. [optional]  # noqa: E501
-            secondary_pickup_postal_code (str, none_type): [optional]  # noqa: E501
-            destination_postal_code (str): [optional]  # noqa: E501
-            secondary_destination_postal_code (str, none_type): [optional]  # noqa: E501
-            sit_expected (bool): [optional]  # noqa: E501
-            estimated_weight (int, none_type): [optional]  # noqa: E501
-            net_weight (int, none_type): The net weight of the shipment once it has been weight . [optional]  # noqa: E501
-            has_pro_gear (bool, none_type): Indicates whether PPM shipment has pro gear. . [optional]  # noqa: E501
-            pro_gear_weight (int, none_type): [optional]  # noqa: E501
-            spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
-            estimated_incentive (int, none_type): [optional]  # noqa: E501
-            advance (int, none_type): The amount request for an advance, or null if no advance is requested . [optional]  # noqa: E501
-            advance_requested (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
-            deleted_at (datetime, none_type): [optional]  # noqa: E501
-            e_tag (str): A hash unique to this shipment that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
+            updated_at (datetime): The timestamp of when a property of this object was last updated (UTC). [optional]  # noqa: E501
+            actual_move_date (date, none_type): The actual start date of when the PPM shipment left the origin.. [optional]  # noqa: E501
+            submitted_at (datetime, none_type): The timestamp of when the customer submitted their PPM documentation to the counselor for review.. [optional]  # noqa: E501
+            reviewed_at (datetime, none_type): The timestamp of when the Service Counselor has reviewed all of the closeout documents.. [optional]  # noqa: E501
+            approved_at (datetime, none_type): The timestamp of when the shipment was approved and the service member can begin their move.. [optional]  # noqa: E501
+            secondary_pickup_postal_code (str, none_type): An optional secondary pickup location near the origin where additional goods exist.. [optional]  # noqa: E501
+            actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
+            secondary_destination_postal_code (str, none_type): An optional secondary location near the destination where goods will be dropped off.. [optional]  # noqa: E501
+            actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
+            estimated_weight (int, none_type): The estimated weight of the PPM shipment goods being moved in pounds.. [optional]  # noqa: E501
+            has_pro_gear (bool, none_type): Indicates whether PPM shipment has pro gear for themselves or their spouse. . [optional]  # noqa: E501
+            pro_gear_weight (int, none_type): The estimated weight of the pro-gear being moved belonging to the service member in pounds.. [optional]  # noqa: E501
+            spouse_pro_gear_weight (int, none_type): The estimated weight of the pro-gear being moved belonging to a spouse in pounds.. [optional]  # noqa: E501
+            estimated_incentive (int, none_type): The estimated amount the government will pay the service member to move their belongings based on the moving date, locations, and shipment weight.. [optional]  # noqa: E501
+            has_requested_advance (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
+            advance_amount_requested (int, none_type): The amount requested as an advance by the service member, up to a maximum percentage of the estimated incentive. . [optional]  # noqa: E501
+            has_received_advance (bool, none_type): Indicates whether an advance was received for the PPM shipment. . [optional]  # noqa: E501
+            advance_amount_received (int, none_type): The amount received for an advance, or null if no advance is received. . [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_estimated_weight (int, none_type): The estimated weight of the goods being put into storage in pounds.. [optional]  # noqa: E501
+            sit_estimated_entry_date (date, none_type): The date that goods will first enter the storage location.. [optional]  # noqa: E501
+            sit_estimated_departure_date (date, none_type): The date that goods will exit the storage location.. [optional]  # noqa: E501
+            sit_estimated_cost (int, none_type): The estimated amount that the government will pay the service member to put their goods into storage. This estimated storage cost is separate from the estimated incentive.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -266,6 +301,15 @@ class PPMShipment(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
+        self.id = id
+        self.shipment_id = shipment_id
+        self.created_at = created_at
+        self.status = status
+        self.expected_departure_date = expected_departure_date
+        self.pickup_postal_code = pickup_postal_code
+        self.destination_postal_code = destination_postal_code
+        self.sit_expected = sit_expected
+        self.e_tag = e_tag
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -286,9 +330,14 @@ class PPMShipment(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, *args, **kwargs):  # noqa: E501
+    def __init__(self, status, expected_departure_date, pickup_postal_code, destination_postal_code, sit_expected, *args, **kwargs):  # noqa: E501
         """PPMShipment - a model defined in OpenAPI
 
+            status (PPMShipmentStatus):
+            expected_departure_date (date): Date the customer expects to begin moving from their origin. 
+            pickup_postal_code (str): The postal code of the origin location where goods are being moved from.
+            destination_postal_code (str): The postal code of the destination location where goods are being delivered to.
+            sit_expected (bool): Captures whether some or all of the PPM shipment will require temporary storage at the origin or destination.  Must be set to `true` when providing `sitLocation`, `sitEstimatedWeight`, `sitEstimatedEntryDate`, and `sitEstimatedDepartureDate` values to calculate the `sitEstimatedCost`. 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
@@ -320,31 +369,29 @@ class PPMShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            id (str): [optional]  # noqa: E501
-            shipment_id (str): [optional]  # noqa: E501
-            created_at (datetime): [optional]  # noqa: E501
-            updated_at (datetime): [optional]  # noqa: E501
-            status (PPMShipmentStatus): [optional]  # noqa: E501
-            expected_departure_date (date): Date the customer expects to move. . [optional]  # noqa: E501
-            actual_move_date (date, none_type): [optional]  # noqa: E501
-            submitted_at (datetime, none_type): [optional]  # noqa: E501
-            reviewed_at (datetime, none_type): [optional]  # noqa: E501
-            approved_at (datetime, none_type): [optional]  # noqa: E501
-            pickup_postal_code (str): zip code. [optional]  # noqa: E501
-            secondary_pickup_postal_code (str, none_type): [optional]  # noqa: E501
-            destination_postal_code (str): [optional]  # noqa: E501
-            secondary_destination_postal_code (str, none_type): [optional]  # noqa: E501
-            sit_expected (bool): [optional]  # noqa: E501
-            estimated_weight (int, none_type): [optional]  # noqa: E501
-            net_weight (int, none_type): The net weight of the shipment once it has been weight . [optional]  # noqa: E501
-            has_pro_gear (bool, none_type): Indicates whether PPM shipment has pro gear. . [optional]  # noqa: E501
-            pro_gear_weight (int, none_type): [optional]  # noqa: E501
-            spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
-            estimated_incentive (int, none_type): [optional]  # noqa: E501
-            advance (int, none_type): The amount request for an advance, or null if no advance is requested . [optional]  # noqa: E501
-            advance_requested (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
-            deleted_at (datetime, none_type): [optional]  # noqa: E501
-            e_tag (str): A hash unique to this shipment that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
+            updated_at (datetime): The timestamp of when a property of this object was last updated (UTC). [optional]  # noqa: E501
+            actual_move_date (date, none_type): The actual start date of when the PPM shipment left the origin.. [optional]  # noqa: E501
+            submitted_at (datetime, none_type): The timestamp of when the customer submitted their PPM documentation to the counselor for review.. [optional]  # noqa: E501
+            reviewed_at (datetime, none_type): The timestamp of when the Service Counselor has reviewed all of the closeout documents.. [optional]  # noqa: E501
+            approved_at (datetime, none_type): The timestamp of when the shipment was approved and the service member can begin their move.. [optional]  # noqa: E501
+            secondary_pickup_postal_code (str, none_type): An optional secondary pickup location near the origin where additional goods exist.. [optional]  # noqa: E501
+            actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
+            secondary_destination_postal_code (str, none_type): An optional secondary location near the destination where goods will be dropped off.. [optional]  # noqa: E501
+            actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
+            estimated_weight (int, none_type): The estimated weight of the PPM shipment goods being moved in pounds.. [optional]  # noqa: E501
+            has_pro_gear (bool, none_type): Indicates whether PPM shipment has pro gear for themselves or their spouse. . [optional]  # noqa: E501
+            pro_gear_weight (int, none_type): The estimated weight of the pro-gear being moved belonging to the service member in pounds.. [optional]  # noqa: E501
+            spouse_pro_gear_weight (int, none_type): The estimated weight of the pro-gear being moved belonging to a spouse in pounds.. [optional]  # noqa: E501
+            estimated_incentive (int, none_type): The estimated amount the government will pay the service member to move their belongings based on the moving date, locations, and shipment weight.. [optional]  # noqa: E501
+            has_requested_advance (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
+            advance_amount_requested (int, none_type): The amount requested as an advance by the service member, up to a maximum percentage of the estimated incentive. . [optional]  # noqa: E501
+            has_received_advance (bool, none_type): Indicates whether an advance was received for the PPM shipment. . [optional]  # noqa: E501
+            advance_amount_received (int, none_type): The amount received for an advance, or null if no advance is received. . [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_estimated_weight (int, none_type): The estimated weight of the goods being put into storage in pounds.. [optional]  # noqa: E501
+            sit_estimated_entry_date (date, none_type): The date that goods will first enter the storage location.. [optional]  # noqa: E501
+            sit_estimated_departure_date (date, none_type): The date that goods will exit the storage location.. [optional]  # noqa: E501
+            sit_estimated_cost (int, none_type): The estimated amount that the government will pay the service member to put their goods into storage. This estimated storage cost is separate from the estimated incentive.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -370,6 +417,11 @@ class PPMShipment(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
+        self.status = status
+        self.expected_departure_date = expected_departure_date
+        self.pickup_postal_code = pickup_postal_code
+        self.destination_postal_code = destination_postal_code
+        self.sit_expected = sit_expected
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \

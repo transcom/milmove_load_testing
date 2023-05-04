@@ -35,10 +35,12 @@ def lazy_import():
     from prime_client.model.destination_type import DestinationType
     from prime_client.model.mto_shipment_type import MTOShipmentType
     from prime_client.model.storage_facility import StorageFacility
+    from prime_client.model.update_ppm_shipment import UpdatePPMShipment
     globals()['Address'] = Address
     globals()['DestinationType'] = DestinationType
     globals()['MTOShipmentType'] = MTOShipmentType
     globals()['StorageFacility'] = StorageFacility
+    globals()['UpdatePPMShipment'] = UpdatePPMShipment
 
 
 class UpdateMTOShipment(ModelNormal):
@@ -69,6 +71,12 @@ class UpdateMTOShipment(ModelNormal):
     }
 
     validations = {
+        ('prime_estimated_weight',): {
+            'inclusive_minimum': 1,
+        },
+        ('prime_actual_weight',): {
+            'inclusive_minimum': 1,
+        },
     }
 
     @cached_property
@@ -97,8 +105,10 @@ class UpdateMTOShipment(ModelNormal):
             'scheduled_pickup_date': (date, none_type,),  # noqa: E501
             'actual_pickup_date': (date, none_type,),  # noqa: E501
             'first_available_delivery_date': (date, none_type,),  # noqa: E501
-            'prime_estimated_weight': (int,),  # noqa: E501
-            'prime_actual_weight': (int,),  # noqa: E501
+            'scheduled_delivery_date': (date, none_type,),  # noqa: E501
+            'actual_delivery_date': (date, none_type,),  # noqa: E501
+            'prime_estimated_weight': (int, none_type,),  # noqa: E501
+            'prime_actual_weight': (int, none_type,),  # noqa: E501
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
             'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
@@ -109,6 +119,8 @@ class UpdateMTOShipment(ModelNormal):
             'shipment_type': (MTOShipmentType,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
             'point_of_contact': (str,),  # noqa: E501
+            'counselor_remarks': (str, none_type,),  # noqa: E501
+            'ppm_shipment': (UpdatePPMShipment,),  # noqa: E501
         }
 
     @cached_property
@@ -120,6 +132,8 @@ class UpdateMTOShipment(ModelNormal):
         'scheduled_pickup_date': 'scheduledPickupDate',  # noqa: E501
         'actual_pickup_date': 'actualPickupDate',  # noqa: E501
         'first_available_delivery_date': 'firstAvailableDeliveryDate',  # noqa: E501
+        'scheduled_delivery_date': 'scheduledDeliveryDate',  # noqa: E501
+        'actual_delivery_date': 'actualDeliveryDate',  # noqa: E501
         'prime_estimated_weight': 'primeEstimatedWeight',  # noqa: E501
         'prime_actual_weight': 'primeActualWeight',  # noqa: E501
         'nts_recorded_weight': 'ntsRecordedWeight',  # noqa: E501
@@ -132,6 +146,8 @@ class UpdateMTOShipment(ModelNormal):
         'shipment_type': 'shipmentType',  # noqa: E501
         'diversion': 'diversion',  # noqa: E501
         'point_of_contact': 'pointOfContact',  # noqa: E501
+        'counselor_remarks': 'counselorRemarks',  # noqa: E501
+        'ppm_shipment': 'ppmShipment',  # noqa: E501
     }
 
     read_only_vars = {
@@ -178,8 +194,10 @@ class UpdateMTOShipment(ModelNormal):
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
             actual_pickup_date (date, none_type): The date when the Prime contractor actually picked up the shipment. Updated after-the-fact.. [optional]  # noqa: E501
             first_available_delivery_date (date, none_type): The date the Prime provides to the customer as the first possible delivery date so that they can plan their travel accordingly. . [optional]  # noqa: E501
-            prime_estimated_weight (int): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
-            prime_actual_weight (int): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
+            scheduled_delivery_date (date, none_type): The date the Prime contractor scheduled to deliver this shipment after consultation with the customer.. [optional]  # noqa: E501
+            actual_delivery_date (date, none_type): The date when the Prime contractor actually delivered the shipment. Updated after-the-fact.. [optional]  # noqa: E501
+            prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
+            prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment, entered by the customer during onboarding when they enter shipment details. . [optional]  # noqa: E501
             destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment. Often provided by the customer when they enter shipment details during onboarding, if they know their new address already.  May be blank when entered by the customer, required when entered by the Prime. May not represent the true final destination due to the shipment being diverted or placed in SIT. . [optional]  # noqa: E501
@@ -190,6 +208,8 @@ class UpdateMTOShipment(ModelNormal):
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
+            counselor_remarks (str, none_type): [optional]  # noqa: E501
+            ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -274,8 +294,10 @@ class UpdateMTOShipment(ModelNormal):
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
             actual_pickup_date (date, none_type): The date when the Prime contractor actually picked up the shipment. Updated after-the-fact.. [optional]  # noqa: E501
             first_available_delivery_date (date, none_type): The date the Prime provides to the customer as the first possible delivery date so that they can plan their travel accordingly. . [optional]  # noqa: E501
-            prime_estimated_weight (int): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
-            prime_actual_weight (int): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
+            scheduled_delivery_date (date, none_type): The date the Prime contractor scheduled to deliver this shipment after consultation with the customer.. [optional]  # noqa: E501
+            actual_delivery_date (date, none_type): The date when the Prime contractor actually delivered the shipment. Updated after-the-fact.. [optional]  # noqa: E501
+            prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
+            prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment, entered by the customer during onboarding when they enter shipment details. . [optional]  # noqa: E501
             destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment. Often provided by the customer when they enter shipment details during onboarding, if they know their new address already.  May be blank when entered by the customer, required when entered by the Prime. May not represent the true final destination due to the shipment being diverted or placed in SIT. . [optional]  # noqa: E501
@@ -286,6 +308,8 @@ class UpdateMTOShipment(ModelNormal):
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
+            counselor_remarks (str, none_type): [optional]  # noqa: E501
+            ppm_shipment (UpdatePPMShipment): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

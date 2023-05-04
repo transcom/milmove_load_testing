@@ -87,6 +87,12 @@ class MTOShipment(ModelNormal):
     }
 
     validations = {
+        ('prime_estimated_weight',): {
+            'inclusive_minimum': 1,
+        },
+        ('prime_actual_weight',): {
+            'inclusive_minimum': 1,
+        },
     }
 
     @cached_property
@@ -116,13 +122,16 @@ class MTOShipment(ModelNormal):
             'move_task_order_id': (str,),  # noqa: E501
             'approved_date': (date, none_type,),  # noqa: E501
             'requested_pickup_date': (date, none_type,),  # noqa: E501
+            'requested_delivery_date': (date, none_type,),  # noqa: E501
             'scheduled_pickup_date': (date, none_type,),  # noqa: E501
             'actual_pickup_date': (date, none_type,),  # noqa: E501
             'first_available_delivery_date': (date, none_type,),  # noqa: E501
             'required_delivery_date': (date, none_type,),  # noqa: E501
-            'prime_estimated_weight': (int,),  # noqa: E501
+            'scheduled_delivery_date': (date, none_type,),  # noqa: E501
+            'actual_delivery_date': (date, none_type,),  # noqa: E501
+            'prime_estimated_weight': (int, none_type,),  # noqa: E501
             'prime_estimated_weight_recorded_date': (date, none_type,),  # noqa: E501
-            'prime_actual_weight': (int,),  # noqa: E501
+            'prime_actual_weight': (int, none_type,),  # noqa: E501
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
             'counselor_remarks': (str, none_type,),  # noqa: E501
@@ -157,10 +166,13 @@ class MTOShipment(ModelNormal):
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
         'approved_date': 'approvedDate',  # noqa: E501
         'requested_pickup_date': 'requestedPickupDate',  # noqa: E501
+        'requested_delivery_date': 'requestedDeliveryDate',  # noqa: E501
         'scheduled_pickup_date': 'scheduledPickupDate',  # noqa: E501
         'actual_pickup_date': 'actualPickupDate',  # noqa: E501
         'first_available_delivery_date': 'firstAvailableDeliveryDate',  # noqa: E501
         'required_delivery_date': 'requiredDeliveryDate',  # noqa: E501
+        'scheduled_delivery_date': 'scheduledDeliveryDate',  # noqa: E501
+        'actual_delivery_date': 'actualDeliveryDate',  # noqa: E501
         'prime_estimated_weight': 'primeEstimatedWeight',  # noqa: E501
         'prime_estimated_weight_recorded_date': 'primeEstimatedWeightRecordedDate',  # noqa: E501
         'prime_actual_weight': 'primeActualWeight',  # noqa: E501
@@ -193,6 +205,7 @@ class MTOShipment(ModelNormal):
         'move_task_order_id',  # noqa: E501
         'approved_date',  # noqa: E501
         'requested_pickup_date',  # noqa: E501
+        'requested_delivery_date',  # noqa: E501
         'required_delivery_date',  # noqa: E501
         'prime_estimated_weight_recorded_date',  # noqa: E501
         'customer_remarks',  # noqa: E501
@@ -247,13 +260,16 @@ class MTOShipment(ModelNormal):
             move_task_order_id (str): The ID of the move for this shipment.. [optional]  # noqa: E501
             approved_date (date, none_type): The date when the Transportation Ordering Officer first approved this shipment for the move.. [optional]  # noqa: E501
             requested_pickup_date (date, none_type): The date the customer selects during onboarding as their preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. . [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): The customer's preferred delivery date.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
             actual_pickup_date (date, none_type): The date when the Prime contractor actually picked up the shipment. Updated after-the-fact.. [optional]  # noqa: E501
             first_available_delivery_date (date, none_type): The date the Prime provides to the customer as the first possible delivery date so that they can plan their travel accordingly. . [optional]  # noqa: E501
             required_delivery_date (date, none_type): The latest date by which the Prime can deliver a customer's shipment without violating the contract. This is calculated based on weight, distance, and the scheduled pickup date. It cannot be modified. . [optional]  # noqa: E501
-            prime_estimated_weight (int): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
+            scheduled_delivery_date (date, none_type): The date the Prime contractor scheduled to deliver this shipment after consultation with the customer.. [optional]  # noqa: E501
+            actual_delivery_date (date, none_type): The date when the Prime contractor actually delivered the shipment. Updated after-the-fact.. [optional]  # noqa: E501
+            prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
             prime_estimated_weight_recorded_date (date, none_type): The date when the Prime contractor recorded the shipment's estimated weight.. [optional]  # noqa: E501
-            prime_actual_weight (int): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
+            prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
@@ -361,13 +377,16 @@ class MTOShipment(ModelNormal):
             move_task_order_id (str): The ID of the move for this shipment.. [optional]  # noqa: E501
             approved_date (date, none_type): The date when the Transportation Ordering Officer first approved this shipment for the move.. [optional]  # noqa: E501
             requested_pickup_date (date, none_type): The date the customer selects during onboarding as their preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. . [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): The customer's preferred delivery date.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
             actual_pickup_date (date, none_type): The date when the Prime contractor actually picked up the shipment. Updated after-the-fact.. [optional]  # noqa: E501
             first_available_delivery_date (date, none_type): The date the Prime provides to the customer as the first possible delivery date so that they can plan their travel accordingly. . [optional]  # noqa: E501
             required_delivery_date (date, none_type): The latest date by which the Prime can deliver a customer's shipment without violating the contract. This is calculated based on weight, distance, and the scheduled pickup date. It cannot be modified. . [optional]  # noqa: E501
-            prime_estimated_weight (int): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
+            scheduled_delivery_date (date, none_type): The date the Prime contractor scheduled to deliver this shipment after consultation with the customer.. [optional]  # noqa: E501
+            actual_delivery_date (date, none_type): The date when the Prime contractor actually delivered the shipment. Updated after-the-fact.. [optional]  # noqa: E501
+            prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
             prime_estimated_weight_recorded_date (date, none_type): The date when the Prime contractor recorded the shipment's estimated weight.. [optional]  # noqa: E501
-            prime_actual_weight (int): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
+            prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501

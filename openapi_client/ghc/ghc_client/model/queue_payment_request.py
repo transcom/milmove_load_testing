@@ -35,12 +35,12 @@ def lazy_import():
     from ghc_client.model.dept_indicator import DeptIndicator
     from ghc_client.model.duty_location import DutyLocation
     from ghc_client.model.gbloc import GBLOC
-    from ghc_client.model.payment_request_status import PaymentRequestStatus
+    from ghc_client.model.queue_payment_request_status import QueuePaymentRequestStatus
     globals()['Customer'] = Customer
     globals()['DeptIndicator'] = DeptIndicator
     globals()['DutyLocation'] = DutyLocation
     globals()['GBLOC'] = GBLOC
-    globals()['PaymentRequestStatus'] = PaymentRequestStatus
+    globals()['QueuePaymentRequestStatus'] = QueuePaymentRequestStatus
 
 
 class QueuePaymentRequest(ModelNormal):
@@ -99,7 +99,7 @@ class QueuePaymentRequest(ModelNormal):
             'id': (str,),  # noqa: E501
             'move_id': (str,),  # noqa: E501
             'customer': (Customer,),  # noqa: E501
-            'status': (PaymentRequestStatus,),  # noqa: E501
+            'status': (QueuePaymentRequestStatus,),  # noqa: E501
             'age': (float,),  # noqa: E501
             'submitted_at': (datetime,),  # noqa: E501
             'locator': (str,),  # noqa: E501
@@ -170,7 +170,7 @@ class QueuePaymentRequest(ModelNormal):
             id (str): [optional]  # noqa: E501
             move_id (str): [optional]  # noqa: E501
             customer (Customer): [optional]  # noqa: E501
-            status (PaymentRequestStatus): [optional]  # noqa: E501
+            status (QueuePaymentRequestStatus): [optional]  # noqa: E501
             age (float): Days since the payment request has been requested.  Decimal representation will allow more accurate sorting.. [optional]  # noqa: E501
             submitted_at (datetime): [optional]  # noqa: E501
             locator (str): [optional]  # noqa: E501
@@ -261,7 +261,7 @@ class QueuePaymentRequest(ModelNormal):
             id (str): [optional]  # noqa: E501
             move_id (str): [optional]  # noqa: E501
             customer (Customer): [optional]  # noqa: E501
-            status (PaymentRequestStatus): [optional]  # noqa: E501
+            status (QueuePaymentRequestStatus): [optional]  # noqa: E501
             age (float): Days since the payment request has been requested.  Decimal representation will allow more accurate sorting.. [optional]  # noqa: E501
             submitted_at (datetime): [optional]  # noqa: E501
             locator (str): [optional]  # noqa: E501

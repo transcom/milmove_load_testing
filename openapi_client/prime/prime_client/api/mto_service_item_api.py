@@ -234,7 +234,7 @@ class MtoServiceItemApi(object):
     ):
         """updateMTOServiceItem  # noqa: E501
 
-        Updates MTOServiceItems after creation. Not all service items or fields may be updated, please see details below.  This endpoint supports different body definitions. In the modelType field below, select the modelType corresponding  to the service item you wish to update and the documentation will update with the new definition.  To create a service item, please use [createMTOServiceItem](#operation/createMTOServiceItem)) endpoint.  ### Errors  Currently this is not implemented and will generated the NotImplemented error.   # noqa: E501
+        Updates MTOServiceItems after creation. Not all service items or fields may be updated, please see details below.  This endpoint supports different body definitions. In the modelType field below, select the modelType corresponding  to the service item you wish to update and the documentation will update with the new definition.  To create a service item, please use [createMTOServiceItem](#operation/createMTOServiceItem)) endpoint.   # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 

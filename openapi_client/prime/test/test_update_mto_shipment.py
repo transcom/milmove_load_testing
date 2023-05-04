@@ -17,10 +17,12 @@ from prime_client.model.address import Address
 from prime_client.model.destination_type import DestinationType
 from prime_client.model.mto_shipment_type import MTOShipmentType
 from prime_client.model.storage_facility import StorageFacility
+from prime_client.model.update_ppm_shipment import UpdatePPMShipment
 globals()['Address'] = Address
 globals()['DestinationType'] = DestinationType
 globals()['MTOShipmentType'] = MTOShipmentType
 globals()['StorageFacility'] = StorageFacility
+globals()['UpdatePPMShipment'] = UpdatePPMShipment
 from prime_client.model.update_mto_shipment import UpdateMTOShipment
 
 

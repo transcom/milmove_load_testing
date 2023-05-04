@@ -13,8 +13,8 @@ import sys
 import unittest
 
 import prime_client
-from prime_client.model.upload import Upload
-globals()['Upload'] = Upload
+from prime_client.model.upload_with_omissions import UploadWithOmissions
+globals()['UploadWithOmissions'] = UploadWithOmissions
 from prime_client.model.proof_of_service_docs import ProofOfServiceDocs
 
 

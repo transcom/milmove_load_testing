@@ -69,16 +69,6 @@ class CreatePPMShipment(ModelNormal):
                 'pattern': r'^(\d{5})$',  # noqa: E501
             },
         },
-        ('secondary_pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('secondary_destination_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
     }
 
     @cached_property

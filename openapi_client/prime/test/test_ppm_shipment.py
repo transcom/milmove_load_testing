@@ -14,7 +14,9 @@ import unittest
 
 import prime_client
 from prime_client.model.ppm_shipment_status import PPMShipmentStatus
+from prime_client.model.sit_location_type import SITLocationType
 globals()['PPMShipmentStatus'] = PPMShipmentStatus
+globals()['SITLocationType'] = SITLocationType
 from prime_client.model.ppm_shipment import PPMShipment
 
 

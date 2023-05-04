@@ -26,7 +26,7 @@ from prime_client.model.client_error import ClientError
 from prime_client.model.create_payment_request import CreatePaymentRequest
 from prime_client.model.error import Error
 from prime_client.model.payment_request import PaymentRequest
-from prime_client.model.upload import Upload
+from prime_client.model.upload_with_omissions import UploadWithOmissions
 from prime_client.model.validation_error import ValidationError
 
 
@@ -91,7 +91,7 @@ class PaymentRequestApi(object):
         )
         self.create_upload_endpoint = _Endpoint(
             settings={
-                'response_type': (Upload,),
+                'response_type': (UploadWithOmissions,),
                 'auth': [],
                 'endpoint_path': '/payment-requests/{paymentRequestID}/uploads',
                 'operation_id': 'create_upload',
@@ -153,7 +153,7 @@ class PaymentRequestApi(object):
     ):
         """createPaymentRequest  # noqa: E501
 
-        Creates a new instance of a paymentRequest. A newly created payment request is assigned the status `PENDING`. A move task order can have multiple payment requests, and a final payment request can be marked using boolean `isFinal`.   # noqa: E501
+        Creates a new instance of a paymentRequest. A newly created payment request is assigned the status `PENDING`. A move task order can have multiple payment requests, and a final payment request can be marked using boolean `isFinal`.  If a `PENDING` payment request is recalculated, a new payment request is created and the original request is marked with the status `DEPRECATED`.  **NOTE**: In order to create a payment request for most service items, the shipment *must* be updated with the `PrimeActualWeight` value via [updateMTOShipment](#operation/updateMTOShipment). **Fuel Surcharge** service items require `ActualPickupDate` to be updated on the shipment.  To create a paymentRequest for a SIT Delivery mtoServiceItem, the item must first have a final address set via [updateMTOServiceItem](#operation/updateMTOServiceItem).   # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
@@ -269,7 +269,7 @@ class PaymentRequestApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            Upload
+            UploadWithOmissions
                 If the method is called asynchronously, returns the request
                 thread.
         """

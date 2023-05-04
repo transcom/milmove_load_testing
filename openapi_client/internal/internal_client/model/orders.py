@@ -32,15 +32,17 @@ from internal_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from internal_client.model.dept_indicator import DeptIndicator
-    from internal_client.model.document_payload import DocumentPayload
+    from internal_client.model.document import Document
     from internal_client.model.duty_location_payload import DutyLocationPayload
+    from internal_client.model.entitlement import Entitlement
     from internal_client.model.index_moves_payload import IndexMovesPayload
     from internal_client.model.orders_status import OrdersStatus
     from internal_client.model.orders_type import OrdersType
     from internal_client.model.orders_type_detail import OrdersTypeDetail
     globals()['DeptIndicator'] = DeptIndicator
-    globals()['DocumentPayload'] = DocumentPayload
+    globals()['Document'] = Document
     globals()['DutyLocationPayload'] = DutyLocationPayload
+    globals()['Entitlement'] = Entitlement
     globals()['IndexMovesPayload'] = IndexMovesPayload
     globals()['OrdersStatus'] = OrdersStatus
     globals()['OrdersType'] = OrdersType
@@ -108,14 +110,15 @@ class Orders(ModelNormal):
             'has_dependents': (bool,),  # noqa: E501
             'spouse_has_pro_gear': (bool,),  # noqa: E501
             'new_duty_location': (DutyLocationPayload,),  # noqa: E501
-            'uploaded_orders': (DocumentPayload,),  # noqa: E501
+            'uploaded_orders': (Document,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'grade': (str, none_type,),  # noqa: E501
             'status': (OrdersStatus,),  # noqa: E501
             'orders_type_detail': (OrdersTypeDetail,),  # noqa: E501
             'origin_duty_location': (DutyLocationPayload,),  # noqa: E501
-            'uploaded_amended_orders': (DocumentPayload,),  # noqa: E501
+            'origin_duty_location_gbloc': (str, none_type,),  # noqa: E501
+            'uploaded_amended_orders': (Document,),  # noqa: E501
             'uploaded_amended_orders_id': (str,),  # noqa: E501
             'moves': (IndexMovesPayload,),  # noqa: E501
             'orders_number': (str, none_type,),  # noqa: E501
@@ -123,6 +126,7 @@ class Orders(ModelNormal):
             'sac': (str, none_type,),  # noqa: E501
             'department_indicator': (DeptIndicator,),  # noqa: E501
             'authorized_weight': (int, none_type,),  # noqa: E501
+            'entitlement': (Entitlement,),  # noqa: E501
         }
 
     @cached_property
@@ -146,6 +150,7 @@ class Orders(ModelNormal):
         'status': 'status',  # noqa: E501
         'orders_type_detail': 'orders_type_detail',  # noqa: E501
         'origin_duty_location': 'origin_duty_location',  # noqa: E501
+        'origin_duty_location_gbloc': 'originDutyLocationGbloc',  # noqa: E501
         'uploaded_amended_orders': 'uploaded_amended_orders',  # noqa: E501
         'uploaded_amended_orders_id': 'uploaded_amended_orders_id',  # noqa: E501
         'moves': 'moves',  # noqa: E501
@@ -154,6 +159,7 @@ class Orders(ModelNormal):
         'sac': 'sac',  # noqa: E501
         'department_indicator': 'department_indicator',  # noqa: E501
         'authorized_weight': 'authorizedWeight',  # noqa: E501
+        'entitlement': 'entitlement',  # noqa: E501
     }
 
     read_only_vars = {
@@ -175,7 +181,7 @@ class Orders(ModelNormal):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
             new_duty_location (DutyLocationPayload):
-            uploaded_orders (DocumentPayload):
+            uploaded_orders (Document):
             created_at (datetime):
             updated_at (datetime):
 
@@ -214,7 +220,8 @@ class Orders(ModelNormal):
             status (OrdersStatus): [optional]  # noqa: E501
             orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
             origin_duty_location (DutyLocationPayload): [optional]  # noqa: E501
-            uploaded_amended_orders (DocumentPayload): [optional]  # noqa: E501
+            origin_duty_location_gbloc (str, none_type): [optional]  # noqa: E501
+            uploaded_amended_orders (Document): [optional]  # noqa: E501
             uploaded_amended_orders_id (str): [optional]  # noqa: E501
             moves (IndexMovesPayload): [optional]  # noqa: E501
             orders_number (str, none_type): [optional]  # noqa: E501
@@ -222,6 +229,7 @@ class Orders(ModelNormal):
             sac (str, none_type): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             authorized_weight (int, none_type): [optional]  # noqa: E501
+            entitlement (Entitlement): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -292,7 +300,7 @@ class Orders(ModelNormal):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
             new_duty_location (DutyLocationPayload):
-            uploaded_orders (DocumentPayload):
+            uploaded_orders (Document):
             created_at (datetime):
             updated_at (datetime):
 
@@ -331,7 +339,8 @@ class Orders(ModelNormal):
             status (OrdersStatus): [optional]  # noqa: E501
             orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
             origin_duty_location (DutyLocationPayload): [optional]  # noqa: E501
-            uploaded_amended_orders (DocumentPayload): [optional]  # noqa: E501
+            origin_duty_location_gbloc (str, none_type): [optional]  # noqa: E501
+            uploaded_amended_orders (Document): [optional]  # noqa: E501
             uploaded_amended_orders_id (str): [optional]  # noqa: E501
             moves (IndexMovesPayload): [optional]  # noqa: E501
             orders_number (str, none_type): [optional]  # noqa: E501
@@ -339,6 +348,7 @@ class Orders(ModelNormal):
             sac (str, none_type): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             authorized_weight (int, none_type): [optional]  # noqa: E501
+            entitlement (Entitlement): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

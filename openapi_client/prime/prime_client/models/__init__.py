@@ -12,6 +12,7 @@
 from prime_client.model.address import Address
 from prime_client.model.client_error import ClientError
 from prime_client.model.create_mto_shipment import CreateMTOShipment
+from prime_client.model.create_ppm_shipment import CreatePPMShipment
 from prime_client.model.create_payment_request import CreatePaymentRequest
 from prime_client.model.create_sit_extension import CreateSITExtension
 from prime_client.model.customer import Customer
@@ -45,6 +46,7 @@ from prime_client.model.mto_shipment_type import MTOShipmentType
 from prime_client.model.mto_shipments import MTOShipments
 from prime_client.model.move_task_order import MoveTaskOrder
 from prime_client.model.order import Order
+from prime_client.model.orders_type import OrdersType
 from prime_client.model.ppm_shipment import PPMShipment
 from prime_client.model.ppm_shipment_status import PPMShipmentStatus
 from prime_client.model.payment_request import PaymentRequest
@@ -61,6 +63,7 @@ from prime_client.model.reweigh import Reweigh
 from prime_client.model.reweigh_requester import ReweighRequester
 from prime_client.model.sit_extension import SITExtension
 from prime_client.model.sit_extensions import SITExtensions
+from prime_client.model.sit_location_type import SITLocationType
 from prime_client.model.service_item import ServiceItem
 from prime_client.model.service_item_param_name import ServiceItemParamName
 from prime_client.model.service_item_param_origin import ServiceItemParamOrigin
@@ -75,7 +78,8 @@ from prime_client.model.update_mto_service_item_shuttle import UpdateMTOServiceI
 from prime_client.model.update_mto_service_item_shuttle_all_of import UpdateMTOServiceItemShuttleAllOf
 from prime_client.model.update_mto_shipment import UpdateMTOShipment
 from prime_client.model.update_mto_shipment_status import UpdateMTOShipmentStatus
+from prime_client.model.update_ppm_shipment import UpdatePPMShipment
 from prime_client.model.update_reweigh import UpdateReweigh
-from prime_client.model.upload import Upload
+from prime_client.model.upload_with_omissions import UploadWithOmissions
 from prime_client.model.validation_error import ValidationError
 from prime_client.model.validation_error_all_of import ValidationErrorAllOf

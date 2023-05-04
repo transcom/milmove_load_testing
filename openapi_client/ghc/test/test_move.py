@@ -16,9 +16,11 @@ import ghc_client
 from ghc_client.model.contractor import Contractor
 from ghc_client.model.move_status import MoveStatus
 from ghc_client.model.order import Order
+from ghc_client.model.transportation_office import TransportationOffice
 globals()['Contractor'] = Contractor
 globals()['MoveStatus'] = MoveStatus
 globals()['Order'] = Order
+globals()['TransportationOffice'] = TransportationOffice
 from ghc_client.model.move import Move
 
 

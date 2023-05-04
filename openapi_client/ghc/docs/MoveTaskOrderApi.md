@@ -6,7 +6,6 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_entitlements**](MoveTaskOrderApi.md#get_entitlements) | **GET** /move-task-orders/{moveTaskOrderID}/entitlements | Gets entitlements for a move by ID
 [**get_move_task_order**](MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveTaskOrderID} | Gets a move by ID
-[**update_move_task_order**](MoveTaskOrderApi.md#update_move_task_order) | **PATCH** /move-task-orders/{moveTaskOrderID} | Updates a move by ID
 [**update_move_task_order_status**](MoveTaskOrderApi.md#update_move_task_order_status) | **PATCH** /move-task-orders/{moveTaskOrderID}/status | Change the status of a move task order to make it available to prime
 [**update_move_tio_remarks**](MoveTaskOrderApi.md#update_move_tio_remarks) | **PATCH** /move-task-orders/{moveTaskOrderID}/tio-remarks | 
 [**update_mto_reviewed_billable_weights_at**](MoveTaskOrderApi.md#update_mto_reviewed_billable_weights_at) | **PATCH** /move-task-orders/{moveTaskOrderID}/billable-weights-reviewed-at | 
@@ -155,135 +154,6 @@ No authorization required
 **401** | The request was denied |  -  |
 **403** | The request was denied |  -  |
 **404** | The requested resource wasn&#39;t found |  -  |
-**500** | A server error occurred |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **update_move_task_order**
-> MoveTaskOrder update_move_task_order(move_task_order_id, if_match, body)
-
-Updates a move by ID
-
-Updates a move by ID
-
-### Example
-
-
-```python
-import time
-import ghc_client
-from ghc_client.api import move_task_order_api
-from ghc_client.model.error import Error
-from ghc_client.model.move_task_order import MoveTaskOrder
-from ghc_client.model.validation_error import ValidationError
-from pprint import pprint
-# Defining the host is optional and defaults to /ghc/v1
-# See configuration.py for a list of all supported configuration parameters.
-configuration = ghc_client.Configuration(
-    host = "/ghc/v1"
-)
-
-
-# Enter a context with an instance of the API client
-with ghc_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = move_task_order_api.MoveTaskOrderApi(api_client)
-    move_task_order_id = "moveTaskOrderID_example" # str | ID of move to use
-    if_match = "If-Match_example" # str | 
-    body = MoveTaskOrder(
-        id="1f2270c7-7166-40ae-981e-b200ebdf3054",
-        created_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
-        order_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
-        locator="1K43AR",
-        reference_id="1001-3456",
-        service_counseling_completed_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
-        available_to_prime_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
-        updated_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
-        destination_address=Address(
-            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
-            street_address1="123 Main Ave",
-            street_address2="Apartment 9000",
-            street_address3="Montmârtre",
-            city="Anytown",
-            state="AL",
-            postal_code="90210",
-            country="USA",
-        ),
-        pickup_address=Address(
-            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
-            street_address1="123 Main Ave",
-            street_address2="Apartment 9000",
-            street_address3="Montmârtre",
-            city="Anytown",
-            state="AL",
-            postal_code="90210",
-            country="USA",
-        ),
-        destination_duty_location="1f2270c7-7166-40ae-981e-b200ebdf3054",
-        origin_duty_location="1f2270c7-7166-40ae-981e-b200ebdf3054",
-        entitlements=Entitlements(
-            id="571008b1-b0de-454d-b843-d71be9f02c04",
-            authorized_weight=2000,
-            dependents_authorized=True,
-            non_temporary_storage=False,
-            privately_owned_vehicle=False,
-            pro_gear_weight=2000,
-            pro_gear_weight_spouse=500,
-            storage_in_transit=90,
-            total_weight=500,
-            total_dependents=2,
-            required_medical_equipment_weight=500,
-            organizational_clothing_and_individual_equipment=True,
-            e_tag="e_tag_example",
-        ),
-        requested_pickup_date=dateutil_parser('1970-01-01').date(),
-        tio_remarks="approved additional weight",
-        e_tag="e_tag_example",
-    ) # MoveTaskOrder | 
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Updates a move by ID
-        api_response = api_instance.update_move_task_order(move_task_order_id, if_match, body)
-        pprint(api_response)
-    except ghc_client.ApiException as e:
-        print("Exception when calling MoveTaskOrderApi->update_move_task_order: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **move_task_order_id** | **str**| ID of move to use |
- **if_match** | **str**|  |
- **body** | [**MoveTaskOrder**](MoveTaskOrder.md)|  |
-
-### Return type
-
-[**MoveTaskOrder**](MoveTaskOrder.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Successfully retrieved move task order |  -  |
-**400** | The request payload is invalid |  -  |
-**401** | The request was denied |  -  |
-**403** | The request was denied |  -  |
-**404** | The requested resource wasn&#39;t found |  -  |
-**412** | Precondition failed |  -  |
-**422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -522,6 +392,30 @@ with ghc_client.ApiClient() as api_client:
         excess_weight_qualified_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
         excess_weight_acknowledged_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
         tio_remarks="approved additional weight",
+        closeout_office=TransportationOffice(
+            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+            name="Fort Bragg North Station",
+            address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
+            phone_lines=[
+                "212-555-5555",
+            ],
+            gbloc="JENQ",
+            latitude=29.382973,
+            longitude=-98.62759,
+            created_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
+            updated_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
+        ),
+        closeout_office_id="closeout_office_id_example",
+        approvals_requested_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
         created_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
         submitted_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
         updated_at=dateutil_parser('1970-01-01T00:00:00.00Z'),

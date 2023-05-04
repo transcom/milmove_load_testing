@@ -25,7 +25,7 @@ from internal_client.model_utils import (  # noqa: F401
 from internal_client.model.create_update_orders import CreateUpdateOrders
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
 from internal_client.model.orders import Orders
-from internal_client.model.upload_payload import UploadPayload
+from internal_client.model.upload import Upload
 
 
 class OrdersApi(object):
@@ -196,7 +196,7 @@ class OrdersApi(object):
         )
         self.upload_amended_orders_endpoint = _Endpoint(
             settings={
-                'response_type': (UploadPayload,),
+                'response_type': (Upload,),
                 'auth': [],
                 'endpoint_path': '/orders/{ordersId}/upload_amended_orders',
                 'operation_id': 'upload_amended_orders',
@@ -538,7 +538,7 @@ class OrdersApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            UploadPayload
+            Upload
                 If the method is called asynchronously, returns the request
                 thread.
         """

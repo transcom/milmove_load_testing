@@ -25,7 +25,6 @@ from internal_client.model.create_update_orders import CreateUpdateOrders
 from internal_client.model.orders_type import OrdersType
 from internal_client.model.orders_type_detail import OrdersTypeDetail
 from internal_client.model.patch_move_payload import PatchMovePayload
-from internal_client.model.selected_move_type import SelectedMoveType
 from internal_client.model.mto_shipment_type import MTOShipmentType
 from internal_client.model.create_shipment import CreateShipment
 from internal_client.model.submit_move_for_approval_payload import SubmitMoveForApprovalPayload
@@ -175,7 +174,7 @@ def start_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManag
     flow_context["move_id"] = move_id
     flow_context["locator"] = current_move["locator"]
     moves_api_client = moves_api.MovesApi(api_client)
-    moves_api_client.patch_move(move_id, PatchMovePayload(selected_move_type=SelectedMoveType("HHG")))
+    moves_api_client.patch_move(move_id, PatchMovePayload())
 
     mto_shipment_api_client = mto_shipment_api.MtoShipmentApi(api_client)
 

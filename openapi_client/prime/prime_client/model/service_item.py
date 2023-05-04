@@ -147,7 +147,7 @@ class ServiceItem(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             id (str): [optional]  # noqa: E501
-            params ([ServiceItemParams]): [optional]  # noqa: E501
+            params ([ServiceItemParams]): This should be populated for the following service items:   * DOASIT(Domestic destination Additional day SIT)   * DDASIT(Domestic destination Additional day SIT)  Both take in the following param keys:   * `SITPaymentRequestStart`   * `SITPaymentRequestEnd`  The value of each is a date string in the format \"YYYY-MM-DD\" (e.g. \"2023-01-15\") . [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -231,7 +231,7 @@ class ServiceItem(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             id (str): [optional]  # noqa: E501
-            params ([ServiceItemParams]): [optional]  # noqa: E501
+            params ([ServiceItemParams]): This should be populated for the following service items:   * DOASIT(Domestic destination Additional day SIT)   * DDASIT(Domestic destination Additional day SIT)  Both take in the following param keys:   * `SITPaymentRequestStart`   * `SITPaymentRequestEnd`  The value of each is a date string in the format \"YYYY-MM-DD\" (e.g. \"2023-01-15\") . [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 

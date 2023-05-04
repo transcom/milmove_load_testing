@@ -23,7 +23,7 @@ from internal_client.model_utils import (  # noqa: F401
     validate_and_convert_types
 )
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
-from internal_client.model.upload_payload import UploadPayload
+from internal_client.model.upload import Upload
 
 
 class UploadsApi(object):
@@ -39,7 +39,7 @@ class UploadsApi(object):
         self.api_client = api_client
         self.create_upload_endpoint = _Endpoint(
             settings={
-                'response_type': (UploadPayload,),
+                'response_type': (Upload,),
                 'auth': [],
                 'endpoint_path': '/uploads',
                 'operation_id': 'create_upload',
@@ -240,7 +240,7 @@ class UploadsApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            UploadPayload
+            Upload
                 If the method is called asynchronously, returns the request
                 thread.
         """

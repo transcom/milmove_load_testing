@@ -5,7 +5,7 @@ All URIs are relative to */ghc/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**approve_sit_extension**](SitExtensionApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-[**create_sit_extension_as_too**](SitExtensionApi.md#create_sit_extension_as_too) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT extension
+[**create_approved_sit_duration_update**](SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
 [**deny_sit_extension**](SitExtensionApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 
 
@@ -94,12 +94,12 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **create_sit_extension_as_too**
-> MTOShipment create_sit_extension_as_too(shipment_id, if_match, body)
+# **create_approved_sit_duration_update**
+> MTOShipment create_approved_sit_duration_update(shipment_id, if_match, body)
 
-Create an approved SIT extension
+Create an approved SIT Duration Update
 
-TOO can creates an already-approved SIT extension on behalf of a customer
+TOO can creates an already-approved SIT Duration Update on behalf of a customer
 
 ### Example
 
@@ -109,7 +109,7 @@ import time
 import ghc_client
 from ghc_client.api import sit_extension_api
 from ghc_client.model.error import Error
-from ghc_client.model.create_sit_extension_as_too import CreateSITExtensionAsTOO
+from ghc_client.model.create_approved_sit_duration_update import CreateApprovedSITDurationUpdate
 from ghc_client.model.mto_shipment import MTOShipment
 from ghc_client.model.validation_error import ValidationError
 from pprint import pprint
@@ -125,20 +125,20 @@ with ghc_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = sit_extension_api.SitExtensionApi(api_client)
     shipment_id = "shipmentID_example" # str | ID of the shipment
-    if_match = "If-Match_example" # str | We want the shipment's eTag rather than the SIT extension eTag as the SIT extension is always associated with a shipment
-    body = CreateSITExtensionAsTOO(
+    if_match = "If-Match_example" # str | We want the shipment's eTag rather than the SIT Duration Update eTag as the SIT Duration Update is always associated with a shipment
+    body = CreateApprovedSITDurationUpdate(
         request_reason="AWAITING_COMPLETION_OF_RESIDENCE",
         approved_days=21,
         office_remarks="Customer needs additional storage time as their new place of residence is not yet ready",
-    ) # CreateSITExtensionAsTOO | 
+    ) # CreateApprovedSITDurationUpdate | 
 
     # example passing only required values which don't have defaults set
     try:
-        # Create an approved SIT extension
-        api_response = api_instance.create_sit_extension_as_too(shipment_id, if_match, body)
+        # Create an approved SIT Duration Update
+        api_response = api_instance.create_approved_sit_duration_update(shipment_id, if_match, body)
         pprint(api_response)
     except ghc_client.ApiException as e:
-        print("Exception when calling SitExtensionApi->create_sit_extension_as_too: %s\n" % e)
+        print("Exception when calling SitExtensionApi->create_approved_sit_duration_update: %s\n" % e)
 ```
 
 
@@ -147,8 +147,8 @@ with ghc_client.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **shipment_id** | **str**| ID of the shipment |
- **if_match** | **str**| We want the shipment&#39;s eTag rather than the SIT extension eTag as the SIT extension is always associated with a shipment |
- **body** | [**CreateSITExtensionAsTOO**](CreateSITExtensionAsTOO.md)|  |
+ **if_match** | **str**| We want the shipment&#39;s eTag rather than the SIT Duration Update eTag as the SIT Duration Update is always associated with a shipment |
+ **body** | [**CreateApprovedSITDurationUpdate**](CreateApprovedSITDurationUpdate.md)|  |
 
 ### Return type
 

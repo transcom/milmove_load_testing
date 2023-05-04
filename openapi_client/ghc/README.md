@@ -87,13 +87,26 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *CustomerApi* | [**get_customer**](docs/CustomerApi.md#get_customer) | **GET** /customer/{customerID} | Returns a given customer
 *CustomerApi* | [**update_customer**](docs/CustomerApi.md#update_customer) | **PATCH** /customer/{customerID} | Updates customer info
+*CustomerSupportRemarksApi* | [**create_customer_support_remark_for_move**](docs/CustomerSupportRemarksApi.md#create_customer_support_remark_for_move) | **POST** /moves/{locator}/customer-support-remarks | Creates a customer support remark for a move
+*CustomerSupportRemarksApi* | [**delete_customer_support_remark**](docs/CustomerSupportRemarksApi.md#delete_customer_support_remark) | **DELETE** /customer-support-remarks/{customerSupportRemarkID} | Soft deletes a customer support remark by ID
+*CustomerSupportRemarksApi* | [**get_customer_support_remarks_for_move**](docs/CustomerSupportRemarksApi.md#get_customer_support_remarks_for_move) | **GET** /moves/{locator}/customer-support-remarks | Fetches customer support remarks using the move code (locator).
+*CustomerSupportRemarksApi* | [**update_customer_support_remark_for_move**](docs/CustomerSupportRemarksApi.md#update_customer_support_remark_for_move) | **PATCH** /customer-support-remarks/{customerSupportRemarkID} | Updates a customer support remark for a move
+*EvaluationReportsApi* | [**create_evaluation_report**](docs/EvaluationReportsApi.md#create_evaluation_report) | **POST** /moves/{locator}/evaluation-reports | Creates an evaluation report
+*EvaluationReportsApi* | [**delete_evaluation_report**](docs/EvaluationReportsApi.md#delete_evaluation_report) | **DELETE** /evaluation-reports/{reportID} | Deletes an evaluation report by ID
+*EvaluationReportsApi* | [**download_evaluation_report**](docs/EvaluationReportsApi.md#download_evaluation_report) | **GET** /evaluation-reports/{reportID}/download | Downloads an evaluation report as a PDF
+*EvaluationReportsApi* | [**get_evaluation_report**](docs/EvaluationReportsApi.md#get_evaluation_report) | **GET** /evaluation-reports/{reportID} | Gets an evaluation report by ID
+*EvaluationReportsApi* | [**save_evaluation_report**](docs/EvaluationReportsApi.md#save_evaluation_report) | **PUT** /evaluation-reports/{reportID} | Saves an evaluation report as a draft
+*EvaluationReportsApi* | [**submit_evaluation_report**](docs/EvaluationReportsApi.md#submit_evaluation_report) | **POST** /evaluation-reports/{reportID}/submit | Submits an evaluation report
 *GhcDocumentsApi* | [**get_document**](docs/GhcDocumentsApi.md#get_document) | **GET** /documents/{documentId} | Returns a document
 *MoveApi* | [**get_move**](docs/MoveApi.md#get_move) | **GET** /move/{locator} | Returns a given move
+*MoveApi* | [**get_move_counseling_evaluation_reports_list**](docs/MoveApi.md#get_move_counseling_evaluation_reports_list) | **GET** /moves/{moveID}/counseling-evaluation-reports-list | Returns counseling evaluation reports for the specified move that are visible to the current office user
 *MoveApi* | [**get_move_history**](docs/MoveApi.md#get_move_history) | **GET** /move/{locator}/history | Returns the history of an identified move
+*MoveApi* | [**get_move_shipment_evaluation_reports_list**](docs/MoveApi.md#get_move_shipment_evaluation_reports_list) | **GET** /moves/{moveID}/shipment-evaluation-reports-list | Returns shipment evaluation reports for the specified move that are visible to the current office user
+*MoveApi* | [**search_moves**](docs/MoveApi.md#search_moves) | **POST** /moves/search | Search moves by locator, DOD ID, or customer name
 *MoveApi* | [**set_financial_review_flag**](docs/MoveApi.md#set_financial_review_flag) | **POST** /moves/{moveID}/financial-review-flag | Flags a move for financial office review
+*MoveApi* | [**update_closeout_office**](docs/MoveApi.md#update_closeout_office) | **PATCH** /moves/{locator}/closeout-office | Updates a Move&#39;s PPM closeout office for Army and Air Force customers
 *MoveTaskOrderApi* | [**get_entitlements**](docs/MoveTaskOrderApi.md#get_entitlements) | **GET** /move-task-orders/{moveTaskOrderID}/entitlements | Gets entitlements for a move by ID
 *MoveTaskOrderApi* | [**get_move_task_order**](docs/MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveTaskOrderID} | Gets a move by ID
-*MoveTaskOrderApi* | [**update_move_task_order**](docs/MoveTaskOrderApi.md#update_move_task_order) | **PATCH** /move-task-orders/{moveTaskOrderID} | Updates a move by ID
 *MoveTaskOrderApi* | [**update_move_task_order_status**](docs/MoveTaskOrderApi.md#update_move_task_order_status) | **PATCH** /move-task-orders/{moveTaskOrderID}/status | Change the status of a move task order to make it available to prime
 *MoveTaskOrderApi* | [**update_move_tio_remarks**](docs/MoveTaskOrderApi.md#update_move_tio_remarks) | **PATCH** /move-task-orders/{moveTaskOrderID}/tio-remarks | 
 *MoveTaskOrderApi* | [**update_mto_reviewed_billable_weights_at**](docs/MoveTaskOrderApi.md#update_mto_reviewed_billable_weights_at) | **PATCH** /move-task-orders/{moveTaskOrderID}/billable-weights-reviewed-at | 
@@ -104,6 +117,7 @@ Class | Method | HTTP request | Description
 *MtoServiceItemApi* | [**update_mto_service_item**](docs/MtoServiceItemApi.md#update_mto_service_item) | **PATCH** /move-task-orders/{moveTaskOrderID}/service-items/{mtoServiceItemID} | Updates a service item by ID for a move by ID
 *MtoServiceItemApi* | [**update_mto_service_item_status**](docs/MtoServiceItemApi.md#update_mto_service_item_status) | **PATCH** /move-task-orders/{moveTaskOrderID}/service-items/{mtoServiceItemID}/status | Change the status of a line item for a move by ID
 *MtoShipmentApi* | [**create_mto_shipment**](docs/MtoShipmentApi.md#create_mto_shipment) | **POST** /mto-shipments | createMTOShipment
+*MtoShipmentApi* | [**get_shipment**](docs/MtoShipmentApi.md#get_shipment) | **GET** /shipments/{shipmentID} | fetches a shipment by ID
 *MtoShipmentApi* | [**list_mto_shipments**](docs/MtoShipmentApi.md#list_mto_shipments) | **GET** /move_task_orders/{moveTaskOrderID}/mto_shipments | Gets all shipments for a move task order
 *MtoShipmentApi* | [**update_mto_shipment**](docs/MtoShipmentApi.md#update_mto_shipment) | **PATCH** /move_task_orders/{moveTaskOrderID}/mto_shipments/{shipmentID} | updateMTOShipment
 *OrderApi* | [**acknowledge_excess_weight_risk**](docs/OrderApi.md#acknowledge_excess_weight_risk) | **POST** /orders/{orderID}/acknowledge-excess-weight-risk | Saves the date and time a TOO acknowledged the excess weight risk by dismissing the alert
@@ -120,14 +134,22 @@ Class | Method | HTTP request | Description
 *PaymentRequestsApi* | [**get_shipments_payment_sit_balance**](docs/PaymentRequestsApi.md#get_shipments_payment_sit_balance) | **GET** /payment-requests/{paymentRequestID}/shipments-payment-sit-balance | Returns all shipment payment request SIT usage to support partial SIT invoicing
 *PaymentRequestsApi* | [**update_payment_request_status**](docs/PaymentRequestsApi.md#update_payment_request_status) | **PATCH** /payment-requests/{paymentRequestID}/status | Updates status of a payment request by id
 *PaymentServiceItemApi* | [**update_payment_service_item_status**](docs/PaymentServiceItemApi.md#update_payment_service_item_status) | **PATCH** /move-task-orders/{moveTaskOrderID}/payment-service-items/{paymentServiceItemID}/status | Change the status of a payment service item for a move by ID
+*PpmApi* | [**finish_document_review**](docs/PpmApi.md#finish_document_review) | **PATCH** /ppm-shipments/{ppmShipmentId}/finish-document-review | Updates a PPM shipment&#39;s status after document review
+*PpmApi* | [**get_ppm_documents**](docs/PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
+*PpmApi* | [**update_moving_expense**](docs/PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
+*PpmApi* | [**update_pro_gear_weight_ticket**](docs/PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
+*PpmApi* | [**update_weight_ticket**](docs/PpmApi.md#update_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Updates a weight ticket document
+*PwsViolationsApi* | [**get_pws_violations**](docs/PwsViolationsApi.md#get_pws_violations) | **GET** /pws-violations | Fetch the possible PWS violations for an evaluation report
 *QueuesApi* | [**get_moves_queue**](docs/QueuesApi.md#get_moves_queue) | **GET** /queues/moves | Gets queued list of all customer moves by GBLOC origin
 *QueuesApi* | [**get_payment_requests_queue**](docs/QueuesApi.md#get_payment_requests_queue) | **GET** /queues/payment-requests | Gets queued list of all payment requests by GBLOC origin
 *QueuesApi* | [**get_services_counseling_queue**](docs/QueuesApi.md#get_services_counseling_queue) | **GET** /queues/counseling | Gets queued list of all customer moves needing services counseling by GBLOC origin
+*ReportViolationsApi* | [**associate_report_violations**](docs/ReportViolationsApi.md#associate_report_violations) | **POST** /report-violations/{reportID} | Associate violations with an evaluation report
+*ReportViolationsApi* | [**get_report_violations_by_report_id**](docs/ReportViolationsApi.md#get_report_violations_by_report_id) | **GET** /report-violations/{reportID} | Fetch the report violations for an evaluation report
 *ReweighApi* | [**request_shipment_reweigh**](docs/ReweighApi.md#request_shipment_reweigh) | **POST** /shipments/{shipmentID}/request-reweigh | Requests a shipment reweigh
 *ShipmentApi* | [**approve_shipment**](docs/ShipmentApi.md#approve_shipment) | **POST** /shipments/{shipmentID}/approve | Approves a shipment
 *ShipmentApi* | [**approve_shipment_diversion**](docs/ShipmentApi.md#approve_shipment_diversion) | **POST** /shipments/{shipmentID}/approve-diversion | Approves a shipment diversion
 *ShipmentApi* | [**approve_sit_extension**](docs/ShipmentApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-*ShipmentApi* | [**create_sit_extension_as_too**](docs/ShipmentApi.md#create_sit_extension_as_too) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT extension
+*ShipmentApi* | [**create_approved_sit_duration_update**](docs/ShipmentApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
 *ShipmentApi* | [**delete_shipment**](docs/ShipmentApi.md#delete_shipment) | **DELETE** /shipments/{shipmentID} | Soft deletes a shipment by ID
 *ShipmentApi* | [**deny_sit_extension**](docs/ShipmentApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 *ShipmentApi* | [**reject_shipment**](docs/ShipmentApi.md#reject_shipment) | **POST** /shipments/{shipmentID}/reject | rejects a shipment
@@ -135,9 +157,10 @@ Class | Method | HTTP request | Description
 *ShipmentApi* | [**request_shipment_diversion**](docs/ShipmentApi.md#request_shipment_diversion) | **POST** /shipments/{shipmentID}/request-diversion | Requests a shipment diversion
 *ShipmentApi* | [**request_shipment_reweigh**](docs/ShipmentApi.md#request_shipment_reweigh) | **POST** /shipments/{shipmentID}/request-reweigh | Requests a shipment reweigh
 *SitExtensionApi* | [**approve_sit_extension**](docs/SitExtensionApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-*SitExtensionApi* | [**create_sit_extension_as_too**](docs/SitExtensionApi.md#create_sit_extension_as_too) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT extension
+*SitExtensionApi* | [**create_approved_sit_duration_update**](docs/SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
 *SitExtensionApi* | [**deny_sit_extension**](docs/SitExtensionApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 *TacApi* | [**tac_validation**](docs/TacApi.md#tac_validation) | **GET** /tac/valid | Validation of a TAC value
+*TransportationOfficeApi* | [**get_transportation_offices**](docs/TransportationOfficeApi.md#get_transportation_offices) | **GET** /transportation-offices | Returns the transportation offices matching the search query
 
 
 ## Documentation For Models
@@ -145,26 +168,40 @@ Class | Method | HTTP request | Description
  - [Address](docs/Address.md)
  - [Affiliation](docs/Affiliation.md)
  - [ApproveSITExtension](docs/ApproveSITExtension.md)
+ - [AssociateReportViolations](docs/AssociateReportViolations.md)
  - [BackupContact](docs/BackupContact.md)
  - [ClientError](docs/ClientError.md)
  - [Contractor](docs/Contractor.md)
  - [CounselingUpdateAllowancePayload](docs/CounselingUpdateAllowancePayload.md)
  - [CounselingUpdateOrderPayload](docs/CounselingUpdateOrderPayload.md)
+ - [CreateApprovedSITDurationUpdate](docs/CreateApprovedSITDurationUpdate.md)
+ - [CreateCustomerSupportRemark](docs/CreateCustomerSupportRemark.md)
+ - [CreateEvaluationReport](docs/CreateEvaluationReport.md)
  - [CreateMTOShipment](docs/CreateMTOShipment.md)
- - [CreateSITExtensionAsTOO](docs/CreateSITExtensionAsTOO.md)
+ - [CreatePPMShipment](docs/CreatePPMShipment.md)
  - [Customer](docs/Customer.md)
  - [CustomerContactType](docs/CustomerContactType.md)
+ - [CustomerSupportRemark](docs/CustomerSupportRemark.md)
+ - [CustomerSupportRemarks](docs/CustomerSupportRemarks.md)
  - [DenySITExtension](docs/DenySITExtension.md)
  - [DeptIndicator](docs/DeptIndicator.md)
  - [DestinationType](docs/DestinationType.md)
  - [DimensionType](docs/DimensionType.md)
- - [DocumentPayload](docs/DocumentPayload.md)
+ - [Document](docs/Document.md)
  - [DutyLocation](docs/DutyLocation.md)
  - [Entitlements](docs/Entitlements.md)
  - [Error](docs/Error.md)
+ - [EvaluationReport](docs/EvaluationReport.md)
+ - [EvaluationReportInspectionType](docs/EvaluationReportInspectionType.md)
+ - [EvaluationReportList](docs/EvaluationReportList.md)
+ - [EvaluationReportLocation](docs/EvaluationReportLocation.md)
+ - [EvaluationReportOfficeUser](docs/EvaluationReportOfficeUser.md)
+ - [EvaluationReportType](docs/EvaluationReportType.md)
  - [GBLOC](docs/GBLOC.md)
  - [Grade](docs/Grade.md)
  - [InlineObject](docs/InlineObject.md)
+ - [InlineObject1](docs/InlineObject1.md)
+ - [InlineObject2](docs/InlineObject2.md)
  - [LOAType](docs/LOAType.md)
  - [LOATypeNullable](docs/LOATypeNullable.md)
  - [MTOAgent](docs/MTOAgent.md)
@@ -191,11 +228,20 @@ Class | Method | HTTP request | Description
  - [MoveStatus](docs/MoveStatus.md)
  - [MoveTaskOrder](docs/MoveTaskOrder.md)
  - [MoveTaskOrders](docs/MoveTaskOrders.md)
+ - [MovingExpense](docs/MovingExpense.md)
+ - [MovingExpenses](docs/MovingExpenses.md)
+ - [OmittableMovingExpenseType](docs/OmittableMovingExpenseType.md)
+ - [OmittablePPMDocumentStatus](docs/OmittablePPMDocumentStatus.md)
  - [Order](docs/Order.md)
  - [OrdersType](docs/OrdersType.md)
  - [OrdersTypeDetail](docs/OrdersTypeDetail.md)
+ - [PPMAdvanceStatus](docs/PPMAdvanceStatus.md)
+ - [PPMDocumentStatus](docs/PPMDocumentStatus.md)
+ - [PPMDocuments](docs/PPMDocuments.md)
  - [PPMShipment](docs/PPMShipment.md)
  - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
+ - [PWSViolation](docs/PWSViolation.md)
+ - [PWSViolations](docs/PWSViolations.md)
  - [PatchMTOServiceItemStatusPayload](docs/PatchMTOServiceItemStatusPayload.md)
  - [PaymentRequest](docs/PaymentRequest.md)
  - [PaymentRequestStatus](docs/PaymentRequestStatus.md)
@@ -205,36 +251,56 @@ Class | Method | HTTP request | Description
  - [PaymentServiceItemParams](docs/PaymentServiceItemParams.md)
  - [PaymentServiceItemStatus](docs/PaymentServiceItemStatus.md)
  - [PaymentServiceItems](docs/PaymentServiceItems.md)
+ - [ProGearWeightTicket](docs/ProGearWeightTicket.md)
+ - [ProGearWeightTickets](docs/ProGearWeightTickets.md)
  - [ProofOfServiceDoc](docs/ProofOfServiceDoc.md)
  - [ProofOfServiceDocs](docs/ProofOfServiceDocs.md)
  - [QueueMove](docs/QueueMove.md)
  - [QueueMoves](docs/QueueMoves.md)
  - [QueueMovesResult](docs/QueueMovesResult.md)
  - [QueuePaymentRequest](docs/QueuePaymentRequest.md)
+ - [QueuePaymentRequestStatus](docs/QueuePaymentRequestStatus.md)
  - [QueuePaymentRequests](docs/QueuePaymentRequests.md)
  - [QueuePaymentRequestsResult](docs/QueuePaymentRequestsResult.md)
  - [RejectShipment](docs/RejectShipment.md)
+ - [ReportViolation](docs/ReportViolation.md)
+ - [ReportViolations](docs/ReportViolations.md)
  - [Reweigh](docs/Reweigh.md)
  - [ReweighRequester](docs/ReweighRequester.md)
  - [SITExtension](docs/SITExtension.md)
  - [SITExtensions](docs/SITExtensions.md)
+ - [SITLocationType](docs/SITLocationType.md)
  - [SITStatus](docs/SITStatus.md)
+ - [SearchMove](docs/SearchMove.md)
+ - [SearchMoves](docs/SearchMoves.md)
+ - [SearchMovesResult](docs/SearchMovesResult.md)
  - [ServiceItemParamName](docs/ServiceItemParamName.md)
  - [ServiceItemParamOrigin](docs/ServiceItemParamOrigin.md)
  - [ServiceItemParamType](docs/ServiceItemParamType.md)
  - [ShipmentPaymentSITBalance](docs/ShipmentPaymentSITBalance.md)
  - [ShipmentsPaymentSITBalance](docs/ShipmentsPaymentSITBalance.md)
+ - [SignedCertification](docs/SignedCertification.md)
+ - [SignedCertificationType](docs/SignedCertificationType.md)
  - [StorageFacility](docs/StorageFacility.md)
  - [TacValid](docs/TacValid.md)
+ - [TransportationOffice](docs/TransportationOffice.md)
+ - [TransportationOffices](docs/TransportationOffices.md)
  - [UpdateAllowancePayload](docs/UpdateAllowancePayload.md)
  - [UpdateBillableWeightPayload](docs/UpdateBillableWeightPayload.md)
  - [UpdateCustomerPayload](docs/UpdateCustomerPayload.md)
+ - [UpdateCustomerSupportRemarkPayload](docs/UpdateCustomerSupportRemarkPayload.md)
  - [UpdateMaxBillableWeightAsTIOPayload](docs/UpdateMaxBillableWeightAsTIOPayload.md)
+ - [UpdateMovingExpense](docs/UpdateMovingExpense.md)
  - [UpdateOrderPayload](docs/UpdateOrderPayload.md)
+ - [UpdatePPMShipment](docs/UpdatePPMShipment.md)
  - [UpdatePaymentRequestStatusPayload](docs/UpdatePaymentRequestStatusPayload.md)
+ - [UpdateProGearWeightTicket](docs/UpdateProGearWeightTicket.md)
  - [UpdateShipment](docs/UpdateShipment.md)
+ - [UpdateWeightTicket](docs/UpdateWeightTicket.md)
  - [Upload](docs/Upload.md)
  - [ValidationError](docs/ValidationError.md)
+ - [WeightTicket](docs/WeightTicket.md)
+ - [WeightTickets](docs/WeightTickets.md)
 
 
 ## Documentation For Authorization

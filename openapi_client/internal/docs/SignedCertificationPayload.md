@@ -12,7 +12,8 @@ Name | Type | Description | Notes
 **certification_text** | **str** |  | 
 **move_id** | **str** |  | 
 **personally_procured_move_id** | **str, none_type** |  | [optional] 
-**certification_type** | [**SignedCertificationType**](SignedCertificationType.md) |  | [optional] 
+**ppm_id** | **str, none_type** | The PPM Shipment ID to associate with the assigned certificate.  | [optional] 
+**certification_type** | [**NullableSignedCertificationType**](NullableSignedCertificationType.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

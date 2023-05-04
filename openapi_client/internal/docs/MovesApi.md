@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 
 # **patch_move**
-> MovePayload patch_move(move_id, patch_move_payload)
+> MovePayload patch_move(move_id, if_match, patch_move_payload)
 
 Patches the move
 
@@ -41,14 +41,15 @@ with internal_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = moves_api.MovesApi(api_client)
     move_id = "moveId_example" # str | UUID of the move
+    if_match = "If-Match_example" # str | Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
     patch_move_payload = PatchMovePayload(
-        selected_move_type=SelectedMoveType("HHG"),
+        closeout_office_id="closeout_office_id_example",
     ) # PatchMovePayload | 
 
     # example passing only required values which don't have defaults set
     try:
         # Patches the move
-        api_response = api_instance.patch_move(move_id, patch_move_payload)
+        api_response = api_instance.patch_move(move_id, if_match, patch_move_payload)
         pprint(api_response)
     except internal_client.ApiException as e:
         print("Exception when calling MovesApi->patch_move: %s\n" % e)
@@ -60,6 +61,7 @@ with internal_client.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **move_id** | **str**| UUID of the move |
+ **if_match** | **str**| Optimistic locking is implemented via the &#x60;If-Match&#x60; header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a &#x60;412 Precondition Failed&#x60; error.  |
  **patch_move_payload** | [**PatchMovePayload**](PatchMovePayload.md)|  |
 
 ### Return type
@@ -80,11 +82,13 @@ No authorization required
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**201** | updated instance of move |  -  |
+**200** | updated instance of move |  -  |
 **400** | invalid request |  -  |
 **401** | request requires user authentication |  -  |
 **403** | user is not authorized |  -  |
-**404** | move is not found |  -  |
+**404** | move or closeout office is not found |  -  |
+**412** | precondition failed |  -  |
+**422** | unprocessable entity |  -  |
 **500** | internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -413,6 +417,7 @@ with internal_client.ApiClient() as api_client:
             signature="signature_example",
             certification_text="certification_text_example",
             personally_procured_move_id="personally_procured_move_id_example",
+            ppm_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
             certification_type=SignedCertificationTypeCreate("PPM_PAYMENT"),
         ),
     ) # SubmitMoveForApprovalPayload | 

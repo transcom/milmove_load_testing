@@ -103,6 +103,7 @@ class LoggedInUserPayload(ModelNormal):
             'service_member': (ServiceMemberPayload,),  # noqa: E501
             'office_user': (OfficeUser,),  # noqa: E501
             'roles': ([Role], none_type,),  # noqa: E501
+            'permissions': ([str],),  # noqa: E501
         }
 
     @cached_property
@@ -117,6 +118,7 @@ class LoggedInUserPayload(ModelNormal):
         'service_member': 'service_member',  # noqa: E501
         'office_user': 'office_user',  # noqa: E501
         'roles': 'roles',  # noqa: E501
+        'permissions': 'permissions',  # noqa: E501
     }
 
     read_only_vars = {
@@ -170,6 +172,7 @@ class LoggedInUserPayload(ModelNormal):
             service_member (ServiceMemberPayload): [optional]  # noqa: E501
             office_user (OfficeUser): [optional]  # noqa: E501
             roles ([Role], none_type): [optional]  # noqa: E501
+            permissions ([str]): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -260,6 +263,7 @@ class LoggedInUserPayload(ModelNormal):
             service_member (ServiceMemberPayload): [optional]  # noqa: E501
             office_user (OfficeUser): [optional]  # noqa: E501
             roles ([Role], none_type): [optional]  # noqa: E501
+            permissions ([str]): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

@@ -51,10 +51,12 @@ class MovesApi(object):
             params_map={
                 'all': [
                     'move_id',
+                    'if_match',
                     'patch_move_payload',
                 ],
                 'required': [
                     'move_id',
+                    'if_match',
                     'patch_move_payload',
                 ],
                 'nullable': [
@@ -72,14 +74,18 @@ class MovesApi(object):
                 'openapi_types': {
                     'move_id':
                         (str,),
+                    'if_match':
+                        (str,),
                     'patch_move_payload':
                         (PatchMovePayload,),
                 },
                 'attribute_map': {
                     'move_id': 'moveId',
+                    'if_match': 'If-Match',
                 },
                 'location_map': {
                     'move_id': 'path',
+                    'if_match': 'header',
                     'patch_move_payload': 'body',
                 },
                 'collection_format_map': {
@@ -363,6 +369,7 @@ class MovesApi(object):
     def patch_move(
         self,
         move_id,
+        if_match,
         patch_move_payload,
         **kwargs
     ):
@@ -372,11 +379,12 @@ class MovesApi(object):
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.patch_move(move_id, patch_move_payload, async_req=True)
+        >>> thread = api.patch_move(move_id, if_match, patch_move_payload, async_req=True)
         >>> result = thread.get()
 
         Args:
             move_id (str): UUID of the move
+            if_match (str): Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
             patch_move_payload (PatchMovePayload):
 
         Keyword Args:
@@ -438,6 +446,8 @@ class MovesApi(object):
         kwargs['_host_index'] = kwargs.get('_host_index')
         kwargs['move_id'] = \
             move_id
+        kwargs['if_match'] = \
+            if_match
         kwargs['patch_move_payload'] = \
             patch_move_payload
         return self.patch_move_endpoint.call_with_http_info(**kwargs)

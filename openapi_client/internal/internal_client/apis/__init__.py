@@ -19,7 +19,6 @@ from internal_client.api.backup_contacts_api import BackupContactsApi
 from internal_client.api.calendar_api import CalendarApi
 from internal_client.api.certification_api import CertificationApi
 from internal_client.api.documents_api import DocumentsApi
-from internal_client.api.dps_auth_api import DpsAuthApi
 from internal_client.api.duty_locations_api import DutyLocationsApi
 from internal_client.api.entitlements_api import EntitlementsApi
 from internal_client.api.move_docs_api import MoveDocsApi

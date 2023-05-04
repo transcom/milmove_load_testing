@@ -20,7 +20,7 @@ Name | Type | Description | Notes
 **incentive_estimate_min** | **int, none_type** |  | [optional] 
 **has_requested_advance** | **bool** |  | [optional]  if omitted the server will use the default value of False
 **advance** | [**Reimbursement**](Reimbursement.md) |  | [optional] 
-**advance_worksheet** | [**DocumentPayload**](DocumentPayload.md) |  | [optional] 
+**advance_worksheet** | [**Document**](Document.md) |  | [optional] 
 **has_pro_gear** | **str, none_type** |  | [optional] 
 **has_pro_gear_over_thousand** | **str, none_type** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]

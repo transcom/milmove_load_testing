@@ -31,10 +31,10 @@ class TestSitExtensionApi(unittest.TestCase):
         """
         pass
 
-    def test_create_sit_extension_as_too(self):
-        """Test case for create_sit_extension_as_too
+    def test_create_approved_sit_duration_update(self):
+        """Test case for create_approved_sit_duration_update
 
-        Create an approved SIT extension  # noqa: E501
+        Create an approved SIT Duration Update  # noqa: E501
         """
         pass
 

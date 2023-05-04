@@ -82,8 +82,7 @@ class InlineObject(ModelNormal):
                 and the value is attribute type.
         """
         return {
-            'flag_for_review': (bool,),  # noqa: E501
-            'remarks': (str, none_type,),  # noqa: E501
+            'closeout_office_id': (str,),  # noqa: E501
         }
 
     @cached_property
@@ -92,8 +91,7 @@ class InlineObject(ModelNormal):
 
 
     attribute_map = {
-        'flag_for_review': 'flagForReview',  # noqa: E501
-        'remarks': 'remarks',  # noqa: E501
+        'closeout_office_id': 'closeoutOfficeId',  # noqa: E501
     }
 
     read_only_vars = {
@@ -103,11 +101,11 @@ class InlineObject(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, flag_for_review, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, closeout_office_id, *args, **kwargs):  # noqa: E501
         """InlineObject - a model defined in OpenAPI
 
         Args:
-            flag_for_review (bool): boolean value representing whether we should flag a move for financial review
+            closeout_office_id (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -140,7 +138,6 @@ class InlineObject(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            remarks (str, none_type): explanation of why the move is being flagged for financial review. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -168,7 +165,7 @@ class InlineObject(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
-        self.flag_for_review = flag_for_review
+        self.closeout_office_id = closeout_office_id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -189,11 +186,11 @@ class InlineObject(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, flag_for_review, *args, **kwargs):  # noqa: E501
+    def __init__(self, closeout_office_id, *args, **kwargs):  # noqa: E501
         """InlineObject - a model defined in OpenAPI
 
         Args:
-            flag_for_review (bool): boolean value representing whether we should flag a move for financial review
+            closeout_office_id (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -226,7 +223,6 @@ class InlineObject(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            remarks (str, none_type): explanation of why the move is being flagged for financial review. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -252,7 +248,7 @@ class InlineObject(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
-        self.flag_for_review = flag_for_review
+        self.closeout_office_id = closeout_office_id
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \

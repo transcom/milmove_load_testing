@@ -18,7 +18,9 @@ Name | Type | Description | Notes
 **pickup_address** | [**Address**](Address.md) |  | [optional] 
 **destination_address** | [**Address**](Address.md) |  | [optional] 
 **secondary_pickup_address** | [**Address**](Address.md) |  | [optional] 
+**has_secondary_pickup_address** | **bool, none_type** |  | [optional] 
 **secondary_delivery_address** | [**Address**](Address.md) |  | [optional] 
+**has_secondary_delivery_address** | **bool, none_type** |  | [optional] 
 **e_tag** | **str** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

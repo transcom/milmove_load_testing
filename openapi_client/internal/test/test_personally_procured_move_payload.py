@@ -13,11 +13,11 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.document_payload import DocumentPayload
+from internal_client.model.document import Document
 from internal_client.model.ppm_status import PPMStatus
 from internal_client.model.reimbursement import Reimbursement
 from internal_client.model.t_shirt_size import TShirtSize
-globals()['DocumentPayload'] = DocumentPayload
+globals()['Document'] = Document
 globals()['PPMStatus'] = PPMStatus
 globals()['Reimbursement'] = Reimbursement
 globals()['TShirtSize'] = TShirtSize

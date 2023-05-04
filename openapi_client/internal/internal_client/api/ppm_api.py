@@ -22,17 +22,29 @@ from internal_client.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
+from internal_client.model.client_error import ClientError
 from internal_client.model.create_personally_procured_move_payload import CreatePersonallyProcuredMovePayload
+from internal_client.model.error import Error
 from internal_client.model.expense_summary_payload import ExpenseSummaryPayload
 from internal_client.model.index_personally_procured_move_payload import IndexPersonallyProcuredMovePayload
+from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
+from internal_client.model.moving_expense import MovingExpense
 from internal_client.model.ppm_estimate_range import PPMEstimateRange
 from internal_client.model.ppm_incentive import PPMIncentive
+from internal_client.model.ppm_shipment import PPMShipment
 from internal_client.model.ppm_sit_estimate import PPMSitEstimate
 from internal_client.model.patch_personally_procured_move_payload import PatchPersonallyProcuredMovePayload
 from internal_client.model.personally_procured_move_payload import PersonallyProcuredMovePayload
+from internal_client.model.pro_gear_weight_ticket import ProGearWeightTicket
+from internal_client.model.save_ppm_shipment_signed_certification import SavePPMShipmentSignedCertification
 from internal_client.model.submit_personally_procured_move_payload import SubmitPersonallyProcuredMovePayload
+from internal_client.model.update_moving_expense import UpdateMovingExpense
 from internal_client.model.update_personally_procured_move_payload import UpdatePersonallyProcuredMovePayload
-from internal_client.model.upload_payload import UploadPayload
+from internal_client.model.update_pro_gear_weight_ticket import UpdateProGearWeightTicket
+from internal_client.model.update_weight_ticket import UpdateWeightTicket
+from internal_client.model.upload import Upload
+from internal_client.model.validation_error import ValidationError
+from internal_client.model.weight_ticket import WeightTicket
 
 
 class PpmApi(object):
@@ -46,6 +58,55 @@ class PpmApi(object):
         if api_client is None:
             api_client = ApiClient()
         self.api_client = api_client
+        self.create_moving_expense_endpoint = _Endpoint(
+            settings={
+                'response_type': (MovingExpense,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/moving-expenses',
+                'operation_id': 'create_moving_expense',
+                'http_method': 'POST',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
         self.create_personally_procured_move_endpoint = _Endpoint(
             settings={
                 'response_type': (PersonallyProcuredMovePayload,),
@@ -104,7 +165,7 @@ class PpmApi(object):
         )
         self.create_ppm_attachments_endpoint = _Endpoint(
             settings={
-                'response_type': (UploadPayload,),
+                'response_type': (Upload,),
                 'auth': [],
                 'endpoint_path': '/personally_procured_moves/{personallyProcuredMoveId}/create_ppm_attachments',
                 'operation_id': 'create_ppm_attachments',
@@ -158,6 +219,332 @@ class PpmApi(object):
                 },
                 'collection_format_map': {
                     'doc_types': 'csv',
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.create_ppm_upload_endpoint = _Endpoint(
+            settings={
+                'response_type': (Upload,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/uploads',
+                'operation_id': 'create_ppm_upload',
+                'http_method': 'POST',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'document_id',
+                    'file',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'document_id',
+                    'file',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'document_id':
+                        (str,),
+                    'file':
+                        (file_type,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'document_id': 'documentId',
+                    'file': 'file',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'document_id': 'query',
+                    'file': 'form',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'multipart/form-data'
+                ]
+            },
+            api_client=api_client
+        )
+        self.create_pro_gear_weight_ticket_endpoint = _Endpoint(
+            settings={
+                'response_type': (ProGearWeightTicket,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets',
+                'operation_id': 'create_pro_gear_weight_ticket',
+                'http_method': 'POST',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.create_weight_ticket_endpoint = _Endpoint(
+            settings={
+                'response_type': (WeightTicket,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/weight-ticket',
+                'operation_id': 'create_weight_ticket',
+                'http_method': 'POST',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.delete_moving_expense_endpoint = _Endpoint(
+            settings={
+                'response_type': None,
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId}',
+                'operation_id': 'delete_moving_expense',
+                'http_method': 'DELETE',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'moving_expense_id',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'moving_expense_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'moving_expense_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'moving_expense_id': 'movingExpenseId',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'moving_expense_id': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.delete_pro_gear_weight_ticket_endpoint = _Endpoint(
+            settings={
+                'response_type': None,
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId}',
+                'operation_id': 'delete_pro_gear_weight_ticket',
+                'http_method': 'DELETE',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'pro_gear_weight_ticket_id',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'pro_gear_weight_ticket_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'pro_gear_weight_ticket_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'pro_gear_weight_ticket_id': 'proGearWeightTicketId',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'pro_gear_weight_ticket_id': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.delete_weight_ticket_endpoint = _Endpoint(
+            settings={
+                'response_type': None,
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId}',
+                'operation_id': 'delete_weight_ticket',
+                'http_method': 'DELETE',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'weight_ticket_id',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'weight_ticket_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'weight_ticket_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'weight_ticket_id': 'weightTicketId',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'weight_ticket_id': 'path',
+                },
+                'collection_format_map': {
                 }
             },
             headers_map={
@@ -374,6 +761,74 @@ class PpmApi(object):
                     'application/json'
                 ],
                 'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.resubmit_ppm_shipment_documentation_endpoint = _Endpoint(
+            settings={
+                'response_type': (PPMShipment,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/resubmit-ppm-shipment-documentation/{signedCertificationId}',
+                'operation_id': 'resubmit_ppm_shipment_documentation',
+                'http_method': 'PUT',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'signed_certification_id',
+                    'if_match',
+                    'save_ppm_shipment_signed_certification_payload',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'signed_certification_id',
+                    'if_match',
+                    'save_ppm_shipment_signed_certification_payload',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'signed_certification_id':
+                        (str,),
+                    'if_match':
+                        (str,),
+                    'save_ppm_shipment_signed_certification_payload':
+                        (SavePPMShipmentSignedCertification,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'signed_certification_id': 'signedCertificationId',
+                    'if_match': 'If-Match',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'signed_certification_id': 'path',
+                    'if_match': 'header',
+                    'save_ppm_shipment_signed_certification_payload': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
             },
             api_client=api_client
         )
@@ -748,6 +1203,130 @@ class PpmApi(object):
             },
             api_client=api_client
         )
+        self.submit_ppm_shipment_documentation_endpoint = _Endpoint(
+            settings={
+                'response_type': (PPMShipment,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/submit-ppm-shipment-documentation',
+                'operation_id': 'submit_ppm_shipment_documentation',
+                'http_method': 'POST',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'save_ppm_shipment_signed_certification_payload',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'save_ppm_shipment_signed_certification_payload',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'save_ppm_shipment_signed_certification_payload':
+                        (SavePPMShipmentSignedCertification,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'save_ppm_shipment_signed_certification_payload': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
+        self.update_moving_expense_endpoint = _Endpoint(
+            settings={
+                'response_type': (MovingExpense,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId}',
+                'operation_id': 'update_moving_expense',
+                'http_method': 'PATCH',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'moving_expense_id',
+                    'if_match',
+                    'update_moving_expense',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'moving_expense_id',
+                    'if_match',
+                    'update_moving_expense',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'moving_expense_id':
+                        (str,),
+                    'if_match':
+                        (str,),
+                    'update_moving_expense':
+                        (UpdateMovingExpense,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'moving_expense_id': 'movingExpenseId',
+                    'if_match': 'If-Match',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'moving_expense_id': 'path',
+                    'if_match': 'header',
+                    'update_moving_expense': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
         self.update_personally_procured_move_endpoint = _Endpoint(
             settings={
                 'response_type': (PersonallyProcuredMovePayload,),
@@ -810,23 +1389,27 @@ class PpmApi(object):
             },
             api_client=api_client
         )
-        self.update_personally_procured_move_estimate_endpoint = _Endpoint(
+        self.update_pro_gear_weight_ticket_endpoint = _Endpoint(
             settings={
-                'response_type': (PersonallyProcuredMovePayload,),
+                'response_type': (ProGearWeightTicket,),
                 'auth': [],
-                'endpoint_path': '/moves/{moveId}/personally_procured_move/{personallyProcuredMoveId}/estimate',
-                'operation_id': 'update_personally_procured_move_estimate',
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId}',
+                'operation_id': 'update_pro_gear_weight_ticket',
                 'http_method': 'PATCH',
                 'servers': None,
             },
             params_map={
                 'all': [
-                    'move_id',
-                    'personally_procured_move_id',
+                    'if_match',
+                    'ppm_shipment_id',
+                    'pro_gear_weight_ticket_id',
+                    'update_pro_gear_weight_ticket',
                 ],
                 'required': [
-                    'move_id',
-                    'personally_procured_move_id',
+                    'if_match',
+                    'ppm_shipment_id',
+                    'pro_gear_weight_ticket_id',
+                    'update_pro_gear_weight_ticket',
                 ],
                 'nullable': [
                 ],
@@ -841,18 +1424,25 @@ class PpmApi(object):
                 'allowed_values': {
                 },
                 'openapi_types': {
-                    'move_id':
+                    'if_match':
                         (str,),
-                    'personally_procured_move_id':
+                    'ppm_shipment_id':
                         (str,),
+                    'pro_gear_weight_ticket_id':
+                        (str,),
+                    'update_pro_gear_weight_ticket':
+                        (UpdateProGearWeightTicket,),
                 },
                 'attribute_map': {
-                    'move_id': 'moveId',
-                    'personally_procured_move_id': 'personallyProcuredMoveId',
+                    'if_match': 'If-Match',
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'pro_gear_weight_ticket_id': 'proGearWeightTicketId',
                 },
                 'location_map': {
-                    'move_id': 'path',
-                    'personally_procured_move_id': 'path',
+                    'if_match': 'header',
+                    'ppm_shipment_id': 'path',
+                    'pro_gear_weight_ticket_id': 'path',
+                    'update_pro_gear_weight_ticket': 'body',
                 },
                 'collection_format_map': {
                 }
@@ -861,10 +1451,158 @@ class PpmApi(object):
                 'accept': [
                     'application/json'
                 ],
-                'content_type': [],
+                'content_type': [
+                    'application/json'
+                ]
             },
             api_client=api_client
         )
+        self.update_weight_ticket_endpoint = _Endpoint(
+            settings={
+                'response_type': (WeightTicket,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId}',
+                'operation_id': 'update_weight_ticket',
+                'http_method': 'PATCH',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'weight_ticket_id',
+                    'if_match',
+                    'update_weight_ticket_payload',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'weight_ticket_id',
+                    'if_match',
+                    'update_weight_ticket_payload',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'weight_ticket_id':
+                        (str,),
+                    'if_match':
+                        (str,),
+                    'update_weight_ticket_payload':
+                        (UpdateWeightTicket,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'weight_ticket_id': 'weightTicketId',
+                    'if_match': 'If-Match',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'weight_ticket_id': 'path',
+                    'if_match': 'header',
+                    'update_weight_ticket_payload': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
+
+    def create_moving_expense(
+        self,
+        ppm_shipment_id,
+        **kwargs
+    ):
+        """Creates moving expense document  # noqa: E501
+
+        Creates a moving expense document for the PPM shipment  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.create_moving_expense(ppm_shipment_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            MovingExpense
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        return self.create_moving_expense_endpoint.call_with_http_info(**kwargs)
 
     def create_personally_procured_move(
         self,
@@ -996,7 +1734,7 @@ class PpmApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            UploadPayload
+            Upload
                 If the method is called asynchronously, returns the request
                 thread.
         """
@@ -1029,6 +1767,494 @@ class PpmApi(object):
         kwargs['doc_types'] = \
             doc_types
         return self.create_ppm_attachments_endpoint.call_with_http_info(**kwargs)
+
+    def create_ppm_upload(
+        self,
+        ppm_shipment_id,
+        document_id,
+        file,
+        **kwargs
+    ):
+        """Create a new upload for a PPM weight ticket, pro-gear, or moving expense document  # noqa: E501
+
+        Uploads represent a single digital file, such as a PNG, JPEG, PDF, or spreadsheet.  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.create_ppm_upload(ppm_shipment_id, document_id, file, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the ppm shipment
+            document_id (str): UUID of the document to add an upload to
+            file (file_type): The file to upload.
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            Upload
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['document_id'] = \
+            document_id
+        kwargs['file'] = \
+            file
+        return self.create_ppm_upload_endpoint.call_with_http_info(**kwargs)
+
+    def create_pro_gear_weight_ticket(
+        self,
+        ppm_shipment_id,
+        **kwargs
+    ):
+        """Creates a pro-gear weight ticket  # noqa: E501
+
+        Creates a PPM shipment's pro-gear weight ticket. This will only contain the minimum necessary fields for a pro-gear weight ticket. Data should be filled in using the patch endpoint.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.create_pro_gear_weight_ticket(ppm_shipment_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            ProGearWeightTicket
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        return self.create_pro_gear_weight_ticket_endpoint.call_with_http_info(**kwargs)
+
+    def create_weight_ticket(
+        self,
+        ppm_shipment_id,
+        **kwargs
+    ):
+        """Creates a weight ticket document  # noqa: E501
+
+        Created a weight ticket document with the given information  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.create_weight_ticket(ppm_shipment_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            WeightTicket
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        return self.create_weight_ticket_endpoint.call_with_http_info(**kwargs)
+
+    def delete_moving_expense(
+        self,
+        ppm_shipment_id,
+        moving_expense_id,
+        **kwargs
+    ):
+        """Soft deletes a moving expense by ID  # noqa: E501
+
+        Removes a single moving expense receipt from the closeout line items for a PPM shipment. Soft deleted records are not visible in milmove, but are kept in the database.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.delete_moving_expense(ppm_shipment_id, moving_expense_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            moving_expense_id (str): ID of the moving expense to be deleted
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            None
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['moving_expense_id'] = \
+            moving_expense_id
+        return self.delete_moving_expense_endpoint.call_with_http_info(**kwargs)
+
+    def delete_pro_gear_weight_ticket(
+        self,
+        ppm_shipment_id,
+        pro_gear_weight_ticket_id,
+        **kwargs
+    ):
+        """Soft deletes a pro-gear weight line item by ID  # noqa: E501
+
+        Removes a single pro-gear weight ticket set from the closeout line items for a PPM shipment. Soft deleted records are not visible in milmove, but are kept in the database.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.delete_pro_gear_weight_ticket(ppm_shipment_id, pro_gear_weight_ticket_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            pro_gear_weight_ticket_id (str): ID of the pro-gear weight ticket to be deleted
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            None
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['pro_gear_weight_ticket_id'] = \
+            pro_gear_weight_ticket_id
+        return self.delete_pro_gear_weight_ticket_endpoint.call_with_http_info(**kwargs)
+
+    def delete_weight_ticket(
+        self,
+        ppm_shipment_id,
+        weight_ticket_id,
+        **kwargs
+    ):
+        """Soft deletes a weight ticket by ID  # noqa: E501
+
+        Removes a single weight ticket from the closeout line items for a PPM shipment. Soft deleted records are not visible in milmove, but are kept in the database. This may change the PPM shipment's final incentive.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.delete_weight_ticket(ppm_shipment_id, weight_ticket_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            weight_ticket_id (str): ID of the weight ticket to be deleted
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            None
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['weight_ticket_id'] = \
+            weight_ticket_id
+        return self.delete_weight_ticket_endpoint.call_with_http_info(**kwargs)
 
     def index_personally_procured_moves(
         self,
@@ -1349,6 +2575,96 @@ class PpmApi(object):
         kwargs['personally_procured_move_id'] = \
             personally_procured_move_id
         return self.request_ppm_payment_endpoint.call_with_http_info(**kwargs)
+
+    def resubmit_ppm_shipment_documentation(
+        self,
+        ppm_shipment_id,
+        signed_certification_id,
+        if_match,
+        save_ppm_shipment_signed_certification_payload,
+        **kwargs
+    ):
+        """Updates signature and routes PPM shipment to service counselor  # noqa: E501
+
+        Updates customer signature along with the text they agreed to, and then routes the PPM shipment to the service counselor queue for review.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.resubmit_ppm_shipment_documentation(ppm_shipment_id, signed_certification_id, if_match, save_ppm_shipment_signed_certification_payload, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            signed_certification_id (str): UUID of the signed certification
+            if_match (str): Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
+            save_ppm_shipment_signed_certification_payload (SavePPMShipmentSignedCertification):
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            PPMShipment
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['signed_certification_id'] = \
+            signed_certification_id
+        kwargs['if_match'] = \
+            if_match
+        kwargs['save_ppm_shipment_signed_certification_payload'] = \
+            save_ppm_shipment_signed_certification_payload
+        return self.resubmit_ppm_shipment_documentation_endpoint.call_with_http_info(**kwargs)
 
     def show_personally_procured_move(
         self,
@@ -1800,6 +3116,178 @@ class PpmApi(object):
             submit_personally_procured_move_payload
         return self.submit_personally_procured_move_endpoint.call_with_http_info(**kwargs)
 
+    def submit_ppm_shipment_documentation(
+        self,
+        ppm_shipment_id,
+        save_ppm_shipment_signed_certification_payload,
+        **kwargs
+    ):
+        """Saves signature and routes PPM shipment to service counselor  # noqa: E501
+
+        Saves customer signature along with the text they agreed to, and then routes the PPM shipment to the service counselor queue for review.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.submit_ppm_shipment_documentation(ppm_shipment_id, save_ppm_shipment_signed_certification_payload, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            save_ppm_shipment_signed_certification_payload (SavePPMShipmentSignedCertification):
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            PPMShipment
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['save_ppm_shipment_signed_certification_payload'] = \
+            save_ppm_shipment_signed_certification_payload
+        return self.submit_ppm_shipment_documentation_endpoint.call_with_http_info(**kwargs)
+
+    def update_moving_expense(
+        self,
+        ppm_shipment_id,
+        moving_expense_id,
+        if_match,
+        update_moving_expense,
+        **kwargs
+    ):
+        """Updates the moving expense  # noqa: E501
+
+        Any fields sent in this request will be set on the moving expense referenced  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.update_moving_expense(ppm_shipment_id, moving_expense_id, if_match, update_moving_expense, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            moving_expense_id (str): UUID of the moving expense
+            if_match (str): Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
+            update_moving_expense (UpdateMovingExpense):
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            MovingExpense
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['moving_expense_id'] = \
+            moving_expense_id
+        kwargs['if_match'] = \
+            if_match
+        kwargs['update_moving_expense'] = \
+            update_moving_expense
+        return self.update_moving_expense_endpoint.call_with_http_info(**kwargs)
+
     def update_personally_procured_move(
         self,
         move_id,
@@ -1886,24 +3374,28 @@ class PpmApi(object):
             update_personally_procured_move_payload
         return self.update_personally_procured_move_endpoint.call_with_http_info(**kwargs)
 
-    def update_personally_procured_move_estimate(
+    def update_pro_gear_weight_ticket(
         self,
-        move_id,
-        personally_procured_move_id,
+        if_match,
+        ppm_shipment_id,
+        pro_gear_weight_ticket_id,
+        update_pro_gear_weight_ticket,
         **kwargs
     ):
-        """Calculates the estimated incentive of a PPM  # noqa: E501
+        """Updates a pro-gear weight ticket  # noqa: E501
 
-        This request calculates the estimated incentive of a PPM and attaches this range to the PPM  # noqa: E501
+        Updates a PPM shipment's pro-gear weight ticket with new information. Only some of the fields are editable because some have to be set by the customer, e.g. the description.   # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.update_personally_procured_move_estimate(move_id, personally_procured_move_id, async_req=True)
+        >>> thread = api.update_pro_gear_weight_ticket(if_match, ppm_shipment_id, pro_gear_weight_ticket_id, update_pro_gear_weight_ticket, async_req=True)
         >>> result = thread.get()
 
         Args:
-            move_id (str): UUID of the move
-            personally_procured_move_id (str): UUID of the PPM being patched
+            if_match (str): Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
+            ppm_shipment_id (str): UUID of the PPM shipment
+            pro_gear_weight_ticket_id (str): UUID of the pro-gear weight ticket
+            update_pro_gear_weight_ticket (UpdateProGearWeightTicket):
 
         Keyword Args:
             _return_http_data_only (bool): response data without head status
@@ -1934,7 +3426,7 @@ class PpmApi(object):
             async_req (bool): execute request asynchronously
 
         Returns:
-            PersonallyProcuredMovePayload
+            ProGearWeightTicket
                 If the method is called asynchronously, returns the request
                 thread.
         """
@@ -1962,9 +3454,103 @@ class PpmApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
-        kwargs['move_id'] = \
-            move_id
-        kwargs['personally_procured_move_id'] = \
-            personally_procured_move_id
-        return self.update_personally_procured_move_estimate_endpoint.call_with_http_info(**kwargs)
+        kwargs['if_match'] = \
+            if_match
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['pro_gear_weight_ticket_id'] = \
+            pro_gear_weight_ticket_id
+        kwargs['update_pro_gear_weight_ticket'] = \
+            update_pro_gear_weight_ticket
+        return self.update_pro_gear_weight_ticket_endpoint.call_with_http_info(**kwargs)
+
+    def update_weight_ticket(
+        self,
+        ppm_shipment_id,
+        weight_ticket_id,
+        if_match,
+        update_weight_ticket_payload,
+        **kwargs
+    ):
+        """Updates a weight ticket document  # noqa: E501
+
+        Updates a weight ticket document with the new information  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.update_weight_ticket(ppm_shipment_id, weight_ticket_id, if_match, update_weight_ticket_payload, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            weight_ticket_id (str): UUID of the weight ticket
+            if_match (str): Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
+            update_weight_ticket_payload (UpdateWeightTicket):
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            WeightTicket
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['weight_ticket_id'] = \
+            weight_ticket_id
+        kwargs['if_match'] = \
+            if_match
+        kwargs['update_weight_ticket_payload'] = \
+            update_weight_ticket_payload
+        return self.update_weight_ticket_endpoint.call_with_http_info(**kwargs)
 

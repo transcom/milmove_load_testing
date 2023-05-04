@@ -34,11 +34,11 @@ def lazy_import():
     from internal_client.model.index_personally_procured_move_payload import IndexPersonallyProcuredMovePayload
     from internal_client.model.move_status import MoveStatus
     from internal_client.model.mto_shipments import MTOShipments
-    from internal_client.model.selected_move_type import SelectedMoveType
+    from internal_client.model.transportation_office import TransportationOffice
     globals()['IndexPersonallyProcuredMovePayload'] = IndexPersonallyProcuredMovePayload
     globals()['MTOShipments'] = MTOShipments
     globals()['MoveStatus'] = MoveStatus
-    globals()['SelectedMoveType'] = SelectedMoveType
+    globals()['TransportationOffice'] = TransportationOffice
 
 
 class MovePayload(ModelNormal):
@@ -99,12 +99,13 @@ class MovePayload(ModelNormal):
             'locator': (str,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
+            'e_tag': (str,),  # noqa: E501
             'service_member_id': (str,),  # noqa: E501
-            'selected_move_type': (SelectedMoveType,),  # noqa: E501
             'status': (MoveStatus,),  # noqa: E501
             'submitted_at': (datetime, none_type,),  # noqa: E501
             'personally_procured_moves': (IndexPersonallyProcuredMovePayload,),  # noqa: E501
             'mto_shipments': (MTOShipments,),  # noqa: E501
+            'closeout_office': (TransportationOffice,),  # noqa: E501
             'cancel_reason': (str, none_type,),  # noqa: E501
         }
 
@@ -119,12 +120,13 @@ class MovePayload(ModelNormal):
         'locator': 'locator',  # noqa: E501
         'created_at': 'created_at',  # noqa: E501
         'updated_at': 'updated_at',  # noqa: E501
+        'e_tag': 'eTag',  # noqa: E501
         'service_member_id': 'service_member_id',  # noqa: E501
-        'selected_move_type': 'selected_move_type',  # noqa: E501
         'status': 'status',  # noqa: E501
         'submitted_at': 'submitted_at',  # noqa: E501
         'personally_procured_moves': 'personally_procured_moves',  # noqa: E501
         'mto_shipments': 'mto_shipments',  # noqa: E501
+        'closeout_office': 'closeout_office',  # noqa: E501
         'cancel_reason': 'cancel_reason',  # noqa: E501
     }
 
@@ -136,7 +138,7 @@ class MovePayload(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, id, orders_id, locator, created_at, updated_at, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, orders_id, locator, created_at, updated_at, e_tag, *args, **kwargs):  # noqa: E501
         """MovePayload - a model defined in OpenAPI
 
         Args:
@@ -145,6 +147,7 @@ class MovePayload(ModelNormal):
             locator (str):
             created_at (datetime):
             updated_at (datetime):
+            e_tag (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -178,11 +181,11 @@ class MovePayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             service_member_id (str): [optional]  # noqa: E501
-            selected_move_type (SelectedMoveType): [optional]  # noqa: E501
             status (MoveStatus): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
             personally_procured_moves (IndexPersonallyProcuredMovePayload): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
+            closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501
         """
 
@@ -216,6 +219,7 @@ class MovePayload(ModelNormal):
         self.locator = locator
         self.created_at = created_at
         self.updated_at = updated_at
+        self.e_tag = e_tag
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -236,7 +240,7 @@ class MovePayload(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, id, orders_id, locator, created_at, updated_at, *args, **kwargs):  # noqa: E501
+    def __init__(self, id, orders_id, locator, created_at, updated_at, e_tag, *args, **kwargs):  # noqa: E501
         """MovePayload - a model defined in OpenAPI
 
         Args:
@@ -245,6 +249,7 @@ class MovePayload(ModelNormal):
             locator (str):
             created_at (datetime):
             updated_at (datetime):
+            e_tag (str):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -278,11 +283,11 @@ class MovePayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             service_member_id (str): [optional]  # noqa: E501
-            selected_move_type (SelectedMoveType): [optional]  # noqa: E501
             status (MoveStatus): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
             personally_procured_moves (IndexPersonallyProcuredMovePayload): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
+            closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501
         """
 
@@ -314,6 +319,7 @@ class MovePayload(ModelNormal):
         self.locator = locator
         self.created_at = created_at
         self.updated_at = updated_at
+        self.e_tag = e_tag
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
