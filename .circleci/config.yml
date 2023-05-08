@@ -26,9 +26,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+            - v2-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}-{{ .Environment.PYTHON_VERSION }}
       - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
+          key: v2-pipenv-{{ checksum "Pipfile.lock" }}-{{ .Environment.PYTHON_VERSION }}
       - restore_cache:
           key: v1-local-bin-{{ checksum "Brewfile.local" }}
       - run:
@@ -57,11 +57,11 @@ jobs:
           path: ~/project/coverage_html
           destination: coverage_html
       - save_cache:
-          key: v1-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}
+          key: v2-pre-commit-dot-cache-{{ checksum ".pre-commit-config.yaml" }}-{{ .Environment.PYTHON_VERSION }}
           paths:
             - ~/.cache/pre-commit
       - save_cache:
-          key: v1-pipenv-{{ checksum "Pipfile.lock" }}
+          key: v2-pipenv-{{ checksum "Pipfile.lock" }}-{{ .Environment.PYTHON_VERSION }}
           paths:
             - ".venv"
       - save_cache:
