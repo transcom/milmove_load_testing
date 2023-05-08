@@ -28,4 +28,10 @@ COPY fixtures /app/fixtures
 
 EXPOSE 8089 5557
 
+# put the arg at the bottom so it doesn't invalidate docker layer
+# caching unnecessarily
+ARG GIT_COMMIT
+
+ENV GIT_COMMIT=${GIT_COMMIT}
+
 ENTRYPOINT ["locust"]
