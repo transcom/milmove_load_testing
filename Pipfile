@@ -6,12 +6,14 @@ name = "pypi"
 [packages]
 requests = ">=2.22.0"
 locust = ">=1"
-prance = {version = "==0.22.11.4.0", extras = ["cli", "osv"]}
 Faker = "*"
 zipcodes = "*"
 internal-client = {editable = true, path = "./openapi_client/internal"}
 ghc-client = {editable = true, path = "./openapi_client/ghc"}
 prime-client = {editable = true, path = "./openapi_client/prime"}
+# frozendict is needed by the generated code
+frozendict = "*"
+swagger-spec-validator = "*"
 
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
@@ -28,4 +30,4 @@ pytest-cov = "*"
 pyright = "*"
 
 [requires]
-python_full_version = "3.9.6"
+python_full_version = "3.10.11"

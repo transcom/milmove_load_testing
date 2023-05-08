@@ -38,6 +38,8 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
   * [Updating Python Dependencies](#updating-python-dependencies)
   * [Unsupported Setup](#unsupported-setup)
   * [Troubleshooting](#troubleshooting)
+* [OpenAPI Generator](#openapi-generator)
+  * [Regenerating the client code as the server API evolves](#regenerating-the-client-code-as-the-server-api-evolves)
 * [Running Locust Locally](#running-locust-locally)
 * [Running Tests](#running-tests)
   * [Unit Tests](#unit-tests)
@@ -101,6 +103,11 @@ Terraform code.
 
 `install_tools` - This script is used in the local set up for this repository if you aren't using
 `nix`.
+
+`regenerate-swagger-client` - We are using
+[openapi-generator](https://github.com/OpenAPITools/openapi-generator)
+to generate python code that uses the milmove API. See the OpenAPI
+Generator section below for more information
 
 ### `static/`
 
@@ -259,6 +266,22 @@ If you encounter compiler issues while installing the required Python version, t
 ```shell script
 brew unlink binutils
 ```
+
+## OpenAPI Generator
+
+We are using
+[openapi-generator](https://github.com/OpenAPITools/openapi-generator)
+to generate python client code for interacting with the milmove API.
+
+### Regenerating the client code as the server API evolves
+
+Run `./scripts/regenerate-swagger-client` to build the newest version
+of the files. They will be saved to `./openapi_client`.
+
+One of the biggest challenges with this approach is that the swagger
+definitions on milmove frequently do not match what is actually
+returned my milmove. This is very definitely buggy behavior by the
+milmove app, and so we try to work around it where we can.
 
 ## Running Locust Locally
 

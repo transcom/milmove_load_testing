@@ -19,18 +19,18 @@ in buildEnv {
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
-      name = "python3-3.9.9";
+      name = "python3-3.10.11";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "3fdeef8a7ee81787a099cfb57bd91f24c5ec587d";
-    }) {}).python39Full
+      rev = "0b6445b611472740f02eae9015150c07c5373340";
+    }) {}).python310Full
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
-      name = "pipenv-2021.5.29";
+      name = "pipenv-2023.2.4";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
-      rev = "fe296b79b4c803fec51410a987a11f077715a845";
+      rev = "0b6445b611472740f02eae9015150c07c5373340";
     }) {}).pipenv
 
     (import (builtins.fetchGit {
@@ -73,13 +73,16 @@ in buildEnv {
       rev = "725ef07e543a6f60b534036c684d44e57bb8d5de";
     }) {}).jq
 
-    (import (builtins.fetchGit {
-      # Descriptive name to make the store path easier to identify
-      name = "circleci-cli-0.1.15663";
-      url = "https://github.com/NixOS/nixpkgs/";
-      ref = "refs/heads/nixpkgs-unstable";
-      rev = "23cedc3088a628e1f5454cab6864f9b1a059e1ba";
-    }) {}).circleci-cli
+    (import
+      (builtins.fetchGit {
+        # Descriptive name to make the store path easier to identify
+        name = "circleci-cli-0.1.15663";
+        url = "https://github.com/NixOS/nixpkgs/";
+        ref = "refs/heads/nixpkgs-unstable";
+        rev = "23cedc3088a628e1f5454cab6864f9b1a059e1ba";
+      })
+      { }).circleci-cli
+
   ];
 
   # the pre-commit hooks expects the binary to be `circleci`
