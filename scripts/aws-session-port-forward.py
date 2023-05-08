@@ -13,11 +13,11 @@ result = subprocess.run(["aws", "ecs", "list-tasks", "--cluster", cluster], stdo
 
 tasks = json.loads(result.stdout)
 if "taskArns" not in tasks or len(tasks["taskArns"]) == 0:
-    print("Cannot find any running tasks in cluster: {}", cluster, file=sys.stderr)
+    print(f"Cannot find any running tasks in cluster: {cluster}", file=sys.stderr)
     sys.exit(1)
 
 if len(tasks["taskArns"]) != 1:
-    print("More than one task running in cluster: {}", cluster, file=sys.stderr)
+    print(f"More than one task running in cluster: {cluster}", file=sys.stderr)
     sys.exit(1)
 
 task_arn = tasks["taskArns"][0]
@@ -29,23 +29,23 @@ result = subprocess.run(
 try:
     task_details = json.loads(result.stdout)
 except Exception as e:
-    print("Cannot parse describe tasks for taskArn: {}", task_arn, file=sys.stderr)
+    print(f"Cannot parse describe tasks for taskArn: {task_arn}", file=sys.stderr)
     print(sys.exc_info()[0], file=sys.stderr)
     print(e, file=sys.stderr)
     sys.exit(1)
 
 if "tasks" not in task_details or len(task_details["tasks"]) == 0:
-    print("Cannot find task detail for taskArn: {}", task_arn, file=sys.stderr)
+    print(f"Cannot find task detail for taskArn: {task_arn}", file=sys.stderr)
     sys.exit(1)
 
 if len(task_details["tasks"]) != 1:
-    print("More than one task detail for taskArn: {}", task_arn, file=sys.stderr)
+    print(f"More than one task detail for taskArn: {task_arn}", file=sys.stderr)
     sys.exit(1)
 
 task = task_details["tasks"][0]
 
 if "containers" not in task or len(task["containers"]) == 0:
-    print("Cannot find containers for taskArn: {}", task_arn, file=sys.stderr)
+    print(f"Cannot find containers for taskArn: {task_arn}", file=sys.stderr)
     sys.exit(1)
 
 # if len(task["containers"]) != 1:
