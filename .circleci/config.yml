@@ -59,7 +59,7 @@ jobs:
       - run:
           name: run tests
           command: |
-            pipenv run pytest --ignore=openapi_client --junit-xml=junit/report.xml --cov-report html:coverage_html --cov=utils --cov=tasks
+            make test_coverage
       - store_test_results:
           path: ~/project/junit/report.xml
       - store_artifacts:
