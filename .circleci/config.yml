@@ -9,6 +9,13 @@
 
 version: "2.1"
 
+# References for variables shared across the file
+references:
+
+  # cache key for shellcheck that includes version. Make sure to
+  # update the URL, too
+  shellcheck-cache-key: &shellcheck-cache-key v1-shellcheck-install-0.8.0
+
 executors:
   primary:
     resource_class: small
@@ -30,15 +37,17 @@ jobs:
       - restore_cache:  # ensure this step occurs *before* installing dependencies
           key: v2-pipenv-{{ checksum "Pipfile.lock" }}-{{ .Environment.PYTHON_VERSION }}
       - restore_cache:
-          key: v1-local-bin-{{ checksum "Brewfile.local" }}
+          # make sure to update the key in save_cache too
+          key: *shellcheck-cache-key
       - run:
+          # when updating the version, make sure to also update the
+          # shellcheck-cache-key
           name: install shellcheck if needed
           command: |
-            [ -x ~/.local/bin/shellcheck ] ||
-            (sudo apt-get update -y &&
-            sudo apt-get install -y shellcheck &&
-            mkdir -p ~/.local/bin &&
-            cp /usr/bin/shellcheck ~/.local/bin)
+            test -x ~/.local/bin/shellcheck ||
+            curl -L -o - \
+            https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz |
+            tar Jxf - --strip-components=1 --exclude=*txt -C ~/.local/bin
       - run:
           name: install dependencies
           command: |  # use pipenv to install dependencies
@@ -65,9 +74,9 @@ jobs:
           paths:
             - ".venv"
       - save_cache:
-          key: v1-local-bin-{{ checksum "Brewfile.local" }}
+          key: *shellcheck-cache-key
           paths:
-            - ~/.local/bin
+            - ~/.local/bin/shellcheck
 
   # `build` confirms a docker build works
   build:
