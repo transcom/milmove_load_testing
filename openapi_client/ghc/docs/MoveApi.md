@@ -334,7 +334,7 @@ import ghc_client
 from ghc_client.api import move_api
 from ghc_client.model.search_moves_result import SearchMovesResult
 from ghc_client.model.error import Error
-from ghc_client.model.inline_object2 import InlineObject2
+from ghc_client.model.search_moves_request import SearchMovesRequest
 from pprint import pprint
 # Defining the host is optional and defaults to /ghc/v1
 # See configuration.py for a list of all supported configuration parameters.
@@ -347,7 +347,7 @@ configuration = ghc_client.Configuration(
 with ghc_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = move_api.MoveApi(api_client)
-    body = InlineObject2(
+    body = SearchMovesRequest(
         page=1,
         per_page=1,
         locator="locator_example",
@@ -362,7 +362,7 @@ with ghc_client.ApiClient() as api_client:
         shipments_count=1,
         sort="customerName",
         order="asc",
-    ) # InlineObject2 |  (optional)
+    ) # SearchMovesRequest | field that results should be sorted by (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
@@ -379,7 +379,7 @@ with ghc_client.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**InlineObject2**](InlineObject2.md)|  | [optional]
+ **body** | [**SearchMovesRequest**](SearchMovesRequest.md)| field that results should be sorted by | [optional]
 
 ### Return type
 
@@ -420,9 +420,9 @@ import time
 import ghc_client
 from ghc_client.api import move_api
 from ghc_client.model.error import Error
+from ghc_client.model.set_financial_review_flag_request import SetFinancialReviewFlagRequest
 from ghc_client.model.validation_error import ValidationError
 from ghc_client.model.move import Move
-from ghc_client.model.inline_object1 import InlineObject1
 from pprint import pprint
 # Defining the host is optional and defaults to /ghc/v1
 # See configuration.py for a list of all supported configuration parameters.
@@ -437,10 +437,10 @@ with ghc_client.ApiClient() as api_client:
     api_instance = move_api.MoveApi(api_client)
     move_id = "moveID_example" # str | ID of move to flag
     if_match = "If-Match_example" # str |  (optional)
-    body = InlineObject1(
+    body = SetFinancialReviewFlagRequest(
         remarks="this address is way too far away",
         flag_for_review=False,
-    ) # InlineObject1 |  (optional)
+    ) # SetFinancialReviewFlagRequest |  (optional)
 
     # example passing only required values which don't have defaults set
     try:
@@ -467,7 +467,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **move_id** | **str**| ID of move to flag |
  **if_match** | **str**|  | [optional]
- **body** | [**InlineObject1**](InlineObject1.md)|  | [optional]
+ **body** | [**SetFinancialReviewFlagRequest**](SetFinancialReviewFlagRequest.md)|  | [optional]
 
 ### Return type
 
@@ -511,7 +511,7 @@ import time
 import ghc_client
 from ghc_client.api import move_api
 from ghc_client.model.error import Error
-from ghc_client.model.inline_object import InlineObject
+from ghc_client.model.update_closeout_office_request import UpdateCloseoutOfficeRequest
 from ghc_client.model.validation_error import ValidationError
 from ghc_client.model.move import Move
 from pprint import pprint
@@ -528,9 +528,9 @@ with ghc_client.ApiClient() as api_client:
     api_instance = move_api.MoveApi(api_client)
     locator = "locator_example" # str | move code to identify a move to update the PPM shipment's closeout office for Army and Air Force service members
     if_match = "If-Match_example" # str | 
-    body = InlineObject(
+    body = UpdateCloseoutOfficeRequest(
         closeout_office_id="closeout_office_id_example",
-    ) # InlineObject |  (optional)
+    ) # UpdateCloseoutOfficeRequest |  (optional)
 
     # example passing only required values which don't have defaults set
     try:
@@ -557,7 +557,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **locator** | **str**| move code to identify a move to update the PPM shipment&#39;s closeout office for Army and Air Force service members |
  **if_match** | **str**|  |
- **body** | [**InlineObject**](InlineObject.md)|  | [optional]
+ **body** | [**UpdateCloseoutOfficeRequest**](UpdateCloseoutOfficeRequest.md)|  | [optional]
 
 ### Return type
 

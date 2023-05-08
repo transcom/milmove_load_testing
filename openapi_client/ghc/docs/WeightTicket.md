@@ -9,11 +9,11 @@ Name | Type | Description | Notes
 **created_at** | **datetime** |  | [readonly] 
 **updated_at** | **datetime** |  | [readonly] 
 **empty_document_id** | **str** | ID of the document that is associated with the user uploads containing the vehicle weight when empty. | [readonly] 
-**empty_document** | **{str: (bool, date, datetime, dict, float, int, list, str, none_type)}** |  | 
+**empty_document** | [**WeightTicketEmptyDocument**](WeightTicketEmptyDocument.md) |  | 
 **full_document_id** | **str** | ID of the document that is associated with the user uploads containing the vehicle weight when full. | [readonly] 
-**full_document** | **{str: (bool, date, datetime, dict, float, int, list, str, none_type)}** |  | 
+**full_document** | [**WeightTicketFullDocument**](WeightTicketFullDocument.md) |  | 
 **proof_of_trailer_ownership_document_id** | **str** | ID of the document that is associated with the user uploads containing the proof of trailer ownership. | [readonly] 
-**proof_of_trailer_ownership_document** | **{str: (bool, date, datetime, dict, float, int, list, str, none_type)}** |  | 
+**proof_of_trailer_ownership_document** | [**WeightTicketProofOfTrailerOwnershipDocument**](WeightTicketProofOfTrailerOwnershipDocument.md) |  | 
 **id** | **str** | ID of this set of weight tickets. | [optional] [readonly] 
 **vehicle_description** | **str, none_type** | Description of the vehicle used for the trip. E.g. make/model, type of truck/van, etc. | [optional] 
 **empty_weight** | **int, none_type** | Weight of the vehicle when empty. | [optional] 

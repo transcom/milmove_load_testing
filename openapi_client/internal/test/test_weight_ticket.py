@@ -13,10 +13,14 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.document import Document
 from internal_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
-globals()['Document'] = Document
+from internal_client.model.weight_ticket_empty_document import WeightTicketEmptyDocument
+from internal_client.model.weight_ticket_full_document import WeightTicketFullDocument
+from internal_client.model.weight_ticket_proof_of_trailer_ownership_document import WeightTicketProofOfTrailerOwnershipDocument
 globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
+globals()['WeightTicketEmptyDocument'] = WeightTicketEmptyDocument
+globals()['WeightTicketFullDocument'] = WeightTicketFullDocument
+globals()['WeightTicketProofOfTrailerOwnershipDocument'] = WeightTicketProofOfTrailerOwnershipDocument
 from internal_client.model.weight_ticket import WeightTicket
 
 

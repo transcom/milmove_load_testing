@@ -39,8 +39,8 @@ from internal_client.model.index_entitlements import IndexEntitlements
 from internal_client.model.index_moves_payload import IndexMovesPayload
 from internal_client.model.index_personally_procured_move_payload import IndexPersonallyProcuredMovePayload
 from internal_client.model.index_service_member_backup_contacts_payload import IndexServiceMemberBackupContactsPayload
-from internal_client.model.inline_response200 import InlineResponse200
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
+from internal_client.model.is_logged_in_user200_response import IsLoggedInUser200Response
 from internal_client.model.logged_in_user_payload import LoggedInUserPayload
 from internal_client.model.mto_agent import MTOAgent
 from internal_client.model.mto_agent_type import MTOAgentType
@@ -59,6 +59,7 @@ from internal_client.model.move_payload import MovePayload
 from internal_client.model.move_queue_item import MoveQueueItem
 from internal_client.model.move_status import MoveStatus
 from internal_client.model.moving_expense import MovingExpense
+from internal_client.model.moving_expense_document import MovingExpenseDocument
 from internal_client.model.moving_expense_type import MovingExpenseType
 from internal_client.model.nullable_signed_certification_type import NullableSignedCertificationType
 from internal_client.model.office_user import OfficeUser
@@ -82,6 +83,7 @@ from internal_client.model.payment_methods_totals import PaymentMethodsTotals
 from internal_client.model.personally_procured_move_payload import PersonallyProcuredMovePayload
 from internal_client.model.post_document_payload import PostDocumentPayload
 from internal_client.model.pro_gear_weight_ticket import ProGearWeightTicket
+from internal_client.model.pro_gear_weight_ticket_document import ProGearWeightTicketDocument
 from internal_client.model.rate_engine_postal_code_payload import RateEnginePostalCodePayload
 from internal_client.model.reimbursement import Reimbursement
 from internal_client.model.reimbursement_status import ReimbursementStatus
@@ -112,5 +114,8 @@ from internal_client.model.upload import Upload
 from internal_client.model.validation_error import ValidationError
 from internal_client.model.weight_allotment import WeightAllotment
 from internal_client.model.weight_ticket import WeightTicket
+from internal_client.model.weight_ticket_empty_document import WeightTicketEmptyDocument
+from internal_client.model.weight_ticket_full_document import WeightTicketFullDocument
+from internal_client.model.weight_ticket_proof_of_trailer_ownership_document import WeightTicketProofOfTrailerOwnershipDocument
 from internal_client.model.weight_ticket_set_type import WeightTicketSetType
 from internal_client.model.weight_tickets import WeightTickets

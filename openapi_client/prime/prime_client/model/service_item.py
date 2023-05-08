@@ -31,8 +31,8 @@ from prime_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from prime_client.model.service_item_params import ServiceItemParams
-    globals()['ServiceItemParams'] = ServiceItemParams
+    from prime_client.model.service_item_params_inner import ServiceItemParamsInner
+    globals()['ServiceItemParamsInner'] = ServiceItemParamsInner
 
 
 class ServiceItem(ModelNormal):
@@ -89,7 +89,7 @@ class ServiceItem(ModelNormal):
         lazy_import()
         return {
             'id': (str,),  # noqa: E501
-            'params': ([ServiceItemParams],),  # noqa: E501
+            'params': ([ServiceItemParamsInner],),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -147,12 +147,12 @@ class ServiceItem(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             id (str): [optional]  # noqa: E501
-            params ([ServiceItemParams]): This should be populated for the following service items:   * DOASIT(Domestic destination Additional day SIT)   * DDASIT(Domestic destination Additional day SIT)  Both take in the following param keys:   * `SITPaymentRequestStart`   * `SITPaymentRequestEnd`  The value of each is a date string in the format \"YYYY-MM-DD\" (e.g. \"2023-01-15\") . [optional]  # noqa: E501
+            params ([ServiceItemParamsInner]): This should be populated for the following service items:   * DOASIT(Domestic destination Additional day SIT)   * DDASIT(Domestic destination Additional day SIT)  Both take in the following param keys:   * `SITPaymentRequestStart`   * `SITPaymentRequestEnd`  The value of each is a date string in the format \"YYYY-MM-DD\" (e.g. \"2023-01-15\") . [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -160,14 +160,18 @@ class ServiceItem(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -231,7 +235,7 @@ class ServiceItem(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             id (str): [optional]  # noqa: E501
-            params ([ServiceItemParams]): This should be populated for the following service items:   * DOASIT(Domestic destination Additional day SIT)   * DDASIT(Domestic destination Additional day SIT)  Both take in the following param keys:   * `SITPaymentRequestStart`   * `SITPaymentRequestEnd`  The value of each is a date string in the format \"YYYY-MM-DD\" (e.g. \"2023-01-15\") . [optional]  # noqa: E501
+            params ([ServiceItemParamsInner]): This should be populated for the following service items:   * DOASIT(Domestic destination Additional day SIT)   * DDASIT(Domestic destination Additional day SIT)  Both take in the following param keys:   * `SITPaymentRequestStart`   * `SITPaymentRequestEnd`  The value of each is a date string in the format \"YYYY-MM-DD\" (e.g. \"2023-01-15\") . [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -242,14 +246,18 @@ class ServiceItem(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **is_logged_in_user**
-> InlineResponse200 is_logged_in_user()
+> IsLoggedInUser200Response is_logged_in_user()
 
 Returns boolean as to whether the user is logged in
 
@@ -22,7 +22,7 @@ Returns boolean as to whether the user is logged in
 import time
 import internal_client
 from internal_client.api import users_api
-from internal_client.model.inline_response200 import InlineResponse200
+from internal_client.model.is_logged_in_user200_response import IsLoggedInUser200Response
 from pprint import pprint
 # Defining the host is optional and defaults to /internal
 # See configuration.py for a list of all supported configuration parameters.
@@ -51,7 +51,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse200**](InlineResponse200.md)
+[**IsLoggedInUser200Response**](IsLoggedInUser200Response.md)
 
 ### Authorization
 

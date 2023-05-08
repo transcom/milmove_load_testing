@@ -120,7 +120,7 @@ with ghc_client.ApiClient() as api_client:
         email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
         suffix="Jr.",
         middle_name="David",
-        current_address={},
+        current_address=UpdateCustomerPayloadCurrentAddress(),
         backup_contact=BackupContact(
             name="name_example",
             email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",

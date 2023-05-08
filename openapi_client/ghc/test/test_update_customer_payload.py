@@ -13,10 +13,10 @@ import sys
 import unittest
 
 import ghc_client
-from ghc_client.model.address import Address
 from ghc_client.model.backup_contact import BackupContact
-globals()['Address'] = Address
+from ghc_client.model.update_customer_payload_current_address import UpdateCustomerPayloadCurrentAddress
 globals()['BackupContact'] = BackupContact
+globals()['UpdateCustomerPayloadCurrentAddress'] = UpdateCustomerPayloadCurrentAddress
 from ghc_client.model.update_customer_payload import UpdateCustomerPayload
 
 

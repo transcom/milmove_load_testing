@@ -31,12 +31,14 @@ from prime_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from prime_client.model.address import Address
+    from prime_client.model.create_mto_shipment_destination_address import CreateMTOShipmentDestinationAddress
+    from prime_client.model.create_mto_shipment_pickup_address import CreateMTOShipmentPickupAddress
     from prime_client.model.create_ppm_shipment import CreatePPMShipment
     from prime_client.model.mto_agents import MTOAgents
     from prime_client.model.mto_service_item import MTOServiceItem
     from prime_client.model.mto_shipment_type import MTOShipmentType
-    globals()['Address'] = Address
+    globals()['CreateMTOShipmentDestinationAddress'] = CreateMTOShipmentDestinationAddress
+    globals()['CreateMTOShipmentPickupAddress'] = CreateMTOShipmentPickupAddress
     globals()['CreatePPMShipment'] = CreatePPMShipment
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOServiceItem'] = MTOServiceItem
@@ -106,8 +108,8 @@ class CreateMTOShipment(ModelNormal):
             'customer_remarks': (str, none_type,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
             'mto_service_items': ([MTOServiceItem],),  # noqa: E501
-            'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'pickup_address': (CreateMTOShipmentPickupAddress,),  # noqa: E501
+            'destination_address': (CreateMTOShipmentDestinationAddress,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
             'point_of_contact': (str,),  # noqa: E501
             'counselor_remarks': (str, none_type,),  # noqa: E501
@@ -185,8 +187,8 @@ class CreateMTOShipment(ModelNormal):
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             mto_service_items ([MTOServiceItem]): A list of service items connected to this shipment.. [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.. [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.. [optional]  # noqa: E501
+            pickup_address (CreateMTOShipmentPickupAddress): [optional]  # noqa: E501
+            destination_address (CreateMTOShipmentDestinationAddress): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
             counselor_remarks (str, none_type): [optional]  # noqa: E501
@@ -194,7 +196,7 @@ class CreateMTOShipment(ModelNormal):
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -202,14 +204,18 @@ class CreateMTOShipment(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -283,8 +289,8 @@ class CreateMTOShipment(ModelNormal):
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             mto_service_items ([MTOServiceItem]): A list of service items connected to this shipment.. [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.. [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.. [optional]  # noqa: E501
+            pickup_address (CreateMTOShipmentPickupAddress): [optional]  # noqa: E501
+            destination_address (CreateMTOShipmentDestinationAddress): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
             counselor_remarks (str, none_type): [optional]  # noqa: E501
@@ -298,14 +304,18 @@ class CreateMTOShipment(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

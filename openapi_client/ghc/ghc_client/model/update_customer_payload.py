@@ -31,10 +31,10 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from ghc_client.model.address import Address
     from ghc_client.model.backup_contact import BackupContact
-    globals()['Address'] = Address
+    from ghc_client.model.update_customer_payload_current_address import UpdateCustomerPayloadCurrentAddress
     globals()['BackupContact'] = BackupContact
+    globals()['UpdateCustomerPayloadCurrentAddress'] = UpdateCustomerPayloadCurrentAddress
 
 
 class UpdateCustomerPayload(ModelNormal):
@@ -106,7 +106,7 @@ class UpdateCustomerPayload(ModelNormal):
             'email': (str, none_type,),  # noqa: E501
             'suffix': (str, none_type,),  # noqa: E501
             'middle_name': (str, none_type,),  # noqa: E501
-            'current_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'current_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'backup_contact': (BackupContact,),  # noqa: E501
         }
 
@@ -173,12 +173,12 @@ class UpdateCustomerPayload(ModelNormal):
             email (str, none_type): [optional]  # noqa: E501
             suffix (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
-            current_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            current_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             backup_contact (BackupContact): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -186,14 +186,18 @@ class UpdateCustomerPayload(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -262,7 +266,7 @@ class UpdateCustomerPayload(ModelNormal):
             email (str, none_type): [optional]  # noqa: E501
             suffix (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
-            current_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            current_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             backup_contact (BackupContact): [optional]  # noqa: E501
         """
 
@@ -273,14 +277,18 @@ class UpdateCustomerPayload(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

@@ -6,7 +6,7 @@
 # raise a `RecursionError`.
 # In order to avoid this, import only the API that you directly need like:
 #
-#   from .api.move_task_order_api import MoveTaskOrderApi
+#   from prime_client.api.move_task_order_api import MoveTaskOrderApi
 #
 # or import this package, but before doing it, use:
 #

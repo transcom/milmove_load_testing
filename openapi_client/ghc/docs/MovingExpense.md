@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **id** | **str** | Unique primary identifier of the Moving Expense object | [readonly] 
 **ppm_shipment_id** | **str** | The PPM Shipment id that this moving expense belongs to | [readonly] 
 **document_id** | **str** | The id of the Document that contains all file uploads for this expense | [readonly] 
-**document** | **{str: (bool, date, datetime, dict, float, int, list, str, none_type)}** |  | 
+**document** | [**MovingExpenseDocument**](MovingExpenseDocument.md) |  | 
 **created_at** | **datetime** | Timestamp the moving expense object was initially created in the system (UTC) | [readonly] 
 **updated_at** | **datetime** | Timestamp when a property of this moving expense object was last modified (UTC) | [readonly] 
 **moving_expense_type** | [**OmittableMovingExpenseType**](OmittableMovingExpenseType.md) |  | [optional] 

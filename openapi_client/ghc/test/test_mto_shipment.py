@@ -15,7 +15,6 @@ import unittest
 import ghc_client
 from ghc_client.model.address import Address
 from ghc_client.model.destination_type import DestinationType
-from ghc_client.model.loa_type import LOAType
 from ghc_client.model.mto_agents import MTOAgents
 from ghc_client.model.mto_service_items import MTOServiceItems
 from ghc_client.model.mto_shipment_status import MTOShipmentStatus
@@ -27,7 +26,6 @@ from ghc_client.model.sit_status import SITStatus
 from ghc_client.model.storage_facility import StorageFacility
 globals()['Address'] = Address
 globals()['DestinationType'] = DestinationType
-globals()['LOAType'] = LOAType
 globals()['MTOAgents'] = MTOAgents
 globals()['MTOServiceItems'] = MTOServiceItems
 globals()['MTOShipmentStatus'] = MTOShipmentStatus

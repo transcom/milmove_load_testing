@@ -22,6 +22,8 @@ from ghc_client.model.create_approved_sit_duration_update import CreateApprovedS
 from ghc_client.model.create_customer_support_remark import CreateCustomerSupportRemark
 from ghc_client.model.create_evaluation_report import CreateEvaluationReport
 from ghc_client.model.create_mto_shipment import CreateMTOShipment
+from ghc_client.model.create_mto_shipment_destination_address import CreateMTOShipmentDestinationAddress
+from ghc_client.model.create_mto_shipment_pickup_address import CreateMTOShipmentPickupAddress
 from ghc_client.model.create_ppm_shipment import CreatePPMShipment
 from ghc_client.model.customer import Customer
 from ghc_client.model.customer_contact_type import CustomerContactType
@@ -43,9 +45,6 @@ from ghc_client.model.evaluation_report_office_user import EvaluationReportOffic
 from ghc_client.model.evaluation_report_type import EvaluationReportType
 from ghc_client.model.gbloc import GBLOC
 from ghc_client.model.grade import Grade
-from ghc_client.model.inline_object import InlineObject
-from ghc_client.model.inline_object1 import InlineObject1
-from ghc_client.model.inline_object2 import InlineObject2
 from ghc_client.model.loa_type import LOAType
 from ghc_client.model.loa_type_nullable import LOATypeNullable
 from ghc_client.model.mto_agent import MTOAgent
@@ -73,6 +72,7 @@ from ghc_client.model.move_status import MoveStatus
 from ghc_client.model.move_task_order import MoveTaskOrder
 from ghc_client.model.move_task_orders import MoveTaskOrders
 from ghc_client.model.moving_expense import MovingExpense
+from ghc_client.model.moving_expense_document import MovingExpenseDocument
 from ghc_client.model.moving_expenses import MovingExpenses
 from ghc_client.model.omittable_moving_expense_type import OmittableMovingExpenseType
 from ghc_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
@@ -96,6 +96,7 @@ from ghc_client.model.payment_service_item_params import PaymentServiceItemParam
 from ghc_client.model.payment_service_item_status import PaymentServiceItemStatus
 from ghc_client.model.payment_service_items import PaymentServiceItems
 from ghc_client.model.pro_gear_weight_ticket import ProGearWeightTicket
+from ghc_client.model.pro_gear_weight_ticket_document import ProGearWeightTicketDocument
 from ghc_client.model.pro_gear_weight_tickets import ProGearWeightTickets
 from ghc_client.model.proof_of_service_doc import ProofOfServiceDoc
 from ghc_client.model.proof_of_service_docs import ProofOfServiceDocs
@@ -117,10 +118,12 @@ from ghc_client.model.sit_location_type import SITLocationType
 from ghc_client.model.sit_status import SITStatus
 from ghc_client.model.search_move import SearchMove
 from ghc_client.model.search_moves import SearchMoves
+from ghc_client.model.search_moves_request import SearchMovesRequest
 from ghc_client.model.search_moves_result import SearchMovesResult
 from ghc_client.model.service_item_param_name import ServiceItemParamName
 from ghc_client.model.service_item_param_origin import ServiceItemParamOrigin
 from ghc_client.model.service_item_param_type import ServiceItemParamType
+from ghc_client.model.set_financial_review_flag_request import SetFinancialReviewFlagRequest
 from ghc_client.model.shipment_payment_sit_balance import ShipmentPaymentSITBalance
 from ghc_client.model.shipments_payment_sit_balance import ShipmentsPaymentSITBalance
 from ghc_client.model.signed_certification import SignedCertification
@@ -131,7 +134,9 @@ from ghc_client.model.transportation_office import TransportationOffice
 from ghc_client.model.transportation_offices import TransportationOffices
 from ghc_client.model.update_allowance_payload import UpdateAllowancePayload
 from ghc_client.model.update_billable_weight_payload import UpdateBillableWeightPayload
+from ghc_client.model.update_closeout_office_request import UpdateCloseoutOfficeRequest
 from ghc_client.model.update_customer_payload import UpdateCustomerPayload
+from ghc_client.model.update_customer_payload_current_address import UpdateCustomerPayloadCurrentAddress
 from ghc_client.model.update_customer_support_remark_payload import UpdateCustomerSupportRemarkPayload
 from ghc_client.model.update_max_billable_weight_as_tio_payload import UpdateMaxBillableWeightAsTIOPayload
 from ghc_client.model.update_moving_expense import UpdateMovingExpense
@@ -144,4 +149,7 @@ from ghc_client.model.update_weight_ticket import UpdateWeightTicket
 from ghc_client.model.upload import Upload
 from ghc_client.model.validation_error import ValidationError
 from ghc_client.model.weight_ticket import WeightTicket
+from ghc_client.model.weight_ticket_empty_document import WeightTicketEmptyDocument
+from ghc_client.model.weight_ticket_full_document import WeightTicketFullDocument
+from ghc_client.model.weight_ticket_proof_of_trailer_ownership_document import WeightTicketProofOfTrailerOwnershipDocument
 from ghc_client.model.weight_tickets import WeightTickets

@@ -10,16 +10,20 @@ mymove_dir=${MYMOVE_DIR:-${main_dir}/../mymove}
 cd "${main_dir}"
 mkdir -p openapi_client
 
-# set _JAVA_OPTIONS and the runtime memory because java in a container
-# doesn't always pick up the memory limits correctly
+# openapi-generator-cli v6.1.0 is the last version that uses
+# the older python geneator. In 6.2 they switched to a new generator
+# that is not compatiable with our swagger definitions
+#
+# openapi-generator-cli v6.1.0 uses openjdk 11, which is docker aware
+# so setting memory limits on the container are respected by the JVM
 for client in ghc internal prime; do
   rm -rf openapi_client/${client}
-  docker run -it --rm  --platform linux/amd64 \
+  docker run -it --rm \
+         --platform linux/amd64 \
          -v "${mymove_dir}:/a" \
          -v "${main_dir}:/b" \
-         -m 1g \
-         -e "_JAVA_OPTIONS=-Xbatch -Xms1g -Xmx1g -Xint" \
-         openapitools/openapi-generator-cli:v5.4.0 \
+         -m 2g \
+         openapitools/openapi-generator-cli:v6.1.0 \
          generate \
          -g python \
          -i "/a/swagger/${client}.yaml" \

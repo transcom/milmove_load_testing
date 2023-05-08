@@ -13,10 +13,10 @@ import sys
 import unittest
 
 import ghc_client
-from ghc_client.model.document import Document
 from ghc_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
-globals()['Document'] = Document
+from ghc_client.model.pro_gear_weight_ticket_document import ProGearWeightTicketDocument
 globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
+globals()['ProGearWeightTicketDocument'] = ProGearWeightTicketDocument
 from ghc_client.model.pro_gear_weight_ticket import ProGearWeightTicket
 
 

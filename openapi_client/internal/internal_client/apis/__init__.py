@@ -6,7 +6,7 @@
 # raise a `RecursionError`.
 # In order to avoid this, import only the API that you directly need like:
 #
-#   from .api.addresses_api import AddressesApi
+#   from internal_client.api.addresses_api import AddressesApi
 #
 # or import this package, but before doing it, use:
 #

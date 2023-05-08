@@ -36,8 +36,15 @@ def do_hhg_prime_service_items(
     if len(pmoves) != 1:
         raise Exception(f"Cannot find prime move_id: {move_id}")
 
-    move = mto_api_client.get_move_task_order(move_id)
-    mto_shipment_id = move.mto_shipments.value[0].id
+    move = mto_api_client.get_move_task_order(
+        move_id,
+        # getting some errors
+        # about missing address
+        _check_return_type=False,
+    )
+    first_shipment = move["mto_shipments"][0]
+    mto_shipment_id = first_shipment["id"]
+    etag = first_shipment["eTag"]
 
     # Having both the dates >10 days in the future is one of the ways
     # to pass date validation
@@ -53,7 +60,14 @@ def do_hhg_prime_service_items(
         scheduled_pickup_date=scheduled_pickup_date,
         actual_pickup_date=actual_pickup_date,
     )
-    mto_shipment_api_client.update_mto_shipment(mto_shipment_id, move.mto_shipments.value[0].e_tag, payload)
+    mto_shipment_api_client.update_mto_shipment(
+        mto_shipment_id,
+        etag,
+        payload,
+        # getting some errors
+        # about missing address
+        _check_return_type=False,
+    )
 
     entry_date = (datetime.datetime.now() + datetime.timedelta(days=1)).date()
     departure_date = (datetime.datetime.now() + datetime.timedelta(days=6)).date()

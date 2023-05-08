@@ -13,10 +13,14 @@ import sys
 import unittest
 
 import ghc_client
-from ghc_client.model.document import Document
 from ghc_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
-globals()['Document'] = Document
+from ghc_client.model.weight_ticket_empty_document import WeightTicketEmptyDocument
+from ghc_client.model.weight_ticket_full_document import WeightTicketFullDocument
+from ghc_client.model.weight_ticket_proof_of_trailer_ownership_document import WeightTicketProofOfTrailerOwnershipDocument
 globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
+globals()['WeightTicketEmptyDocument'] = WeightTicketEmptyDocument
+globals()['WeightTicketFullDocument'] = WeightTicketFullDocument
+globals()['WeightTicketProofOfTrailerOwnershipDocument'] = WeightTicketProofOfTrailerOwnershipDocument
 from ghc_client.model.weight_ticket import WeightTicket
 
 

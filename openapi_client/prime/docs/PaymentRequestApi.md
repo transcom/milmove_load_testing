@@ -46,7 +46,7 @@ with prime_client.ApiClient() as api_client:
             ServiceItem(
                 id="c56a4180-65aa-42ec-a945-5fd21dec0538",
                 params=[
-                    ServiceItemParams(
+                    ServiceItemParamsInner(
                         key="Service Item Parameter Name",
                         value="Service Item Parameter Value",
                     ),

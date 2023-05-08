@@ -13,8 +13,6 @@ import sys
 import unittest
 
 import prime_client
-from prime_client.model.mto_service_item_dimension import MTOServiceItemDimension
-globals()['MTOServiceItemDimension'] = MTOServiceItemDimension
 from prime_client.model.mto_service_item_domestic_crating_all_of import MTOServiceItemDomesticCratingAllOf
 
 

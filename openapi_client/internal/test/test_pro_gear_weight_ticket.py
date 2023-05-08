@@ -13,10 +13,10 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.document import Document
 from internal_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
-globals()['Document'] = Document
+from internal_client.model.pro_gear_weight_ticket_document import ProGearWeightTicketDocument
 globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
+globals()['ProGearWeightTicketDocument'] = ProGearWeightTicketDocument
 from internal_client.model.pro_gear_weight_ticket import ProGearWeightTicket
 
 

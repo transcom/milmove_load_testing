@@ -31,18 +31,18 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from ghc_client.model.address import Address
+    from ghc_client.model.create_mto_shipment_destination_address import CreateMTOShipmentDestinationAddress
+    from ghc_client.model.create_mto_shipment_pickup_address import CreateMTOShipmentPickupAddress
     from ghc_client.model.create_ppm_shipment import CreatePPMShipment
     from ghc_client.model.destination_type import DestinationType
-    from ghc_client.model.loa_type import LOAType
     from ghc_client.model.mto_agents import MTOAgents
     from ghc_client.model.mto_service_items import MTOServiceItems
     from ghc_client.model.mto_shipment_type import MTOShipmentType
     from ghc_client.model.storage_facility import StorageFacility
-    globals()['Address'] = Address
+    globals()['CreateMTOShipmentDestinationAddress'] = CreateMTOShipmentDestinationAddress
+    globals()['CreateMTOShipmentPickupAddress'] = CreateMTOShipmentPickupAddress
     globals()['CreatePPMShipment'] = CreatePPMShipment
     globals()['DestinationType'] = DestinationType
-    globals()['LOAType'] = LOAType
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOServiceItems'] = MTOServiceItems
     globals()['MTOShipmentType'] = MTOShipmentType
@@ -110,8 +110,8 @@ class CreateMTOShipment(ModelNormal):
             'counselor_remarks': (str, none_type,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
             'mto_service_items': (MTOServiceItems,),  # noqa: E501
-            'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'pickup_address': (CreateMTOShipmentPickupAddress,),  # noqa: E501
+            'destination_address': (CreateMTOShipmentDestinationAddress,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
             'tac_type': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'sac_type': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
@@ -199,8 +199,8 @@ class CreateMTOShipment(ModelNormal):
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address. Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             mto_service_items (MTOServiceItems): [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.. [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.. [optional]  # noqa: E501
+            pickup_address (CreateMTOShipmentPickupAddress): [optional]  # noqa: E501
+            destination_address (CreateMTOShipmentDestinationAddress): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             tac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
             sac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
@@ -212,7 +212,7 @@ class CreateMTOShipment(ModelNormal):
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -220,14 +220,18 @@ class CreateMTOShipment(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -302,8 +306,8 @@ class CreateMTOShipment(ModelNormal):
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address. Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             mto_service_items (MTOServiceItems): [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment.. [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment.. [optional]  # noqa: E501
+            pickup_address (CreateMTOShipmentPickupAddress): [optional]  # noqa: E501
+            destination_address (CreateMTOShipmentDestinationAddress): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             tac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
             sac_type ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
@@ -321,14 +325,18 @@ class CreateMTOShipment(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

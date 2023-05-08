@@ -15,10 +15,8 @@ import unittest
 import ghc_client
 from ghc_client.model.address import Address
 from ghc_client.model.ppm_advance_status import PPMAdvanceStatus
-from ghc_client.model.sit_location_type import SITLocationType
 globals()['Address'] = Address
 globals()['PPMAdvanceStatus'] = PPMAdvanceStatus
-globals()['SITLocationType'] = SITLocationType
 from ghc_client.model.update_ppm_shipment import UpdatePPMShipment
 
 

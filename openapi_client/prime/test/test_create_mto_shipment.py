@@ -13,12 +13,14 @@ import sys
 import unittest
 
 import prime_client
-from prime_client.model.address import Address
+from prime_client.model.create_mto_shipment_destination_address import CreateMTOShipmentDestinationAddress
+from prime_client.model.create_mto_shipment_pickup_address import CreateMTOShipmentPickupAddress
 from prime_client.model.create_ppm_shipment import CreatePPMShipment
 from prime_client.model.mto_agents import MTOAgents
 from prime_client.model.mto_service_item import MTOServiceItem
 from prime_client.model.mto_shipment_type import MTOShipmentType
-globals()['Address'] = Address
+globals()['CreateMTOShipmentDestinationAddress'] = CreateMTOShipmentDestinationAddress
+globals()['CreateMTOShipmentPickupAddress'] = CreateMTOShipmentPickupAddress
 globals()['CreatePPMShipment'] = CreatePPMShipment
 globals()['MTOAgents'] = MTOAgents
 globals()['MTOServiceItem'] = MTOServiceItem
