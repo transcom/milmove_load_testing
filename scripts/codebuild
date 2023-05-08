@@ -51,7 +51,7 @@ raw_task_definition=$(aws ecs describe-task-definition \
 # LOCUSTFILE can be set in the build overrides of the CodeBuild config
 # The leading colon indicates this line only modifies the LOCUSTFILE
 # environment variable and has no other effects
-: "${LOCUSTFILE:=/app/locustfiles/all.py}"
+: "${LOCUSTFILE:=/app/locustfiles/queue.py}"
 
 # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
 cpu="1024"
@@ -77,7 +77,7 @@ if [[ "1" == "${container_def_len}" ]]; then
 aws_otel_collector="\
 { \
   \"name\": \"otel-${container_name}\", \
-  \"image\": \"amazon/aws-otel-collector:v0.14.0\", \
+  \"image\": \"public.ecr.aws/aws-observability/aws-otel-collector:v0.26.1\", \
   \"essential\": true, \
   \"command\": [ \
     \"--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml\" \
