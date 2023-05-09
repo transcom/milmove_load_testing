@@ -31,15 +31,21 @@ from prime_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from prime_client.model.address import Address
     from prime_client.model.destination_type import DestinationType
+    from prime_client.model.mto_shipment_destination_address import MTOShipmentDestinationAddress
+    from prime_client.model.mto_shipment_pickup_address import MTOShipmentPickupAddress
+    from prime_client.model.mto_shipment_secondary_delivery_address import MTOShipmentSecondaryDeliveryAddress
+    from prime_client.model.mto_shipment_secondary_pickup_address import MTOShipmentSecondaryPickupAddress
+    from prime_client.model.mto_shipment_storage_facility import MTOShipmentStorageFacility
     from prime_client.model.mto_shipment_type import MTOShipmentType
-    from prime_client.model.storage_facility import StorageFacility
     from prime_client.model.update_ppm_shipment import UpdatePPMShipment
-    globals()['Address'] = Address
     globals()['DestinationType'] = DestinationType
+    globals()['MTOShipmentDestinationAddress'] = MTOShipmentDestinationAddress
+    globals()['MTOShipmentPickupAddress'] = MTOShipmentPickupAddress
+    globals()['MTOShipmentSecondaryDeliveryAddress'] = MTOShipmentSecondaryDeliveryAddress
+    globals()['MTOShipmentSecondaryPickupAddress'] = MTOShipmentSecondaryPickupAddress
+    globals()['MTOShipmentStorageFacility'] = MTOShipmentStorageFacility
     globals()['MTOShipmentType'] = MTOShipmentType
-    globals()['StorageFacility'] = StorageFacility
     globals()['UpdatePPMShipment'] = UpdatePPMShipment
 
 
@@ -110,12 +116,12 @@ class UpdateMTOShipment(ModelNormal):
             'prime_estimated_weight': (int, none_type,),  # noqa: E501
             'prime_actual_weight': (int, none_type,),  # noqa: E501
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
-            'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'pickup_address': (MTOShipmentPickupAddress,),  # noqa: E501
+            'destination_address': (MTOShipmentDestinationAddress,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
-            'secondary_pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'secondary_delivery_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'storage_facility': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'secondary_pickup_address': (MTOShipmentSecondaryPickupAddress,),  # noqa: E501
+            'secondary_delivery_address': (MTOShipmentSecondaryDeliveryAddress,),  # noqa: E501
+            'storage_facility': (MTOShipmentStorageFacility,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
             'point_of_contact': (str,),  # noqa: E501
@@ -199,12 +205,12 @@ class UpdateMTOShipment(ModelNormal):
             prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
             prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment, entered by the customer during onboarding when they enter shipment details. . [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment. Often provided by the customer when they enter shipment details during onboarding, if they know their new address already.  May be blank when entered by the customer, required when entered by the Prime. May not represent the true final destination due to the shipment being diverted or placed in SIT. . [optional]  # noqa: E501
+            pickup_address (MTOShipmentPickupAddress): [optional]  # noqa: E501
+            destination_address (MTOShipmentDestinationAddress): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
-            secondary_pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): A second pickup address for this shipment, if the customer entered one. An optional field.. [optional]  # noqa: E501
-            secondary_delivery_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): A second delivery address for this shipment, if the customer entered one. An optional field.. [optional]  # noqa: E501
-            storage_facility ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            secondary_pickup_address (MTOShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            secondary_delivery_address (MTOShipmentSecondaryDeliveryAddress): [optional]  # noqa: E501
+            storage_facility (MTOShipmentStorageFacility): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
@@ -213,7 +219,7 @@ class UpdateMTOShipment(ModelNormal):
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -221,14 +227,18 @@ class UpdateMTOShipment(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -299,12 +309,12 @@ class UpdateMTOShipment(ModelNormal):
             prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
             prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): The address where the movers should pick up this shipment, entered by the customer during onboarding when they enter shipment details. . [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): Where the movers should deliver this shipment. Often provided by the customer when they enter shipment details during onboarding, if they know their new address already.  May be blank when entered by the customer, required when entered by the Prime. May not represent the true final destination due to the shipment being diverted or placed in SIT. . [optional]  # noqa: E501
+            pickup_address (MTOShipmentPickupAddress): [optional]  # noqa: E501
+            destination_address (MTOShipmentDestinationAddress): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
-            secondary_pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): A second pickup address for this shipment, if the customer entered one. An optional field.. [optional]  # noqa: E501
-            secondary_delivery_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): A second delivery address for this shipment, if the customer entered one. An optional field.. [optional]  # noqa: E501
-            storage_facility ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            secondary_pickup_address (MTOShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            secondary_delivery_address (MTOShipmentSecondaryDeliveryAddress): [optional]  # noqa: E501
+            storage_facility (MTOShipmentStorageFacility): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
@@ -319,14 +329,18 @@ class UpdateMTOShipment(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

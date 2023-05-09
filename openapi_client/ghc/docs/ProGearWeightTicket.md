@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **updated_at** | **datetime** |  | [readonly] 
 **created_at** | **datetime** |  | [readonly] 
 **document_id** | **str** | The ID of the document that is associated with the user uploads containing the pro-gear weight. | [readonly] 
-**document** | **{str: (bool, date, datetime, dict, float, int, list, str, none_type)}** |  | 
+**document** | [**ProGearWeightTicketDocument**](ProGearWeightTicketDocument.md) |  | 
 **id** | **str** | The ID of the pro-gear weight ticket. | [optional] [readonly] 
 **belongs_to_self** | **bool, none_type** | Indicates if this information is for the customer&#39;s own pro-gear, otherwise, it&#39;s the spouse&#39;s. | [optional] 
 **description** | **str, none_type** | Describes the pro-gear that was moved. | [optional] 

@@ -40,8 +40,8 @@ docs/IndexEntitlements.md
 docs/IndexMovesPayload.md
 docs/IndexPersonallyProcuredMovePayload.md
 docs/IndexServiceMemberBackupContactsPayload.md
-docs/InlineResponse200.md
 docs/InvalidRequestResponsePayload.md
+docs/IsLoggedInUser200Response.md
 docs/LoggedInUserPayload.md
 docs/MTOAgent.md
 docs/MTOAgentType.md
@@ -62,6 +62,7 @@ docs/MoveQueueItem.md
 docs/MoveStatus.md
 docs/MovesApi.md
 docs/MovingExpense.md
+docs/MovingExpenseDocument.md
 docs/MovingExpenseType.md
 docs/MtoShipmentApi.md
 docs/NullableSignedCertificationType.md
@@ -90,6 +91,7 @@ docs/PostDocumentPayload.md
 docs/PostalCodesApi.md
 docs/PpmApi.md
 docs/ProGearWeightTicket.md
+docs/ProGearWeightTicketDocument.md
 docs/QueuesApi.md
 docs/RateEnginePostalCodePayload.md
 docs/Reimbursement.md
@@ -125,6 +127,9 @@ docs/UsersApi.md
 docs/ValidationError.md
 docs/WeightAllotment.md
 docs/WeightTicket.md
+docs/WeightTicketEmptyDocument.md
+docs/WeightTicketFullDocument.md
+docs/WeightTicketProofOfTrailerOwnershipDocument.md
 docs/WeightTicketSetType.md
 docs/WeightTickets.md
 git_push.sh
@@ -184,8 +189,8 @@ internal_client/model/index_entitlements.py
 internal_client/model/index_moves_payload.py
 internal_client/model/index_personally_procured_move_payload.py
 internal_client/model/index_service_member_backup_contacts_payload.py
-internal_client/model/inline_response200.py
 internal_client/model/invalid_request_response_payload.py
+internal_client/model/is_logged_in_user200_response.py
 internal_client/model/logged_in_user_payload.py
 internal_client/model/method_of_receipt.py
 internal_client/model/move_dates_summary.py
@@ -197,6 +202,7 @@ internal_client/model/move_payload.py
 internal_client/model/move_queue_item.py
 internal_client/model/move_status.py
 internal_client/model/moving_expense.py
+internal_client/model/moving_expense_document.py
 internal_client/model/moving_expense_type.py
 internal_client/model/mto_agent.py
 internal_client/model/mto_agent_type.py
@@ -227,6 +233,7 @@ internal_client/model/ppm_shipment_status.py
 internal_client/model/ppm_sit_estimate.py
 internal_client/model/ppm_status.py
 internal_client/model/pro_gear_weight_ticket.py
+internal_client/model/pro_gear_weight_ticket_document.py
 internal_client/model/rate_engine_postal_code_payload.py
 internal_client/model/reimbursement.py
 internal_client/model/reimbursement_status.py
@@ -257,6 +264,9 @@ internal_client/model/upload.py
 internal_client/model/validation_error.py
 internal_client/model/weight_allotment.py
 internal_client/model/weight_ticket.py
+internal_client/model/weight_ticket_empty_document.py
+internal_client/model/weight_ticket_full_document.py
+internal_client/model/weight_ticket_proof_of_trailer_ownership_document.py
 internal_client/model/weight_ticket_set_type.py
 internal_client/model/weight_tickets.py
 internal_client/model_utils.py
@@ -304,8 +314,8 @@ test/test_index_entitlements.py
 test/test_index_moves_payload.py
 test/test_index_personally_procured_move_payload.py
 test/test_index_service_member_backup_contacts_payload.py
-test/test_inline_response200.py
 test/test_invalid_request_response_payload.py
+test/test_is_logged_in_user200_response.py
 test/test_logged_in_user_payload.py
 test/test_method_of_receipt.py
 test/test_move_dates_summary.py
@@ -319,6 +329,7 @@ test/test_move_queue_item.py
 test/test_move_status.py
 test/test_moves_api.py
 test/test_moving_expense.py
+test/test_moving_expense_document.py
 test/test_moving_expense_type.py
 test/test_mto_agent.py
 test/test_mto_agent_type.py
@@ -354,6 +365,7 @@ test/test_ppm_shipment_status.py
 test/test_ppm_sit_estimate.py
 test/test_ppm_status.py
 test/test_pro_gear_weight_ticket.py
+test/test_pro_gear_weight_ticket_document.py
 test/test_queues_api.py
 test/test_rate_engine_postal_code_payload.py
 test/test_reimbursement.py
@@ -389,6 +401,9 @@ test/test_users_api.py
 test/test_validation_error.py
 test/test_weight_allotment.py
 test/test_weight_ticket.py
+test/test_weight_ticket_empty_document.py
+test/test_weight_ticket_full_document.py
+test/test_weight_ticket_proof_of_trailer_ownership_document.py
 test/test_weight_ticket_set_type.py
 test/test_weight_tickets.py
 tox.ini

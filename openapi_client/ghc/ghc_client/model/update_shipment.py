@@ -31,19 +31,19 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from ghc_client.model.address import Address
     from ghc_client.model.destination_type import DestinationType
     from ghc_client.model.loa_type_nullable import LOATypeNullable
     from ghc_client.model.mto_agents import MTOAgents
     from ghc_client.model.mto_shipment_type import MTOShipmentType
     from ghc_client.model.storage_facility import StorageFacility
+    from ghc_client.model.update_customer_payload_current_address import UpdateCustomerPayloadCurrentAddress
     from ghc_client.model.update_ppm_shipment import UpdatePPMShipment
-    globals()['Address'] = Address
     globals()['DestinationType'] = DestinationType
     globals()['LOATypeNullable'] = LOATypeNullable
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOShipmentType'] = MTOShipmentType
     globals()['StorageFacility'] = StorageFacility
+    globals()['UpdateCustomerPayloadCurrentAddress'] = UpdateCustomerPayloadCurrentAddress
     globals()['UpdatePPMShipment'] = UpdatePPMShipment
 
 
@@ -107,10 +107,10 @@ class UpdateShipment(ModelNormal):
             'counselor_remarks': (str, none_type,),  # noqa: E501
             'billable_weight_cap': (int, none_type,),  # noqa: E501
             'billable_weight_justification': (str, none_type,),  # noqa: E501
-            'pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'destination_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'secondary_delivery_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'secondary_pickup_address': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'secondary_delivery_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'secondary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
@@ -202,10 +202,10 @@ class UpdateShipment(ModelNormal):
             counselor_remarks (str, none_type): [optional]  # noqa: E501
             billable_weight_cap (int, none_type): estimated weight of the shuttle service item provided by the prime. [optional]  # noqa: E501
             billable_weight_justification (str, none_type): [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            secondary_delivery_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            secondary_pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_delivery_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
@@ -220,7 +220,7 @@ class UpdateShipment(ModelNormal):
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -228,14 +228,18 @@ class UpdateShipment(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -305,10 +309,10 @@ class UpdateShipment(ModelNormal):
             counselor_remarks (str, none_type): [optional]  # noqa: E501
             billable_weight_cap (int, none_type): estimated weight of the shuttle service item provided by the prime. [optional]  # noqa: E501
             billable_weight_justification (str, none_type): [optional]  # noqa: E501
-            pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            destination_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            secondary_delivery_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
-            secondary_pickup_address ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_delivery_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
@@ -329,14 +333,18 @@ class UpdateShipment(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

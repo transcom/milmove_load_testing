@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """ Locust test for all APIs """
+
+from flask import Blueprint, render_template_string
 from gevent.pool import Group
 from locust import HttpUser, between, events
 from locust.env import Environment, RunnerType
+import os
 
 from utils.auth import remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv
@@ -54,6 +57,12 @@ class PrimeUser(HttpUser):
     wait_time = between(0.25, 9)
 
 
+extend = Blueprint(
+    "extend",
+    "deployed_version",
+)
+
+
 @events.init.add_listener
 def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
     """
@@ -81,6 +90,30 @@ def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
         runner.quit()
 
         raise err
+
+    if environment.web_ui:
+        # this code is only run on the master node (the web_ui
+        # instance doesn't exist on workers)
+
+        @extend.route("/deployed-version")
+        def deployed_version():
+            """
+            Add route to access the extended web UI with our new tab.
+            """
+            # ensure the template_args are up to date before using them
+            environment.web_ui.update_template_args()
+            git_commit = os.getenv("GIT_COMMIT", "UNKNOWN")
+            return render_template_string(
+                """
+            {% block extended_panes %}
+            <pre>{{ git_commit }}</pre>
+            {% endblock extended_panes %}
+            """,
+                git_commit=git_commit,
+            )
+
+        # register our new routes and extended UI with the Locust web UI
+        environment.web_ui.app.register_blueprint(extend)
 
 
 @events.quitting.add_listener

@@ -31,10 +31,10 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from internal_client.model.document import Document
+    from internal_client.model.moving_expense_document import MovingExpenseDocument
     from internal_client.model.omittable_moving_expense_type import OmittableMovingExpenseType
     from internal_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
-    globals()['Document'] = Document
+    globals()['MovingExpenseDocument'] = MovingExpenseDocument
     globals()['OmittableMovingExpenseType'] = OmittableMovingExpenseType
     globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
 
@@ -95,7 +95,7 @@ class MovingExpense(ModelNormal):
             'id': (str,),  # noqa: E501
             'ppm_shipment_id': (str,),  # noqa: E501
             'document_id': (str,),  # noqa: E501
-            'document': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'document': (MovingExpenseDocument,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'moving_expense_type': (OmittableMovingExpenseType,),  # noqa: E501
@@ -154,7 +154,7 @@ class MovingExpense(ModelNormal):
             id (str): Unique primary identifier of the Moving Expense object
             ppm_shipment_id (str): The PPM Shipment id that this moving expense belongs to
             document_id (str): The id of the Document that contains all file uploads for this expense
-            document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
+            document (MovingExpenseDocument):
             created_at (datetime): Timestamp the moving expense object was initially created in the system (UTC)
             updated_at (datetime): Timestamp when a property of this moving expense object was last modified (UTC)
 
@@ -202,7 +202,7 @@ class MovingExpense(ModelNormal):
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -210,14 +210,18 @@ class MovingExpense(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -255,7 +259,7 @@ class MovingExpense(ModelNormal):
     def __init__(self, document, *args, **kwargs):  # noqa: E501
         """MovingExpense - a model defined in OpenAPI
 
-            document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
+            document (MovingExpenseDocument):
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
@@ -306,14 +310,18 @@ class MovingExpense(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

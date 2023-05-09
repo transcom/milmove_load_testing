@@ -77,12 +77,12 @@ class MTOServiceItemDestSIT(ModelComposed):
     validations = {
         ('time_military1',): {
             'regex': {
-                'pattern': r'd{4}Z/',  # noqa: E501
+                'pattern': r'\d{4}Z',  # noqa: E501
             },
         },
         ('time_military2',): {
             'regex': {
-                'pattern': r'd{4}Z/',  # noqa: E501
+                'pattern': r'\d{4}Z',  # noqa: E501
             },
         },
     }
@@ -115,8 +115,8 @@ class MTOServiceItemDestSIT(ModelComposed):
             'move_task_order_id': (str,),  # noqa: E501
             'model_type': (MTOServiceItemModelType,),  # noqa: E501
             'time_military1': (str, none_type,),  # noqa: E501
-            'first_available_delivery_date1': (date, none_type,),  # noqa: E501
             'time_military2': (str, none_type,),  # noqa: E501
+            'first_available_delivery_date1': (date, none_type,),  # noqa: E501
             'first_available_delivery_date2': (date, none_type,),  # noqa: E501
             'sit_departure_date': (date, none_type,),  # noqa: E501
             'sit_destination_final_address': (Address,),  # noqa: E501
@@ -142,8 +142,8 @@ class MTOServiceItemDestSIT(ModelComposed):
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
         'model_type': 'modelType',  # noqa: E501
         'time_military1': 'timeMilitary1',  # noqa: E501
-        'first_available_delivery_date1': 'firstAvailableDeliveryDate1',  # noqa: E501
         'time_military2': 'timeMilitary2',  # noqa: E501
+        'first_available_delivery_date1': 'firstAvailableDeliveryDate1',  # noqa: E501
         'first_available_delivery_date2': 'firstAvailableDeliveryDate2',  # noqa: E501
         'sit_departure_date': 'sitDepartureDate',  # noqa: E501
         'sit_destination_final_address': 'sitDestinationFinalAddress',  # noqa: E501
@@ -203,8 +203,8 @@ class MTOServiceItemDestSIT(ModelComposed):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             time_military1 (str, none_type): Time of delivery corresponding to `firstAvailableDeliveryDate1`, in military format.. [optional]  # noqa: E501
-            first_available_delivery_date1 (date, none_type): First available date that Prime can deliver SIT service item.. [optional]  # noqa: E501
             time_military2 (str, none_type): Time of delivery corresponding to `firstAvailableDeliveryDate2`, in military format.. [optional]  # noqa: E501
+            first_available_delivery_date1 (date, none_type): First available date that Prime can deliver SIT service item.. [optional]  # noqa: E501
             first_available_delivery_date2 (date, none_type): Second available date that Prime can deliver SIT service item.. [optional]  # noqa: E501
             sit_departure_date (date, none_type): Departure date for SIT. This is the end date of the SIT at either origin or destination. This is optional as it can be updated using the UpdateMTOServiceItemSIT modelType at a later date.. [optional]  # noqa: E501
             sit_destination_final_address (Address): [optional]  # noqa: E501
@@ -225,14 +225,18 @@ class MTOServiceItemDestSIT(ModelComposed):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -318,8 +322,8 @@ class MTOServiceItemDestSIT(ModelComposed):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             time_military1 (str, none_type): Time of delivery corresponding to `firstAvailableDeliveryDate1`, in military format.. [optional]  # noqa: E501
-            first_available_delivery_date1 (date, none_type): First available date that Prime can deliver SIT service item.. [optional]  # noqa: E501
             time_military2 (str, none_type): Time of delivery corresponding to `firstAvailableDeliveryDate2`, in military format.. [optional]  # noqa: E501
+            first_available_delivery_date1 (date, none_type): First available date that Prime can deliver SIT service item.. [optional]  # noqa: E501
             first_available_delivery_date2 (date, none_type): Second available date that Prime can deliver SIT service item.. [optional]  # noqa: E501
             sit_departure_date (date, none_type): Departure date for SIT. This is the end date of the SIT at either origin or destination. This is optional as it can be updated using the UpdateMTOServiceItemSIT modelType at a later date.. [optional]  # noqa: E501
             sit_destination_final_address (Address): [optional]  # noqa: E501
@@ -338,14 +342,18 @@ class MTOServiceItemDestSIT(ModelComposed):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

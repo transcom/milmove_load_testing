@@ -24,12 +24,12 @@ from ghc_client.model_utils import (  # noqa: F401
 )
 from ghc_client.model.error import Error
 from ghc_client.model.evaluation_report_list import EvaluationReportList
-from ghc_client.model.inline_object import InlineObject
-from ghc_client.model.inline_object1 import InlineObject1
-from ghc_client.model.inline_object2 import InlineObject2
 from ghc_client.model.move import Move
 from ghc_client.model.move_history_result import MoveHistoryResult
+from ghc_client.model.search_moves_request import SearchMovesRequest
 from ghc_client.model.search_moves_result import SearchMovesResult
+from ghc_client.model.set_financial_review_flag_request import SetFinancialReviewFlagRequest
+from ghc_client.model.update_closeout_office_request import UpdateCloseoutOfficeRequest
 from ghc_client.model.validation_error import ValidationError
 
 
@@ -278,7 +278,7 @@ class MoveApi(object):
                 },
                 'openapi_types': {
                     'body':
-                        (InlineObject2,),
+                        (SearchMovesRequest,),
                 },
                 'attribute_map': {
                 },
@@ -334,7 +334,7 @@ class MoveApi(object):
                     'if_match':
                         (str,),
                     'body':
-                        (InlineObject1,),
+                        (SetFinancialReviewFlagRequest,),
                 },
                 'attribute_map': {
                     'move_id': 'moveID',
@@ -395,7 +395,7 @@ class MoveApi(object):
                     'if_match':
                         (str,),
                     'body':
-                        (InlineObject,),
+                        (UpdateCloseoutOfficeRequest,),
                 },
                 'attribute_map': {
                     'locator': 'locator',
@@ -463,6 +463,10 @@ class MoveApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -494,6 +498,7 @@ class MoveApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         kwargs['locator'] = \
             locator
         return self.get_move_endpoint.call_with_http_info(**kwargs)
@@ -541,6 +546,10 @@ class MoveApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -572,6 +581,7 @@ class MoveApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         kwargs['move_id'] = \
             move_id
         return self.get_move_counseling_evaluation_reports_list_endpoint.call_with_http_info(**kwargs)
@@ -621,6 +631,10 @@ class MoveApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -652,6 +666,7 @@ class MoveApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         kwargs['locator'] = \
             locator
         return self.get_move_history_endpoint.call_with_http_info(**kwargs)
@@ -699,6 +714,10 @@ class MoveApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -730,6 +749,7 @@ class MoveApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         kwargs['move_id'] = \
             move_id
         return self.get_move_shipment_evaluation_reports_list_endpoint.call_with_http_info(**kwargs)
@@ -749,7 +769,7 @@ class MoveApi(object):
 
 
         Keyword Args:
-            body (InlineObject2): [optional]
+            body (SearchMovesRequest): field that results should be sorted by. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -775,6 +795,10 @@ class MoveApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -806,6 +830,7 @@ class MoveApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         return self.search_moves_endpoint.call_with_http_info(**kwargs)
 
     def set_financial_review_flag(
@@ -827,7 +852,7 @@ class MoveApi(object):
 
         Keyword Args:
             if_match (str): [optional]
-            body (InlineObject1): [optional]
+            body (SetFinancialReviewFlagRequest): [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -853,6 +878,10 @@ class MoveApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -884,6 +913,7 @@ class MoveApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         kwargs['move_id'] = \
             move_id
         return self.set_financial_review_flag_endpoint.call_with_http_info(**kwargs)
@@ -908,7 +938,7 @@ class MoveApi(object):
             if_match (str):
 
         Keyword Args:
-            body (InlineObject): [optional]
+            body (UpdateCloseoutOfficeRequest): [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -934,6 +964,10 @@ class MoveApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -965,6 +999,7 @@ class MoveApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         kwargs['locator'] = \
             locator
         kwargs['if_match'] = \

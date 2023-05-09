@@ -74,7 +74,7 @@ with prime_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = move_task_order_api.MoveTaskOrderApi(api_client)
     move_task_order_id = "moveTaskOrderID_example" # str | UUID of the move being updated.
-file = open('/path/to/file', 'rb') # file_type | The file to upload.
+    file = open('/path/to/file', 'rb') # file_type | The file to upload.
 
     try:
         # createExcessWeightRecord
@@ -114,6 +114,8 @@ Class | Method | HTTP request | Description
  - [Address](docs/Address.md)
  - [ClientError](docs/ClientError.md)
  - [CreateMTOShipment](docs/CreateMTOShipment.md)
+ - [CreateMTOShipmentDestinationAddress](docs/CreateMTOShipmentDestinationAddress.md)
+ - [CreateMTOShipmentPickupAddress](docs/CreateMTOShipmentPickupAddress.md)
  - [CreatePPMShipment](docs/CreatePPMShipment.md)
  - [CreatePaymentRequest](docs/CreatePaymentRequest.md)
  - [CreateSITExtension](docs/CreateSITExtension.md)
@@ -144,6 +146,11 @@ Class | Method | HTTP request | Description
  - [MTOServiceItemShuttleAllOf](docs/MTOServiceItemShuttleAllOf.md)
  - [MTOServiceItemStatus](docs/MTOServiceItemStatus.md)
  - [MTOShipment](docs/MTOShipment.md)
+ - [MTOShipmentDestinationAddress](docs/MTOShipmentDestinationAddress.md)
+ - [MTOShipmentPickupAddress](docs/MTOShipmentPickupAddress.md)
+ - [MTOShipmentSecondaryDeliveryAddress](docs/MTOShipmentSecondaryDeliveryAddress.md)
+ - [MTOShipmentSecondaryPickupAddress](docs/MTOShipmentSecondaryPickupAddress.md)
+ - [MTOShipmentStorageFacility](docs/MTOShipmentStorageFacility.md)
  - [MTOShipmentType](docs/MTOShipmentType.md)
  - [MTOShipments](docs/MTOShipments.md)
  - [MoveTaskOrder](docs/MoveTaskOrder.md)
@@ -170,7 +177,7 @@ Class | Method | HTTP request | Description
  - [ServiceItemParamName](docs/ServiceItemParamName.md)
  - [ServiceItemParamOrigin](docs/ServiceItemParamOrigin.md)
  - [ServiceItemParamType](docs/ServiceItemParamType.md)
- - [ServiceItemParams](docs/ServiceItemParams.md)
+ - [ServiceItemParamsInner](docs/ServiceItemParamsInner.md)
  - [StorageFacility](docs/StorageFacility.md)
  - [UpdateMTOServiceItem](docs/UpdateMTOServiceItem.md)
  - [UpdateMTOServiceItemModelType](docs/UpdateMTOServiceItemModelType.md)

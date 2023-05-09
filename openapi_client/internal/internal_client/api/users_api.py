@@ -22,7 +22,7 @@ from internal_client.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
-from internal_client.model.inline_response200 import InlineResponse200
+from internal_client.model.is_logged_in_user200_response import IsLoggedInUser200Response
 from internal_client.model.logged_in_user_payload import LoggedInUserPayload
 
 
@@ -39,7 +39,7 @@ class UsersApi(object):
         self.api_client = api_client
         self.is_logged_in_user_endpoint = _Endpoint(
             settings={
-                'response_type': (InlineResponse200,),
+                'response_type': (IsLoggedInUser200Response,),
                 'auth': [],
                 'endpoint_path': '/users/is_logged_in',
                 'operation_id': 'is_logged_in_user',
@@ -162,10 +162,14 @@ class UsersApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
-            InlineResponse200
+            IsLoggedInUser200Response
                 If the method is called asynchronously, returns the request
                 thread.
         """
@@ -193,6 +197,7 @@ class UsersApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         return self.is_logged_in_user_endpoint.call_with_http_info(**kwargs)
 
     def show_logged_in_user(
@@ -235,6 +240,10 @@ class UsersApi(object):
             _host_index (int/None): specifies the index of the server
                 that we want to use.
                 Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
             async_req (bool): execute request asynchronously
 
         Returns:
@@ -266,5 +275,6 @@ class UsersApi(object):
         kwargs['_content_type'] = kwargs.get(
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         return self.show_logged_in_user_endpoint.call_with_http_info(**kwargs)
 

@@ -16,6 +16,8 @@ docs/CreateApprovedSITDurationUpdate.md
 docs/CreateCustomerSupportRemark.md
 docs/CreateEvaluationReport.md
 docs/CreateMTOShipment.md
+docs/CreateMTOShipmentDestinationAddress.md
+docs/CreateMTOShipmentPickupAddress.md
 docs/CreatePPMShipment.md
 docs/Customer.md
 docs/CustomerApi.md
@@ -41,9 +43,6 @@ docs/EvaluationReportsApi.md
 docs/GBLOC.md
 docs/GhcDocumentsApi.md
 docs/Grade.md
-docs/InlineObject.md
-docs/InlineObject1.md
-docs/InlineObject2.md
 docs/LOAType.md
 docs/LOATypeNullable.md
 docs/MTOAgent.md
@@ -73,6 +72,7 @@ docs/MoveTaskOrder.md
 docs/MoveTaskOrderApi.md
 docs/MoveTaskOrders.md
 docs/MovingExpense.md
+docs/MovingExpenseDocument.md
 docs/MovingExpenses.md
 docs/MtoAgentApi.md
 docs/MtoServiceItemApi.md
@@ -103,6 +103,7 @@ docs/PaymentServiceItemStatus.md
 docs/PaymentServiceItems.md
 docs/PpmApi.md
 docs/ProGearWeightTicket.md
+docs/ProGearWeightTicketDocument.md
 docs/ProGearWeightTickets.md
 docs/ProofOfServiceDoc.md
 docs/ProofOfServiceDocs.md
@@ -128,10 +129,12 @@ docs/SITLocationType.md
 docs/SITStatus.md
 docs/SearchMove.md
 docs/SearchMoves.md
+docs/SearchMovesRequest.md
 docs/SearchMovesResult.md
 docs/ServiceItemParamName.md
 docs/ServiceItemParamOrigin.md
 docs/ServiceItemParamType.md
+docs/SetFinancialReviewFlagRequest.md
 docs/ShipmentApi.md
 docs/ShipmentPaymentSITBalance.md
 docs/ShipmentsPaymentSITBalance.md
@@ -146,7 +149,9 @@ docs/TransportationOfficeApi.md
 docs/TransportationOffices.md
 docs/UpdateAllowancePayload.md
 docs/UpdateBillableWeightPayload.md
+docs/UpdateCloseoutOfficeRequest.md
 docs/UpdateCustomerPayload.md
+docs/UpdateCustomerPayloadCurrentAddress.md
 docs/UpdateCustomerSupportRemarkPayload.md
 docs/UpdateMaxBillableWeightAsTIOPayload.md
 docs/UpdateMovingExpense.md
@@ -159,6 +164,9 @@ docs/UpdateWeightTicket.md
 docs/Upload.md
 docs/ValidationError.md
 docs/WeightTicket.md
+docs/WeightTicketEmptyDocument.md
+docs/WeightTicketFullDocument.md
+docs/WeightTicketProofOfTrailerOwnershipDocument.md
 docs/WeightTickets.md
 ghc_client/__init__.py
 ghc_client/api/__init__.py
@@ -201,6 +209,8 @@ ghc_client/model/create_approved_sit_duration_update.py
 ghc_client/model/create_customer_support_remark.py
 ghc_client/model/create_evaluation_report.py
 ghc_client/model/create_mto_shipment.py
+ghc_client/model/create_mto_shipment_destination_address.py
+ghc_client/model/create_mto_shipment_pickup_address.py
 ghc_client/model/create_ppm_shipment.py
 ghc_client/model/customer.py
 ghc_client/model/customer_contact_type.py
@@ -222,9 +232,6 @@ ghc_client/model/evaluation_report_office_user.py
 ghc_client/model/evaluation_report_type.py
 ghc_client/model/gbloc.py
 ghc_client/model/grade.py
-ghc_client/model/inline_object.py
-ghc_client/model/inline_object1.py
-ghc_client/model/inline_object2.py
 ghc_client/model/loa_type.py
 ghc_client/model/loa_type_nullable.py
 ghc_client/model/move.py
@@ -238,6 +245,7 @@ ghc_client/model/move_status.py
 ghc_client/model/move_task_order.py
 ghc_client/model/move_task_orders.py
 ghc_client/model/moving_expense.py
+ghc_client/model/moving_expense_document.py
 ghc_client/model/moving_expenses.py
 ghc_client/model/mto_agent.py
 ghc_client/model/mto_agents.py
@@ -273,6 +281,7 @@ ghc_client/model/ppm_documents.py
 ghc_client/model/ppm_shipment.py
 ghc_client/model/ppm_shipment_status.py
 ghc_client/model/pro_gear_weight_ticket.py
+ghc_client/model/pro_gear_weight_ticket_document.py
 ghc_client/model/pro_gear_weight_tickets.py
 ghc_client/model/proof_of_service_doc.py
 ghc_client/model/proof_of_service_docs.py
@@ -292,10 +301,12 @@ ghc_client/model/reweigh.py
 ghc_client/model/reweigh_requester.py
 ghc_client/model/search_move.py
 ghc_client/model/search_moves.py
+ghc_client/model/search_moves_request.py
 ghc_client/model/search_moves_result.py
 ghc_client/model/service_item_param_name.py
 ghc_client/model/service_item_param_origin.py
 ghc_client/model/service_item_param_type.py
+ghc_client/model/set_financial_review_flag_request.py
 ghc_client/model/shipment_payment_sit_balance.py
 ghc_client/model/shipments_payment_sit_balance.py
 ghc_client/model/signed_certification.py
@@ -310,7 +321,9 @@ ghc_client/model/transportation_office.py
 ghc_client/model/transportation_offices.py
 ghc_client/model/update_allowance_payload.py
 ghc_client/model/update_billable_weight_payload.py
+ghc_client/model/update_closeout_office_request.py
 ghc_client/model/update_customer_payload.py
+ghc_client/model/update_customer_payload_current_address.py
 ghc_client/model/update_customer_support_remark_payload.py
 ghc_client/model/update_max_billable_weight_as_tio_payload.py
 ghc_client/model/update_moving_expense.py
@@ -323,6 +336,9 @@ ghc_client/model/update_weight_ticket.py
 ghc_client/model/upload.py
 ghc_client/model/validation_error.py
 ghc_client/model/weight_ticket.py
+ghc_client/model/weight_ticket_empty_document.py
+ghc_client/model/weight_ticket_full_document.py
+ghc_client/model/weight_ticket_proof_of_trailer_ownership_document.py
 ghc_client/model/weight_tickets.py
 ghc_client/model_utils.py
 ghc_client/models/__init__.py
@@ -346,6 +362,8 @@ test/test_create_approved_sit_duration_update.py
 test/test_create_customer_support_remark.py
 test/test_create_evaluation_report.py
 test/test_create_mto_shipment.py
+test/test_create_mto_shipment_destination_address.py
+test/test_create_mto_shipment_pickup_address.py
 test/test_create_ppm_shipment.py
 test/test_customer.py
 test/test_customer_api.py
@@ -371,9 +389,6 @@ test/test_evaluation_reports_api.py
 test/test_gbloc.py
 test/test_ghc_documents_api.py
 test/test_grade.py
-test/test_inline_object.py
-test/test_inline_object1.py
-test/test_inline_object2.py
 test/test_loa_type.py
 test/test_loa_type_nullable.py
 test/test_move.py
@@ -389,6 +404,7 @@ test/test_move_task_order.py
 test/test_move_task_order_api.py
 test/test_move_task_orders.py
 test/test_moving_expense.py
+test/test_moving_expense_document.py
 test/test_moving_expenses.py
 test/test_mto_agent.py
 test/test_mto_agent_api.py
@@ -431,6 +447,7 @@ test/test_ppm_documents.py
 test/test_ppm_shipment.py
 test/test_ppm_shipment_status.py
 test/test_pro_gear_weight_ticket.py
+test/test_pro_gear_weight_ticket_document.py
 test/test_pro_gear_weight_tickets.py
 test/test_proof_of_service_doc.py
 test/test_proof_of_service_docs.py
@@ -454,10 +471,12 @@ test/test_reweigh_api.py
 test/test_reweigh_requester.py
 test/test_search_move.py
 test/test_search_moves.py
+test/test_search_moves_request.py
 test/test_search_moves_result.py
 test/test_service_item_param_name.py
 test/test_service_item_param_origin.py
 test/test_service_item_param_type.py
+test/test_set_financial_review_flag_request.py
 test/test_shipment_api.py
 test/test_shipment_payment_sit_balance.py
 test/test_shipments_payment_sit_balance.py
@@ -476,7 +495,9 @@ test/test_transportation_office_api.py
 test/test_transportation_offices.py
 test/test_update_allowance_payload.py
 test/test_update_billable_weight_payload.py
+test/test_update_closeout_office_request.py
 test/test_update_customer_payload.py
+test/test_update_customer_payload_current_address.py
 test/test_update_customer_support_remark_payload.py
 test/test_update_max_billable_weight_as_tio_payload.py
 test/test_update_moving_expense.py
@@ -489,5 +510,8 @@ test/test_update_weight_ticket.py
 test/test_upload.py
 test/test_validation_error.py
 test/test_weight_ticket.py
+test/test_weight_ticket_empty_document.py
+test/test_weight_ticket_full_document.py
+test/test_weight_ticket_proof_of_trailer_ownership_document.py
 test/test_weight_tickets.py
 tox.ini

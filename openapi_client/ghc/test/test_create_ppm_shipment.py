@@ -13,8 +13,6 @@ import sys
 import unittest
 
 import ghc_client
-from ghc_client.model.sit_location_type import SITLocationType
-globals()['SITLocationType'] = SITLocationType
 from ghc_client.model.create_ppm_shipment import CreatePPMShipment
 
 

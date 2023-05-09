@@ -6,7 +6,7 @@
 # raise a `RecursionError`.
 # In order to avoid this, import only the API that you directly need like:
 #
-#   from .api.customer_api import CustomerApi
+#   from ghc_client.api.customer_api import CustomerApi
 #
 # or import this package, but before doing it, use:
 #

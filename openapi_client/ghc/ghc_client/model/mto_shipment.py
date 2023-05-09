@@ -33,7 +33,6 @@ from ghc_client.exceptions import ApiAttributeError
 def lazy_import():
     from ghc_client.model.address import Address
     from ghc_client.model.destination_type import DestinationType
-    from ghc_client.model.loa_type import LOAType
     from ghc_client.model.mto_agents import MTOAgents
     from ghc_client.model.mto_service_items import MTOServiceItems
     from ghc_client.model.mto_shipment_status import MTOShipmentStatus
@@ -45,7 +44,6 @@ def lazy_import():
     from ghc_client.model.storage_facility import StorageFacility
     globals()['Address'] = Address
     globals()['DestinationType'] = DestinationType
-    globals()['LOAType'] = LOAType
     globals()['MTOAgents'] = MTOAgents
     globals()['MTOServiceItems'] = MTOServiceItems
     globals()['MTOShipmentStatus'] = MTOShipmentStatus
@@ -300,7 +298,7 @@ class MTOShipment(ModelNormal):
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -308,14 +306,18 @@ class MTOShipment(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -432,14 +434,18 @@ class MTOShipment(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

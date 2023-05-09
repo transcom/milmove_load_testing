@@ -13,8 +13,8 @@ import sys
 import unittest
 
 import prime_client
-from prime_client.model.service_item_params import ServiceItemParams
-globals()['ServiceItemParams'] = ServiceItemParams
+from prime_client.model.service_item_params_inner import ServiceItemParamsInner
+globals()['ServiceItemParamsInner'] = ServiceItemParamsInner
 from prime_client.model.service_item import ServiceItem
 
 

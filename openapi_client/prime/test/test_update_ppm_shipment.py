@@ -13,8 +13,6 @@ import sys
 import unittest
 
 import prime_client
-from prime_client.model.sit_location_type import SITLocationType
-globals()['SITLocationType'] = SITLocationType
 from prime_client.model.update_ppm_shipment import UpdatePPMShipment
 
 

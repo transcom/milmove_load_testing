@@ -1,4 +1,4 @@
-FROM python:3.9.6
+FROM python:3.10.11
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -7,7 +7,7 @@ ENV PIPENV_SITE_PACKAGES 1
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir pipenv==2021.5.29
+RUN pip install --no-cache-dir pipenv==2023.2.4
 
 # Copy over and install Pipfiles and use pip to install requirements
 # outside of virtualenv
@@ -27,5 +27,11 @@ COPY utils /app/utils
 COPY fixtures /app/fixtures
 
 EXPOSE 8089 5557
+
+# put the arg at the bottom so it doesn't invalidate docker layer
+# caching unnecessarily
+ARG GIT_COMMIT
+
+ENV GIT_COMMIT=${GIT_COMMIT}
 
 ENTRYPOINT ["locust"]

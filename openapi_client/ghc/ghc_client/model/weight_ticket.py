@@ -31,10 +31,14 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from ghc_client.model.document import Document
     from ghc_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
-    globals()['Document'] = Document
+    from ghc_client.model.weight_ticket_empty_document import WeightTicketEmptyDocument
+    from ghc_client.model.weight_ticket_full_document import WeightTicketFullDocument
+    from ghc_client.model.weight_ticket_proof_of_trailer_ownership_document import WeightTicketProofOfTrailerOwnershipDocument
     globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
+    globals()['WeightTicketEmptyDocument'] = WeightTicketEmptyDocument
+    globals()['WeightTicketFullDocument'] = WeightTicketFullDocument
+    globals()['WeightTicketProofOfTrailerOwnershipDocument'] = WeightTicketProofOfTrailerOwnershipDocument
 
 
 class WeightTicket(ModelNormal):
@@ -103,11 +107,11 @@ class WeightTicket(ModelNormal):
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'empty_document_id': (str,),  # noqa: E501
-            'empty_document': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'empty_document': (WeightTicketEmptyDocument,),  # noqa: E501
             'full_document_id': (str,),  # noqa: E501
-            'full_document': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'full_document': (WeightTicketFullDocument,),  # noqa: E501
             'proof_of_trailer_ownership_document_id': (str,),  # noqa: E501
-            'proof_of_trailer_ownership_document': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'proof_of_trailer_ownership_document': (WeightTicketProofOfTrailerOwnershipDocument,),  # noqa: E501
             'id': (str,),  # noqa: E501
             'vehicle_description': (str, none_type,),  # noqa: E501
             'empty_weight': (int, none_type,),  # noqa: E501
@@ -176,11 +180,11 @@ class WeightTicket(ModelNormal):
             created_at (datetime):
             updated_at (datetime):
             empty_document_id (str): ID of the document that is associated with the user uploads containing the vehicle weight when empty.
-            empty_document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
+            empty_document (WeightTicketEmptyDocument):
             full_document_id (str): ID of the document that is associated with the user uploads containing the vehicle weight when full.
-            full_document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
+            full_document (WeightTicketFullDocument):
             proof_of_trailer_ownership_document_id (str): ID of the document that is associated with the user uploads containing the proof of trailer ownership.
-            proof_of_trailer_ownership_document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
+            proof_of_trailer_ownership_document (WeightTicketProofOfTrailerOwnershipDocument):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -229,7 +233,7 @@ class WeightTicket(ModelNormal):
         """
 
         _check_type = kwargs.pop('_check_type', True)
-        _spec_property_naming = kwargs.pop('_spec_property_naming', False)
+        _spec_property_naming = kwargs.pop('_spec_property_naming', True)
         _path_to_item = kwargs.pop('_path_to_item', ())
         _configuration = kwargs.pop('_configuration', None)
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
@@ -237,14 +241,18 @@ class WeightTicket(ModelNormal):
         self = super(OpenApiModel, cls).__new__(cls)
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type
@@ -285,9 +293,9 @@ class WeightTicket(ModelNormal):
     def __init__(self, empty_document, full_document, proof_of_trailer_ownership_document, *args, **kwargs):  # noqa: E501
         """WeightTicket - a model defined in OpenAPI
 
-            empty_document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
-            full_document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
-            proof_of_trailer_ownership_document ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
+            empty_document (WeightTicketEmptyDocument):
+            full_document (WeightTicketFullDocument):
+            proof_of_trailer_ownership_document (WeightTicketProofOfTrailerOwnershipDocument):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -342,14 +350,18 @@ class WeightTicket(ModelNormal):
         _visited_composed_classes = kwargs.pop('_visited_composed_classes', ())
 
         if args:
-            raise ApiTypeError(
-                "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
-                    args,
-                    self.__class__.__name__,
-                ),
-                path_to_item=_path_to_item,
-                valid_classes=(self.__class__,),
-            )
+            for arg in args:
+                if isinstance(arg, dict):
+                    kwargs.update(arg)
+                else:
+                    raise ApiTypeError(
+                        "Invalid positional arguments=%s passed to %s. Remove those invalid positional arguments." % (
+                            args,
+                            self.__class__.__name__,
+                        ),
+                        path_to_item=_path_to_item,
+                        valid_classes=(self.__class__,),
+                    )
 
         self._data_store = {}
         self._check_type = _check_type

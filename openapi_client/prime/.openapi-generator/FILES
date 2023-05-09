@@ -6,6 +6,8 @@ README.md
 docs/Address.md
 docs/ClientError.md
 docs/CreateMTOShipment.md
+docs/CreateMTOShipmentDestinationAddress.md
+docs/CreateMTOShipmentPickupAddress.md
 docs/CreatePPMShipment.md
 docs/CreatePaymentRequest.md
 docs/CreateSITExtension.md
@@ -36,6 +38,11 @@ docs/MTOServiceItemShuttle.md
 docs/MTOServiceItemShuttleAllOf.md
 docs/MTOServiceItemStatus.md
 docs/MTOShipment.md
+docs/MTOShipmentDestinationAddress.md
+docs/MTOShipmentPickupAddress.md
+docs/MTOShipmentSecondaryDeliveryAddress.md
+docs/MTOShipmentSecondaryPickupAddress.md
+docs/MTOShipmentStorageFacility.md
 docs/MTOShipmentType.md
 docs/MTOShipments.md
 docs/MoveTaskOrder.md
@@ -66,7 +73,7 @@ docs/ServiceItem.md
 docs/ServiceItemParamName.md
 docs/ServiceItemParamOrigin.md
 docs/ServiceItemParamType.md
-docs/ServiceItemParams.md
+docs/ServiceItemParamsInner.md
 docs/StorageFacility.md
 docs/UpdateMTOServiceItem.md
 docs/UpdateMTOServiceItemModelType.md
@@ -96,6 +103,8 @@ prime_client/model/__init__.py
 prime_client/model/address.py
 prime_client/model/client_error.py
 prime_client/model/create_mto_shipment.py
+prime_client/model/create_mto_shipment_destination_address.py
+prime_client/model/create_mto_shipment_pickup_address.py
 prime_client/model/create_payment_request.py
 prime_client/model/create_ppm_shipment.py
 prime_client/model/create_sit_extension.py
@@ -127,6 +136,11 @@ prime_client/model/mto_service_item_shuttle.py
 prime_client/model/mto_service_item_shuttle_all_of.py
 prime_client/model/mto_service_item_status.py
 prime_client/model/mto_shipment.py
+prime_client/model/mto_shipment_destination_address.py
+prime_client/model/mto_shipment_pickup_address.py
+prime_client/model/mto_shipment_secondary_delivery_address.py
+prime_client/model/mto_shipment_secondary_pickup_address.py
+prime_client/model/mto_shipment_storage_facility.py
 prime_client/model/mto_shipment_type.py
 prime_client/model/mto_shipments.py
 prime_client/model/order.py
@@ -149,7 +163,7 @@ prime_client/model/service_item.py
 prime_client/model/service_item_param_name.py
 prime_client/model/service_item_param_origin.py
 prime_client/model/service_item_param_type.py
-prime_client/model/service_item_params.py
+prime_client/model/service_item_params_inner.py
 prime_client/model/sit_extension.py
 prime_client/model/sit_extensions.py
 prime_client/model/sit_location_type.py
@@ -178,6 +192,8 @@ test/__init__.py
 test/test_address.py
 test/test_client_error.py
 test/test_create_mto_shipment.py
+test/test_create_mto_shipment_destination_address.py
+test/test_create_mto_shipment_pickup_address.py
 test/test_create_payment_request.py
 test/test_create_ppm_shipment.py
 test/test_create_sit_extension.py
@@ -212,6 +228,11 @@ test/test_mto_service_item_shuttle_all_of.py
 test/test_mto_service_item_status.py
 test/test_mto_shipment.py
 test/test_mto_shipment_api.py
+test/test_mto_shipment_destination_address.py
+test/test_mto_shipment_pickup_address.py
+test/test_mto_shipment_secondary_delivery_address.py
+test/test_mto_shipment_secondary_pickup_address.py
+test/test_mto_shipment_storage_facility.py
 test/test_mto_shipment_type.py
 test/test_mto_shipments.py
 test/test_order.py
@@ -235,7 +256,7 @@ test/test_service_item.py
 test/test_service_item_param_name.py
 test/test_service_item_param_origin.py
 test/test_service_item_param_type.py
-test/test_service_item_params.py
+test/test_service_item_params_inner.py
 test/test_sit_extension.py
 test/test_sit_extensions.py
 test/test_sit_location_type.py

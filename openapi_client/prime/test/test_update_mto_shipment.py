@@ -13,15 +13,21 @@ import sys
 import unittest
 
 import prime_client
-from prime_client.model.address import Address
 from prime_client.model.destination_type import DestinationType
+from prime_client.model.mto_shipment_destination_address import MTOShipmentDestinationAddress
+from prime_client.model.mto_shipment_pickup_address import MTOShipmentPickupAddress
+from prime_client.model.mto_shipment_secondary_delivery_address import MTOShipmentSecondaryDeliveryAddress
+from prime_client.model.mto_shipment_secondary_pickup_address import MTOShipmentSecondaryPickupAddress
+from prime_client.model.mto_shipment_storage_facility import MTOShipmentStorageFacility
 from prime_client.model.mto_shipment_type import MTOShipmentType
-from prime_client.model.storage_facility import StorageFacility
 from prime_client.model.update_ppm_shipment import UpdatePPMShipment
-globals()['Address'] = Address
 globals()['DestinationType'] = DestinationType
+globals()['MTOShipmentDestinationAddress'] = MTOShipmentDestinationAddress
+globals()['MTOShipmentPickupAddress'] = MTOShipmentPickupAddress
+globals()['MTOShipmentSecondaryDeliveryAddress'] = MTOShipmentSecondaryDeliveryAddress
+globals()['MTOShipmentSecondaryPickupAddress'] = MTOShipmentSecondaryPickupAddress
+globals()['MTOShipmentStorageFacility'] = MTOShipmentStorageFacility
 globals()['MTOShipmentType'] = MTOShipmentType
-globals()['StorageFacility'] = StorageFacility
 globals()['UpdatePPMShipment'] = UpdatePPMShipment
 from prime_client.model.update_mto_shipment import UpdateMTOShipment
 

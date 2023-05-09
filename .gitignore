@@ -34,3 +34,5 @@ Brewfile.lock.json
 
 # tmp dir for misc, uh, temporary things
 /tmp
+junit
+.coverage

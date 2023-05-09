@@ -14,12 +14,10 @@ import unittest
 
 import prime_client
 from prime_client.model.mto_service_item import MTOServiceItem
-from prime_client.model.mto_service_item_dimension import MTOServiceItemDimension
 from prime_client.model.mto_service_item_domestic_crating_all_of import MTOServiceItemDomesticCratingAllOf
 from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
 from prime_client.model.mto_service_item_status import MTOServiceItemStatus
 globals()['MTOServiceItem'] = MTOServiceItem
-globals()['MTOServiceItemDimension'] = MTOServiceItemDimension
 globals()['MTOServiceItemDomesticCratingAllOf'] = MTOServiceItemDomesticCratingAllOf
 globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
 globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
