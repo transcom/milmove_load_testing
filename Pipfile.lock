@@ -205,7 +205,7 @@
                 "sha256:f8303414c7b03f794347ad062c0516cee0e15f7a612abd0ce1e25caf6ceb47df",
                 "sha256:fca62a8301b605b954ad2e9c3666f9d97f63872aa4efcae5492baca2056b74ab"
             ],
-            "markers": "python_full_version >= '3.7.0'",
+            "markers": "python_version >= '3.7'",
             "version": "==3.1.0"
         },
         "click": {
@@ -226,11 +226,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:6385386ba8d5aa255bec72f5392c2b795fcec8bebf975a9953488948d54bce35",
-                "sha256:ef61bbf266d30819e83bab4a6c74a0f5979ce4d19d4c9305719dd26cb7d8d51c"
+                "sha256:38dbc3b80e655d7301e190426ab30f04b6b7f6ca4764c5dd02772ffde0fa6dcd",
+                "sha256:f02c6d3fdb5bc781f80b440cf2bdec336ed47ecfb8d620b20c3d4188ed051831"
             ],
             "index": "pypi",
-            "version": "==18.6.2"
+            "version": "==18.7.0"
         },
         "flask": {
             "hashes": [
@@ -895,6 +895,10 @@
             ],
             "version": "==0.0.4"
         },
+        "sanitized-package": {
+            "editable": true,
+            "path": "./openapi_client/internal"
+        },
         "setuptools": {
             "hashes": [
                 "sha256:23aaf86b85ca52ceb801d32703f12d77517b2556af839621c641fca11287952b",
@@ -937,11 +941,11 @@
         },
         "werkzeug": {
             "hashes": [
-                "sha256:4866679a0722de00796a74086238bb3b98d90f423f05de039abb09315487254a",
-                "sha256:a987caf1092edc7523edb139edb20c70571c4a8d5eed02e0b547b4739174d091"
+                "sha256:1d5a58e0377d1fe39d061a5de4469e414e78ccb1e1e59c0f5ad6fa1c36c52b76",
+                "sha256:48e5e61472fee0ddee27ebad085614ebedb7af41e88f687aaf881afb723a162f"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==2.3.3"
+            "version": "==2.3.4"
         },
         "zipcodes": {
             "hashes": [
@@ -1190,7 +1194,7 @@
                 "sha256:f8303414c7b03f794347ad062c0516cee0e15f7a612abd0ce1e25caf6ceb47df",
                 "sha256:fca62a8301b605b954ad2e9c3666f9d97f63872aa4efcae5492baca2056b74ab"
             ],
-            "markers": "python_full_version >= '3.7.0'",
+            "markers": "python_version >= '3.7'",
             "version": "==3.1.0"
         },
         "click": {
