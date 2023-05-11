@@ -65,9 +65,6 @@ class UpdateAllowancePayload(ModelNormal):
     }
 
     validations = {
-        ('authorized_weight',): {
-            'inclusive_minimum': 1,
-        },
         ('pro_gear_weight',): {
             'inclusive_maximum': 2000,
             'inclusive_minimum': 0,
@@ -107,7 +104,6 @@ class UpdateAllowancePayload(ModelNormal):
         """
         lazy_import()
         return {
-            'authorized_weight': (int, none_type,),  # noqa: E501
             'grade': (Grade,),  # noqa: E501
             'dependents_authorized': (bool, none_type,),  # noqa: E501
             'agency': (Affiliation,),  # noqa: E501
@@ -124,7 +120,6 @@ class UpdateAllowancePayload(ModelNormal):
 
 
     attribute_map = {
-        'authorized_weight': 'authorizedWeight',  # noqa: E501
         'grade': 'grade',  # noqa: E501
         'dependents_authorized': 'dependentsAuthorized',  # noqa: E501
         'agency': 'agency',  # noqa: E501
@@ -176,7 +171,6 @@ class UpdateAllowancePayload(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            authorized_weight (int, none_type): unit is in lbs. [optional]  # noqa: E501
             grade (Grade): [optional]  # noqa: E501
             dependents_authorized (bool, none_type): [optional]  # noqa: E501
             agency (Affiliation): [optional]  # noqa: E501
@@ -270,7 +264,6 @@ class UpdateAllowancePayload(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            authorized_weight (int, none_type): unit is in lbs. [optional]  # noqa: E501
             grade (Grade): [optional]  # noqa: E501
             dependents_authorized (bool, none_type): [optional]  # noqa: E501
             agency (Affiliation): [optional]  # noqa: E501

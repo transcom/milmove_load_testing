@@ -450,7 +450,6 @@ with ghc_client.ApiClient() as api_client:
     order_id = "orderID_example" # str | ID of order to use
     if_match = "If-Match_example" # str | 
     body = UpdateAllowancePayload(
-        authorized_weight=2000,
         grade=Grade("E_1"),
         dependents_authorized=True,
         agency=Affiliation("ARMY"),

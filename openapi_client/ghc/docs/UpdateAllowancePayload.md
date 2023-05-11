@@ -4,7 +4,6 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**authorized_weight** | **int, none_type** | unit is in lbs | [optional] 
 **grade** | [**Grade**](Grade.md) |  | [optional] 
 **dependents_authorized** | **bool, none_type** |  | [optional] 
 **agency** | [**Affiliation**](Affiliation.md) |  | [optional] 

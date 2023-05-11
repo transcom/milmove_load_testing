@@ -56,6 +56,15 @@ class ApproveSITExtension(ModelNormal):
     """
 
     allowed_values = {
+        ('request_reason',): {
+            'SERIOUS_ILLNESS_MEMBER': "SERIOUS_ILLNESS_MEMBER",
+            'SERIOUS_ILLNESS_DEPENDENT': "SERIOUS_ILLNESS_DEPENDENT",
+            'IMPENDING_ASSIGNEMENT': "IMPENDING_ASSIGNEMENT",
+            'DIRECTED_TEMPORARY_DUTY': "DIRECTED_TEMPORARY_DUTY",
+            'NONAVAILABILITY_OF_CIVILIAN_HOUSING': "NONAVAILABILITY_OF_CIVILIAN_HOUSING",
+            'AWAITING_COMPLETION_OF_RESIDENCE': "AWAITING_COMPLETION_OF_RESIDENCE",
+            'OTHER': "OTHER",
+        },
     }
 
     validations = {
@@ -86,6 +95,7 @@ class ApproveSITExtension(ModelNormal):
         """
         return {
             'approved_days': (int,),  # noqa: E501
+            'request_reason': (str,),  # noqa: E501
             'office_remarks': (str, none_type,),  # noqa: E501
         }
 
@@ -96,6 +106,7 @@ class ApproveSITExtension(ModelNormal):
 
     attribute_map = {
         'approved_days': 'approvedDays',  # noqa: E501
+        'request_reason': 'requestReason',  # noqa: E501
         'office_remarks': 'officeRemarks',  # noqa: E501
     }
 
@@ -143,6 +154,7 @@ class ApproveSITExtension(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            request_reason (str): Reason from service counselor-provided picklist for SIT Duration Update. [optional]  # noqa: E501
             office_remarks (str, none_type): Remarks from TOO about SIT approval. [optional]  # noqa: E501
         """
 
@@ -233,6 +245,7 @@ class ApproveSITExtension(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            request_reason (str): Reason from service counselor-provided picklist for SIT Duration Update. [optional]  # noqa: E501
             office_remarks (str, none_type): Remarks from TOO about SIT approval. [optional]  # noqa: E501
         """
 

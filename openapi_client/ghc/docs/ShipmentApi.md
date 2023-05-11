@@ -205,6 +205,7 @@ with ghc_client.ApiClient() as api_client:
     if_match = "If-Match_example" # str | We want the shipment's eTag rather than the SIT extension eTag as the SIT extension is always associated with a shipment
     body = ApproveSITExtension(
         approved_days=21,
+        request_reason="AWAITING_COMPLETION_OF_RESIDENCE",
         office_remarks="Approved for three weeks rather than requested 45 days",
     ) # ApproveSITExtension | 
 
