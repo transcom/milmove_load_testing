@@ -1497,11 +1497,11 @@
         },
         "python-lsp-server": {
             "hashes": [
-                "sha256:b2433467d0fcb8fd45828463ff1cc805837c08731fcea5d7d953d9be776881e1",
-                "sha256:eb57ce2f119b8f952eb0af4566b5251b5e6ff14150b6180ba9828966e0e4faaa"
+                "sha256:a31b0525be6ec831c7d2b476b744e5aa5074633e1d1b77ee97f332cde15983ea",
+                "sha256:f4ae64834da1d4312067a8ee05a76c7652167c3c90d1cef44022366d695c4c0e"
             ],
             "index": "pypi",
-            "version": "==1.7.2"
+            "version": "==1.7.3"
         },
         "pyyaml": {
             "hashes": [
