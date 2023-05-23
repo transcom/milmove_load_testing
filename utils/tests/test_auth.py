@@ -127,7 +127,7 @@ class TestCreateUser:
 
         create_user(request_preparer=request_preparer, session=mock_session, user_type=user_type)
 
-        mock_session.get.assert_called_once_with(url=f"{base_domain}/devlocal-auth/login")
+        mock_session.get.assert_called_once_with(url=f"{base_domain}/sign-in")
         mock_session.post.assert_called_once_with(
             url=f"{base_domain}/devlocal-auth/create",
             data={

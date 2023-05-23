@@ -83,7 +83,11 @@ def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user
     """
     # Hacky workaround for now...not sure if this should really be added to the
     # MilMoveRequestPreparer class since it's only needed for this.
-    endpoint = "/devlocal-auth/login"
+
+    # go to /sign-in instead of /devlocal-auth/login because the
+    # latter hits the DB pretty hard in a way that differs from how
+    # things would work in the real world
+    endpoint = "/sign-in"
     if user_type == UserType.MILMOVE:
         url = request_preparer.form_internal_path(endpoint=endpoint, include_prefix=False)
     else:
