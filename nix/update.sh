@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-if [ ! -v NIX_PROFILE ]; then
+# do not use -v as it requires bash5 and macos ships with bash4
+if [ -z "${NIX_PROFILE:-}" ]; then
   echo "NIX_PROFILE not set, not installing globally"
   echo "Try running 'direnv allow'"
   exit 1
@@ -14,6 +15,15 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # install packages
 nix-env -f "${DIR}" -i
+
+# install pipenv manually to ensure pipenv uses the installed version
+# of python
+if [ -n "${PIPENV_VENV_DIR:-}" ]; then
+  rm -rf "${PIPENV_VENV_DIR}" &&
+    python -m venv "${PIPENV_VENV_DIR}" &&
+    "${PIPENV_VENV_DIR}"/bin/pip3 install pipenv==2023.2.4
+fi
+
 # Store a hash of this file to the hash of the nix profile
 # This way if the config changes, we can warn about it via direnv
 # See the nix config in .envrc

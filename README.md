@@ -38,6 +38,8 @@ the [LICENSE.txt](./LICENSE.txt) file in this repository.
   * [Updating Python Dependencies](#updating-python-dependencies)
   * [Unsupported Setup](#unsupported-setup)
   * [Troubleshooting](#troubleshooting)
+* [Updating Python Version](#updating-python-version)
+* [Updating Pipenv Version](#updating-pipenv-version)
 * [OpenAPI Generator](#openapi-generator)
   * [Regenerating the client code as the server API evolves](#regenerating-the-client-code-as-the-server-api-evolves)
 * [Running Locust Locally](#running-locust-locally)
@@ -83,9 +85,6 @@ desired.
 Each of these files can be thought of as a different test case for the system, although locust also
 provides a number of [config options](https://docs.locust.io/en/stable/configuration.html) to allow
 you to manipulate which users and/or tasks run from any given locustfile.
-
-In particular, our `locustfiles/all.py` combines all our `User`
-classes into a single run.
 
 As of 2022-05-25, the `locustfiles/queue.py` is the recommended way to
 run the load tests.
@@ -220,6 +219,9 @@ If the nix dependencies change, you should see a warning from direnv:
 direnv: WARNING: nix packages out of date. Run nix/update.sh
 ```
 
+If the python version changes, you may need to do `pipenv --rm` and
+then something like `cd / && cd -`
+
 ##### Nix: Disabling Nix
 
 Note that if you would like to disable `nix` for this repo, you can do so by creating
@@ -266,6 +268,26 @@ If you encounter compiler issues while installing the required Python version, t
 ```shell script
 brew unlink binutils
 ```
+
+## Updating Python Version
+
+To update python to a new version, you need to modify multiple files:
+
+1. `Dockerfile` Update the `FROM` at the top
+1. `Pipfile` Update the `python_full_version` near the bottom
+1. `frew-brew.local` Update the `python_version` near the top
+1. `nix/default.nix` Update the python stanza from [nix package search](https://ahobson.github.io/nix-package-search/#/search)
+
+NOTE: nix installs pipenv with its own bundled version of python, so
+nix installs create a venv to install pipenv with the configured
+version of python
+
+## Updating Pipenv Version
+
+We want to lock our pipenv version to ensure consistent behavior
+
+1. `Dockerfile` Update the `RUN pip install` line
+1. `nix/update.sh` Update the `pip3 install pipenv` line
 
 ## OpenAPI Generator
 
