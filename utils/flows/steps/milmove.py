@@ -54,7 +54,7 @@ def create_nts_shipment(move_id: str, issue_date: datetime, pickup_address: Addr
     )
 
 
-def start_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManager, shipments: list[str]) -> None:
+def do_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManager, shipments: list[str]) -> None:
     """
     Creates a move. Can raise internal_client.ApiException
     """
@@ -208,18 +208,18 @@ def do_flow_create_single_hhg(
     flow_context: FlowContext,
     flow_session_manager: FlowSessionManager,
 ) -> None:
-    start_flow(flow_context, flow_session_manager, ["HHG"])
+    do_flow(flow_context, flow_session_manager, ["HHG"])
 
 
 def do_flow_create_double_hhg(
     flow_context: FlowContext,
     flow_session_manager: FlowSessionManager,
 ) -> None:
-    start_flow(flow_context, flow_session_manager, ["HHG", "HHG"])
+    do_flow(flow_context, flow_session_manager, ["HHG", "HHG"])
 
 
 def do_flow_create_nts(
     flow_context: FlowContext,
     flow_session_manager: FlowSessionManager,
 ) -> None:
-    start_flow(flow_context, flow_session_manager, ["NTS"])
+    do_flow(flow_context, flow_session_manager, ["NTS"])
