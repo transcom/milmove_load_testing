@@ -22,10 +22,11 @@ import internal_client
 import ghc_client
 import prime_client
 
+from http import HTTPStatus
 import requests
 import requests.cookies
 
-from utils.auth import create_user, UserType
+from utils.auth import create_user, SessionCaller, SessionTracker, UserType
 from utils.base import MilMoveEnv
 
 
@@ -154,14 +155,65 @@ class LocustOpenAPIPoolManager(PoolManager):
 
 class FlowSessionManager(object):
     request_preparer: MilMoveRequestPreparer
+    user: Optional[User]
+    session_tracker: SessionTracker
 
     def __init__(self, milmove_env: MilMoveEnv, user: Optional[User]) -> None:
         self.request_preparer = MilMoveRequestPreparer(env=milmove_env)
         self.user = user
 
+        def locust_session_tracker(method: str, url: str, session_caller: SessionCaller) -> bool:
+            start_time = time.time()
+            start_perf_counter = time.perf_counter()
+            resp = session_caller()
+            response_time = (time.perf_counter() - start_perf_counter) * 1000
+
+            if not user:
+                return resp.status_code == HTTPStatus.OK
+
+            context = {}
+            if user:
+                context = {**user.context(), **context}
+            request_meta = {
+                "request_type": method,
+                "name": url,
+                "start_time": start_time,
+                "response": resp,
+                "response_time": response_time,
+                "response_length": len(resp.content or b""),
+                "context": context,
+                "exception": None,
+            }
+
+            try:
+                resp.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                while (
+                    isinstance(
+                        e,
+                        (
+                            requests.exceptions.ConnectionError,
+                            urllib3.exceptions.ProtocolError,
+                            urllib3.exceptions.MaxRetryError,
+                            urllib3.exceptions.NewConnectionError,
+                        ),
+                    )
+                    and e.__context__  # Not sure if the above exceptions can ever be the lowest level, but it is good to be sure
+                ):
+                    e = e.__context__
+                request_meta["exception"] = e
+
+            user.environment.events.request.fire(**request_meta)
+
+            if request_meta["exception"]:
+                return False
+            return True
+
+        self.session_tracker = locust_session_tracker
+
     def internal_api_client(self, user_type: UserType) -> LocustInternalApiClient:
         session = requests.Session()
-        if not create_user(self.request_preparer, session, user_type):
+        if not create_user(self.session_tracker, self.request_preparer, session, user_type):
             raise Exception(f"Cannot create user: {user_type}")
 
         host = self.request_preparer.form_internal_path("")
@@ -176,7 +228,7 @@ class FlowSessionManager(object):
 
     def ghc_api_client(self, user_type: UserType) -> LocustGHCApiClient:
         session = requests.Session()
-        if not create_user(self.request_preparer, session, user_type):
+        if not create_user(self.session_tracker, self.request_preparer, session, user_type):
             raise Exception(f"Cannot create user: {user_type}")
 
         host = self.request_preparer.form_ghc_path("")
