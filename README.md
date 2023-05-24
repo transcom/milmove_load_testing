@@ -277,6 +277,8 @@ To update python to a new version, you need to modify multiple files:
 1. `Pipfile` Update the `python_full_version` near the bottom
 1. `frew-brew.local` Update the `python_version` near the top
 1. `nix/default.nix` Update the python stanza from [nix package search](https://ahobson.github.io/nix-package-search/#/search)
+1. Update the `load_tester` image in the `mymove/.circleci/config.yml`
+   to the right version
 
 NOTE: nix installs pipenv with its own bundled version of python, so
 nix installs create a venv to install pipenv with the configured
