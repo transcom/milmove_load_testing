@@ -20,7 +20,7 @@ executors:
   primary:
     resource_class: small
     docker:
-      - image: cimg/python:3.10.11
+      - image: cimg/python:3.11.3
     environment:
       PIPENV_VENV_IN_PROJECT: true
 
