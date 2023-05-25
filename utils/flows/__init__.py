@@ -3,6 +3,7 @@ from abc import abstractmethod, ABC
 from collections.abc import Callable
 from enum import Enum
 import importlib
+import logging
 from queue import Queue, Empty
 from typing import TypedDict, TYPE_CHECKING, Optional
 from utils.base import MilMoveEnv
@@ -84,6 +85,7 @@ class QueuableFlow(ABC):
             try:
                 flow_step_callback(self.flow_context, flow_session_manager)
             except Exception:
+                logging.exception("Error runing flow callback")
                 # if any step in the flow fails, stop running the flow
                 return False
         return flow_step is not None
