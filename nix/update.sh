@@ -16,14 +16,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # install packages
 nix-env -f "${DIR}" -i
 
-# install pipenv manually to ensure pipenv uses the installed version
-# of python
-if [ -n "${PIPENV_VENV_DIR:-}" ]; then
-  rm -rf "${PIPENV_VENV_DIR}" &&
-    python -m venv "${PIPENV_VENV_DIR}" &&
-    "${PIPENV_VENV_DIR}"/bin/pip3 install pipenv==2023.2.4
-fi
-
 # Store a hash of this file to the hash of the nix profile
 # This way if the config changes, we can warn about it via direnv
 # See the nix config in .envrc

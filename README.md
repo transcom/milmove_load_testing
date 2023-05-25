@@ -280,9 +280,8 @@ To update python to a new version, you need to modify multiple files:
 1. Update the `load_tester` image in the `mymove/.circleci/config.yml`
    to the right version
 
-NOTE: nix installs pipenv with its own bundled version of python, so
-nix installs create a venv to install pipenv with the configured
-version of python
+NOTE: nix installs pipenv with its own bundled version of python, but
+pipenv can create virtual envs for other versions of python.
 
 ## Updating Pipenv Version
 
