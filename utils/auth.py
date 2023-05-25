@@ -5,9 +5,9 @@ Place to store auth-related code, e.g. for dealing with certs or session tokens.
 import logging
 import os
 from enum import Enum
-from http import HTTPStatus
+from typing import Callable
 
-from requests import Session
+from requests import Response, Session
 
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM
@@ -71,7 +71,13 @@ class UserType(Enum):
     TIO = "TIO office"
 
 
-def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user_type: UserType) -> bool:
+SessionCaller = Callable[[], Response]
+SessionTracker = Callable[[str, str, SessionCaller], bool]
+
+
+def create_user(
+    session_tracker: SessionTracker, request_preparer: MilMoveRequestPreparer, session: Session, user_type: UserType
+) -> bool:
     """
     Creates a user. Since this works with sessions, the session should have the cookies set in it
     for follow-up requests.
@@ -93,7 +99,8 @@ def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user
     else:
         url = request_preparer.form_ghc_path(endpoint=endpoint, include_prefix=False)
 
-    session.get(url=url)
+    if not session_tracker("GET", endpoint, lambda: session.get(url=url)):
+        return False
 
     csrf_token = session.cookies.get("masked_gorilla_csrf")
 
@@ -110,6 +117,4 @@ def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user
     else:
         url = request_preparer.form_ghc_path(endpoint=endpoint, include_prefix=False)
 
-    resp = session.post(url=url, data=payload)
-
-    return resp.status_code == HTTPStatus.OK
+    return session_tracker("POST", endpoint, lambda: session.post(url=url, data=payload))

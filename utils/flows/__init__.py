@@ -81,7 +81,11 @@ class QueuableFlow(ABC):
         flow_step = self.next_step()
         if flow_step:
             flow_step_callback = flow_step["callback"]
-            flow_step_callback(self.flow_context, flow_session_manager)
+            try:
+                flow_step_callback(self.flow_context, flow_session_manager)
+            except Exception:
+                # if any step in the flow fails, stop running the flow
+                return False
         return flow_step is not None
 
     def to_serialized_flow(self) -> SerializedFlow:
