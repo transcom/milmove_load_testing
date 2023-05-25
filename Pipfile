@@ -28,6 +28,7 @@ pre-commit = "*"
 python-lsp-server = "*"
 pytest-cov = "*"
 pyright = "*"
+boto3 = "*"
 
 [requires]
 python_full_version = "3.11.3"
