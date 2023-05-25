@@ -270,9 +270,12 @@ class FlowSessionManager(object):
                 cert_file = rkwargs["cert"][0]
                 key_file = rkwargs["cert"][1]
 
-        num_users = 10
+        num_users = None
         if self.user:
             num_users = self.user.environment.parsed_options.num_users
+
+        if not num_users:
+            num_users = 10
 
         # as a rough approximation, use a pool size that is 1/3 of the
         # number of users, as we have service members, office users,
