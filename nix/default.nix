@@ -27,6 +27,14 @@ in buildEnv {
 
     (import (builtins.fetchGit {
       # Descriptive name to make the store path easier to identify
+      name = "pipenv-2023.2.4";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = "21eb6c6ba74dcbe3ea5926ee46287300fb066630";
+    }) {}).pipenv
+
+    (import (builtins.fetchGit {
+      # Descriptive name to make the store path easier to identify
       name = "shellcheck-0.8.0";
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
