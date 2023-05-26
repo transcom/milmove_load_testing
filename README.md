@@ -289,7 +289,7 @@ pipenv can create virtual envs for other versions of python.
 We want to lock our pipenv version to ensure consistent behavior
 
 1. `Dockerfile` Update the `RUN pip install` line
-1. `nix/update.sh` Update the `pip3 install pipenv` line
+1. `nix/default.nix` Update the pipenv stanza from [nix package search](https://ahobson.github.io/nix-package-search/#/search)
 
 ## OpenAPI Generator
 
