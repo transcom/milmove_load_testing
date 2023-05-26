@@ -273,6 +273,7 @@ brew unlink binutils
 
 To update python to a new version, you need to modify multiple files:
 
+1. `.circleci/config.yml` Update the `cimg/python` version
 1. `Dockerfile` Update the `FROM` at the top
 1. `Pipfile` Update the `python_full_version` near the bottom
 1. `frew-brew.local` Update the `python_version` near the top
