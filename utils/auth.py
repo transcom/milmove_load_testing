@@ -5,13 +5,12 @@ Place to store auth-related code, e.g. for dealing with certs or session tokens.
 import logging
 import os
 from enum import Enum
-from typing import Callable
 
-from requests import Response, Session
+from requests import Session
 
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM
-from utils.request import MilMoveRequestPreparer
+from utils.request import MilMoveRequestPreparer, RequestHost
 
 
 logger = logging.getLogger(__name__)
@@ -23,6 +22,7 @@ def set_up_certs(env: MilMoveEnv) -> None:
     :param env: MilMoveEnv that the target server is running in, e.g. MilMoveEnv.DP3
     :return: None
     """
+
     if is_local(env=env):
         return  # We don't need to set up certs for a local run because they already exist
 
@@ -71,13 +71,7 @@ class UserType(Enum):
     TIO = "TIO office"
 
 
-SessionCaller = Callable[[], Response]
-SessionTracker = Callable[[str, str, SessionCaller], bool]
-
-
-def create_user(
-    session_tracker: SessionTracker, request_preparer: MilMoveRequestPreparer, session: Session, user_type: UserType
-) -> bool:
+def create_user(request_preparer: MilMoveRequestPreparer, session: Session, user_type: UserType) -> bool:
     """
     Creates a user. Since this works with sessions, the session should have the cookies set in it
     for follow-up requests.
@@ -94,12 +88,17 @@ def create_user(
     # latter hits the DB pretty hard in a way that differs from how
     # things would work in the real world
     endpoint = "/sign-in"
+    request_host = RequestHost.MY
     if user_type == UserType.MILMOVE:
-        url = request_preparer.form_internal_path(endpoint=endpoint, include_prefix=False)
+        # ensure we start with a fresh session for service members
+        session.cookies.clear()
+        url = request_preparer.form_api_path(request_host=request_host, api_path_prefix="", endpoint=endpoint)
     else:
-        url = request_preparer.form_ghc_path(endpoint=endpoint, include_prefix=False)
+        request_host = RequestHost.OFFICE
+        url = request_preparer.form_api_path(request_host=request_host, api_path_prefix="", endpoint=endpoint)
 
-    if not session_tracker("GET", endpoint, lambda: session.get(url=url)):
+    resp = session.get(url=url)
+    if resp.status_code != 200:
         return False
 
     csrf_token = session.cookies.get("masked_gorilla_csrf")
@@ -112,9 +111,7 @@ def create_user(
     }
 
     endpoint = "/devlocal-auth/create"
-    if user_type == UserType.MILMOVE:
-        url = request_preparer.form_internal_path(endpoint=endpoint, include_prefix=False)
-    else:
-        url = request_preparer.form_ghc_path(endpoint=endpoint, include_prefix=False)
+    url = request_preparer.form_api_path(request_host=request_host, api_path_prefix="", endpoint=endpoint)
 
-    return session_tracker("POST", endpoint, lambda: session.post(url=url, data=payload))
+    resp = session.post(url=url, data=payload)
+    return resp.status_code == 200 or resp.status_code == 201

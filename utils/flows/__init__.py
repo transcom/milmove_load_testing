@@ -6,12 +6,10 @@ import importlib
 import logging
 from queue import Queue, Empty
 from typing import TypedDict, TYPE_CHECKING, Optional
-from utils.base import MilMoveEnv
-from utils.openapi_client import FlowSessionManager
 
-# import utils.auth after openapi_client as it imports locust, which
-# monkeypatches ssl
-from utils.auth import remove_certs, set_up_certs
+from requests import Session
+
+from utils.request import MilMoveRequestPreparer
 
 FlowContext = dict
 
@@ -37,7 +35,7 @@ class WorkerQueueType(Enum):
     PRIME = 5
 
 
-FlowStepCallable = Callable[[FlowContext, FlowSessionManager], None]
+FlowStepCallable = Callable[[FlowContext, MilMoveRequestPreparer, Session], None]
 
 
 class FlowStep(TypedDict):
@@ -75,7 +73,7 @@ class QueuableFlow(ABC):
         """
         raise NotImplementedError
 
-    def run(self, flow_session_manager: FlowSessionManager) -> bool:
+    def run(self, request_preparer: MilMoveRequestPreparer, session: Session) -> bool:
         """
         Calls the next step in the flow, returns false if no next step
         """
@@ -83,9 +81,9 @@ class QueuableFlow(ABC):
         if flow_step:
             flow_step_callback = flow_step["callback"]
             try:
-                flow_step_callback(self.flow_context, flow_session_manager)
+                flow_step_callback(self.flow_context, request_preparer, session)
             except Exception:
-                logging.exception("Error runing flow callback")
+                logging.exception("Error running flow callback")
                 # if any step in the flow fails, stop running the flow
                 return False
         return flow_step is not None
@@ -95,16 +93,18 @@ class QueuableFlow(ABC):
             module_name=self.__module__, class_name=self.__class__.__name__, flow_context=self.flow_context
         )
 
-    def run_entire_flow(self, milmove_env: MilMoveEnv) -> None:
-        try:
-            set_up_certs(env=milmove_env)
+    # disable for now while refactoring to pass user.client
+    #
+    # def run_entire_flow(self, milmove_env: MilMoveEnv) -> None:
+    #     try:
+    #         set_up_certs(env=milmove_env)
 
-            flow_session_manager = FlowSessionManager(milmove_env, None)
+    #         session = Session()
 
-            while self.run(flow_session_manager):
-                pass
-        finally:
-            remove_certs(env=milmove_env)
+    #         while self.run(flow_session_manager):
+    #             pass
+    #     finally:
+    #         remove_certs(env=milmove_env)
 
 
 class SequenceQueableFlow(QueuableFlow):

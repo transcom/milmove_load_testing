@@ -1,60 +1,133 @@
 # -*- coding: utf-8 -*-
 """ Locust test for all APIs """
 
-from flask import Blueprint, render_template_string
-from gevent.pool import Group
-from locust import HttpUser, between, events
-from locust.env import Environment, RunnerType
 import os
 
-from utils.auth import remove_certs, set_up_certs
+from flask import Blueprint, render_template_string
+from gevent.pool import Group
+from locust import between, events, task
+from locust.env import Environment, RunnerType
+
+from utils.auth import remove_certs, set_up_certs, UserType
 from utils.base import ImplementationError, MilMoveEnv
-from tasks.queue import MilMoveHHGQueueTasks, ServiceCounselorQueueTasks, TOOQueueTasks, TIOQueueTasks, PrimeQueueTasks
+from utils.flows import WorkerQueueType
+from utils.flows.simple_hhg import SingleHHGFlow, DoubleHHGFlow, NTSFlow, SingleHHGMultiplePaymentRequestFlow
+from utils.request import RequestHost
+from utils.queue_user import QueueUser, OfficeQueueUser
 
 
-class MilMoveHHGUser(HttpUser):
+class MilMoveHHGUser(QueueUser):
     """
     Tests the internal HHG API.
     """
 
-    tasks = {MilMoveHHGQueueTasks: 1}
+    request_host = RequestHost.MY
     wait_time = between(0.25, 9)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-class ServiceCounselorUser(HttpUser):
+    @task(2)
+    def start_single_hhg_flow(self):
+        """
+        Kicks off a flow where the customer creates a single HHG shipment
+        """
+        f = SingleHHGFlow()
+        self.run_flow(f)
+
+    @task(1)
+    def start_double_hhg_flow(self):
+        """
+        Kicks off a flow where the customer creates two seperate HHG shipments
+        """
+        f = DoubleHHGFlow()
+        self.run_flow(f)
+
+    @task(1)
+    def start_nts_flow(self):
+        """
+        Kicks off a flow where the customer creates a single NTS shipment
+        """
+        f = NTSFlow()
+        self.run_flow(f)
+
+    @task(1)
+    def start_hhg_multiple_payment_request_flow(self):
+        """
+        Kicks off a flow where the customer creates a HHG shipment and the Prime
+        creates multiple payment requests for it.
+        """
+        f = SingleHHGMultiplePaymentRequestFlow()
+        self.run_flow(f)
+
+
+class ServiceCounselorUser(OfficeQueueUser):
     """
     Tests the GHC SC API.
     """
 
-    tasks = {ServiceCounselorQueueTasks: 1}
+    user_type = UserType.SERVICE_COUNSELOR
     wait_time = between(0.25, 9)
 
+    @task
+    def task_sc(self):
+        """
+        run from the queue
+        """
 
-class TOOUser(HttpUser):
+        self.run_from_queue(WorkerQueueType.SERVICE_COUNSELOR)
+
+
+class TOOUser(OfficeQueueUser):
     """
     Tests the GHC TOO API.
     """
 
-    tasks = {TOOQueueTasks: 1}
+    user_type = UserType.TOO
     wait_time = between(0.25, 9)
 
+    @task
+    def task_too(self):
+        """
+        run from the queue
+        """
 
-class TIOUser(HttpUser):
+        self.run_from_queue(WorkerQueueType.TOO)
+
+
+class TIOUser(OfficeQueueUser):
     """
     Tests the GHC TIO API.
     """
 
-    tasks = {TIOQueueTasks: 1}
+    user_type = UserType.TIO
     wait_time = between(0.25, 9)
 
+    @task
+    def task_tio(self):
+        """
+        run from the queue
+        """
 
-class PrimeUser(HttpUser):
+        self.run_from_queue(WorkerQueueType.TIO)
+
+
+class PrimeUser(QueueUser):
     """
     Tests the Prime API.
     """
 
-    tasks = {PrimeQueueTasks: 1}
+    certs_required = True
+    request_host = RequestHost.PRIME
     wait_time = between(0.25, 9)
+
+    @task
+    def run_prime(self):
+        """
+        run from the queue
+        """
+
+        self.run_from_queue(WorkerQueueType.PRIME)
 
 
 extend = Blueprint(
@@ -100,8 +173,9 @@ def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
             """
             Add route to access the extended web UI with our new tab.
             """
-            # ensure the template_args are up to date before using them
-            environment.web_ui.update_template_args()
+            # ensure the template_args are up to date before using
+            # them
+            environment.web_ui.update_template_args()  # type: ignore
             git_commit = os.getenv("GIT_COMMIT", "UNKNOWN")
             return render_template_string(
                 """
@@ -113,7 +187,7 @@ def on_init(environment: Environment, runner: RunnerType, **_kwargs) -> None:
             )
 
         # register our new routes and extended UI with the Locust web UI
-        environment.web_ui.app.register_blueprint(extend)
+        environment.web_ui.app.register_blueprint(extend)  # type: ignore
 
 
 @events.quitting.add_listener
@@ -131,7 +205,7 @@ def on_quitting(environment: Environment, **_kwargs):
     except ValueError as err:
         # This should in theory never happen since a similar check is done on init, but just in
         # case...
-        environment.runner.quit()
+        environment.runner.quit()  # type: ignore
 
         raise err
 

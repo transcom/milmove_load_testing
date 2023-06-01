@@ -11,7 +11,7 @@ from http import HTTPStatus
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
-from utils.auth import UserType, create_user, remove_certs, set_up_certs, SessionCaller
+from utils.auth import UserType, create_user, remove_certs, set_up_certs
 from utils.base import ImplementationError, MilMoveEnv
 from utils.constants import DP3_CERT_KEY_PEM_FILENAME
 from utils.request import MilMoveRequestPreparer
@@ -108,11 +108,6 @@ class TestRemoveCerts:
             assert not cert_key_pem.exists()
 
 
-def noop_session_tracker(_method: str, _url: str, session_caller: SessionCaller) -> bool:
-    resp = session_caller()
-    return resp.status_code == HTTPStatus.OK
-
-
 class TestCreateUser:
     """
     Tests for create_user
@@ -132,9 +127,9 @@ class TestCreateUser:
         mock_session.get.return_value.status_code = HTTPStatus.OK
         mock_session.post.return_value.status_code = HTTPStatus.OK
 
-        request_preparer = MilMoveRequestPreparer(env=MilMoveEnv.LOCAL)
+        request_preparer = MilMoveRequestPreparer(milmove_env=MilMoveEnv.LOCAL)
 
-        create_user(noop_session_tracker, request_preparer=request_preparer, session=mock_session, user_type=user_type)
+        create_user(request_preparer=request_preparer, session=mock_session, user_type=user_type)
 
         mock_session.get.assert_called_once_with(url=f"{base_domain}/sign-in")
         mock_session.post.assert_called_once_with(
@@ -150,11 +145,9 @@ class TestCreateUser:
         mock_session.get.return_value.status_code = HTTPStatus.OK
         mock_session.post.return_value.status_code = HTTPStatus.OK
 
-        request_preparer = MilMoveRequestPreparer(env=MilMoveEnv.LOCAL)
+        request_preparer = MilMoveRequestPreparer(milmove_env=MilMoveEnv.LOCAL)
 
-        create_user(
-            noop_session_tracker, request_preparer=request_preparer, session=mock_session, user_type=UserType.MILMOVE
-        )
+        create_user(request_preparer=request_preparer, session=mock_session, user_type=UserType.MILMOVE)
 
         mock_session.headers.update.assert_called_once_with({"x-csrf-token": mock_session.cookies.get.return_value})
 
@@ -175,10 +168,8 @@ class TestCreateUser:
         mock_session.get.return_value.status_code = status_code
         mock_session.post.return_value.status_code = status_code
 
-        request_preparer = MilMoveRequestPreparer(env=MilMoveEnv.LOCAL)
+        request_preparer = MilMoveRequestPreparer(milmove_env=MilMoveEnv.LOCAL)
 
-        success = create_user(
-            noop_session_tracker, request_preparer=request_preparer, session=mock_session, user_type=UserType.MILMOVE
-        )
+        success = create_user(request_preparer=request_preparer, session=mock_session, user_type=UserType.MILMOVE)
 
         assert success == expected_result

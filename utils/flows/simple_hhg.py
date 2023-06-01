@@ -7,8 +7,6 @@ from utils.flows.steps.service_counselor import do_hhg_sc_review
 from utils.flows.steps.too import do_hhg_too_approve, do_hhg_too_approve_service_items
 from utils.flows.steps.prime import do_hhg_prime_service_items, do_hhg_request_payment_for_service_items
 
-import os
-
 
 class SingleHHGFlow(SequenceQueableFlow):
     def __init__(self, flow_context: Optional[FlowContext] = None) -> None:
@@ -64,9 +62,11 @@ class SingleHHGMultiplePaymentRequestFlow(SequenceQueableFlow):
         ]
 
 
-if __name__ == "__main__":
-    from utils.base import MilMoveEnv
+# disable for now while refactoring to pass user.client
+#
+# if __name__ == "__main__":
+#     from utils.base import MilMoveEnv
 
-    f = SingleHHGFlow()
-    milmove_env = MilMoveEnv(os.getenv("MILMOVE_ENV", MilMoveEnv.LOCAL))
-    f.run_entire_flow(milmove_env)
+#     f = SingleHHGFlow()
+#     milmove_env = MilMoveEnv(os.getenv("MILMOVE_ENV", MilMoveEnv.LOCAL))
+#     f.run_entire_flow(milmove_env)

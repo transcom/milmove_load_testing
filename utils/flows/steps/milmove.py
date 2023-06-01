@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+
+from requests import Session
+
+from utils.auth import create_user, UserType
 from utils.flows import FlowContext
-from utils.auth import UserType
-from utils.openapi_client import FlowSessionManager
+from utils.openapi_client import internal_api_client
+from utils.request import MilMoveRequestPreparer
 
 from datetime import datetime, timedelta
 from faker import Faker
+
 
 from internal_client.api import users_api
 from internal_client.api import service_members_api
@@ -54,11 +59,19 @@ def create_nts_shipment(move_id: str, issue_date: datetime, pickup_address: Addr
     )
 
 
-def do_flow(flow_context: FlowContext, flow_session_manager: FlowSessionManager, shipments: list[str]) -> None:
+def do_flow(
+    flow_context: FlowContext, request_preparer: MilMoveRequestPreparer, session: Session, shipments: list[str]
+) -> None:
     """
     Creates a move. Can raise internal_client.ApiException
     """
-    api_client = flow_session_manager.internal_api_client(UserType.MILMOVE)
+
+    # service member flow needs to log out and then create a user, as
+    # each flow is from a new user
+    if not create_user(request_preparer, session, UserType.MILMOVE):
+        raise Exception("Cannot create milmove user")
+
+    api_client = internal_api_client(request_preparer, session, UserType.MILMOVE)
 
     users_api_client = users_api.UsersApi(api_client)
 
@@ -206,20 +219,23 @@ For a HHG shipment, I am entitled to move a certain amount of HHG by weight ...
 
 def do_flow_create_single_hhg(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
-    do_flow(flow_context, flow_session_manager, ["HHG"])
+    do_flow(flow_context, request_preparer, session, ["HHG"])
 
 
 def do_flow_create_double_hhg(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
-    do_flow(flow_context, flow_session_manager, ["HHG", "HHG"])
+    do_flow(flow_context, request_preparer, session, ["HHG", "HHG"])
 
 
 def do_flow_create_nts(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
-    do_flow(flow_context, flow_session_manager, ["NTS"])
+    do_flow(flow_context, request_preparer, session, ["NTS"])

@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+
+from requests import Session
+
 from utils.flows import FlowContext
 from utils.auth import UserType
-from utils.openapi_client import FlowSessionManager
+from utils.openapi_client import ghc_api_client
+from utils.request import MilMoveRequestPreparer
 
 from ghc_client.api import queues_api
 from ghc_client.api import move_api
@@ -10,7 +14,8 @@ from ghc_client.api import move_task_order_api
 
 def do_hhg_sc_review(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
     if "move_id" not in flow_context:
         raise Exception("Cannot find move_id in flow_context")
@@ -24,7 +29,7 @@ def do_hhg_sc_review(
     if locator is None:
         raise Exception("locator is None in flow_context")
 
-    api_client = flow_session_manager.ghc_api_client(UserType.SERVICE_COUNSELOR)
+    api_client = ghc_api_client(request_preparer, session, UserType.SERVICE_COUNSELOR)
 
     queues_api_client = queues_api.QueuesApi(api_client)
     moves_api_client = move_api.MoveApi(api_client)
