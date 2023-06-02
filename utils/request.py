@@ -61,12 +61,14 @@ class MilMoveRequestPreparer:
         """
         Grabs request kwargs that will be needed for the endpoint.
 
-        :param certs_required: Boolean indicating if certs will be required. These will point to the
-            paths for the TLS cert/key files, which change based on the environment being targetted.
-            Possibly also includes a value that is either a boolean that indicates if the TLS certs
-            should be verified, or a path to certs to use for verification.
-        :param endpoint_name: name of endpoint, for locust request grouping
+        Configures the cert args. These will point to the paths for
+        the TLS cert/key files, which change based on the environment
+        being targetted. Possibly also includes a value that is either
+        a boolean that indicates if the TLS certs should be verified,
+        or a path to certs to use for verification.
+
         :return: kwargs that can be passed to the request.
+
         """
         kwargs: RequestKwargsType = {}
 
