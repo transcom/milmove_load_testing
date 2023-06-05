@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+
+from requests import Session
+
 from utils.flows import FlowContext
 from utils.auth import UserType
-from utils.openapi_client import FlowSessionManager
+from utils.openapi_client import ghc_api_client
+from utils.request import MilMoveRequestPreparer
 
 import datetime
 
@@ -23,7 +27,8 @@ from ghc_client.model.patch_mto_service_item_status_payload import PatchMTOServi
 
 def do_hhg_too_approve(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
     if "move_id" not in flow_context:
         raise Exception("Cannot find move_id in flow_context")
@@ -31,7 +36,7 @@ def do_hhg_too_approve(
     if move_id is None:
         raise Exception("move_id is None in flow_context")
 
-    api_client = flow_session_manager.ghc_api_client(UserType.TOO)
+    api_client = ghc_api_client(request_preparer, session, UserType.TOO)
     mto_api_client = move_task_order_api.MoveTaskOrderApi(api_client)
     queues_api_client = queues_api.QueuesApi(api_client)
     moves_api_client = move_api.MoveApi(api_client)
@@ -98,7 +103,8 @@ def do_hhg_too_approve(
 
 def do_hhg_too_approve_service_items(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
     if "move_id" not in flow_context:
         raise Exception("Cannot find move_id in flow_context")
@@ -112,7 +118,7 @@ def do_hhg_too_approve_service_items(
     if locator is None:
         raise Exception("locator is None in flow_context")
 
-    api_client = flow_session_manager.ghc_api_client(UserType.TOO)
+    api_client = ghc_api_client(request_preparer, session, UserType.TOO)
     queues_api_client = queues_api.QueuesApi(api_client)
     service_item_api_client = mto_service_item_api.MtoServiceItemApi(api_client)
 

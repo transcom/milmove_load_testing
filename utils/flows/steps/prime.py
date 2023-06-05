@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+from requests import Session
+
 from utils.flows import FlowContext
-from utils.openapi_client import FlowSessionManager
+from utils.openapi_client import prime_api_client
+from utils.request import MilMoveRequestPreparer
 
 import datetime
 
@@ -17,7 +21,8 @@ from prime_client.model.update_mto_shipment import UpdateMTOShipment
 
 def do_hhg_prime_service_items(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
     if "move_id" not in flow_context:
         raise Exception("Cannot find move_id in flow_context")
@@ -25,7 +30,7 @@ def do_hhg_prime_service_items(
     if move_id is None:
         raise Exception("move_id is None in flow_context")
 
-    api_client = flow_session_manager.prime_api_client()
+    api_client = prime_api_client(request_preparer, session)
     mto_api_client = move_task_order_api.MoveTaskOrderApi(api_client)
     mto_service_item_api_client = mto_service_item_api.MtoServiceItemApi(api_client)
     mto_shipment_api_client = mto_shipment_api.MtoShipmentApi(api_client)
@@ -109,7 +114,8 @@ def do_hhg_prime_service_items(
 
 def do_hhg_request_payment_for_service_items(
     flow_context: FlowContext,
-    flow_session_manager: FlowSessionManager,
+    request_preparer: MilMoveRequestPreparer,
+    session: Session,
 ) -> None:
     if "move_id" not in flow_context:
         raise Exception("Cannot find move_id in flow_context")
@@ -117,7 +123,7 @@ def do_hhg_request_payment_for_service_items(
     if move_id is None:
         raise Exception("move_id is None in flow_context")
 
-    api_client = flow_session_manager.prime_api_client()
+    api_client = prime_api_client(request_preparer, session)
     mto_api_client = move_task_order_api.MoveTaskOrderApi(api_client)
     payment_request_api_client = payment_request_api.PaymentRequestApi(api_client)
 

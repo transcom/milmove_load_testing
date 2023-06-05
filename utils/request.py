@@ -11,17 +11,35 @@ import logging
 import os
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Union
-
-from locust import TaskSet
+from enum import Enum
+import urllib3
 
 from utils.base import ImplementationError, MilMoveEnv, is_local
 from utils.constants import DP3_CERT_KEY_PEM, LOCAL_TLS_CERT_KWARGS
-from utils.rest import get_json_headers
 from utils.types import RequestKwargsType
 
 
 logger = logging.getLogger(__name__)
+
+
+class RequestHost(Enum):
+    """
+    Holds host subdomains
+    """
+
+    MY = "my"
+    OFFICE = "office"
+    PRIME = "api"
+
+    def local_subdomain(self):
+        if self == RequestHost.MY:
+            return "milmovelocal"
+        elif self == RequestHost.OFFICE:
+            return "officelocal"
+        elif self == RequestHost.PRIME:
+            return "primelocal"
+        else:
+            raise Exception(f"Unknown request host: {self}")
 
 
 @dataclass
@@ -32,38 +50,58 @@ class MilMoveRequestPreparer:
 
     # The environment the host is running in (ex. locally or deployed).
     # Can be any of the values in MilMoveEnv.
-    env: MilMoveEnv
+    milmove_env: MilMoveEnv
 
     GHC_PATH_PREFIX = "/ghc/v1"
     INTERNAL_PATH_PREFIX = "/internal"
     PRIME_PATH_PREFIX = "/prime/v1"
     SUPPORT_PATH_PREFIX = "/support/v1"
 
-    def get_request_kwargs(self, certs_required: bool = False, endpoint_name: str = "") -> RequestKwargsType:
+    def get_cert_kwargs(self) -> RequestKwargsType:
         """
         Grabs request kwargs that will be needed for the endpoint.
 
-        :param certs_required: Boolean indicating if certs will be required. These will point to the
-            paths for the TLS cert/key files, which change based on the environment being targetted.
-            Possibly also includes a value that is either a boolean that indicates if the TLS certs
-            should be verified, or a path to certs to use for verification.
-        :param endpoint_name: name of endpoint, for locust request grouping
+        Configures the cert args. These will point to the paths for
+        the TLS cert/key files, which change based on the environment
+        being targetted. Possibly also includes a value that is either
+        a boolean that indicates if the TLS certs should be verified,
+        or a path to certs to use for verification.
+
         :return: kwargs that can be passed to the request.
+
         """
-        kwargs = {"headers": get_json_headers()}
+        kwargs: RequestKwargsType = {}
 
-        if certs_required:
-            if is_local(env=self.env):
-                kwargs.update(deepcopy(LOCAL_TLS_CERT_KWARGS))
-            else:
-                kwargs["cert"] = DP3_CERT_KEY_PEM
+        if is_local(env=self.milmove_env):
+            kwargs.update(deepcopy(LOCAL_TLS_CERT_KWARGS))
+        else:
+            kwargs["cert"] = DP3_CERT_KEY_PEM
 
-        if endpoint_name:
-            kwargs["name"] = endpoint_name
+        if "verify" in kwargs and not kwargs["verify"]:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
         return kwargs
 
-    def form_base_domain(
+    def base_url(self, request_host: RequestHost) -> str:
+        if base_domain := os.getenv("BASE_DOMAIN"):
+            return base_domain
+
+        default_local_protocol = "http"
+        default_local_port = "8080"
+        if request_host == RequestHost.PRIME:
+            default_local_protocol = "https"
+            default_local_port = "9443"
+
+        if is_local(env=self.milmove_env):
+            return self._form_base_url(
+                local_port=os.getenv("LOCAL_PORT", default_local_port),
+                local_protocol=default_local_protocol,
+                local_subdomain=request_host.local_subdomain(),
+            )
+        else:
+            return self._form_base_url(deployed_subdomain=request_host.value)
+
+    def _form_base_url(
         self,
         deployed_subdomain: str = "",
         local_port: str = "",
@@ -86,7 +124,7 @@ class MilMoveRequestPreparer:
         if base_domain := os.getenv("BASE_DOMAIN"):
             return base_domain
 
-        if not is_local(env=self.env):
+        if not is_local(env=self.milmove_env):
             # NOTE: deployed protocol is always https
             return f"https://{deployed_subdomain}.loadtest.dp3.us"
 
@@ -97,197 +135,64 @@ class MilMoveRequestPreparer:
 
         return f"{local_protocol}://{local_subdomain}:{port}"
 
-    def form_ghc_path(self, endpoint: str, include_prefix: bool = True) -> str:
+    def form_api_path(self, request_host: RequestHost, api_path_prefix: str, endpoint: str) -> str:
+        """
+        Returns a url pointing at the requested endpoint for the API.
+
+        :param request_host: host to target, e.g. "my"
+        :param api_path_prefix: prefix for the api, e.g. "/ghc/v1"
+        :param endpoint: Endpoint to target, e.g. "/moves"
+        :return: full url to use in requests
+        """
+
+        api_url = self.base_url(request_host)
+
+        if api_path_prefix:
+            api_url += api_path_prefix
+
+        return f"{api_url}{endpoint}"
+
+    def form_ghc_path(self, request_host: RequestHost, endpoint: str, include_prefix: bool = True) -> str:
         """
         Returns a url pointing at the requested endpoint for the GHC API.
 
+        :param request_host: host to target, e.g. "my"
         :param endpoint: Endpoint to target, e.g. "/moves"
         :param include_prefix: Indicate if the GHC prefix should be included or not
         :return: full url to use in requests
         """
-        if is_local(env=self.env):
-            base_domain = self.form_base_domain(
-                local_port=os.getenv("LOCAL_PORT", "8080"),
-                local_protocol="http",
-                local_subdomain="officelocal",
-            )
-        else:
-            base_domain = self.form_base_domain(deployed_subdomain="office")
 
-        ghc_path = base_domain
+        path_prefix = self.GHC_PATH_PREFIX
+        if not include_prefix:
+            path_prefix = ""
 
-        if include_prefix:
-            ghc_path += self.GHC_PATH_PREFIX
+        return self.form_api_path(request_host, path_prefix, endpoint)
 
-        return f"{ghc_path}{endpoint}"
-
-    def prep_ghc_request(
-        self, endpoint: str, endpoint_name: str = "", include_prefix: bool = True
-    ) -> tuple[str, RequestKwargsType]:
-        """
-        Prepares a request URL and the request kwargs for making a request to the GHC API.
-
-        :param endpoint: endpoint to target, e.g. "/moves"
-        :param endpoint_name: name of endpoint, for locust request grouping
-        :param include_prefix: Indicate if the GHC prefix should be included or not
-        :return: tuple of the full url to the endpoint and the kwargs to pass to the request
-        """
-        url = self.form_ghc_path(endpoint=endpoint, include_prefix=include_prefix)
-
-        if endpoint_name:
-            endpoint_name = f"{self.GHC_PATH_PREFIX}{endpoint_name}"
-
-        kwargs = self.get_request_kwargs(endpoint_name=endpoint_name)
-
-        return url, kwargs
-
-    def form_internal_path(self, endpoint: str, include_prefix: bool = True) -> str:
+    def form_internal_path(self, request_host: RequestHost, endpoint: str, include_prefix: bool = True) -> str:
         """
         Returns a url pointing at the requested endpoint for the Internal API.
 
+        :param request_host: host to target, e.g. "my"
         :param endpoint: Endpoint to target, e.g. "/moves"
         :param include_prefix: Indicate if the internal prefix should be included or not
         :return: full url to use in requests
         """
-        if is_local(env=self.env):
-            base_domain = self.form_base_domain(
-                local_port=os.getenv("LOCAL_PORT", "8080"),
-                local_protocol="http",
-                local_subdomain="milmovelocal",
-            )
-        else:
-            base_domain = self.form_base_domain(deployed_subdomain="my")
 
-        internal_path = base_domain
+        path_prefix = self.INTERNAL_PATH_PREFIX
+        if not include_prefix:
+            path_prefix = ""
 
-        if include_prefix:
-            internal_path += self.INTERNAL_PATH_PREFIX
-
-        return f"{internal_path}{endpoint}"
-
-    def prep_internal_request(
-        self, endpoint: str, endpoint_name: str = "", include_prefix: bool = True
-    ) -> tuple[str, RequestKwargsType]:
-        """
-        Prepares a request URL and the request kwargs for making a request to the Internal API.
-
-        :param endpoint: endpoint to target, e.g. "/moves"
-        :param endpoint_name: name of endpoint, for locust request grouping
-        :param include_prefix: Indicate if the internal prefix should be included or not
-        :return: tuple of the full url to the endpoint and the kwargs to pass to the request
-        """
-        url = self.form_internal_path(endpoint=endpoint, include_prefix=include_prefix)
-
-        if endpoint_name:
-            endpoint_name = f"{self.INTERNAL_PATH_PREFIX}{endpoint_name}"
-
-        kwargs = self.get_request_kwargs(endpoint_name=endpoint_name)
-
-        return url, kwargs
+        return self.form_api_path(request_host, path_prefix, endpoint)
 
     def form_prime_path(self, endpoint: str) -> str:
         """
         Returns a url pointing at the requested endpoint for the Prime API.
 
+        :param request_host: host to target, e.g. "my"
         :param endpoint: Endpoint to target, e.g. "/moves"
         :return: full url to use in requests
         """
-        if is_local(env=self.env):
-            base_domain = self.form_base_domain(
-                local_port="9443",
-                local_protocol="https",
-                local_subdomain="primelocal",
-            )
-        else:
-            base_domain = self.form_base_domain(deployed_subdomain="api")
 
-        return f"{base_domain}{self.PRIME_PATH_PREFIX}{endpoint}"
+        path_prefix = self.PRIME_PATH_PREFIX
 
-    def prep_prime_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
-        """
-        Prepares a request URL and the request kwargs for making a request to the Prime API.
-
-        :param endpoint: endpoint to target, e.g. "/moves"
-        :param endpoint_name: name of endpoint, for locust request grouping
-        :return: tuple of the full url to the endpoint and the kwargs to pass to the request
-        """
-        url = self.form_prime_path(endpoint=endpoint)
-
-        if endpoint_name:
-            endpoint_name = f"{self.PRIME_PATH_PREFIX}{endpoint_name}"
-
-        kwargs = self.get_request_kwargs(certs_required=True, endpoint_name=endpoint_name)
-
-        return url, kwargs
-
-    def form_support_path(self, endpoint: str) -> str:
-        """
-        Returns a url pointing at the requested endpoint for the Support API.
-
-        :param endpoint: Endpoint to target, e.g. "/moves"
-        :return: full url to use in requests
-        """
-        if is_local(env=self.env):
-            base_domain = self.form_base_domain(
-                local_port="9443",
-                local_protocol="https",
-                local_subdomain="primelocal",
-            )
-        else:
-            base_domain = self.form_base_domain(deployed_subdomain="api")
-
-        return f"{base_domain}{self.SUPPORT_PATH_PREFIX}{endpoint}"
-
-    def prep_support_request(self, endpoint: str, endpoint_name: str = "") -> tuple[str, RequestKwargsType]:
-        """
-        Prepares a request URL and the request kwargs for making a request to the Support API.
-
-        :param endpoint: endpoint to target, e.g. "/moves"
-        :param endpoint_name: name of endpoint, for locust request grouping
-        :return: tuple of the full url to the endpoint and the kwargs to pass to the request
-        """
-        url = self.form_support_path(endpoint=endpoint)
-
-        if endpoint_name:
-            endpoint_name = f"{self.SUPPORT_PATH_PREFIX}{endpoint_name}"
-
-        kwargs = self.get_request_kwargs(certs_required=True, endpoint_name=endpoint_name)
-
-        return url, kwargs
-
-
-class MilMoveRequestMixin:
-    """
-    Mixin for a Locust TaskSet class/subclass that provides access to a helper for forming request
-    URLs and preparing request kwargs.
-    """
-
-    # The environment the host is running in (ex. locally or deployed).
-    # Can be any of the values in MilMoveEnv.
-    env: MilMoveEnv
-
-    request_preparer: MilMoveRequestPreparer
-
-    def __init__(self: Union[TaskSet, "MilMoveRequestMixin"], *args, **kwargs) -> None:
-        """
-        Sets up the env and request_preparer based on the input locust host. Note that the
-        `self.user.host` value is set on the user class BEFORE initialization. This can be either
-        the value set on the command line (via the --host flag) on the one set in the locust UI form
-        field.
-        """
-        super().__init__(*args, **kwargs)
-
-        self.set_milmove_env()
-        self.set_up_request_preparer()
-
-    def set_milmove_env(self: Union[TaskSet, "MilMoveRequestMixin"]) -> None:
-        """
-        Sets the env attribute for the class. Takes in a string and sets the MilMoveEnv in self.env.
-        """
-        self.env = MilMoveEnv(value=self.user.host)
-
-    def set_up_request_preparer(self: Union[TaskSet, "MilMoveRequestMixin"]) -> None:
-        """
-        Sets up a URL creator that can be used later to form proper endpoint URLs
-        """
-        self.request_preparer = MilMoveRequestPreparer(env=self.env)
+        return self.form_api_path(RequestHost.PRIME, path_prefix, endpoint)
