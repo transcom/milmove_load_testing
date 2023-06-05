@@ -1,4 +1,3 @@
-# import locust first because it monkeypatches ssl
 from locust.clients import HttpSession
 
 from abc import abstractmethod, ABC
@@ -159,7 +158,16 @@ class LocustResponseWrapper(object):
         if name == "status":
             return self.response.status_code
         elif name == "data":
+            if hasattr(self.response, "error"):
+                return b""
             return self.response.content
+        elif name == "reason":
+            if self.response.reason:
+                return self.response.reason
+            elif hasattr(self.response, "error"):
+                return getattr(self.response, "error")
+            else:
+                return b""
         else:
             return getattr(self.response, name)
 
