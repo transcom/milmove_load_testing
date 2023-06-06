@@ -83,19 +83,27 @@ class MilMoveRequestPreparer:
         return kwargs
 
     def base_url(self, request_host: RequestHost) -> str:
+        """
+        Generate a url for the provided host. The ports can be overridden with `LOCAL_PORT` and `LOCAL_PRIME_PORT` environment variables. If `BASE_DOMAIN` is set, that is returned.
+
+        :param request_host: Host to generate url for
+
+        :return: string containing the url
+
+        """
         if base_domain := os.getenv("BASE_DOMAIN"):
             return base_domain
 
-        default_local_protocol = "http"
-        default_local_port = "8080"
+        local_port = os.getenv("LOCAL_PORT", "8080")
+        local_protocol = "http"
         if request_host == RequestHost.PRIME:
-            default_local_protocol = "https"
-            default_local_port = "9443"
+            local_protocol = "https"
+            local_port = os.getenv("LOCAL_PRIME_PORT", "9443")
 
         if is_local(env=self.milmove_env):
             return self._form_base_url(
-                local_port=os.getenv("LOCAL_PORT", default_local_port),
-                local_protocol=default_local_protocol,
+                local_port=local_port,
+                local_protocol=local_protocol,
                 local_subdomain=request_host.local_subdomain(),
             )
         else:
@@ -109,17 +117,16 @@ class MilMoveRequestPreparer:
         local_subdomain: str = "",
     ) -> str:
         """
-        Sets up the base domain for a request based on the environment we're running against and
-        the subdomain we're targeting.
+        Set up the base domain for a request based on the environment we're running against and the subdomain we're targeting.
 
-        Con optionally be overridden by setting an environment variable called BASE_DOMAIN that
-        points to where you want it to point.
+        Con optionally be overridden by setting an environment variable called BASE_DOMAIN that points to where you want it to point.
 
         :param deployed_subdomain: subdomain to target when deployed, e.g. "api" or "my".
         :param local_port: Port to use when running locally.
         :param local_protocol: local protocol to run against, e.g. "https"
         :param local_subdomain: subdomain to target when running locally, e.g. "primelocal"
         :return: base domain to use for requests, e.g. https://api.loadtest.dp3.us
+
         """
         if base_domain := os.getenv("BASE_DOMAIN"):
             return base_domain
@@ -137,14 +144,13 @@ class MilMoveRequestPreparer:
 
     def form_api_path(self, request_host: RequestHost, api_path_prefix: str, endpoint: str) -> str:
         """
-        Returns a url pointing at the requested endpoint for the API.
+        Return a url pointing at the requested endpoint for the API.
 
         :param request_host: host to target, e.g. "my"
         :param api_path_prefix: prefix for the api, e.g. "/ghc/v1"
         :param endpoint: Endpoint to target, e.g. "/moves"
         :return: full url to use in requests
         """
-
         api_url = self.base_url(request_host)
 
         if api_path_prefix:
@@ -154,14 +160,13 @@ class MilMoveRequestPreparer:
 
     def form_ghc_path(self, request_host: RequestHost, endpoint: str, include_prefix: bool = True) -> str:
         """
-        Returns a url pointing at the requested endpoint for the GHC API.
+        Return a url pointing at the requested endpoint for the GHC API.
 
         :param request_host: host to target, e.g. "my"
         :param endpoint: Endpoint to target, e.g. "/moves"
         :param include_prefix: Indicate if the GHC prefix should be included or not
         :return: full url to use in requests
         """
-
         path_prefix = self.GHC_PATH_PREFIX
         if not include_prefix:
             path_prefix = ""
@@ -170,14 +175,13 @@ class MilMoveRequestPreparer:
 
     def form_internal_path(self, request_host: RequestHost, endpoint: str, include_prefix: bool = True) -> str:
         """
-        Returns a url pointing at the requested endpoint for the Internal API.
+        Return a url pointing at the requested endpoint for the Internal API.
 
         :param request_host: host to target, e.g. "my"
         :param endpoint: Endpoint to target, e.g. "/moves"
         :param include_prefix: Indicate if the internal prefix should be included or not
         :return: full url to use in requests
         """
-
         path_prefix = self.INTERNAL_PATH_PREFIX
         if not include_prefix:
             path_prefix = ""
@@ -186,13 +190,12 @@ class MilMoveRequestPreparer:
 
     def form_prime_path(self, endpoint: str) -> str:
         """
-        Returns a url pointing at the requested endpoint for the Prime API.
+        Return a url pointing at the requested endpoint for the Prime API.
 
         :param request_host: host to target, e.g. "my"
         :param endpoint: Endpoint to target, e.g. "/moves"
         :return: full url to use in requests
         """
-
         path_prefix = self.PRIME_PATH_PREFIX
 
         return self.form_api_path(RequestHost.PRIME, path_prefix, endpoint)
