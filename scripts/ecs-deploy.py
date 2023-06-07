@@ -91,7 +91,7 @@ response = ecs.register_task_definition(
     executionRoleArn=current_task_def["executionRoleArn"],
     networkMode=current_task_def["networkMode"],
     containerDefinitions=container_defs,
-    cpu="1024",
+    cpu="2048",
     memory="8192",
     requiresCompatibilities=["FARGATE"],
 )
