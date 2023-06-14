@@ -32,20 +32,20 @@ from prime_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from prime_client.model.destination_type import DestinationType
-    from prime_client.model.mto_shipment_destination_address import MTOShipmentDestinationAddress
-    from prime_client.model.mto_shipment_pickup_address import MTOShipmentPickupAddress
-    from prime_client.model.mto_shipment_secondary_delivery_address import MTOShipmentSecondaryDeliveryAddress
-    from prime_client.model.mto_shipment_secondary_pickup_address import MTOShipmentSecondaryPickupAddress
-    from prime_client.model.mto_shipment_storage_facility import MTOShipmentStorageFacility
     from prime_client.model.mto_shipment_type import MTOShipmentType
+    from prime_client.model.mto_shipment_without_service_items_destination_address import MTOShipmentWithoutServiceItemsDestinationAddress
+    from prime_client.model.mto_shipment_without_service_items_pickup_address import MTOShipmentWithoutServiceItemsPickupAddress
+    from prime_client.model.mto_shipment_without_service_items_secondary_delivery_address import MTOShipmentWithoutServiceItemsSecondaryDeliveryAddress
+    from prime_client.model.mto_shipment_without_service_items_secondary_pickup_address import MTOShipmentWithoutServiceItemsSecondaryPickupAddress
+    from prime_client.model.mto_shipment_without_service_items_storage_facility import MTOShipmentWithoutServiceItemsStorageFacility
     from prime_client.model.update_ppm_shipment import UpdatePPMShipment
     globals()['DestinationType'] = DestinationType
-    globals()['MTOShipmentDestinationAddress'] = MTOShipmentDestinationAddress
-    globals()['MTOShipmentPickupAddress'] = MTOShipmentPickupAddress
-    globals()['MTOShipmentSecondaryDeliveryAddress'] = MTOShipmentSecondaryDeliveryAddress
-    globals()['MTOShipmentSecondaryPickupAddress'] = MTOShipmentSecondaryPickupAddress
-    globals()['MTOShipmentStorageFacility'] = MTOShipmentStorageFacility
     globals()['MTOShipmentType'] = MTOShipmentType
+    globals()['MTOShipmentWithoutServiceItemsDestinationAddress'] = MTOShipmentWithoutServiceItemsDestinationAddress
+    globals()['MTOShipmentWithoutServiceItemsPickupAddress'] = MTOShipmentWithoutServiceItemsPickupAddress
+    globals()['MTOShipmentWithoutServiceItemsSecondaryDeliveryAddress'] = MTOShipmentWithoutServiceItemsSecondaryDeliveryAddress
+    globals()['MTOShipmentWithoutServiceItemsSecondaryPickupAddress'] = MTOShipmentWithoutServiceItemsSecondaryPickupAddress
+    globals()['MTOShipmentWithoutServiceItemsStorageFacility'] = MTOShipmentWithoutServiceItemsStorageFacility
     globals()['UpdatePPMShipment'] = UpdatePPMShipment
 
 
@@ -116,12 +116,12 @@ class UpdateMTOShipment(ModelNormal):
             'prime_estimated_weight': (int, none_type,),  # noqa: E501
             'prime_actual_weight': (int, none_type,),  # noqa: E501
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
-            'pickup_address': (MTOShipmentPickupAddress,),  # noqa: E501
-            'destination_address': (MTOShipmentDestinationAddress,),  # noqa: E501
+            'pickup_address': (MTOShipmentWithoutServiceItemsPickupAddress,),  # noqa: E501
+            'destination_address': (MTOShipmentWithoutServiceItemsDestinationAddress,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
-            'secondary_pickup_address': (MTOShipmentSecondaryPickupAddress,),  # noqa: E501
-            'secondary_delivery_address': (MTOShipmentSecondaryDeliveryAddress,),  # noqa: E501
-            'storage_facility': (MTOShipmentStorageFacility,),  # noqa: E501
+            'secondary_pickup_address': (MTOShipmentWithoutServiceItemsSecondaryPickupAddress,),  # noqa: E501
+            'secondary_delivery_address': (MTOShipmentWithoutServiceItemsSecondaryDeliveryAddress,),  # noqa: E501
+            'storage_facility': (MTOShipmentWithoutServiceItemsStorageFacility,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
             'point_of_contact': (str,),  # noqa: E501
@@ -205,12 +205,12 @@ class UpdateMTOShipment(ModelNormal):
             prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
             prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
-            pickup_address (MTOShipmentPickupAddress): [optional]  # noqa: E501
-            destination_address (MTOShipmentDestinationAddress): [optional]  # noqa: E501
+            pickup_address (MTOShipmentWithoutServiceItemsPickupAddress): [optional]  # noqa: E501
+            destination_address (MTOShipmentWithoutServiceItemsDestinationAddress): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
-            secondary_pickup_address (MTOShipmentSecondaryPickupAddress): [optional]  # noqa: E501
-            secondary_delivery_address (MTOShipmentSecondaryDeliveryAddress): [optional]  # noqa: E501
-            storage_facility (MTOShipmentStorageFacility): [optional]  # noqa: E501
+            secondary_pickup_address (MTOShipmentWithoutServiceItemsSecondaryPickupAddress): [optional]  # noqa: E501
+            secondary_delivery_address (MTOShipmentWithoutServiceItemsSecondaryDeliveryAddress): [optional]  # noqa: E501
+            storage_facility (MTOShipmentWithoutServiceItemsStorageFacility): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
@@ -309,12 +309,12 @@ class UpdateMTOShipment(ModelNormal):
             prime_estimated_weight (int, none_type): The estimated weight of this shipment, determined by the movers during the pre-move survey. This value **can only be updated once.** If there was an issue with estimating the weight and a mistake was made, the Prime contracter will need to contact the TOO to change it. . [optional]  # noqa: E501
             prime_actual_weight (int, none_type): The actual weight of the shipment, provided after the Prime packs, picks up, and weighs a customer's shipment.. [optional]  # noqa: E501
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
-            pickup_address (MTOShipmentPickupAddress): [optional]  # noqa: E501
-            destination_address (MTOShipmentDestinationAddress): [optional]  # noqa: E501
+            pickup_address (MTOShipmentWithoutServiceItemsPickupAddress): [optional]  # noqa: E501
+            destination_address (MTOShipmentWithoutServiceItemsDestinationAddress): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
-            secondary_pickup_address (MTOShipmentSecondaryPickupAddress): [optional]  # noqa: E501
-            secondary_delivery_address (MTOShipmentSecondaryDeliveryAddress): [optional]  # noqa: E501
-            storage_facility (MTOShipmentStorageFacility): [optional]  # noqa: E501
+            secondary_pickup_address (MTOShipmentWithoutServiceItemsSecondaryPickupAddress): [optional]  # noqa: E501
+            secondary_delivery_address (MTOShipmentWithoutServiceItemsSecondaryDeliveryAddress): [optional]  # noqa: E501
+            storage_facility (MTOShipmentWithoutServiceItemsStorageFacility): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501

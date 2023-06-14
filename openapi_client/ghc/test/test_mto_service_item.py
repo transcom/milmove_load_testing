@@ -13,12 +13,16 @@ import sys
 import unittest
 
 import ghc_client
+from ghc_client.model.address import Address
 from ghc_client.model.mto_service_item_customer_contacts import MTOServiceItemCustomerContacts
 from ghc_client.model.mto_service_item_dimensions import MTOServiceItemDimensions
 from ghc_client.model.mto_service_item_status import MTOServiceItemStatus
+from ghc_client.model.sit_address_updates import SITAddressUpdates
+globals()['Address'] = Address
 globals()['MTOServiceItemCustomerContacts'] = MTOServiceItemCustomerContacts
 globals()['MTOServiceItemDimensions'] = MTOServiceItemDimensions
 globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+globals()['SITAddressUpdates'] = SITAddressUpdates
 from ghc_client.model.mto_service_item import MTOServiceItem
 
 

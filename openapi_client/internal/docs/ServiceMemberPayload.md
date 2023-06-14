@@ -22,7 +22,7 @@ Name | Type | Description | Notes
 **personal_email** | **str, none_type** |  | [optional] 
 **phone_is_preferred** | **bool, none_type** |  | [optional] 
 **email_is_preferred** | **bool, none_type** |  | [optional] 
-**current_location** | [**DutyLocationPayload**](DutyLocationPayload.md) |  | [optional] 
+**current_location** | [**DutyLocationInternal**](DutyLocationInternal.md) |  | [optional] 
 **residential_address** | [**Address**](Address.md) |  | [optional] 
 **backup_mailing_address** | [**Address**](Address.md) |  | [optional] 
 **backup_contacts** | [**IndexServiceMemberBackupContactsPayload**](IndexServiceMemberBackupContactsPayload.md) |  | [optional] 

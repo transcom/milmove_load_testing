@@ -36,11 +36,13 @@ def lazy_import():
     from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
     from prime_client.model.mto_service_item_origin_sit_all_of import MTOServiceItemOriginSITAllOf
     from prime_client.model.mto_service_item_status import MTOServiceItemStatus
+    from prime_client.model.service_request_documents import ServiceRequestDocuments
     globals()['Address'] = Address
     globals()['MTOServiceItem'] = MTOServiceItem
     globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
     globals()['MTOServiceItemOriginSITAllOf'] = MTOServiceItemOriginSITAllOf
     globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+    globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 
 
 class MTOServiceItemOriginSIT(ModelComposed):
@@ -113,11 +115,13 @@ class MTOServiceItemOriginSIT(ModelComposed):
             'model_type': (MTOServiceItemModelType,),  # noqa: E501
             'sit_departure_date': (date, none_type,),  # noqa: E501
             'sit_hhg_actual_origin': (Address,),  # noqa: E501
+            'sit_hhg_original_origin': (Address,),  # noqa: E501
             'id': (str,),  # noqa: E501
             'mto_shipment_id': (str,),  # noqa: E501
             're_service_name': (str,),  # noqa: E501
             'status': (MTOServiceItemStatus,),  # noqa: E501
             'rejection_reason': (str, none_type,),  # noqa: E501
+            'service_request_documents': (ServiceRequestDocuments,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -138,11 +142,13 @@ class MTOServiceItemOriginSIT(ModelComposed):
         'model_type': 'modelType',  # noqa: E501
         'sit_departure_date': 'sitDepartureDate',  # noqa: E501
         'sit_hhg_actual_origin': 'sitHHGActualOrigin',  # noqa: E501
+        'sit_hhg_original_origin': 'sitHHGOriginalOrigin',  # noqa: E501
         'id': 'id',  # noqa: E501
         'mto_shipment_id': 'mtoShipmentID',  # noqa: E501
         're_service_name': 'reServiceName',  # noqa: E501
         'status': 'status',  # noqa: E501
         'rejection_reason': 'rejectionReason',  # noqa: E501
+        'service_request_documents': 'serviceRequestDocuments',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -197,11 +203,13 @@ class MTOServiceItemOriginSIT(ModelComposed):
                                 _visited_composed_classes = (Animal,)
             sit_departure_date (date, none_type): Departure date for SIT. This is the end date of the SIT at either origin or destination. This is optional as it can be updated using the UpdateMTOServiceItemSIT modelType at a later date.. [optional]  # noqa: E501
             sit_hhg_actual_origin (Address): [optional]  # noqa: E501
+            sit_hhg_original_origin (Address): [optional]  # noqa: E501
             id (str): The ID of the service item.. [optional]  # noqa: E501
             mto_shipment_id (str): The ID of the shipment this service is for, if any. Optional.. [optional]  # noqa: E501
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501
             status (MTOServiceItemStatus): [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this service item was rejected by the TOO.. [optional]  # noqa: E501
+            service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
             e_tag (str): A hash unique to this service item that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
         """
 
@@ -314,11 +322,13 @@ class MTOServiceItemOriginSIT(ModelComposed):
                                 _visited_composed_classes = (Animal,)
             sit_departure_date (date, none_type): Departure date for SIT. This is the end date of the SIT at either origin or destination. This is optional as it can be updated using the UpdateMTOServiceItemSIT modelType at a later date.. [optional]  # noqa: E501
             sit_hhg_actual_origin (Address): [optional]  # noqa: E501
+            sit_hhg_original_origin (Address): [optional]  # noqa: E501
             id (str): The ID of the service item.. [optional]  # noqa: E501
             mto_shipment_id (str): The ID of the shipment this service is for, if any. Optional.. [optional]  # noqa: E501
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501
             status (MTOServiceItemStatus): [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this service item was rejected by the TOO.. [optional]  # noqa: E501
+            service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
             e_tag (str): A hash unique to this service item that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
         """
 

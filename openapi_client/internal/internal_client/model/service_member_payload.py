@@ -33,14 +33,14 @@ from internal_client.exceptions import ApiAttributeError
 def lazy_import():
     from internal_client.model.address import Address
     from internal_client.model.affiliation import Affiliation
-    from internal_client.model.duty_location_payload import DutyLocationPayload
+    from internal_client.model.duty_location_internal import DutyLocationInternal
     from internal_client.model.index_service_member_backup_contacts_payload import IndexServiceMemberBackupContactsPayload
     from internal_client.model.orders import Orders
     from internal_client.model.service_member_rank import ServiceMemberRank
     from internal_client.model.weight_allotment import WeightAllotment
     globals()['Address'] = Address
     globals()['Affiliation'] = Affiliation
-    globals()['DutyLocationPayload'] = DutyLocationPayload
+    globals()['DutyLocationInternal'] = DutyLocationInternal
     globals()['IndexServiceMemberBackupContactsPayload'] = IndexServiceMemberBackupContactsPayload
     globals()['Orders'] = Orders
     globals()['ServiceMemberRank'] = ServiceMemberRank
@@ -140,7 +140,7 @@ class ServiceMemberPayload(ModelNormal):
             'personal_email': (str, none_type,),  # noqa: E501
             'phone_is_preferred': (bool, none_type,),  # noqa: E501
             'email_is_preferred': (bool, none_type,),  # noqa: E501
-            'current_location': (DutyLocationPayload,),  # noqa: E501
+            'current_location': (DutyLocationInternal,),  # noqa: E501
             'residential_address': (Address,),  # noqa: E501
             'backup_mailing_address': (Address,),  # noqa: E501
             'backup_contacts': (IndexServiceMemberBackupContactsPayload,),  # noqa: E501
@@ -239,7 +239,7 @@ class ServiceMemberPayload(ModelNormal):
             personal_email (str, none_type): [optional]  # noqa: E501
             phone_is_preferred (bool, none_type): [optional]  # noqa: E501
             email_is_preferred (bool, none_type): [optional]  # noqa: E501
-            current_location (DutyLocationPayload): [optional]  # noqa: E501
+            current_location (DutyLocationInternal): [optional]  # noqa: E501
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
             backup_contacts (IndexServiceMemberBackupContactsPayload): [optional]  # noqa: E501
@@ -354,7 +354,7 @@ class ServiceMemberPayload(ModelNormal):
             personal_email (str, none_type): [optional]  # noqa: E501
             phone_is_preferred (bool, none_type): [optional]  # noqa: E501
             email_is_preferred (bool, none_type): [optional]  # noqa: E501
-            current_location (DutyLocationPayload): [optional]  # noqa: E501
+            current_location (DutyLocationInternal): [optional]  # noqa: E501
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
             backup_contacts (IndexServiceMemberBackupContactsPayload): [optional]  # noqa: E501

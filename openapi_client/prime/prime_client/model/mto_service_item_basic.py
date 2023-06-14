@@ -36,11 +36,13 @@ def lazy_import():
     from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
     from prime_client.model.mto_service_item_status import MTOServiceItemStatus
     from prime_client.model.re_service_code import ReServiceCode
+    from prime_client.model.service_request_documents import ServiceRequestDocuments
     globals()['MTOServiceItem'] = MTOServiceItem
     globals()['MTOServiceItemBasicAllOf'] = MTOServiceItemBasicAllOf
     globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
     globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
     globals()['ReServiceCode'] = ReServiceCode
+    globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 
 
 class MTOServiceItemBasic(ModelComposed):
@@ -104,6 +106,7 @@ class MTOServiceItemBasic(ModelComposed):
             're_service_name': (str,),  # noqa: E501
             'status': (MTOServiceItemStatus,),  # noqa: E501
             'rejection_reason': (str, none_type,),  # noqa: E501
+            'service_request_documents': (ServiceRequestDocuments,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -124,6 +127,7 @@ class MTOServiceItemBasic(ModelComposed):
         're_service_name': 'reServiceName',  # noqa: E501
         'status': 'status',  # noqa: E501
         'rejection_reason': 'rejectionReason',  # noqa: E501
+        'service_request_documents': 'serviceRequestDocuments',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -178,6 +182,7 @@ class MTOServiceItemBasic(ModelComposed):
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501
             status (MTOServiceItemStatus): [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this service item was rejected by the TOO.. [optional]  # noqa: E501
+            service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
             e_tag (str): A hash unique to this service item that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
         """
 
@@ -290,6 +295,7 @@ class MTOServiceItemBasic(ModelComposed):
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501
             status (MTOServiceItemStatus): [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this service item was rejected by the TOO.. [optional]  # noqa: E501
+            service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
             e_tag (str): A hash unique to this service item that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
         """
 

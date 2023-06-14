@@ -31,8 +31,8 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from internal_client.model.duty_location_payload import DutyLocationPayload
-    globals()['DutyLocationPayload'] = DutyLocationPayload
+    from internal_client.model.duty_location_internal import DutyLocationInternal
+    globals()['DutyLocationInternal'] = DutyLocationInternal
 
 
 class DutyLocationsPayload(ModelSimple):
@@ -77,7 +77,7 @@ class DutyLocationsPayload(ModelSimple):
         """
         lazy_import()
         return {
-            'value': ([DutyLocationPayload],),
+            'value': ([DutyLocationInternal],),
         }
 
     @cached_property
@@ -107,10 +107,10 @@ class DutyLocationsPayload(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] ([DutyLocationPayload]):  # noqa: E501
+            args[0] ([DutyLocationInternal]):  # noqa: E501
 
         Keyword Args:
-            value ([DutyLocationPayload]):  # noqa: E501
+            value ([DutyLocationInternal]):  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -201,10 +201,10 @@ class DutyLocationsPayload(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] ([DutyLocationPayload]):  # noqa: E501
+            args[0] ([DutyLocationInternal]):  # noqa: E501
 
         Keyword Args:
-            value ([DutyLocationPayload]):  # noqa: E501
+            value ([DutyLocationInternal]):  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

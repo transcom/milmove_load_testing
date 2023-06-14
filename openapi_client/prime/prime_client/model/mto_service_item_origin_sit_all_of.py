@@ -103,6 +103,7 @@ class MTOServiceItemOriginSITAllOf(ModelNormal):
             'sit_entry_date': (date,),  # noqa: E501
             'sit_departure_date': (date, none_type,),  # noqa: E501
             'sit_hhg_actual_origin': (Address,),  # noqa: E501
+            'sit_hhg_original_origin': (Address,),  # noqa: E501
         }
 
     @cached_property
@@ -117,6 +118,7 @@ class MTOServiceItemOriginSITAllOf(ModelNormal):
         'sit_entry_date': 'sitEntryDate',  # noqa: E501
         'sit_departure_date': 'sitDepartureDate',  # noqa: E501
         'sit_hhg_actual_origin': 'sitHHGActualOrigin',  # noqa: E501
+        'sit_hhg_original_origin': 'sitHHGOriginalOrigin',  # noqa: E501
     }
 
     read_only_vars = {
@@ -168,6 +170,7 @@ class MTOServiceItemOriginSITAllOf(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             sit_departure_date (date, none_type): Departure date for SIT. This is the end date of the SIT at either origin or destination. This is optional as it can be updated using the UpdateMTOServiceItemSIT modelType at a later date.. [optional]  # noqa: E501
             sit_hhg_actual_origin (Address): [optional]  # noqa: E501
+            sit_hhg_original_origin (Address): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -265,6 +268,7 @@ class MTOServiceItemOriginSITAllOf(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             sit_departure_date (date, none_type): Departure date for SIT. This is the end date of the SIT at either origin or destination. This is optional as it can be updated using the UpdateMTOServiceItemSIT modelType at a later date.. [optional]  # noqa: E501
             sit_hhg_actual_origin (Address): [optional]  # noqa: E501
+            sit_hhg_original_origin (Address): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

@@ -180,7 +180,7 @@ Class | Method | HTTP request | Description
  - [CreateWeightTicketDocumentsPayload](docs/CreateWeightTicketDocumentsPayload.md)
  - [DeptIndicator](docs/DeptIndicator.md)
  - [Document](docs/Document.md)
- - [DutyLocationPayload](docs/DutyLocationPayload.md)
+ - [DutyLocationInternal](docs/DutyLocationInternal.md)
  - [DutyLocationsPayload](docs/DutyLocationsPayload.md)
  - [Entitlement](docs/Entitlement.md)
  - [Error](docs/Error.md)

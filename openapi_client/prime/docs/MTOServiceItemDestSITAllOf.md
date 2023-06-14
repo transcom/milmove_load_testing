@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **re_service_code** | **str** | Service code allowed for this model type. | 
 **sit_entry_date** | **date** | Entry date for the SIT | 
+**reason** | **str, none_type** | The reason item has been placed in SIT.  | 
 **time_military1** | **str, none_type** | Time of delivery corresponding to &#x60;firstAvailableDeliveryDate1&#x60;, in military format. | [optional] 
 **time_military2** | **str, none_type** | Time of delivery corresponding to &#x60;firstAvailableDeliveryDate2&#x60;, in military format. | [optional] 
 **first_available_delivery_date1** | **date, none_type** | First available date that Prime can deliver SIT service item. | [optional] 

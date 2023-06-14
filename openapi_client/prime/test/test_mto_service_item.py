@@ -20,6 +20,7 @@ from prime_client.model.mto_service_item_model_type import MTOServiceItemModelTy
 from prime_client.model.mto_service_item_origin_sit import MTOServiceItemOriginSIT
 from prime_client.model.mto_service_item_shuttle import MTOServiceItemShuttle
 from prime_client.model.mto_service_item_status import MTOServiceItemStatus
+from prime_client.model.service_request_documents import ServiceRequestDocuments
 globals()['MTOServiceItemBasic'] = MTOServiceItemBasic
 globals()['MTOServiceItemDestSIT'] = MTOServiceItemDestSIT
 globals()['MTOServiceItemDomesticCrating'] = MTOServiceItemDomesticCrating
@@ -27,6 +28,7 @@ globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
 globals()['MTOServiceItemOriginSIT'] = MTOServiceItemOriginSIT
 globals()['MTOServiceItemShuttle'] = MTOServiceItemShuttle
 globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 from prime_client.model.mto_service_item import MTOServiceItem
 
 

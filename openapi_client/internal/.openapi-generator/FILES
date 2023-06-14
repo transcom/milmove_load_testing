@@ -28,7 +28,7 @@ docs/CreateWeightTicketDocumentsPayload.md
 docs/DeptIndicator.md
 docs/Document.md
 docs/DocumentsApi.md
-docs/DutyLocationPayload.md
+docs/DutyLocationInternal.md
 docs/DutyLocationsApi.md
 docs/DutyLocationsPayload.md
 docs/Entitlement.md
@@ -179,7 +179,7 @@ internal_client/model/create_update_orders.py
 internal_client/model/create_weight_ticket_documents_payload.py
 internal_client/model/dept_indicator.py
 internal_client/model/document.py
-internal_client/model/duty_location_payload.py
+internal_client/model/duty_location_internal.py
 internal_client/model/duty_locations_payload.py
 internal_client/model/entitlement.py
 internal_client/model/error.py
@@ -302,7 +302,7 @@ test/test_create_weight_ticket_documents_payload.py
 test/test_dept_indicator.py
 test/test_document.py
 test/test_documents_api.py
-test/test_duty_location_payload.py
+test/test_duty_location_internal.py
 test/test_duty_locations_api.py
 test/test_duty_locations_payload.py
 test/test_entitlement.py

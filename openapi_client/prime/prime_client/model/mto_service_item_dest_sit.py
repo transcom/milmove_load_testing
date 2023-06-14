@@ -36,11 +36,13 @@ def lazy_import():
     from prime_client.model.mto_service_item_dest_sit_all_of import MTOServiceItemDestSITAllOf
     from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
     from prime_client.model.mto_service_item_status import MTOServiceItemStatus
+    from prime_client.model.service_request_documents import ServiceRequestDocuments
     globals()['Address'] = Address
     globals()['MTOServiceItem'] = MTOServiceItem
     globals()['MTOServiceItemDestSITAllOf'] = MTOServiceItemDestSITAllOf
     globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
     globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+    globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 
 
 class MTOServiceItemDestSIT(ModelComposed):
@@ -112,6 +114,7 @@ class MTOServiceItemDestSIT(ModelComposed):
         return {
             're_service_code': (str,),  # noqa: E501
             'sit_entry_date': (date,),  # noqa: E501
+            'reason': (str, none_type,),  # noqa: E501
             'move_task_order_id': (str,),  # noqa: E501
             'model_type': (MTOServiceItemModelType,),  # noqa: E501
             'time_military1': (str, none_type,),  # noqa: E501
@@ -125,6 +128,7 @@ class MTOServiceItemDestSIT(ModelComposed):
             're_service_name': (str,),  # noqa: E501
             'status': (MTOServiceItemStatus,),  # noqa: E501
             'rejection_reason': (str, none_type,),  # noqa: E501
+            'service_request_documents': (ServiceRequestDocuments,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -139,6 +143,7 @@ class MTOServiceItemDestSIT(ModelComposed):
     attribute_map = {
         're_service_code': 'reServiceCode',  # noqa: E501
         'sit_entry_date': 'sitEntryDate',  # noqa: E501
+        'reason': 'reason',  # noqa: E501
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
         'model_type': 'modelType',  # noqa: E501
         'time_military1': 'timeMilitary1',  # noqa: E501
@@ -152,6 +157,7 @@ class MTOServiceItemDestSIT(ModelComposed):
         're_service_name': 'reServiceName',  # noqa: E501
         'status': 'status',  # noqa: E501
         'rejection_reason': 'rejectionReason',  # noqa: E501
+        'service_request_documents': 'serviceRequestDocuments',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -170,6 +176,7 @@ class MTOServiceItemDestSIT(ModelComposed):
         Keyword Args:
             re_service_code (str): Service code allowed for this model type.
             sit_entry_date (date): Entry date for the SIT
+            reason (str, none_type): The reason item has been placed in SIT. 
             move_task_order_id (str): The ID of the move for this service item.
             model_type (MTOServiceItemModelType):
             _check_type (bool): if True, values for parameters in openapi_types
@@ -213,6 +220,7 @@ class MTOServiceItemDestSIT(ModelComposed):
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501
             status (MTOServiceItemStatus): [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this service item was rejected by the TOO.. [optional]  # noqa: E501
+            service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
             e_tag (str): A hash unique to this service item that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
         """
 
@@ -289,6 +297,7 @@ class MTOServiceItemDestSIT(ModelComposed):
         Keyword Args:
             re_service_code (str): Service code allowed for this model type.
             sit_entry_date (date): Entry date for the SIT
+            reason (str, none_type): The reason item has been placed in SIT. 
             move_task_order_id (str): The ID of the move for this service item.
             model_type (MTOServiceItemModelType):
             _check_type (bool): if True, values for parameters in openapi_types
@@ -332,6 +341,7 @@ class MTOServiceItemDestSIT(ModelComposed):
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501
             status (MTOServiceItemStatus): [optional]  # noqa: E501
             rejection_reason (str, none_type): The reason why this service item was rejected by the TOO.. [optional]  # noqa: E501
+            service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
             e_tag (str): A hash unique to this service item that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
         """
 

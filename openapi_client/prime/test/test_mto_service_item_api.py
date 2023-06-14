@@ -31,6 +31,13 @@ class TestMtoServiceItemApi(unittest.TestCase):
         """
         pass
 
+    def test_create_service_request_document_upload(self):
+        """Test case for create_service_request_document_upload
+
+        createServiceRequestDocumentUpload  # noqa: E501
+        """
+        pass
+
     def test_update_mto_service_item(self):
         """Test case for update_mto_service_item
 

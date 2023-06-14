@@ -104,6 +104,7 @@ class MTOServiceItemDestSITAllOf(ModelNormal):
         return {
             're_service_code': (str,),  # noqa: E501
             'sit_entry_date': (date,),  # noqa: E501
+            'reason': (str, none_type,),  # noqa: E501
             'time_military1': (str, none_type,),  # noqa: E501
             'time_military2': (str, none_type,),  # noqa: E501
             'first_available_delivery_date1': (date, none_type,),  # noqa: E501
@@ -120,6 +121,7 @@ class MTOServiceItemDestSITAllOf(ModelNormal):
     attribute_map = {
         're_service_code': 'reServiceCode',  # noqa: E501
         'sit_entry_date': 'sitEntryDate',  # noqa: E501
+        'reason': 'reason',  # noqa: E501
         'time_military1': 'timeMilitary1',  # noqa: E501
         'time_military2': 'timeMilitary2',  # noqa: E501
         'first_available_delivery_date1': 'firstAvailableDeliveryDate1',  # noqa: E501
@@ -135,12 +137,13 @@ class MTOServiceItemDestSITAllOf(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, re_service_code, sit_entry_date, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, re_service_code, sit_entry_date, reason, *args, **kwargs):  # noqa: E501
         """MTOServiceItemDestSITAllOf - a model defined in OpenAPI
 
         Args:
             re_service_code (str): Service code allowed for this model type.
             sit_entry_date (date): Entry date for the SIT
+            reason (str, none_type): The reason item has been placed in SIT. 
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -212,6 +215,7 @@ class MTOServiceItemDestSITAllOf(ModelNormal):
 
         self.re_service_code = re_service_code
         self.sit_entry_date = sit_entry_date
+        self.reason = reason
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \
@@ -232,12 +236,13 @@ class MTOServiceItemDestSITAllOf(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, re_service_code, sit_entry_date, *args, **kwargs):  # noqa: E501
+    def __init__(self, re_service_code, sit_entry_date, reason, *args, **kwargs):  # noqa: E501
         """MTOServiceItemDestSITAllOf - a model defined in OpenAPI
 
         Args:
             re_service_code (str): Service code allowed for this model type.
             sit_entry_date (date): Entry date for the SIT
+            reason (str, none_type): The reason item has been placed in SIT. 
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -307,6 +312,7 @@ class MTOServiceItemDestSITAllOf(ModelNormal):
 
         self.re_service_code = re_service_code
         self.sit_entry_date = sit_entry_date
+        self.reason = reason
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
                         self._configuration is not None and \

@@ -29,7 +29,7 @@ from internal_client.model.create_update_orders import CreateUpdateOrders
 from internal_client.model.create_weight_ticket_documents_payload import CreateWeightTicketDocumentsPayload
 from internal_client.model.dept_indicator import DeptIndicator
 from internal_client.model.document import Document
-from internal_client.model.duty_location_payload import DutyLocationPayload
+from internal_client.model.duty_location_internal import DutyLocationInternal
 from internal_client.model.duty_locations_payload import DutyLocationsPayload
 from internal_client.model.entitlement import Entitlement
 from internal_client.model.error import Error

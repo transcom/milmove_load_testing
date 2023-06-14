@@ -33,7 +33,7 @@ from internal_client.exceptions import ApiAttributeError
 def lazy_import():
     from internal_client.model.dept_indicator import DeptIndicator
     from internal_client.model.document import Document
-    from internal_client.model.duty_location_payload import DutyLocationPayload
+    from internal_client.model.duty_location_internal import DutyLocationInternal
     from internal_client.model.entitlement import Entitlement
     from internal_client.model.index_moves_payload import IndexMovesPayload
     from internal_client.model.orders_status import OrdersStatus
@@ -41,7 +41,7 @@ def lazy_import():
     from internal_client.model.orders_type_detail import OrdersTypeDetail
     globals()['DeptIndicator'] = DeptIndicator
     globals()['Document'] = Document
-    globals()['DutyLocationPayload'] = DutyLocationPayload
+    globals()['DutyLocationInternal'] = DutyLocationInternal
     globals()['Entitlement'] = Entitlement
     globals()['IndexMovesPayload'] = IndexMovesPayload
     globals()['OrdersStatus'] = OrdersStatus
@@ -109,14 +109,14 @@ class Orders(ModelNormal):
             'orders_type': (OrdersType,),  # noqa: E501
             'has_dependents': (bool,),  # noqa: E501
             'spouse_has_pro_gear': (bool,),  # noqa: E501
-            'new_duty_location': (DutyLocationPayload,),  # noqa: E501
+            'new_duty_location': (DutyLocationInternal,),  # noqa: E501
             'uploaded_orders': (Document,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'grade': (str, none_type,),  # noqa: E501
             'status': (OrdersStatus,),  # noqa: E501
             'orders_type_detail': (OrdersTypeDetail,),  # noqa: E501
-            'origin_duty_location': (DutyLocationPayload,),  # noqa: E501
+            'origin_duty_location': (DutyLocationInternal,),  # noqa: E501
             'origin_duty_location_gbloc': (str, none_type,),  # noqa: E501
             'uploaded_amended_orders': (Document,),  # noqa: E501
             'uploaded_amended_orders_id': (str,),  # noqa: E501
@@ -180,7 +180,7 @@ class Orders(ModelNormal):
             orders_type (OrdersType):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
-            new_duty_location (DutyLocationPayload):
+            new_duty_location (DutyLocationInternal):
             uploaded_orders (Document):
             created_at (datetime):
             updated_at (datetime):
@@ -219,7 +219,7 @@ class Orders(ModelNormal):
             grade (str, none_type): [optional]  # noqa: E501
             status (OrdersStatus): [optional]  # noqa: E501
             orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
-            origin_duty_location (DutyLocationPayload): [optional]  # noqa: E501
+            origin_duty_location (DutyLocationInternal): [optional]  # noqa: E501
             origin_duty_location_gbloc (str, none_type): [optional]  # noqa: E501
             uploaded_amended_orders (Document): [optional]  # noqa: E501
             uploaded_amended_orders_id (str): [optional]  # noqa: E501
@@ -303,7 +303,7 @@ class Orders(ModelNormal):
             orders_type (OrdersType):
             has_dependents (bool):
             spouse_has_pro_gear (bool):
-            new_duty_location (DutyLocationPayload):
+            new_duty_location (DutyLocationInternal):
             uploaded_orders (Document):
             created_at (datetime):
             updated_at (datetime):
@@ -342,7 +342,7 @@ class Orders(ModelNormal):
             grade (str, none_type): [optional]  # noqa: E501
             status (OrdersStatus): [optional]  # noqa: E501
             orders_type_detail (OrdersTypeDetail): [optional]  # noqa: E501
-            origin_duty_location (DutyLocationPayload): [optional]  # noqa: E501
+            origin_duty_location (DutyLocationInternal): [optional]  # noqa: E501
             origin_duty_location_gbloc (str, none_type): [optional]  # noqa: E501
             uploaded_amended_orders (Document): [optional]  # noqa: E501
             uploaded_amended_orders_id (str): [optional]  # noqa: E501

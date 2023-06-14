@@ -19,6 +19,7 @@ docs/CreateMTOShipment.md
 docs/CreateMTOShipmentDestinationAddress.md
 docs/CreateMTOShipmentPickupAddress.md
 docs/CreatePPMShipment.md
+docs/CreateSITAddressUpdate.md
 docs/Customer.md
 docs/CustomerApi.md
 docs/CustomerContactType.md
@@ -91,6 +92,7 @@ docs/PPMShipmentStatus.md
 docs/PWSViolation.md
 docs/PWSViolations.md
 docs/PatchMTOServiceItemStatusPayload.md
+docs/PatchSITAddressUpdateStatus.md
 docs/PaymentRequest.md
 docs/PaymentRequestStatus.md
 docs/PaymentRequests.md
@@ -123,6 +125,8 @@ docs/ReportViolationsApi.md
 docs/Reweigh.md
 docs/ReweighApi.md
 docs/ReweighRequester.md
+docs/SITAddressUpdate.md
+docs/SITAddressUpdates.md
 docs/SITExtension.md
 docs/SITExtensions.md
 docs/SITLocationType.md
@@ -212,6 +216,7 @@ ghc_client/model/create_mto_shipment.py
 ghc_client/model/create_mto_shipment_destination_address.py
 ghc_client/model/create_mto_shipment_pickup_address.py
 ghc_client/model/create_ppm_shipment.py
+ghc_client/model/create_sit_address_update.py
 ghc_client/model/customer.py
 ghc_client/model/customer_contact_type.py
 ghc_client/model/customer_support_remark.py
@@ -267,6 +272,7 @@ ghc_client/model/order.py
 ghc_client/model/orders_type.py
 ghc_client/model/orders_type_detail.py
 ghc_client/model/patch_mto_service_item_status_payload.py
+ghc_client/model/patch_sit_address_update_status.py
 ghc_client/model/payment_request.py
 ghc_client/model/payment_request_status.py
 ghc_client/model/payment_requests.py
@@ -311,6 +317,8 @@ ghc_client/model/shipment_payment_sit_balance.py
 ghc_client/model/shipments_payment_sit_balance.py
 ghc_client/model/signed_certification.py
 ghc_client/model/signed_certification_type.py
+ghc_client/model/sit_address_update.py
+ghc_client/model/sit_address_updates.py
 ghc_client/model/sit_extension.py
 ghc_client/model/sit_extensions.py
 ghc_client/model/sit_location_type.py
@@ -365,6 +373,7 @@ test/test_create_mto_shipment.py
 test/test_create_mto_shipment_destination_address.py
 test/test_create_mto_shipment_pickup_address.py
 test/test_create_ppm_shipment.py
+test/test_create_sit_address_update.py
 test/test_customer.py
 test/test_customer_api.py
 test/test_customer_contact_type.py
@@ -430,6 +439,7 @@ test/test_order_api.py
 test/test_orders_type.py
 test/test_orders_type_detail.py
 test/test_patch_mto_service_item_status_payload.py
+test/test_patch_sit_address_update_status.py
 test/test_payment_request.py
 test/test_payment_request_status.py
 test/test_payment_requests.py
@@ -482,6 +492,8 @@ test/test_shipment_payment_sit_balance.py
 test/test_shipments_payment_sit_balance.py
 test/test_signed_certification.py
 test/test_signed_certification_type.py
+test/test_sit_address_update.py
+test/test_sit_address_updates.py
 test/test_sit_extension.py
 test/test_sit_extension_api.py
 test/test_sit_extensions.py

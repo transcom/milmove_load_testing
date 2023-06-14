@@ -5,7 +5,7 @@ All URIs are relative to */ghc/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**approve_sit_extension**](SitExtensionApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-[**create_approved_sit_duration_update**](SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
+[**create_approved_sit_duration_update**](SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions | Create an approved SIT Duration Update
 [**deny_sit_extension**](SitExtensionApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 
 

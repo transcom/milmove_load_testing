@@ -25,6 +25,7 @@ from ghc_client.model.create_mto_shipment import CreateMTOShipment
 from ghc_client.model.create_mto_shipment_destination_address import CreateMTOShipmentDestinationAddress
 from ghc_client.model.create_mto_shipment_pickup_address import CreateMTOShipmentPickupAddress
 from ghc_client.model.create_ppm_shipment import CreatePPMShipment
+from ghc_client.model.create_sit_address_update import CreateSITAddressUpdate
 from ghc_client.model.customer import Customer
 from ghc_client.model.customer_contact_type import CustomerContactType
 from ghc_client.model.customer_support_remark import CustomerSupportRemark
@@ -87,6 +88,7 @@ from ghc_client.model.ppm_shipment_status import PPMShipmentStatus
 from ghc_client.model.pws_violation import PWSViolation
 from ghc_client.model.pws_violations import PWSViolations
 from ghc_client.model.patch_mto_service_item_status_payload import PatchMTOServiceItemStatusPayload
+from ghc_client.model.patch_sit_address_update_status import PatchSITAddressUpdateStatus
 from ghc_client.model.payment_request import PaymentRequest
 from ghc_client.model.payment_request_status import PaymentRequestStatus
 from ghc_client.model.payment_requests import PaymentRequests
@@ -112,6 +114,8 @@ from ghc_client.model.report_violation import ReportViolation
 from ghc_client.model.report_violations import ReportViolations
 from ghc_client.model.reweigh import Reweigh
 from ghc_client.model.reweigh_requester import ReweighRequester
+from ghc_client.model.sit_address_update import SITAddressUpdate
+from ghc_client.model.sit_address_updates import SITAddressUpdates
 from ghc_client.model.sit_extension import SITExtension
 from ghc_client.model.sit_extensions import SITExtensions
 from ghc_client.model.sit_location_type import SITLocationType

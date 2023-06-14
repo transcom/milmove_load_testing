@@ -24,6 +24,20 @@ class TestMtoServiceItemApi(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_approve_sit_address_update(self):
+        """Test case for approve_sit_address_update
+
+        Approves a SIT Address Update  # noqa: E501
+        """
+        pass
+
+    def test_create_sit_address_update(self):
+        """Test case for create_sit_address_update
+
+        Create an approved SIT Address Update  # noqa: E501
+        """
+        pass
+
     def test_get_mto_service_item(self):
         """Test case for get_mto_service_item
 
@@ -35,6 +49,13 @@ class TestMtoServiceItemApi(unittest.TestCase):
         """Test case for list_mto_service_items
 
         Gets all line items for a move  # noqa: E501
+        """
+        pass
+
+    def test_reject_sit_address_update(self):
+        """Test case for reject_sit_address_update
+
+        Rejects a SIT Address Update  # noqa: E501
         """
         pass
 

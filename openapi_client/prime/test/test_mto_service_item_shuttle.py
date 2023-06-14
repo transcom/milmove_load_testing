@@ -17,10 +17,12 @@ from prime_client.model.mto_service_item import MTOServiceItem
 from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
 from prime_client.model.mto_service_item_shuttle_all_of import MTOServiceItemShuttleAllOf
 from prime_client.model.mto_service_item_status import MTOServiceItemStatus
+from prime_client.model.service_request_documents import ServiceRequestDocuments
 globals()['MTOServiceItem'] = MTOServiceItem
 globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
 globals()['MTOServiceItemShuttleAllOf'] = MTOServiceItemShuttleAllOf
 globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 from prime_client.model.mto_service_item_shuttle import MTOServiceItemShuttle
 
 

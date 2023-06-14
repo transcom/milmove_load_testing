@@ -225,7 +225,7 @@ class ShipmentApi(object):
             settings={
                 'response_type': (MTOShipment,),
                 'auth': [],
-                'endpoint_path': '/shipments/{shipmentID}/sit-extensions/',
+                'endpoint_path': '/shipments/{shipmentID}/sit-extensions',
                 'operation_id': 'create_approved_sit_duration_update',
                 'http_method': 'POST',
                 'servers': None,

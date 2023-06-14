@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **payment_requests** | [**PaymentRequests**](PaymentRequests.md) |  | 
 **mto_service_items** | [**[MTOServiceItem]**](MTOServiceItem.md) |  | 
-**mto_shipments** | [**MTOShipments**](MTOShipments.md) |  | 
+**mto_shipments** | [**MTOShipmentsWithoutServiceObjects**](MTOShipmentsWithoutServiceObjects.md) |  | 
 **id** | **str** |  | [optional] 
 **move_code** | **str** |  | [optional] [readonly] 
 **created_at** | **datetime** |  | [optional] [readonly] 

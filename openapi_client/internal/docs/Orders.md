@@ -11,14 +11,14 @@ Name | Type | Description | Notes
 **orders_type** | [**OrdersType**](OrdersType.md) |  | 
 **has_dependents** | **bool** |  | 
 **spouse_has_pro_gear** | **bool** |  | 
-**new_duty_location** | [**DutyLocationPayload**](DutyLocationPayload.md) |  | 
+**new_duty_location** | [**DutyLocationInternal**](DutyLocationInternal.md) |  | 
 **uploaded_orders** | [**Document**](Document.md) |  | 
 **created_at** | **datetime** |  | 
 **updated_at** | **datetime** |  | 
 **grade** | **str, none_type** |  | [optional] 
 **status** | [**OrdersStatus**](OrdersStatus.md) |  | [optional] 
 **orders_type_detail** | [**OrdersTypeDetail**](OrdersTypeDetail.md) |  | [optional] 
-**origin_duty_location** | [**DutyLocationPayload**](DutyLocationPayload.md) |  | [optional] 
+**origin_duty_location** | [**DutyLocationInternal**](DutyLocationInternal.md) |  | [optional] 
 **origin_duty_location_gbloc** | **str, none_type** |  | [optional] 
 **uploaded_amended_orders** | [**Document**](Document.md) |  | [optional] 
 **uploaded_amended_orders_id** | **str** |  | [optional] 

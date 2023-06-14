@@ -112,8 +112,11 @@ Class | Method | HTTP request | Description
 *MoveTaskOrderApi* | [**update_mto_reviewed_billable_weights_at**](docs/MoveTaskOrderApi.md#update_mto_reviewed_billable_weights_at) | **PATCH** /move-task-orders/{moveTaskOrderID}/billable-weights-reviewed-at | 
 *MoveTaskOrderApi* | [**update_mto_status_service_counseling_completed**](docs/MoveTaskOrderApi.md#update_mto_status_service_counseling_completed) | **PATCH** /move-task-orders/{moveTaskOrderID}/status/service-counseling-completed | Changes move (move task order) status to service counseling completed
 *MtoAgentApi* | [**fetch_mto_agent_list**](docs/MtoAgentApi.md#fetch_mto_agent_list) | **GET** /move_task_orders/{moveTaskOrderID}/mto_shipments/{shipmentID}/mto-agents | Fetch move task order agents.
+*MtoServiceItemApi* | [**approve_sit_address_update**](docs/MtoServiceItemApi.md#approve_sit_address_update) | **PATCH** /sit-address-update/{sitAddressUpdateID}/approve | Approves a SIT Address Update
+*MtoServiceItemApi* | [**create_sit_address_update**](docs/MtoServiceItemApi.md#create_sit_address_update) | **POST** /service-items/{mtoServiceItemID}/sit-address-update | Create an approved SIT Address Update
 *MtoServiceItemApi* | [**get_mto_service_item**](docs/MtoServiceItemApi.md#get_mto_service_item) | **GET** /move-task-orders/{moveTaskOrderID}/service-items/{mtoServiceItemID} | Gets a line item by ID for a move by ID
 *MtoServiceItemApi* | [**list_mto_service_items**](docs/MtoServiceItemApi.md#list_mto_service_items) | **GET** /move_task_orders/{moveTaskOrderID}/mto_service_items | Gets all line items for a move
+*MtoServiceItemApi* | [**reject_sit_address_update**](docs/MtoServiceItemApi.md#reject_sit_address_update) | **PATCH** /sit-address-update/{sitAddressUpdateID}/reject | Rejects a SIT Address Update
 *MtoServiceItemApi* | [**update_mto_service_item**](docs/MtoServiceItemApi.md#update_mto_service_item) | **PATCH** /move-task-orders/{moveTaskOrderID}/service-items/{mtoServiceItemID} | Updates a service item by ID for a move by ID
 *MtoServiceItemApi* | [**update_mto_service_item_status**](docs/MtoServiceItemApi.md#update_mto_service_item_status) | **PATCH** /move-task-orders/{moveTaskOrderID}/service-items/{mtoServiceItemID}/status | Change the status of a line item for a move by ID
 *MtoShipmentApi* | [**create_mto_shipment**](docs/MtoShipmentApi.md#create_mto_shipment) | **POST** /mto-shipments | createMTOShipment
@@ -149,7 +152,7 @@ Class | Method | HTTP request | Description
 *ShipmentApi* | [**approve_shipment**](docs/ShipmentApi.md#approve_shipment) | **POST** /shipments/{shipmentID}/approve | Approves a shipment
 *ShipmentApi* | [**approve_shipment_diversion**](docs/ShipmentApi.md#approve_shipment_diversion) | **POST** /shipments/{shipmentID}/approve-diversion | Approves a shipment diversion
 *ShipmentApi* | [**approve_sit_extension**](docs/ShipmentApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-*ShipmentApi* | [**create_approved_sit_duration_update**](docs/ShipmentApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
+*ShipmentApi* | [**create_approved_sit_duration_update**](docs/ShipmentApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions | Create an approved SIT Duration Update
 *ShipmentApi* | [**delete_shipment**](docs/ShipmentApi.md#delete_shipment) | **DELETE** /shipments/{shipmentID} | Soft deletes a shipment by ID
 *ShipmentApi* | [**deny_sit_extension**](docs/ShipmentApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 *ShipmentApi* | [**reject_shipment**](docs/ShipmentApi.md#reject_shipment) | **POST** /shipments/{shipmentID}/reject | rejects a shipment
@@ -157,7 +160,7 @@ Class | Method | HTTP request | Description
 *ShipmentApi* | [**request_shipment_diversion**](docs/ShipmentApi.md#request_shipment_diversion) | **POST** /shipments/{shipmentID}/request-diversion | Requests a shipment diversion
 *ShipmentApi* | [**request_shipment_reweigh**](docs/ShipmentApi.md#request_shipment_reweigh) | **POST** /shipments/{shipmentID}/request-reweigh | Requests a shipment reweigh
 *SitExtensionApi* | [**approve_sit_extension**](docs/SitExtensionApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-*SitExtensionApi* | [**create_approved_sit_duration_update**](docs/SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
+*SitExtensionApi* | [**create_approved_sit_duration_update**](docs/SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions | Create an approved SIT Duration Update
 *SitExtensionApi* | [**deny_sit_extension**](docs/SitExtensionApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 *TacApi* | [**tac_validation**](docs/TacApi.md#tac_validation) | **GET** /tac/valid | Validation of a TAC value
 *TransportationOfficeApi* | [**get_transportation_offices**](docs/TransportationOfficeApi.md#get_transportation_offices) | **GET** /transportation-offices | Returns the transportation offices matching the search query
@@ -181,6 +184,7 @@ Class | Method | HTTP request | Description
  - [CreateMTOShipmentDestinationAddress](docs/CreateMTOShipmentDestinationAddress.md)
  - [CreateMTOShipmentPickupAddress](docs/CreateMTOShipmentPickupAddress.md)
  - [CreatePPMShipment](docs/CreatePPMShipment.md)
+ - [CreateSITAddressUpdate](docs/CreateSITAddressUpdate.md)
  - [Customer](docs/Customer.md)
  - [CustomerContactType](docs/CustomerContactType.md)
  - [CustomerSupportRemark](docs/CustomerSupportRemark.md)
@@ -243,6 +247,7 @@ Class | Method | HTTP request | Description
  - [PWSViolation](docs/PWSViolation.md)
  - [PWSViolations](docs/PWSViolations.md)
  - [PatchMTOServiceItemStatusPayload](docs/PatchMTOServiceItemStatusPayload.md)
+ - [PatchSITAddressUpdateStatus](docs/PatchSITAddressUpdateStatus.md)
  - [PaymentRequest](docs/PaymentRequest.md)
  - [PaymentRequestStatus](docs/PaymentRequestStatus.md)
  - [PaymentRequests](docs/PaymentRequests.md)
@@ -268,6 +273,8 @@ Class | Method | HTTP request | Description
  - [ReportViolations](docs/ReportViolations.md)
  - [Reweigh](docs/Reweigh.md)
  - [ReweighRequester](docs/ReweighRequester.md)
+ - [SITAddressUpdate](docs/SITAddressUpdate.md)
+ - [SITAddressUpdates](docs/SITAddressUpdates.md)
  - [SITExtension](docs/SITExtension.md)
  - [SITExtensions](docs/SITExtensions.md)
  - [SITLocationType](docs/SITLocationType.md)

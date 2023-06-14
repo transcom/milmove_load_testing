@@ -18,11 +18,13 @@ from prime_client.model.mto_service_item_basic_all_of import MTOServiceItemBasic
 from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
 from prime_client.model.mto_service_item_status import MTOServiceItemStatus
 from prime_client.model.re_service_code import ReServiceCode
+from prime_client.model.service_request_documents import ServiceRequestDocuments
 globals()['MTOServiceItem'] = MTOServiceItem
 globals()['MTOServiceItemBasicAllOf'] = MTOServiceItemBasicAllOf
 globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
 globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
 globals()['ReServiceCode'] = ReServiceCode
+globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 from prime_client.model.mto_service_item_basic import MTOServiceItemBasic
 
 

@@ -17,10 +17,12 @@ from prime_client.model.mto_service_item import MTOServiceItem
 from prime_client.model.mto_service_item_domestic_crating_all_of import MTOServiceItemDomesticCratingAllOf
 from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
 from prime_client.model.mto_service_item_status import MTOServiceItemStatus
+from prime_client.model.service_request_documents import ServiceRequestDocuments
 globals()['MTOServiceItem'] = MTOServiceItem
 globals()['MTOServiceItemDomesticCratingAllOf'] = MTOServiceItemDomesticCratingAllOf
 globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
 globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 from prime_client.model.mto_service_item_domestic_crating import MTOServiceItemDomesticCrating
 
 

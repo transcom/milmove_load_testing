@@ -56,10 +56,8 @@ class MTOShipmentType(ModelSimple):
             'BOAT_HAUL_AWAY': "BOAT_HAUL_AWAY",
             'BOAT_TOW_AWAY': "BOAT_TOW_AWAY",
             'HHG': "HHG",
-            'HHG_LONGHAUL_DOMESTIC': "HHG_LONGHAUL_DOMESTIC",
             'HHG_INTO_NTS_DOMESTIC': "HHG_INTO_NTS_DOMESTIC",
             'HHG_OUTOF_NTS_DOMESTIC': "HHG_OUTOF_NTS_DOMESTIC",
-            'HHG_SHORTHAUL_DOMESTIC': "HHG_SHORTHAUL_DOMESTIC",
             'INTERNATIONAL_HHG': "INTERNATIONAL_HHG",
             'INTERNATIONAL_UB': "INTERNATIONAL_UB",
             'MOTORHOME': "MOTORHOME",
@@ -115,10 +113,10 @@ class MTOShipmentType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
+            args[0] (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
 
         Keyword Args:
-            value (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
+            value (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -209,10 +207,10 @@ class MTOShipmentType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
+            args[0] (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
 
         Keyword Args:
-            value (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_LONGHAUL_DOMESTIC", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "HHG_SHORTHAUL_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
+            value (str): The type of shipment.   * `HHG` = Household goods move   * `HHG_INTO_NTS_DOMESTIC` = HHG into Non-temporary storage (NTS)   * `HHG_OUTOF_NTS_DOMESTIC` = HHG out of Non-temporary storage (NTS Release)   * `PPM` = Personally Procured Move also known as Do It Yourself (DITY) ., must be one of ["BOAT_HAUL_AWAY", "BOAT_TOW_AWAY", "HHG", "HHG_INTO_NTS_DOMESTIC", "HHG_OUTOF_NTS_DOMESTIC", "INTERNATIONAL_HHG", "INTERNATIONAL_UB", "MOTORHOME", "PPM", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

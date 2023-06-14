@@ -13,8 +13,8 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.duty_location_payload import DutyLocationPayload
-globals()['DutyLocationPayload'] = DutyLocationPayload
+from internal_client.model.duty_location_internal import DutyLocationInternal
+globals()['DutyLocationInternal'] = DutyLocationInternal
 from internal_client.model.duty_locations_payload import DutyLocationsPayload
 
 

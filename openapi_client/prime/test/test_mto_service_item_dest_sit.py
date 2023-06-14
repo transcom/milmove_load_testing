@@ -18,11 +18,13 @@ from prime_client.model.mto_service_item import MTOServiceItem
 from prime_client.model.mto_service_item_dest_sit_all_of import MTOServiceItemDestSITAllOf
 from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
 from prime_client.model.mto_service_item_status import MTOServiceItemStatus
+from prime_client.model.service_request_documents import ServiceRequestDocuments
 globals()['Address'] = Address
 globals()['MTOServiceItem'] = MTOServiceItem
 globals()['MTOServiceItemDestSITAllOf'] = MTOServiceItemDestSITAllOf
 globals()['MTOServiceItemModelType'] = MTOServiceItemModelType
 globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+globals()['ServiceRequestDocuments'] = ServiceRequestDocuments
 from prime_client.model.mto_service_item_dest_sit import MTOServiceItemDestSIT
 
 

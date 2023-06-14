@@ -32,11 +32,11 @@ from prime_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from prime_client.model.mto_service_item import MTOServiceItem
-    from prime_client.model.mto_shipments import MTOShipments
+    from prime_client.model.mto_shipments_without_service_objects import MTOShipmentsWithoutServiceObjects
     from prime_client.model.order import Order
     from prime_client.model.payment_requests import PaymentRequests
     globals()['MTOServiceItem'] = MTOServiceItem
-    globals()['MTOShipments'] = MTOShipments
+    globals()['MTOShipmentsWithoutServiceObjects'] = MTOShipmentsWithoutServiceObjects
     globals()['Order'] = Order
     globals()['PaymentRequests'] = PaymentRequests
 
@@ -100,7 +100,7 @@ class MoveTaskOrder(ModelNormal):
         return {
             'payment_requests': (PaymentRequests,),  # noqa: E501
             'mto_service_items': ([MTOServiceItem],),  # noqa: E501
-            'mto_shipments': (MTOShipments,),  # noqa: E501
+            'mto_shipments': (MTOShipmentsWithoutServiceObjects,),  # noqa: E501
             'id': (str,),  # noqa: E501
             'move_code': (str,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
@@ -166,7 +166,7 @@ class MoveTaskOrder(ModelNormal):
         Args:
             payment_requests (PaymentRequests):
             mto_service_items ([MTOServiceItem]):
-            mto_shipments (MTOShipments):
+            mto_shipments (MTOShipmentsWithoutServiceObjects):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -274,7 +274,7 @@ class MoveTaskOrder(ModelNormal):
         Args:
             payment_requests (PaymentRequests):
             mto_service_items ([MTOServiceItem]):
-            mto_shipments (MTOShipments):
+            mto_shipments (MTOShipmentsWithoutServiceObjects):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types

@@ -14,11 +14,11 @@ import unittest
 
 import prime_client
 from prime_client.model.mto_service_item import MTOServiceItem
-from prime_client.model.mto_shipments import MTOShipments
+from prime_client.model.mto_shipments_without_service_objects import MTOShipmentsWithoutServiceObjects
 from prime_client.model.order import Order
 from prime_client.model.payment_requests import PaymentRequests
 globals()['MTOServiceItem'] = MTOServiceItem
-globals()['MTOShipments'] = MTOShipments
+globals()['MTOShipmentsWithoutServiceObjects'] = MTOShipmentsWithoutServiceObjects
 globals()['Order'] = Order
 globals()['PaymentRequests'] = PaymentRequests
 from prime_client.model.move_task_order import MoveTaskOrder

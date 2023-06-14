@@ -22,11 +22,13 @@ from ghc_client.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
+from ghc_client.model.create_sit_address_update import CreateSITAddressUpdate
 from ghc_client.model.error import Error
 from ghc_client.model.mto_service_item import MTOServiceItem
 from ghc_client.model.mto_service_items import MTOServiceItems
 from ghc_client.model.move_task_order import MoveTaskOrder
 from ghc_client.model.patch_mto_service_item_status_payload import PatchMTOServiceItemStatusPayload
+from ghc_client.model.patch_sit_address_update_status import PatchSITAddressUpdateStatus
 from ghc_client.model.validation_error import ValidationError
 
 
@@ -41,6 +43,124 @@ class MtoServiceItemApi(object):
         if api_client is None:
             api_client = ApiClient()
         self.api_client = api_client
+        self.approve_sit_address_update_endpoint = _Endpoint(
+            settings={
+                'response_type': (MTOServiceItem,),
+                'auth': [],
+                'endpoint_path': '/sit-address-update/{sitAddressUpdateID}/approve',
+                'operation_id': 'approve_sit_address_update',
+                'http_method': 'PATCH',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'sit_address_update_id',
+                    'if_match',
+                    'body',
+                ],
+                'required': [
+                    'sit_address_update_id',
+                    'if_match',
+                    'body',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'sit_address_update_id':
+                        (str,),
+                    'if_match':
+                        (str,),
+                    'body':
+                        (PatchSITAddressUpdateStatus,),
+                },
+                'attribute_map': {
+                    'sit_address_update_id': 'sitAddressUpdateID',
+                    'if_match': 'If-Match',
+                },
+                'location_map': {
+                    'sit_address_update_id': 'path',
+                    'if_match': 'header',
+                    'body': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
+        self.create_sit_address_update_endpoint = _Endpoint(
+            settings={
+                'response_type': (MTOServiceItem,),
+                'auth': [],
+                'endpoint_path': '/service-items/{mtoServiceItemID}/sit-address-update',
+                'operation_id': 'create_sit_address_update',
+                'http_method': 'POST',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'mto_service_item_id',
+                    'body',
+                ],
+                'required': [
+                    'mto_service_item_id',
+                    'body',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'mto_service_item_id':
+                        (str,),
+                    'body':
+                        (CreateSITAddressUpdate,),
+                },
+                'attribute_map': {
+                    'mto_service_item_id': 'mtoServiceItemID',
+                },
+                'location_map': {
+                    'mto_service_item_id': 'path',
+                    'body': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
         self.get_mto_service_item_endpoint = _Endpoint(
             settings={
                 'response_type': (MTOServiceItem,),
@@ -142,6 +262,68 @@ class MtoServiceItemApi(object):
                     'application/json'
                 ],
                 'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.reject_sit_address_update_endpoint = _Endpoint(
+            settings={
+                'response_type': (MTOServiceItem,),
+                'auth': [],
+                'endpoint_path': '/sit-address-update/{sitAddressUpdateID}/reject',
+                'operation_id': 'reject_sit_address_update',
+                'http_method': 'PATCH',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'sit_address_update_id',
+                    'if_match',
+                    'body',
+                ],
+                'required': [
+                    'sit_address_update_id',
+                    'if_match',
+                    'body',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'sit_address_update_id':
+                        (str,),
+                    'if_match':
+                        (str,),
+                    'body':
+                        (PatchSITAddressUpdateStatus,),
+                },
+                'attribute_map': {
+                    'sit_address_update_id': 'sitAddressUpdateID',
+                    'if_match': 'If-Match',
+                },
+                'location_map': {
+                    'sit_address_update_id': 'path',
+                    'if_match': 'header',
+                    'body': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
             },
             api_client=api_client
         )
@@ -281,6 +463,184 @@ class MtoServiceItemApi(object):
             },
             api_client=api_client
         )
+
+    def approve_sit_address_update(
+        self,
+        sit_address_update_id,
+        if_match,
+        body,
+        **kwargs
+    ):
+        """Approves a SIT Address Update  # noqa: E501
+
+        This endpoint is used to approve a SIT address update. Office remarks are required. Approving the SIT address update will update the SIT Destination Final Address of the associated service item  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.approve_sit_address_update(sit_address_update_id, if_match, body, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            sit_address_update_id (str): ID of the sit address update
+            if_match (str):
+            body (PatchSITAddressUpdateStatus):
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            MTOServiceItem
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
+        kwargs['sit_address_update_id'] = \
+            sit_address_update_id
+        kwargs['if_match'] = \
+            if_match
+        kwargs['body'] = \
+            body
+        return self.approve_sit_address_update_endpoint.call_with_http_info(**kwargs)
+
+    def create_sit_address_update(
+        self,
+        mto_service_item_id,
+        body,
+        **kwargs
+    ):
+        """Create an approved SIT Address Update  # noqa: E501
+
+        TOO can create an already-approved SIT Address Update on behalf of a customer  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.create_sit_address_update(mto_service_item_id, body, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            mto_service_item_id (str): ID of line item to use
+            body (CreateSITAddressUpdate):
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            MTOServiceItem
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
+        kwargs['mto_service_item_id'] = \
+            mto_service_item_id
+        kwargs['body'] = \
+            body
+        return self.create_sit_address_update_endpoint.call_with_http_info(**kwargs)
 
     def get_mto_service_item(
         self,
@@ -451,6 +811,97 @@ class MtoServiceItemApi(object):
         kwargs['move_task_order_id'] = \
             move_task_order_id
         return self.list_mto_service_items_endpoint.call_with_http_info(**kwargs)
+
+    def reject_sit_address_update(
+        self,
+        sit_address_update_id,
+        if_match,
+        body,
+        **kwargs
+    ):
+        """Rejects a SIT Address Update  # noqa: E501
+
+        This endpoint is used to reject a requested SIT address update. Office remarks are required. Rejecting the SIT address update will not update the SIT Destination Final Address.  # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.reject_sit_address_update(sit_address_update_id, if_match, body, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            sit_address_update_id (str): ID of the sit address update
+            if_match (str):
+            body (PatchSITAddressUpdateStatus):
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            MTOServiceItem
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
+        kwargs['sit_address_update_id'] = \
+            sit_address_update_id
+        kwargs['if_match'] = \
+            if_match
+        kwargs['body'] = \
+            body
+        return self.reject_sit_address_update_endpoint.call_with_http_info(**kwargs)
 
     def update_mto_service_item(
         self,

@@ -31,12 +31,16 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from ghc_client.model.address import Address
     from ghc_client.model.mto_service_item_customer_contacts import MTOServiceItemCustomerContacts
     from ghc_client.model.mto_service_item_dimensions import MTOServiceItemDimensions
     from ghc_client.model.mto_service_item_status import MTOServiceItemStatus
+    from ghc_client.model.sit_address_updates import SITAddressUpdates
+    globals()['Address'] = Address
     globals()['MTOServiceItemCustomerContacts'] = MTOServiceItemCustomerContacts
     globals()['MTOServiceItemDimensions'] = MTOServiceItemDimensions
     globals()['MTOServiceItemStatus'] = MTOServiceItemStatus
+    globals()['SITAddressUpdates'] = SITAddressUpdates
 
 
 class MTOServiceItem(ModelNormal):
@@ -115,6 +119,9 @@ class MTOServiceItem(ModelNormal):
             'sit_postal_code': (str, none_type,),  # noqa: E501
             'sit_entry_date': (datetime, none_type,),  # noqa: E501
             'sit_departure_date': (datetime, none_type,),  # noqa: E501
+            'sit_destination_original_address': (Address,),  # noqa: E501
+            'sit_destination_final_address': (Address,),  # noqa: E501
+            'sit_address_updates': (SITAddressUpdates,),  # noqa: E501
             'fee_type': (str,),  # noqa: E501
             'quantity': (int,),  # noqa: E501
             'rate': (int,),  # noqa: E501
@@ -151,6 +158,9 @@ class MTOServiceItem(ModelNormal):
         'sit_postal_code': 'SITPostalCode',  # noqa: E501
         'sit_entry_date': 'sitEntryDate',  # noqa: E501
         'sit_departure_date': 'sitDepartureDate',  # noqa: E501
+        'sit_destination_original_address': 'sitDestinationOriginalAddress',  # noqa: E501
+        'sit_destination_final_address': 'sitDestinationFinalAddress',  # noqa: E501
+        'sit_address_updates': 'sitAddressUpdates',  # noqa: E501
         'fee_type': 'feeType',  # noqa: E501
         'quantity': 'quantity',  # noqa: E501
         'rate': 'rate',  # noqa: E501
@@ -225,6 +235,9 @@ class MTOServiceItem(ModelNormal):
             sit_postal_code (str, none_type): [optional]  # noqa: E501
             sit_entry_date (datetime, none_type): [optional]  # noqa: E501
             sit_departure_date (datetime, none_type): [optional]  # noqa: E501
+            sit_destination_original_address (Address): [optional]  # noqa: E501
+            sit_destination_final_address (Address): [optional]  # noqa: E501
+            sit_address_updates (SITAddressUpdates): [optional]  # noqa: E501
             fee_type (str): [optional]  # noqa: E501
             quantity (int): [optional]  # noqa: E501
             rate (int): [optional]  # noqa: E501
@@ -345,6 +358,9 @@ class MTOServiceItem(ModelNormal):
             sit_postal_code (str, none_type): [optional]  # noqa: E501
             sit_entry_date (datetime, none_type): [optional]  # noqa: E501
             sit_departure_date (datetime, none_type): [optional]  # noqa: E501
+            sit_destination_original_address (Address): [optional]  # noqa: E501
+            sit_destination_final_address (Address): [optional]  # noqa: E501
+            sit_address_updates (SITAddressUpdates): [optional]  # noqa: E501
             fee_type (str): [optional]  # noqa: E501
             quantity (int): [optional]  # noqa: E501
             rate (int): [optional]  # noqa: E501
