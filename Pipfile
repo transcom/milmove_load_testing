@@ -18,7 +18,7 @@ swagger-spec-validator = "*"
 [dev-packages]
 # pipenv doesn't resolve pre-release versions, so manually pin
 # this version should match what is in .pre-commit-config.yaml as well
-black = "==23.3.0"
+black = "==23.7.0"
 flake8 = "*"
 pytest = "*"
 pytest-mock = "*"
