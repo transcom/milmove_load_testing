@@ -226,11 +226,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:633b278caa3ec239463f9139c74da2607c8da5710e56d5d7d30fc8a7440104c4",
-                "sha256:d9f363720c4a6cf9884c6c3e26e2ce26266ffe5d741a9bc7cb9256779bc62190"
+                "sha256:4b7d5cd0c898f0b64f88fbf0a35aac66762f2273446ba4a4e459985a2e5c8f8c",
+                "sha256:d1eb772faf4a7c458c90b19d3626c40ae3460bd665ad7f5fb7b089e31d1a6dcf"
             ],
             "index": "pypi",
-            "version": "==18.10.1"
+            "version": "==19.1.0"
         },
         "flask": {
             "hashes": [
@@ -962,7 +962,7 @@
         },
         "sanitized-package": {
             "editable": true,
-            "path": "./openapi_client/internal"
+            "path": "./openapi_client/prime"
         },
         "setuptools": {
             "hashes": [
