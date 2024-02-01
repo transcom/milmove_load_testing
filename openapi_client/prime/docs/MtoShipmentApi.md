@@ -14,7 +14,6 @@ Method | HTTP request | Description
 [**update_mto_shipment_status**](MtoShipmentApi.md#update_mto_shipment_status) | **PATCH** /mto-shipments/{mtoShipmentID}/status | updateMTOShipmentStatus
 [**update_reweigh**](MtoShipmentApi.md#update_reweigh) | **PATCH** /mto-shipments/{mtoShipmentID}/reweighs/{reweighID} | updateReweigh
 [**update_shipment_destination_address**](MtoShipmentApi.md#update_shipment_destination_address) | **POST** /mto-shipments/{mtoShipmentID}/shipment-address-updates | updateShipmentDestinationAddress
-[**update_sit_delivery_request**](MtoShipmentApi.md#update_sit_delivery_request) | **PATCH** /mto-shipments/{mtoShipmentID}/sit-delivery | Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
 
 
 # **create_mto_agent**
@@ -936,89 +935,6 @@ No authorization required
 **403** | The request was denied. |  -  |
 **404** | The requested resource wasn&#39;t found. |  -  |
 **409** | The request could not be processed because of conflict in the current state of the resource. |  -  |
-**412** | Precondition failed, likely due to a stale eTag (If-Match). Fetch the request again to get the updated eTag value. |  -  |
-**422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
-**500** | A server error occurred. |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **update_sit_delivery_request**
-> SITStatus update_sit_delivery_request(mto_shipment_id, if_match, body)
-
-Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
-
-### Functionality This endpoint can be used to update the Authorized End Date for shipments in Origin or Destination SIT and the Required Delivery Date for shipments in Origin SIT. The provided Customer Contact Date and the Customer Requested Delivery Date are used to calculate the new Authorized End Date and Required Delivery Date. 
-
-### Example
-
-
-```python
-import time
-import prime_client
-from prime_client.api import mto_shipment_api
-from prime_client.model.validation_error import ValidationError
-from prime_client.model.sit_status import SITStatus
-from prime_client.model.error import Error
-from prime_client.model.client_error import ClientError
-from prime_client.model.sit_delivery_update import SITDeliveryUpdate
-from pprint import pprint
-# Defining the host is optional and defaults to /prime/v1
-# See configuration.py for a list of all supported configuration parameters.
-configuration = prime_client.Configuration(
-    host = "/prime/v1"
-)
-
-
-# Enter a context with an instance of the API client
-with prime_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = mto_shipment_api.MtoShipmentApi(api_client)
-    mto_shipment_id = "mtoShipmentID_example" # str | UUID of the shipment associated with the agent
-    if_match = "If-Match_example" # str | Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
-    body = SITDeliveryUpdate(
-        sit_customer_contacted=dateutil_parser('1970-01-01').date(),
-        sit_requested_delivery=dateutil_parser('1970-01-01').date(),
-    ) # SITDeliveryUpdate | 
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
-        api_response = api_instance.update_sit_delivery_request(mto_shipment_id, if_match, body)
-        pprint(api_response)
-    except prime_client.ApiException as e:
-        print("Exception when calling MtoShipmentApi->update_sit_delivery_request: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **mto_shipment_id** | **str**| UUID of the shipment associated with the agent |
- **if_match** | **str**| Optimistic locking is implemented via the &#x60;If-Match&#x60; header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a &#x60;412 Precondition Failed&#x60; error.  |
- **body** | [**SITDeliveryUpdate**](SITDeliveryUpdate.md)|  |
-
-### Return type
-
-[**SITStatus**](SITStatus.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Successfully updated the shipment&#39;s authorized end date. |  -  |
-**400** | The request payload is invalid. |  -  |
-**404** | The requested resource wasn&#39;t found. |  -  |
 **412** | Precondition failed, likely due to a stale eTag (If-Match). Fetch the request again to get the updated eTag value. |  -  |
 **422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
 **500** | A server error occurred. |  -  |

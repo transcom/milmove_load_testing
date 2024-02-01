@@ -102,7 +102,7 @@ class MoveTaskOrderApi(object):
             settings={
                 'response_type': (file_type,),
                 'auth': [],
-                'endpoint_path': '/moves/{locator}/order/download',
+                'endpoint_path': '/moves/{locator}/documents',
                 'operation_id': 'download_move_order',
                 'http_method': 'GET',
                 'servers': None,
@@ -110,6 +110,7 @@ class MoveTaskOrderApi(object):
             params_map={
                 'all': [
                     'locator',
+                    'type',
                 ],
                 'required': [
                     'locator',
@@ -117,6 +118,7 @@ class MoveTaskOrderApi(object):
                 'nullable': [
                 ],
                 'enum': [
+                    'type',
                 ],
                 'validation': [
                 ]
@@ -125,16 +127,26 @@ class MoveTaskOrderApi(object):
                 'validations': {
                 },
                 'allowed_values': {
+                    ('type',): {
+
+                        "ALL": "ALL",
+                        "ORDERS": "ORDERS",
+                        "AMENDMENTS": "AMENDMENTS"
+                    },
                 },
                 'openapi_types': {
                     'locator':
                         (str,),
+                    'type':
+                        (str,),
                 },
                 'attribute_map': {
                     'locator': 'locator',
+                    'type': 'type',
                 },
                 'location_map': {
                     'locator': 'path',
+                    'type': 'query',
                 },
                 'collection_format_map': {
                 }
@@ -404,6 +416,7 @@ class MoveTaskOrderApi(object):
             locator (str): the locator code for move order to be downloaded
 
         Keyword Args:
+            type (str): upload type. [optional] if omitted the server will use the default value of "ALL"
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object

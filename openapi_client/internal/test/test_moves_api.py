@@ -24,6 +24,13 @@ class TestMovesApi(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_get_all_moves(self):
+        """Test case for get_all_moves
+
+        Return the current and previous moves of a service member  # noqa: E501
+        """
+        pass
+
     def test_patch_move(self):
         """Test case for patch_move
 

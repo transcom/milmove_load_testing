@@ -13,7 +13,6 @@ Name | Type | Description | Notes
 **available_to_prime_at** | **datetime, none_type** |  | [optional] [readonly] 
 **updated_at** | **datetime** |  | [optional] [readonly] 
 **ppm_type** | **str** |  | [optional] 
-**ppm_estimated_weight** | **int** |  | [optional] 
 **e_tag** | **str** |  | [optional] [readonly] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

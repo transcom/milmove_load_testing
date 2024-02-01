@@ -13,9 +13,9 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.service_member_rank import ServiceMemberRank
+from internal_client.model.order_pay_grade import OrderPayGrade
 from internal_client.model.weight_allotment import WeightAllotment
-globals()['ServiceMemberRank'] = ServiceMemberRank
+globals()['OrderPayGrade'] = OrderPayGrade
 globals()['WeightAllotment'] = WeightAllotment
 from internal_client.model.move_queue_item import MoveQueueItem
 

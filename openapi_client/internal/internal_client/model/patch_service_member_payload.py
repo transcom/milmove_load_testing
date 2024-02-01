@@ -33,10 +33,8 @@ from internal_client.exceptions import ApiAttributeError
 def lazy_import():
     from internal_client.model.address import Address
     from internal_client.model.affiliation import Affiliation
-    from internal_client.model.service_member_rank import ServiceMemberRank
     globals()['Address'] = Address
     globals()['Affiliation'] = Affiliation
-    globals()['ServiceMemberRank'] = ServiceMemberRank
 
 
 class PatchServiceMemberPayload(ModelNormal):
@@ -117,7 +115,6 @@ class PatchServiceMemberPayload(ModelNormal):
             'user_id': (str,),  # noqa: E501
             'edipi': (str, none_type,),  # noqa: E501
             'affiliation': (Affiliation,),  # noqa: E501
-            'rank': (ServiceMemberRank,),  # noqa: E501
             'first_name': (str, none_type,),  # noqa: E501
             'middle_name': (str, none_type,),  # noqa: E501
             'last_name': (str, none_type,),  # noqa: E501
@@ -141,7 +138,6 @@ class PatchServiceMemberPayload(ModelNormal):
         'user_id': 'user_id',  # noqa: E501
         'edipi': 'edipi',  # noqa: E501
         'affiliation': 'affiliation',  # noqa: E501
-        'rank': 'rank',  # noqa: E501
         'first_name': 'first_name',  # noqa: E501
         'middle_name': 'middle_name',  # noqa: E501
         'last_name': 'last_name',  # noqa: E501
@@ -200,7 +196,6 @@ class PatchServiceMemberPayload(ModelNormal):
             user_id (str): [optional]  # noqa: E501
             edipi (str, none_type): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
-            rank (ServiceMemberRank): [optional]  # noqa: E501
             first_name (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
             last_name (str, none_type): [optional]  # noqa: E501
@@ -301,7 +296,6 @@ class PatchServiceMemberPayload(ModelNormal):
             user_id (str): [optional]  # noqa: E501
             edipi (str, none_type): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
-            rank (ServiceMemberRank): [optional]  # noqa: E501
             first_name (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
             last_name (str, none_type): [optional]  # noqa: E501

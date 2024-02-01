@@ -66,12 +66,9 @@ from prime_client.model.proof_of_service_docs import ProofOfServiceDocs
 from prime_client.model.re_service_code import ReServiceCode
 from prime_client.model.reweigh import Reweigh
 from prime_client.model.reweigh_requester import ReweighRequester
-from prime_client.model.sit_delivery_update import SITDeliveryUpdate
 from prime_client.model.sit_extension import SITExtension
 from prime_client.model.sit_extensions import SITExtensions
 from prime_client.model.sit_location_type import SITLocationType
-from prime_client.model.sit_status import SITStatus
-from prime_client.model.sit_status_current_sit import SITStatusCurrentSIT
 from prime_client.model.service_item import ServiceItem
 from prime_client.model.service_item_param_name import ServiceItemParamName
 from prime_client.model.service_item_param_origin import ServiceItemParamOrigin

@@ -94,13 +94,6 @@ class TestMtoShipmentApi(unittest.TestCase):
         """
         pass
 
-    def test_update_sit_delivery_request(self):
-        """Test case for update_sit_delivery_request
-
-        Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT  # noqa: E501
-        """
-        pass
-
 
 if __name__ == '__main__':
     unittest.main()

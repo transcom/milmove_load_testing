@@ -91,7 +91,7 @@ All URIs are relative to */prime/v1*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *MoveTaskOrderApi* | [**create_excess_weight_record**](docs/MoveTaskOrderApi.md#create_excess_weight_record) | **POST** /move-task-orders/{moveTaskOrderID}/excess-weight-record | createExcessWeightRecord
-*MoveTaskOrderApi* | [**download_move_order**](docs/MoveTaskOrderApi.md#download_move_order) | **GET** /moves/{locator}/order/download | Downloads move order as a PDF
+*MoveTaskOrderApi* | [**download_move_order**](docs/MoveTaskOrderApi.md#download_move_order) | **GET** /moves/{locator}/documents | Downloads move order as a PDF
 *MoveTaskOrderApi* | [**get_move_task_order**](docs/MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveID} | getMoveTaskOrder
 *MoveTaskOrderApi* | [**list_moves**](docs/MoveTaskOrderApi.md#list_moves) | **GET** /moves | listMoves
 *MoveTaskOrderApi* | [**update_mto_post_counseling_information**](docs/MoveTaskOrderApi.md#update_mto_post_counseling_information) | **PATCH** /move-task-orders/{moveTaskOrderID}/post-counseling-info | updateMTOPostCounselingInformation
@@ -108,7 +108,6 @@ Class | Method | HTTP request | Description
 *MtoShipmentApi* | [**update_mto_shipment_status**](docs/MtoShipmentApi.md#update_mto_shipment_status) | **PATCH** /mto-shipments/{mtoShipmentID}/status | updateMTOShipmentStatus
 *MtoShipmentApi* | [**update_reweigh**](docs/MtoShipmentApi.md#update_reweigh) | **PATCH** /mto-shipments/{mtoShipmentID}/reweighs/{reweighID} | updateReweigh
 *MtoShipmentApi* | [**update_shipment_destination_address**](docs/MtoShipmentApi.md#update_shipment_destination_address) | **POST** /mto-shipments/{mtoShipmentID}/shipment-address-updates | updateShipmentDestinationAddress
-*MtoShipmentApi* | [**update_sit_delivery_request**](docs/MtoShipmentApi.md#update_sit_delivery_request) | **PATCH** /mto-shipments/{mtoShipmentID}/sit-delivery | Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
 *PaymentRequestApi* | [**create_payment_request**](docs/PaymentRequestApi.md#create_payment_request) | **POST** /payment-requests | createPaymentRequest
 *PaymentRequestApi* | [**create_upload**](docs/PaymentRequestApi.md#create_upload) | **POST** /payment-requests/{paymentRequestID}/uploads | createUpload
 *SitAddressUpdateApi* | [**create_sit_address_update_request**](docs/SitAddressUpdateApi.md#create_sit_address_update_request) | **POST** /sit-address-updates | createSITAddressUpdateRequest
@@ -173,12 +172,9 @@ Class | Method | HTTP request | Description
  - [ReServiceCode](docs/ReServiceCode.md)
  - [Reweigh](docs/Reweigh.md)
  - [ReweighRequester](docs/ReweighRequester.md)
- - [SITDeliveryUpdate](docs/SITDeliveryUpdate.md)
  - [SITExtension](docs/SITExtension.md)
  - [SITExtensions](docs/SITExtensions.md)
  - [SITLocationType](docs/SITLocationType.md)
- - [SITStatus](docs/SITStatus.md)
- - [SITStatusCurrentSIT](docs/SITStatusCurrentSIT.md)
  - [ServiceItem](docs/ServiceItem.md)
  - [ServiceItemParamName](docs/ServiceItemParamName.md)
  - [ServiceItemParamOrigin](docs/ServiceItemParamOrigin.md)

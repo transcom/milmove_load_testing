@@ -73,20 +73,6 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
-    def test_patch_personally_procured_move(self):
-        """Test case for patch_personally_procured_move
-
-        Patches the PPM  # noqa: E501
-        """
-        pass
-
-    def test_request_ppm_payment(self):
-        """Test case for request_ppm_payment
-
-        Moves the PPM and the move into the PAYMENT_REQUESTED state  # noqa: E501
-        """
-        pass
-
     def test_resubmit_ppm_shipment_documentation(self):
         """Test case for resubmit_ppm_shipment_documentation
 
@@ -101,24 +87,10 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
-    def test_show_ppm_incentive(self):
-        """Test case for show_ppm_incentive
-
-        Return a PPM incentive value  # noqa: E501
-        """
-        pass
-
     def test_show_ppm_sit_estimate(self):
         """Test case for show_ppm_sit_estimate
 
         Return a PPM move's SIT cost estimate  # noqa: E501
-        """
-        pass
-
-    def test_submit_personally_procured_move(self):
-        """Test case for submit_personally_procured_move
-
-        Submits a PPM for approval  # noqa: E501
         """
         pass
 

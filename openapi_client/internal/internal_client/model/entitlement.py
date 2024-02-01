@@ -137,8 +137,8 @@ class Entitlement(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            pro_gear (int, none_type): Pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by rank . [optional]  # noqa: E501
-            pro_gear_spouse (int, none_type): Spouse's pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by rank . [optional]  # noqa: E501
+            pro_gear (int, none_type): Pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by pay grade . [optional]  # noqa: E501
+            pro_gear_spouse (int, none_type): Spouse's pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by pay grade . [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -224,8 +224,8 @@ class Entitlement(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            pro_gear (int, none_type): Pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by rank . [optional]  # noqa: E501
-            pro_gear_spouse (int, none_type): Spouse's pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by rank . [optional]  # noqa: E501
+            pro_gear (int, none_type): Pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by pay grade . [optional]  # noqa: E501
+            pro_gear_spouse (int, none_type): Spouse's pro-gear weight limit as set by an Office user, distinct from the service member's default weight allotment determined by pay grade . [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

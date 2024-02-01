@@ -31,13 +31,6 @@ class TestOfficeApi(unittest.TestCase):
         """
         pass
 
-    def test_approve_ppm(self):
-        """Test case for approve_ppm
-
-        Approves the PPM  # noqa: E501
-        """
-        pass
-
     def test_approve_reimbursement(self):
         """Test case for approve_reimbursement
 
