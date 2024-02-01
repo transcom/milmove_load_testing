@@ -4,12 +4,85 @@ All URIs are relative to */internal*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**get_all_moves**](MovesApi.md#get_all_moves) | **GET** /allmoves/{serviceMemberId} | Return the current and previous moves of a service member
 [**patch_move**](MovesApi.md#patch_move) | **PATCH** /moves/{moveId} | Patches the move
 [**show_move**](MovesApi.md#show_move) | **GET** /moves/{moveId} | Returns the given move
-[**show_shipment_summary_worksheet**](MovesApi.md#show_shipment_summary_worksheet) | **GET** /moves/{moveId}/shipment_summary_worksheet | Returns Shipment Summary Worksheet
+[**show_shipment_summary_worksheet**](MovesApi.md#show_shipment_summary_worksheet) | **GET** /moves/{ppmShipmentId}/shipment_summary_worksheet | Returns Shipment Summary Worksheet
 [**submit_amended_orders**](MovesApi.md#submit_amended_orders) | **POST** /moves/{moveId}/submit_amended_orders | Submits amended orders for review
 [**submit_move_for_approval**](MovesApi.md#submit_move_for_approval) | **POST** /moves/{moveId}/submit | Submits a move for approval
 
+
+# **get_all_moves**
+> MovesList get_all_moves(service_member_id)
+
+Return the current and previous moves of a service member
+
+This endpoint gets all moves that belongs to the serviceMember by using the service members id. In a previous moves array and the current move in the current move array. The current move is the move with the latest CreatedAt date. All other moves will go into the previous move array. 
+
+### Example
+
+
+```python
+import time
+import internal_client
+from internal_client.api import moves_api
+from internal_client.model.error import Error
+from internal_client.model.moves_list import MovesList
+from internal_client.model.client_error import ClientError
+from pprint import pprint
+# Defining the host is optional and defaults to /internal
+# See configuration.py for a list of all supported configuration parameters.
+configuration = internal_client.Configuration(
+    host = "/internal"
+)
+
+
+# Enter a context with an instance of the API client
+with internal_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = moves_api.MovesApi(api_client)
+    service_member_id = "serviceMemberId_example" # str | UUID of the service member
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Return the current and previous moves of a service member
+        api_response = api_instance.get_all_moves(service_member_id)
+        pprint(api_response)
+    except internal_client.ApiException as e:
+        print("Exception when calling MovesApi->get_all_moves: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **service_member_id** | **str**| UUID of the service member |
+
+### Return type
+
+[**MovesList**](MovesList.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully retrieved moves. A successful fetch might still return zero moves. |  -  |
+**401** | The request was denied. |  -  |
+**403** | The request was denied. |  -  |
+**500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **patch_move**
 > MovePayload patch_move(move_id, if_match, patch_move_payload)
@@ -165,7 +238,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **show_shipment_summary_worksheet**
-> file_type show_shipment_summary_worksheet(move_id, preparation_date)
+> file_type show_shipment_summary_worksheet(ppm_shipment_id, preparation_date)
 
 Returns Shipment Summary Worksheet
 
@@ -190,13 +263,13 @@ configuration = internal_client.Configuration(
 with internal_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = moves_api.MovesApi(api_client)
-    move_id = "moveId_example" # str | UUID of the move
+    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the ppmShipment
     preparation_date = dateutil_parser('1970-01-01').date() # date | The preparationDate of PDF
 
     # example passing only required values which don't have defaults set
     try:
         # Returns Shipment Summary Worksheet
-        api_response = api_instance.show_shipment_summary_worksheet(move_id, preparation_date)
+        api_response = api_instance.show_shipment_summary_worksheet(ppm_shipment_id, preparation_date)
         pprint(api_response)
     except internal_client.ApiException as e:
         print("Exception when calling MovesApi->show_shipment_summary_worksheet: %s\n" % e)
@@ -207,7 +280,7 @@ with internal_client.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **move_id** | **str**| UUID of the move |
+ **ppm_shipment_id** | **str**| UUID of the ppmShipment |
  **preparation_date** | **date**| The preparationDate of PDF |
 
 ### Return type

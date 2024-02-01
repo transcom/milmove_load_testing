@@ -22,7 +22,10 @@ from internal_client.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
+from internal_client.model.client_error import ClientError
+from internal_client.model.error import Error
 from internal_client.model.move_payload import MovePayload
+from internal_client.model.moves_list import MovesList
 from internal_client.model.patch_move_payload import PatchMovePayload
 from internal_client.model.submit_move_for_approval_payload import SubmitMoveForApprovalPayload
 
@@ -38,6 +41,55 @@ class MovesApi(object):
         if api_client is None:
             api_client = ApiClient()
         self.api_client = api_client
+        self.get_all_moves_endpoint = _Endpoint(
+            settings={
+                'response_type': (MovesList,),
+                'auth': [],
+                'endpoint_path': '/allmoves/{serviceMemberId}',
+                'operation_id': 'get_all_moves',
+                'http_method': 'GET',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'service_member_id',
+                ],
+                'required': [
+                    'service_member_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'service_member_id':
+                        (str,),
+                },
+                'attribute_map': {
+                    'service_member_id': 'serviceMemberId',
+                },
+                'location_map': {
+                    'service_member_id': 'path',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
         self.patch_move_endpoint = _Endpoint(
             settings={
                 'response_type': (MovePayload,),
@@ -153,18 +205,18 @@ class MovesApi(object):
             settings={
                 'response_type': (file_type,),
                 'auth': [],
-                'endpoint_path': '/moves/{moveId}/shipment_summary_worksheet',
+                'endpoint_path': '/moves/{ppmShipmentId}/shipment_summary_worksheet',
                 'operation_id': 'show_shipment_summary_worksheet',
                 'http_method': 'GET',
                 'servers': None,
             },
             params_map={
                 'all': [
-                    'move_id',
+                    'ppm_shipment_id',
                     'preparation_date',
                 ],
                 'required': [
-                    'move_id',
+                    'ppm_shipment_id',
                     'preparation_date',
                 ],
                 'nullable': [
@@ -180,17 +232,17 @@ class MovesApi(object):
                 'allowed_values': {
                 },
                 'openapi_types': {
-                    'move_id':
+                    'ppm_shipment_id':
                         (str,),
                     'preparation_date':
                         (date,),
                 },
                 'attribute_map': {
-                    'move_id': 'moveId',
+                    'ppm_shipment_id': 'ppmShipmentId',
                     'preparation_date': 'preparationDate',
                 },
                 'location_map': {
-                    'move_id': 'path',
+                    'ppm_shipment_id': 'path',
                     'preparation_date': 'query',
                 },
                 'collection_format_map': {
@@ -309,6 +361,89 @@ class MovesApi(object):
             },
             api_client=api_client
         )
+
+    def get_all_moves(
+        self,
+        service_member_id,
+        **kwargs
+    ):
+        """Return the current and previous moves of a service member  # noqa: E501
+
+        This endpoint gets all moves that belongs to the serviceMember by using the service members id. In a previous moves array and the current move in the current move array. The current move is the move with the latest CreatedAt date. All other moves will go into the previous move array.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.get_all_moves(service_member_id, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            service_member_id (str): UUID of the service member
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            MovesList
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
+        kwargs['service_member_id'] = \
+            service_member_id
+        return self.get_all_moves_endpoint.call_with_http_info(**kwargs)
 
     def patch_move(
         self,
@@ -486,7 +621,7 @@ class MovesApi(object):
 
     def show_shipment_summary_worksheet(
         self,
-        move_id,
+        ppm_shipment_id,
         preparation_date,
         **kwargs
     ):
@@ -496,11 +631,11 @@ class MovesApi(object):
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.show_shipment_summary_worksheet(move_id, preparation_date, async_req=True)
+        >>> thread = api.show_shipment_summary_worksheet(ppm_shipment_id, preparation_date, async_req=True)
         >>> result = thread.get()
 
         Args:
-            move_id (str): UUID of the move
+            ppm_shipment_id (str): UUID of the ppmShipment
             preparation_date (date): The preparationDate of PDF
 
         Keyword Args:
@@ -565,8 +700,8 @@ class MovesApi(object):
             '_content_type')
         kwargs['_host_index'] = kwargs.get('_host_index')
         kwargs['_request_auths'] = kwargs.get('_request_auths', None)
-        kwargs['move_id'] = \
-            move_id
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
         kwargs['preparation_date'] = \
             preparation_date
         return self.show_shipment_summary_worksheet_endpoint.call_with_http_info(**kwargs)

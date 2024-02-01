@@ -15,10 +15,8 @@ import unittest
 import internal_client
 from internal_client.model.address import Address
 from internal_client.model.affiliation import Affiliation
-from internal_client.model.service_member_rank import ServiceMemberRank
 globals()['Address'] = Address
 globals()['Affiliation'] = Affiliation
-globals()['ServiceMemberRank'] = ServiceMemberRank
 from internal_client.model.patch_service_member_payload import PatchServiceMemberPayload
 
 

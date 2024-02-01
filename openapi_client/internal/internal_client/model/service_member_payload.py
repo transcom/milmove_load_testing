@@ -33,17 +33,15 @@ from internal_client.exceptions import ApiAttributeError
 def lazy_import():
     from internal_client.model.address import Address
     from internal_client.model.affiliation import Affiliation
-    from internal_client.model.duty_location_payload import DutyLocationPayload
     from internal_client.model.index_service_member_backup_contacts_payload import IndexServiceMemberBackupContactsPayload
+    from internal_client.model.order_pay_grade import OrderPayGrade
     from internal_client.model.orders import Orders
-    from internal_client.model.service_member_rank import ServiceMemberRank
     from internal_client.model.weight_allotment import WeightAllotment
     globals()['Address'] = Address
     globals()['Affiliation'] = Affiliation
-    globals()['DutyLocationPayload'] = DutyLocationPayload
     globals()['IndexServiceMemberBackupContactsPayload'] = IndexServiceMemberBackupContactsPayload
+    globals()['OrderPayGrade'] = OrderPayGrade
     globals()['Orders'] = Orders
-    globals()['ServiceMemberRank'] = ServiceMemberRank
     globals()['WeightAllotment'] = WeightAllotment
 
 
@@ -130,7 +128,7 @@ class ServiceMemberPayload(ModelNormal):
             'edipi': (str, none_type,),  # noqa: E501
             'orders': ([Orders],),  # noqa: E501
             'affiliation': (Affiliation,),  # noqa: E501
-            'rank': (ServiceMemberRank,),  # noqa: E501
+            'grade': (OrderPayGrade,),  # noqa: E501
             'first_name': (str, none_type,),  # noqa: E501
             'middle_name': (str, none_type,),  # noqa: E501
             'last_name': (str, none_type,),  # noqa: E501
@@ -140,7 +138,6 @@ class ServiceMemberPayload(ModelNormal):
             'personal_email': (str, none_type,),  # noqa: E501
             'phone_is_preferred': (bool, none_type,),  # noqa: E501
             'email_is_preferred': (bool, none_type,),  # noqa: E501
-            'current_location': (DutyLocationPayload,),  # noqa: E501
             'residential_address': (Address,),  # noqa: E501
             'backup_mailing_address': (Address,),  # noqa: E501
             'backup_contacts': (IndexServiceMemberBackupContactsPayload,),  # noqa: E501
@@ -161,7 +158,7 @@ class ServiceMemberPayload(ModelNormal):
         'edipi': 'edipi',  # noqa: E501
         'orders': 'orders',  # noqa: E501
         'affiliation': 'affiliation',  # noqa: E501
-        'rank': 'rank',  # noqa: E501
+        'grade': 'grade',  # noqa: E501
         'first_name': 'first_name',  # noqa: E501
         'middle_name': 'middle_name',  # noqa: E501
         'last_name': 'last_name',  # noqa: E501
@@ -171,7 +168,6 @@ class ServiceMemberPayload(ModelNormal):
         'personal_email': 'personal_email',  # noqa: E501
         'phone_is_preferred': 'phone_is_preferred',  # noqa: E501
         'email_is_preferred': 'email_is_preferred',  # noqa: E501
-        'current_location': 'current_location',  # noqa: E501
         'residential_address': 'residential_address',  # noqa: E501
         'backup_mailing_address': 'backup_mailing_address',  # noqa: E501
         'backup_contacts': 'backup_contacts',  # noqa: E501
@@ -229,7 +225,7 @@ class ServiceMemberPayload(ModelNormal):
             edipi (str, none_type): [optional]  # noqa: E501
             orders ([Orders]): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
-            rank (ServiceMemberRank): [optional]  # noqa: E501
+            grade (OrderPayGrade): [optional]  # noqa: E501
             first_name (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
             last_name (str, none_type): [optional]  # noqa: E501
@@ -239,7 +235,6 @@ class ServiceMemberPayload(ModelNormal):
             personal_email (str, none_type): [optional]  # noqa: E501
             phone_is_preferred (bool, none_type): [optional]  # noqa: E501
             email_is_preferred (bool, none_type): [optional]  # noqa: E501
-            current_location (DutyLocationPayload): [optional]  # noqa: E501
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
             backup_contacts (IndexServiceMemberBackupContactsPayload): [optional]  # noqa: E501
@@ -344,7 +339,7 @@ class ServiceMemberPayload(ModelNormal):
             edipi (str, none_type): [optional]  # noqa: E501
             orders ([Orders]): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
-            rank (ServiceMemberRank): [optional]  # noqa: E501
+            grade (OrderPayGrade): [optional]  # noqa: E501
             first_name (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
             last_name (str, none_type): [optional]  # noqa: E501
@@ -354,7 +349,6 @@ class ServiceMemberPayload(ModelNormal):
             personal_email (str, none_type): [optional]  # noqa: E501
             phone_is_preferred (bool, none_type): [optional]  # noqa: E501
             email_is_preferred (bool, none_type): [optional]  # noqa: E501
-            current_location (DutyLocationPayload): [optional]  # noqa: E501
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
             backup_contacts (IndexServiceMemberBackupContactsPayload): [optional]  # noqa: E501

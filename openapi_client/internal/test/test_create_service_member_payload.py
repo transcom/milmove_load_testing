@@ -15,10 +15,10 @@ import unittest
 import internal_client
 from internal_client.model.address import Address
 from internal_client.model.affiliation import Affiliation
-from internal_client.model.service_member_rank import ServiceMemberRank
+from internal_client.model.order_pay_grade import OrderPayGrade
 globals()['Address'] = Address
 globals()['Affiliation'] = Affiliation
-globals()['ServiceMemberRank'] = ServiceMemberRank
+globals()['OrderPayGrade'] = OrderPayGrade
 from internal_client.model.create_service_member_payload import CreateServiceMemberPayload
 
 
