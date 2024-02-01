@@ -23,7 +23,6 @@ from internal_client.api import mto_shipment_api
 from internal_client.model.patch_service_member_payload import PatchServiceMemberPayload
 from internal_client.model.address import Address
 from internal_client.model.affiliation import Affiliation
-from internal_client.model.service_member_rank import ServiceMemberRank
 from internal_client.model.create_service_member_backup_contact_payload import CreateServiceMemberBackupContactPayload
 from internal_client.model.backup_contact_permission import BackupContactPermission
 from internal_client.model.create_update_orders import CreateUpdateOrders
@@ -117,7 +116,6 @@ def do_flow(
     sm_pdata = PatchServiceMemberPayload(
         edipi=fake.unique.numerify("##########"),
         affiliation=Affiliation("ARMY"),
-        rank=ServiceMemberRank("E_1"),
         first_name=first_name,
         last_name=last_name,
         telephone=fake.numerify("2##-555-####"),
