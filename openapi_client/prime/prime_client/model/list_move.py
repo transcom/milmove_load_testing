@@ -94,7 +94,6 @@ class ListMove(ModelNormal):
             'available_to_prime_at': (datetime, none_type,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'ppm_type': (str,),  # noqa: E501
-            'ppm_estimated_weight': (int,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -112,7 +111,6 @@ class ListMove(ModelNormal):
         'available_to_prime_at': 'availableToPrimeAt',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
         'ppm_type': 'ppmType',  # noqa: E501
-        'ppm_estimated_weight': 'ppmEstimatedWeight',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -170,7 +168,6 @@ class ListMove(ModelNormal):
             available_to_prime_at (datetime, none_type): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
             ppm_type (str): [optional]  # noqa: E501
-            ppm_estimated_weight (int): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -265,7 +262,6 @@ class ListMove(ModelNormal):
             available_to_prime_at (datetime, none_type): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
             ppm_type (str): [optional]  # noqa: E501
-            ppm_estimated_weight (int): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 

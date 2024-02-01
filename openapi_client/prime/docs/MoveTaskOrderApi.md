@@ -5,7 +5,7 @@ All URIs are relative to */prime/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_excess_weight_record**](MoveTaskOrderApi.md#create_excess_weight_record) | **POST** /move-task-orders/{moveTaskOrderID}/excess-weight-record | createExcessWeightRecord
-[**download_move_order**](MoveTaskOrderApi.md#download_move_order) | **GET** /moves/{locator}/order/download | Downloads move order as a PDF
+[**download_move_order**](MoveTaskOrderApi.md#download_move_order) | **GET** /moves/{locator}/documents | Downloads move order as a PDF
 [**get_move_task_order**](MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveID} | getMoveTaskOrder
 [**list_moves**](MoveTaskOrderApi.md#list_moves) | **GET** /moves | listMoves
 [**update_mto_post_counseling_information**](MoveTaskOrderApi.md#update_mto_post_counseling_information) | **PATCH** /move-task-orders/{moveTaskOrderID}/post-counseling-info | updateMTOPostCounselingInformation
@@ -118,11 +118,21 @@ with prime_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = move_task_order_api.MoveTaskOrderApi(api_client)
     locator = "locator_example" # str | the locator code for move order to be downloaded
+    type = "ALL" # str | upload type (optional) if omitted the server will use the default value of "ALL"
 
     # example passing only required values which don't have defaults set
     try:
         # Downloads move order as a PDF
         api_response = api_instance.download_move_order(locator)
+        pprint(api_response)
+    except prime_client.ApiException as e:
+        print("Exception when calling MoveTaskOrderApi->download_move_order: %s\n" % e)
+
+    # example passing only required values which don't have defaults set
+    # and optional values
+    try:
+        # Downloads move order as a PDF
+        api_response = api_instance.download_move_order(locator, type=type)
         pprint(api_response)
     except prime_client.ApiException as e:
         print("Exception when calling MoveTaskOrderApi->download_move_order: %s\n" % e)
@@ -134,6 +144,7 @@ with prime_client.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **locator** | **str**| the locator code for move order to be downloaded |
+ **type** | **str**| upload type | [optional] if omitted the server will use the default value of "ALL"
 
 ### Return type
 

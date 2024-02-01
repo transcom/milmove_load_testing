@@ -5,7 +5,6 @@ All URIs are relative to */internal*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**approve_move**](OfficeApi.md#approve_move) | **POST** /moves/{moveId}/approve | Approves a move to proceed
-[**approve_ppm**](OfficeApi.md#approve_ppm) | **POST** /personally_procured_moves/{personallyProcuredMoveId}/approve | Approves the PPM
 [**approve_reimbursement**](OfficeApi.md#approve_reimbursement) | **POST** /reimbursement/{reimbursementId}/approve | Approves the reimbursement
 [**cancel_move**](OfficeApi.md#cancel_move) | **POST** /moves/{moveId}/cancel | Cancels a move
 [**show_office_orders**](OfficeApi.md#show_office_orders) | **GET** /moves/{moveId}/orders | Returns orders information for a move for office use
@@ -80,82 +79,6 @@ No authorization required
 **403** | not authorized to approve this move |  -  |
 **409** | the move is not in a state to be approved |  -  |
 **500** | server error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **approve_ppm**
-> PersonallyProcuredMovePayload approve_ppm(personally_procured_move_id, approve_personally_procured_move_payload)
-
-Approves the PPM
-
-Sets the status of the PPM to APPROVED.
-
-### Example
-
-
-```python
-import time
-import internal_client
-from internal_client.api import office_api
-from internal_client.model.approve_personally_procured_move_payload import ApprovePersonallyProcuredMovePayload
-from internal_client.model.personally_procured_move_payload import PersonallyProcuredMovePayload
-from pprint import pprint
-# Defining the host is optional and defaults to /internal
-# See configuration.py for a list of all supported configuration parameters.
-configuration = internal_client.Configuration(
-    host = "/internal"
-)
-
-
-# Enter a context with an instance of the API client
-with internal_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = office_api.OfficeApi(api_client)
-    personally_procured_move_id = "personallyProcuredMoveId_example" # str | UUID of the PPM being updated
-    approve_personally_procured_move_payload = ApprovePersonallyProcuredMovePayload(
-        approve_date=dateutil_parser('2019-03-26T13:19:56-04:00'),
-    ) # ApprovePersonallyProcuredMovePayload | 
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Approves the PPM
-        api_response = api_instance.approve_ppm(personally_procured_move_id, approve_personally_procured_move_payload)
-        pprint(api_response)
-    except internal_client.ApiException as e:
-        print("Exception when calling OfficeApi->approve_ppm: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **personally_procured_move_id** | **str**| UUID of the PPM being updated |
- **approve_personally_procured_move_payload** | [**ApprovePersonallyProcuredMovePayload**](ApprovePersonallyProcuredMovePayload.md)|  |
-
-### Return type
-
-[**PersonallyProcuredMovePayload**](PersonallyProcuredMovePayload.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | updated instance of personally_procured_move |  -  |
-**400** | invalid request |  -  |
-**401** | request requires user authentication |  -  |
-**403** | user is not authorized |  -  |
-**500** | internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 **uploaded_orders** | [**Document**](Document.md) |  | 
 **created_at** | **datetime** |  | 
 **updated_at** | **datetime** |  | 
-**grade** | **str, none_type** |  | [optional] 
+**grade** | [**OrderPayGrade**](OrderPayGrade.md) |  | [optional] 
 **status** | [**OrdersStatus**](OrdersStatus.md) |  | [optional] 
 **orders_type_detail** | [**OrdersTypeDetail**](OrdersTypeDetail.md) |  | [optional] 
 **origin_duty_location** | [**DutyLocationPayload**](DutyLocationPayload.md) |  | [optional] 

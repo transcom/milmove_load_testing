@@ -30,9 +30,7 @@ from prime_client.model.error import Error
 from prime_client.model.mto_agent import MTOAgent
 from prime_client.model.mto_shipment import MTOShipment
 from prime_client.model.reweigh import Reweigh
-from prime_client.model.sit_delivery_update import SITDeliveryUpdate
 from prime_client.model.sit_extension import SITExtension
-from prime_client.model.sit_status import SITStatus
 from prime_client.model.shipment_address_update import ShipmentAddressUpdate
 from prime_client.model.update_mto_shipment import UpdateMTOShipment
 from prime_client.model.update_mto_shipment_status import UpdateMTOShipmentStatus
@@ -628,68 +626,6 @@ class MtoShipmentApi(object):
                         (str,),
                     'body':
                         (UpdateShipmentDestinationAddress,),
-                },
-                'attribute_map': {
-                    'mto_shipment_id': 'mtoShipmentID',
-                    'if_match': 'If-Match',
-                },
-                'location_map': {
-                    'mto_shipment_id': 'path',
-                    'if_match': 'header',
-                    'body': 'body',
-                },
-                'collection_format_map': {
-                }
-            },
-            headers_map={
-                'accept': [
-                    'application/json'
-                ],
-                'content_type': [
-                    'application/json'
-                ]
-            },
-            api_client=api_client
-        )
-        self.update_sit_delivery_request_endpoint = _Endpoint(
-            settings={
-                'response_type': (SITStatus,),
-                'auth': [],
-                'endpoint_path': '/mto-shipments/{mtoShipmentID}/sit-delivery',
-                'operation_id': 'update_sit_delivery_request',
-                'http_method': 'PATCH',
-                'servers': None,
-            },
-            params_map={
-                'all': [
-                    'mto_shipment_id',
-                    'if_match',
-                    'body',
-                ],
-                'required': [
-                    'mto_shipment_id',
-                    'if_match',
-                    'body',
-                ],
-                'nullable': [
-                ],
-                'enum': [
-                ],
-                'validation': [
-                ]
-            },
-            root_map={
-                'validations': {
-                },
-                'allowed_values': {
-                },
-                'openapi_types': {
-                    'mto_shipment_id':
-                        (str,),
-                    'if_match':
-                        (str,),
-                    'body':
-                        (SITDeliveryUpdate,),
                 },
                 'attribute_map': {
                     'mto_shipment_id': 'mtoShipmentID',
@@ -1607,95 +1543,4 @@ class MtoShipmentApi(object):
         kwargs['body'] = \
             body
         return self.update_shipment_destination_address_endpoint.call_with_http_info(**kwargs)
-
-    def update_sit_delivery_request(
-        self,
-        mto_shipment_id,
-        if_match,
-        body,
-        **kwargs
-    ):
-        """Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT  # noqa: E501
-
-        ### Functionality This endpoint can be used to update the Authorized End Date for shipments in Origin or Destination SIT and the Required Delivery Date for shipments in Origin SIT. The provided Customer Contact Date and the Customer Requested Delivery Date are used to calculate the new Authorized End Date and Required Delivery Date.   # noqa: E501
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-
-        >>> thread = api.update_sit_delivery_request(mto_shipment_id, if_match, body, async_req=True)
-        >>> result = thread.get()
-
-        Args:
-            mto_shipment_id (str): UUID of the shipment associated with the agent
-            if_match (str): Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
-            body (SITDeliveryUpdate):
-
-        Keyword Args:
-            _return_http_data_only (bool): response data without head status
-                code and headers. Default is True.
-            _preload_content (bool): if False, the urllib3.HTTPResponse object
-                will be returned without reading/decoding response data.
-                Default is True.
-            _request_timeout (int/float/tuple): timeout setting for this request. If
-                one number provided, it will be total request timeout. It can also
-                be a pair (tuple) of (connection, read) timeouts.
-                Default is None.
-            _check_input_type (bool): specifies if type checking
-                should be done one the data sent to the server.
-                Default is True.
-            _check_return_type (bool): specifies if type checking
-                should be done one the data received from the server.
-                Default is True.
-            _spec_property_naming (bool): True if the variable names in the input data
-                are serialized names, as specified in the OpenAPI document.
-                False if the variable names in the input data
-                are pythonic names, e.g. snake case (default)
-            _content_type (str/None): force body content-type.
-                Default is None and content-type will be predicted by allowed
-                content-types and body.
-            _host_index (int/None): specifies the index of the server
-                that we want to use.
-                Default is read from the configuration.
-            _request_auths (list): set to override the auth_settings for an a single
-                request; this effectively ignores the authentication
-                in the spec for a single request.
-                Default is None
-            async_req (bool): execute request asynchronously
-
-        Returns:
-            SITStatus
-                If the method is called asynchronously, returns the request
-                thread.
-        """
-        kwargs['async_req'] = kwargs.get(
-            'async_req', False
-        )
-        kwargs['_return_http_data_only'] = kwargs.get(
-            '_return_http_data_only', True
-        )
-        kwargs['_preload_content'] = kwargs.get(
-            '_preload_content', True
-        )
-        kwargs['_request_timeout'] = kwargs.get(
-            '_request_timeout', None
-        )
-        kwargs['_check_input_type'] = kwargs.get(
-            '_check_input_type', True
-        )
-        kwargs['_check_return_type'] = kwargs.get(
-            '_check_return_type', True
-        )
-        kwargs['_spec_property_naming'] = kwargs.get(
-            '_spec_property_naming', False
-        )
-        kwargs['_content_type'] = kwargs.get(
-            '_content_type')
-        kwargs['_host_index'] = kwargs.get('_host_index')
-        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
-        kwargs['mto_shipment_id'] = \
-            mto_shipment_id
-        kwargs['if_match'] = \
-            if_match
-        kwargs['body'] = \
-            body
-        return self.update_sit_delivery_request_endpoint.call_with_http_info(**kwargs)
 

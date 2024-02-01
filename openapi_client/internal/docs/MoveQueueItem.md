@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **locator** | **str** |  | 
 **customer_name** | **str** |  | 
 **edipi** | **str** |  | 
-**rank** | [**ServiceMemberRank**](ServiceMemberRank.md) |  | 
+**grade** | [**OrderPayGrade**](OrderPayGrade.md) |  | 
 **orders_type** | **str** |  | 
 **last_modified_date** | **datetime** |  | 
 **created_at** | **datetime** |  | 

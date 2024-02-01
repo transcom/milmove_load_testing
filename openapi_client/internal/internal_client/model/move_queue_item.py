@@ -31,9 +31,9 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from internal_client.model.service_member_rank import ServiceMemberRank
+    from internal_client.model.order_pay_grade import OrderPayGrade
     from internal_client.model.weight_allotment import WeightAllotment
-    globals()['ServiceMemberRank'] = ServiceMemberRank
+    globals()['OrderPayGrade'] = OrderPayGrade
     globals()['WeightAllotment'] = WeightAllotment
 
 
@@ -108,7 +108,7 @@ class MoveQueueItem(ModelNormal):
             'locator': (str,),  # noqa: E501
             'customer_name': (str,),  # noqa: E501
             'edipi': (str,),  # noqa: E501
-            'rank': (ServiceMemberRank,),  # noqa: E501
+            'grade': (OrderPayGrade,),  # noqa: E501
             'orders_type': (str,),  # noqa: E501
             'last_modified_date': (datetime,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
@@ -141,7 +141,7 @@ class MoveQueueItem(ModelNormal):
         'locator': 'locator',  # noqa: E501
         'customer_name': 'customer_name',  # noqa: E501
         'edipi': 'edipi',  # noqa: E501
-        'rank': 'rank',  # noqa: E501
+        'grade': 'grade',  # noqa: E501
         'orders_type': 'orders_type',  # noqa: E501
         'last_modified_date': 'last_modified_date',  # noqa: E501
         'created_at': 'created_at',  # noqa: E501
@@ -170,7 +170,7 @@ class MoveQueueItem(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, id, status, locator, customer_name, edipi, rank, orders_type, last_modified_date, created_at, branch_of_service, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, status, locator, customer_name, edipi, grade, orders_type, last_modified_date, created_at, branch_of_service, *args, **kwargs):  # noqa: E501
         """MoveQueueItem - a model defined in OpenAPI
 
         Args:
@@ -179,7 +179,7 @@ class MoveQueueItem(ModelNormal):
             locator (str):
             customer_name (str):
             edipi (str):
-            rank (ServiceMemberRank):
+            grade (OrderPayGrade):
             orders_type (str):
             last_modified_date (datetime):
             created_at (datetime):
@@ -267,7 +267,7 @@ class MoveQueueItem(ModelNormal):
         self.locator = locator
         self.customer_name = customer_name
         self.edipi = edipi
-        self.rank = rank
+        self.grade = grade
         self.orders_type = orders_type
         self.last_modified_date = last_modified_date
         self.created_at = created_at
@@ -292,7 +292,7 @@ class MoveQueueItem(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, id, status, locator, customer_name, edipi, rank, orders_type, last_modified_date, created_at, branch_of_service, *args, **kwargs):  # noqa: E501
+    def __init__(self, id, status, locator, customer_name, edipi, grade, orders_type, last_modified_date, created_at, branch_of_service, *args, **kwargs):  # noqa: E501
         """MoveQueueItem - a model defined in OpenAPI
 
         Args:
@@ -301,7 +301,7 @@ class MoveQueueItem(ModelNormal):
             locator (str):
             customer_name (str):
             edipi (str):
-            rank (ServiceMemberRank):
+            grade (OrderPayGrade):
             orders_type (str):
             last_modified_date (datetime):
             created_at (datetime):
@@ -387,7 +387,7 @@ class MoveQueueItem(ModelNormal):
         self.locator = locator
         self.customer_name = customer_name
         self.edipi = edipi
-        self.rank = rank
+        self.grade = grade
         self.orders_type = orders_type
         self.last_modified_date = last_modified_date
         self.created_at = created_at
