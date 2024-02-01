@@ -24,6 +24,7 @@ from internal_client.model.patch_service_member_payload import PatchServiceMembe
 from internal_client.model.address import Address
 from internal_client.model.affiliation import Affiliation
 from internal_client.model.create_service_member_backup_contact_payload import CreateServiceMemberBackupContactPayload
+from internal_client.model.order_pay_grade import OrderPayGrade
 from internal_client.model.backup_contact_permission import BackupContactPermission
 from internal_client.model.create_update_orders import CreateUpdateOrders
 from internal_client.model.orders_type import OrdersType
@@ -166,9 +167,11 @@ def do_flow(
             orders_type=OrdersType("PERMANENT_CHANGE_OF_STATION"),
             has_dependents=False,
             spouse_has_pro_gear=False,
+            origin_duty_location_id=duty_location_id,
             new_duty_location_id=new_duty_location_id,
             orders_type_detail=odt,
             department_indicator=DeptIndicator("ARMY"),
+            grade=OrderPayGrade("E_1"),
         ),
         # looks like the python openapi code generator doesn't
         # handle a $ref that is also x-nullable?
