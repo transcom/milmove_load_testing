@@ -172,7 +172,7 @@ that section.
     /bin/bash:979: pipenv: command not found
     /bin/bash:980: pipenv: command not found
    ```
-   
+
    Then please run `install_tools` again.
 
 3. Now run
