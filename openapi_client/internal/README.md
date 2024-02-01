@@ -95,6 +95,8 @@ Class | Method | HTTP request | Description
 *DocumentsApi* | [**show_document**](docs/DocumentsApi.md#show_document) | **GET** /documents/{documentId} | Returns a document
 *DutyLocationsApi* | [**search_duty_locations**](docs/DutyLocationsApi.md#search_duty_locations) | **GET** /duty_locations | Returns the duty locations matching the search query
 *EntitlementsApi* | [**index_entitlements**](docs/EntitlementsApi.md#index_entitlements) | **GET** /entitlements | List weight weights allotted by entitlement
+*FeatureFlagsApi* | [**boolean_feature_flag_for_user**](docs/FeatureFlagsApi.md#boolean_feature_flag_for_user) | **POST** /feature-flags/user-boolean/{key} | Determines if a user has a feature flag enabled
+*FeatureFlagsApi* | [**variant_feature_flag_for_user**](docs/FeatureFlagsApi.md#variant_feature_flag_for_user) | **POST** /feature-flags/user-variant/{key} | Determines if a user has a feature flag enabled
 *MoveDocsApi* | [**create_generic_move_document**](docs/MoveDocsApi.md#create_generic_move_document) | **POST** /moves/{moveId}/move_documents | Creates a move document
 *MoveDocsApi* | [**create_weight_ticket_document**](docs/MoveDocsApi.md#create_weight_ticket_document) | **POST** /moves/{moveId}/weight_ticket | Creates a weight ticket document
 *MoveDocsApi* | [**delete_move_document**](docs/MoveDocsApi.md#delete_move_document) | **DELETE** /move_documents/{moveDocumentId} | Deletes a move document
@@ -102,7 +104,6 @@ Class | Method | HTTP request | Description
 *MoveDocsApi* | [**update_move_document**](docs/MoveDocsApi.md#update_move_document) | **PUT** /move_documents/{moveDocumentId} | Updates a move document
 *MovesApi* | [**patch_move**](docs/MovesApi.md#patch_move) | **PATCH** /moves/{moveId} | Patches the move
 *MovesApi* | [**show_move**](docs/MovesApi.md#show_move) | **GET** /moves/{moveId} | Returns the given move
-*MovesApi* | [**show_move_dates_summary**](docs/MovesApi.md#show_move_dates_summary) | **GET** /moves/{moveId}/move_dates_summary | Returns projected move-related dates for a given move date
 *MovesApi* | [**show_shipment_summary_worksheet**](docs/MovesApi.md#show_shipment_summary_worksheet) | **GET** /moves/{moveId}/shipment_summary_worksheet | Returns Shipment Summary Worksheet
 *MovesApi* | [**submit_amended_orders**](docs/MovesApi.md#submit_amended_orders) | **POST** /moves/{moveId}/submit_amended_orders | Submits amended orders for review
 *MovesApi* | [**submit_move_for_approval**](docs/MovesApi.md#submit_move_for_approval) | **POST** /moves/{moveId}/submit | Submits a move for approval
@@ -115,33 +116,29 @@ Class | Method | HTTP request | Description
 *OfficeApi* | [**approve_reimbursement**](docs/OfficeApi.md#approve_reimbursement) | **POST** /reimbursement/{reimbursementId}/approve | Approves the reimbursement
 *OfficeApi* | [**cancel_move**](docs/OfficeApi.md#cancel_move) | **POST** /moves/{moveId}/cancel | Cancels a move
 *OfficeApi* | [**show_office_orders**](docs/OfficeApi.md#show_office_orders) | **GET** /moves/{moveId}/orders | Returns orders information for a move for office use
+*OktaProfileApi* | [**show_okta_info**](docs/OktaProfileApi.md#show_okta_info) | **GET** /okta-profile | Returns Okta profile values from Okta&#39;s Users API
+*OktaProfileApi* | [**update_okta_info**](docs/OktaProfileApi.md#update_okta_info) | **POST** /okta-profile | Update the user&#39;s okta profile with primary data, returns Okta profile values from the Okta&#39;s Users API reflecting updated values.
 *OrdersApi* | [**create_orders**](docs/OrdersApi.md#create_orders) | **POST** /orders | Creates an orders model for a logged-in user
 *OrdersApi* | [**show_orders**](docs/OrdersApi.md#show_orders) | **GET** /orders/{ordersId} | Returns the given order
 *OrdersApi* | [**update_orders**](docs/OrdersApi.md#update_orders) | **PUT** /orders/{ordersId} | Updates orders
 *OrdersApi* | [**upload_amended_orders**](docs/OrdersApi.md#upload_amended_orders) | **PATCH** /orders/{ordersId}/upload_amended_orders | Patch the amended orders for a given order
 *PostalCodesApi* | [**validate_postal_code_with_rate_data**](docs/PostalCodesApi.md#validate_postal_code_with_rate_data) | **GET** /rate_engine_postal_codes/{postal_code} | Validate if a zipcode is valid for origin or destination location for a move.
 *PpmApi* | [**create_moving_expense**](docs/PpmApi.md#create_moving_expense) | **POST** /ppm-shipments/{ppmShipmentId}/moving-expenses | Creates moving expense document
-*PpmApi* | [**create_personally_procured_move**](docs/PpmApi.md#create_personally_procured_move) | **POST** /moves/{moveId}/personally_procured_move | Creates a new PPM for the given move
-*PpmApi* | [**create_ppm_attachments**](docs/PpmApi.md#create_ppm_attachments) | **POST** /personally_procured_moves/{personallyProcuredMoveId}/create_ppm_attachments | Creates PPM attachments PDF
 *PpmApi* | [**create_ppm_upload**](docs/PpmApi.md#create_ppm_upload) | **POST** /ppm-shipments/{ppmShipmentId}/uploads | Create a new upload for a PPM weight ticket, pro-gear, or moving expense document
 *PpmApi* | [**create_pro_gear_weight_ticket**](docs/PpmApi.md#create_pro_gear_weight_ticket) | **POST** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets | Creates a pro-gear weight ticket
 *PpmApi* | [**create_weight_ticket**](docs/PpmApi.md#create_weight_ticket) | **POST** /ppm-shipments/{ppmShipmentId}/weight-ticket | Creates a weight ticket document
 *PpmApi* | [**delete_moving_expense**](docs/PpmApi.md#delete_moving_expense) | **DELETE** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Soft deletes a moving expense by ID
 *PpmApi* | [**delete_pro_gear_weight_ticket**](docs/PpmApi.md#delete_pro_gear_weight_ticket) | **DELETE** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Soft deletes a pro-gear weight line item by ID
 *PpmApi* | [**delete_weight_ticket**](docs/PpmApi.md#delete_weight_ticket) | **DELETE** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Soft deletes a weight ticket by ID
-*PpmApi* | [**index_personally_procured_moves**](docs/PpmApi.md#index_personally_procured_moves) | **GET** /moves/{moveId}/personally_procured_move | Returns a list of all PPMs associated with this move
 *PpmApi* | [**patch_personally_procured_move**](docs/PpmApi.md#patch_personally_procured_move) | **PATCH** /moves/{moveId}/personally_procured_move/{personallyProcuredMoveId} | Patches the PPM
-*PpmApi* | [**request_ppm_expense_summary**](docs/PpmApi.md#request_ppm_expense_summary) | **GET** /personally_procured_move/{personallyProcuredMoveId}/expense_summary | Returns an expense summary organized by expense type
 *PpmApi* | [**request_ppm_payment**](docs/PpmApi.md#request_ppm_payment) | **POST** /personally_procured_move/{personallyProcuredMoveId}/request_payment | Moves the PPM and the move into the PAYMENT_REQUESTED state
 *PpmApi* | [**resubmit_ppm_shipment_documentation**](docs/PpmApi.md#resubmit_ppm_shipment_documentation) | **PUT** /ppm-shipments/{ppmShipmentId}/resubmit-ppm-shipment-documentation/{signedCertificationId} | Updates signature and routes PPM shipment to service counselor
-*PpmApi* | [**show_personally_procured_move**](docs/PpmApi.md#show_personally_procured_move) | **GET** /moves/{moveId}/personally_procured_move/{personallyProcuredMoveId} | Returns the given PPM
 *PpmApi* | [**show_ppm_estimate**](docs/PpmApi.md#show_ppm_estimate) | **GET** /estimates/ppm | Return a PPM cost estimate
 *PpmApi* | [**show_ppm_incentive**](docs/PpmApi.md#show_ppm_incentive) | **GET** /personally_procured_moves/incentive | Return a PPM incentive value
 *PpmApi* | [**show_ppm_sit_estimate**](docs/PpmApi.md#show_ppm_sit_estimate) | **GET** /estimates/ppm_sit | Return a PPM move&#39;s SIT cost estimate
 *PpmApi* | [**submit_personally_procured_move**](docs/PpmApi.md#submit_personally_procured_move) | **POST** /personally_procured_move/{personallyProcuredMoveId}/submit | Submits a PPM for approval
 *PpmApi* | [**submit_ppm_shipment_documentation**](docs/PpmApi.md#submit_ppm_shipment_documentation) | **POST** /ppm-shipments/{ppmShipmentId}/submit-ppm-shipment-documentation | Saves signature and routes PPM shipment to service counselor
 *PpmApi* | [**update_moving_expense**](docs/PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
-*PpmApi* | [**update_personally_procured_move**](docs/PpmApi.md#update_personally_procured_move) | **PUT** /moves/{moveId}/personally_procured_move/{personallyProcuredMoveId} | Updates the PPM
 *PpmApi* | [**update_pro_gear_weight_ticket**](docs/PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
 *PpmApi* | [**update_weight_ticket**](docs/PpmApi.md#update_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Updates a weight ticket document
 *QueuesApi* | [**show_queue**](docs/QueuesApi.md#show_queue) | **GET** /queues/{queueType} | Show all moves in a queue
@@ -184,8 +181,8 @@ Class | Method | HTTP request | Description
  - [DutyLocationsPayload](docs/DutyLocationsPayload.md)
  - [Entitlement](docs/Entitlement.md)
  - [Error](docs/Error.md)
- - [ExpenseSummaryPayload](docs/ExpenseSummaryPayload.md)
- - [ExpenseSummaryPayloadGrandTotal](docs/ExpenseSummaryPayloadGrandTotal.md)
+ - [FeatureFlagBoolean](docs/FeatureFlagBoolean.md)
+ - [FeatureFlagVariant](docs/FeatureFlagVariant.md)
  - [IndexEntitlements](docs/IndexEntitlements.md)
  - [IndexMovesPayload](docs/IndexMovesPayload.md)
  - [IndexPersonallyProcuredMovePayload](docs/IndexPersonallyProcuredMovePayload.md)
@@ -214,8 +211,10 @@ Class | Method | HTTP request | Description
  - [MovingExpenseType](docs/MovingExpenseType.md)
  - [NullableSignedCertificationType](docs/NullableSignedCertificationType.md)
  - [OfficeUser](docs/OfficeUser.md)
+ - [OktaUserProfileData](docs/OktaUserProfileData.md)
  - [OmittableMovingExpenseType](docs/OmittableMovingExpenseType.md)
  - [OmittablePPMDocumentStatus](docs/OmittablePPMDocumentStatus.md)
+ - [OrderPayGrade](docs/OrderPayGrade.md)
  - [Orders](docs/Orders.md)
  - [OrdersStatus](docs/OrdersStatus.md)
  - [OrdersType](docs/OrdersType.md)
@@ -255,6 +254,7 @@ Class | Method | HTTP request | Description
  - [TransportationOffice](docs/TransportationOffice.md)
  - [TransportationOffices](docs/TransportationOffices.md)
  - [UpdateMovingExpense](docs/UpdateMovingExpense.md)
+ - [UpdateOktaUserProfileData](docs/UpdateOktaUserProfileData.md)
  - [UpdatePPMShipment](docs/UpdatePPMShipment.md)
  - [UpdatePersonallyProcuredMovePayload](docs/UpdatePersonallyProcuredMovePayload.md)
  - [UpdateProGearWeightTicket](docs/UpdateProGearWeightTicket.md)

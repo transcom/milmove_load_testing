@@ -100,8 +100,8 @@ with internal_client.ApiClient() as api_client:
                 id="1f2270c7-7166-40ae-981e-b200ebdf3054",
                 first_name="first_name_example",
                 last_name="last_name_example",
-                email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
-                phone="748-072-8880",
+                email="",
+                phone="",
                 agent_type=MTOAgentType("RELEASING_AGENT"),
             ),
         ]),
@@ -294,6 +294,7 @@ No authorization required
 **200** | Successfully retrieved all mto shipments for a move task order. |  -  |
 **400** | The request payload is invalid. |  -  |
 **401** | The request was denied. |  -  |
+**404** | The requested resource wasn&#39;t found. |  -  |
 **500** | A server error occurred. |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -303,7 +304,7 @@ No authorization required
 
 updateMTOShipment
 
-Updates a specified MTO shipment.  Required fields include: * MTO Shipment ID required in path * If-Match required in headers * No fields required in body  Optional fields include: * New shipment status type * Shipment Type * Customer requested pick-up date * Pick-up Address * Delivery Address * Customer Remarks * Releasing / Receiving agents 
+Updates a specified MTO shipment.  Required fields include: * MTO Shipment ID required in path * If-Match required in headers * Shipment type is required in body  Optional fields include: * New shipment status type * Customer requested pick-up date * Pick-up Address * Delivery Address * Customer Remarks * Releasing / Receiving agents 
 
 ### Example
 
@@ -413,8 +414,8 @@ with internal_client.ApiClient() as api_client:
                 id="1f2270c7-7166-40ae-981e-b200ebdf3054",
                 first_name="first_name_example",
                 last_name="last_name_example",
-                email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
-                phone="748-072-8880",
+                email="",
+                phone="",
                 agent_type=MTOAgentType("RELEASING_AGENT"),
             ),
         ]),

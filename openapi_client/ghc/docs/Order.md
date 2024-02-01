@@ -31,6 +31,10 @@ Name | Type | Description | Notes
 **nts_sac** | **str, none_type** |  | [optional] 
 **has_dependents** | **bool** |  | [optional] 
 **spouse_has_pro_gear** | **bool** |  | [optional] 
+**supply_and_services_cost_estimate** | **str** |  | [optional] 
+**packing_and_shipping_instructions** | **str** |  | [optional] 
+**method_of_payment** | **str** |  | [optional] 
+**naics** | **str** |  | [optional] 
 **e_tag** | **str** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

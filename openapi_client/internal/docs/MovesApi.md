@@ -6,7 +6,6 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**patch_move**](MovesApi.md#patch_move) | **PATCH** /moves/{moveId} | Patches the move
 [**show_move**](MovesApi.md#show_move) | **GET** /moves/{moveId} | Returns the given move
-[**show_move_dates_summary**](MovesApi.md#show_move_dates_summary) | **GET** /moves/{moveId}/move_dates_summary | Returns projected move-related dates for a given move date
 [**show_shipment_summary_worksheet**](MovesApi.md#show_shipment_summary_worksheet) | **GET** /moves/{moveId}/shipment_summary_worksheet | Returns Shipment Summary Worksheet
 [**submit_amended_orders**](MovesApi.md#submit_amended_orders) | **POST** /moves/{moveId}/submit_amended_orders | Submits amended orders for review
 [**submit_move_for_approval**](MovesApi.md#submit_move_for_approval) | **POST** /moves/{moveId}/submit | Submits a move for approval
@@ -161,79 +160,6 @@ No authorization required
 **401** | request requires user authentication |  -  |
 **403** | user is not authorized |  -  |
 **404** | move is not found |  -  |
-**500** | internal server error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **show_move_dates_summary**
-> MoveDatesSummary show_move_dates_summary(move_id, move_date)
-
-Returns projected move-related dates for a given move date
-
-Returns projected move-related dates for a given move date
-
-### Example
-
-
-```python
-import time
-import internal_client
-from internal_client.api import moves_api
-from internal_client.model.move_dates_summary import MoveDatesSummary
-from pprint import pprint
-# Defining the host is optional and defaults to /internal
-# See configuration.py for a list of all supported configuration parameters.
-configuration = internal_client.Configuration(
-    host = "/internal"
-)
-
-
-# Enter a context with an instance of the API client
-with internal_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = moves_api.MovesApi(api_client)
-    move_id = "moveId_example" # str | UUID of the move
-    move_date = dateutil_parser('1970-01-01').date() # date | The chosen move date
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Returns projected move-related dates for a given move date
-        api_response = api_instance.show_move_dates_summary(move_id, move_date)
-        pprint(api_response)
-    except internal_client.ApiException as e:
-        print("Exception when calling MovesApi->show_move_dates_summary: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **move_id** | **str**| UUID of the move |
- **move_date** | **date**| The chosen move date |
-
-### Return type
-
-[**MoveDatesSummary**](MoveDatesSummary.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | List of projected move-related dates |  -  |
-**400** | invalid request |  -  |
-**401** | request requires user authentication |  -  |
-**403** | user is not authorized |  -  |
 **500** | internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

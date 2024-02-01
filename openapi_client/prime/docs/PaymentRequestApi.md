@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 createPaymentRequest
 
-Creates a new instance of a paymentRequest. A newly created payment request is assigned the status `PENDING`. A move task order can have multiple payment requests, and a final payment request can be marked using boolean `isFinal`.  If a `PENDING` payment request is recalculated, a new payment request is created and the original request is marked with the status `DEPRECATED`.  **NOTE**: In order to create a payment request for most service items, the shipment *must* be updated with the `PrimeActualWeight` value via [updateMTOShipment](#operation/updateMTOShipment). **Fuel Surcharge** service items require `ActualPickupDate` to be updated on the shipment.  To create a paymentRequest for a SIT Delivery mtoServiceItem, the item must first have a final address set via [updateMTOServiceItem](#operation/updateMTOServiceItem). 
+Creates a new instance of a paymentRequest and is assigned the status `PENDING`. A move task order can have multiple payment requests, and a final payment request can be marked using boolean `isFinal`.  If a `PENDING` payment request is recalculated, a new payment request is created and the original request is marked with the status `DEPRECATED`.  **NOTE**: In order to create a payment request for most service items, the shipment *must* be updated with the `PrimeActualWeight` value via [updateMTOShipment](#operation/updateMTOShipment).  **FSC - Fuel Surcharge** service items require `ActualPickupDate` to be updated on the shipment.  A service item can be on several payment requests in the case of partial payment requests and payments.  In the request, if no params are necessary, then just the `serviceItem` `id` is required. For example: ```json {   \"isFinal\": false,   \"moveTaskOrderID\": \"uuid\",   \"serviceItems\": [     {       \"id\": \"uuid\",     },     {       \"id\": \"uuid\",       \"params\": [         {           \"key\": \"Service Item Parameter Name\",           \"value\": \"Service Item Parameter Value\"         }       ]     }   ],   \"pointOfContact\": \"string\" } ```  SIT Service Items & Accepted Payment Request Parameters: --- If `WeightBilled` is not provided then the full shipment weight (`PrimeActualWeight`) will be considered in the calculation.  **NOTE**: Diversions have a unique calcuation for payment requests without a `WeightBilled` parameter.  If you created a payment request for a diversion and `WeightBilled` is not provided, then the following will be used in the calculation: - The lowest shipment weight (`PrimeActualWeight`) found in the diverted shipment chain. - The lowest reweigh weight found in the diverted shipment chain.  The diverted shipment chain is created by referencing the `diversion` boolean, `divertedFromShipmentId` UUID, and matching destination to pickup addresses. If the chain cannot be established it will fall back to the `PrimeActualWeight` of the current shipment. This is utilized because diverted shipments are all one single shipment, but going to different locations. The lowest weight found is the true shipment weight, and thus we search the chain of shipments for the lowest weight found.  **DOFSIT - Domestic origin 1st day SIT** ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     }   ] ```  **DOASIT - Domestic origin add'l SIT** *(SITPaymentRequestStart & SITPaymentRequestEnd are **REQUIRED**)* *To create a paymentRequest for this service item, the `SITPaymentRequestStart` and `SITPaymentRequestEnd` dates must not overlap previously requested SIT dates.* ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     },     {       \"key\": \"SITPaymentRequestStart\",       \"value\": \"date\"     },     {       \"key\": \"SITPaymentRequestEnd\",       \"value\": \"date\"     }   ] ```  **DOPSIT - Domestic origin SIT pickup** ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     }   ] ```  **DOSHUT - Domestic origin shuttle service** ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     }   ] ```  **DDFSIT - Domestic destination 1st day SIT** ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     }   ] ```  **DDASIT - Domestic destination add'l SIT** *(SITPaymentRequestStart & SITPaymentRequestEnd are **REQUIRED**)* *To create a paymentRequest for this service item, the `SITPaymentRequestStart` and `SITPaymentRequestEnd` dates must not overlap previously requested SIT dates.* ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     },     {       \"key\": \"SITPaymentRequestStart\",       \"value\": \"date\"     },     {       \"key\": \"SITPaymentRequestEnd\",       \"value\": \"date\"     }   ] ```  **DDDSIT - Domestic destination SIT delivery** *To create a paymentRequest for this service item, it must first have a final address set via [updateMTOServiceItem](#operation/updateMTOServiceItem).* ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     }   ] ```  **DDSHUT - Domestic destination shuttle service** ```json   \"params\": [     {       \"key\": \"WeightBilled\",       \"value\": \"integer\"     }   ] ``` --- 
 
 ### Example
 
@@ -107,7 +107,7 @@ No authorization required
 
 createUpload
 
-### Functionality This endpoint **uploads** a Proof of Service document for a PaymentRequest.  The PaymentRequest should already exist.  PaymentRequests are created with the [createPaymentRequest](#operation/createPaymentRequest) endpoint. 
+### Functionality This endpoint **uploads** a Proof of Service document for a PaymentRequest.  The PaymentRequest should already exist.  Optional key of **isWeightTicket** indicates if the document is a weight ticket or not. This will be used for partial and full deliveries and makes it easier for the Transportation Invoicing Officers to locate and review service item documents. If left empty, it will assume it is NOT a weight ticket.  The formdata in the body of the POST request that is sent should look like this if it IS a weight ticket being attached to an existing payment request:   ```json   {     \"file\": \"filePath\",     \"isWeightTicket\": true   }   ```   If the proof of service doc is NOT a weight ticket, it will look like this - or you can leave it empty:   ```json   {     \"file\": \"filePath\",     \"isWeightTicket\": false   }   ```   ```json   {     \"file\": \"filePath\",   }   ```  PaymentRequests are created with the [createPaymentRequest](#operation/createPaymentRequest) endpoint. 
 
 ### Example
 
@@ -134,11 +134,21 @@ with prime_client.ApiClient() as api_client:
     api_instance = payment_request_api.PaymentRequestApi(api_client)
     payment_request_id = "paymentRequestID_example" # str | UUID of payment request to use.
     file = open('/path/to/file', 'rb') # file_type | The file to upload.
+    is_weight_ticket = True # bool | Indicates whether the file is a weight ticket. (optional)
 
     # example passing only required values which don't have defaults set
     try:
         # createUpload
         api_response = api_instance.create_upload(payment_request_id, file)
+        pprint(api_response)
+    except prime_client.ApiException as e:
+        print("Exception when calling PaymentRequestApi->create_upload: %s\n" % e)
+
+    # example passing only required values which don't have defaults set
+    # and optional values
+    try:
+        # createUpload
+        api_response = api_instance.create_upload(payment_request_id, file, is_weight_ticket=is_weight_ticket)
         pprint(api_response)
     except prime_client.ApiException as e:
         print("Exception when calling PaymentRequestApi->create_upload: %s\n" % e)
@@ -151,6 +161,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **payment_request_id** | **str**| UUID of payment request to use. |
  **file** | **file_type**| The file to upload. |
+ **is_weight_ticket** | **bool**| Indicates whether the file is a weight ticket. | [optional]
 
 ### Return type
 

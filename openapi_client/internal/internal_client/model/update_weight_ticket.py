@@ -68,6 +68,9 @@ class UpdateWeightTicket(ModelNormal):
         ('adjusted_net_weight',): {
             'inclusive_minimum': 0,
         },
+        ('allowable_weight',): {
+            'inclusive_minimum': 0,
+        },
     }
 
     @cached_property
@@ -100,6 +103,7 @@ class UpdateWeightTicket(ModelNormal):
             'trailer_meets_criteria': (bool,),  # noqa: E501
             'adjusted_net_weight': (int,),  # noqa: E501
             'net_weight_remarks': (str,),  # noqa: E501
+            'allowable_weight': (int,),  # noqa: E501
         }
 
     @cached_property
@@ -117,6 +121,7 @@ class UpdateWeightTicket(ModelNormal):
         'trailer_meets_criteria': 'trailerMeetsCriteria',  # noqa: E501
         'adjusted_net_weight': 'adjustedNetWeight',  # noqa: E501
         'net_weight_remarks': 'netWeightRemarks',  # noqa: E501
+        'allowable_weight': 'allowableWeight',  # noqa: E501
     }
 
     read_only_vars = {
@@ -169,6 +174,7 @@ class UpdateWeightTicket(ModelNormal):
             trailer_meets_criteria (bool): Indicates if the trailer that the customer used meets all the criteria to be claimable.. [optional]  # noqa: E501
             adjusted_net_weight (int): Indicates the adjusted net weight of the vehicle. [optional]  # noqa: E501
             net_weight_remarks (str): Remarks explaining any edits made to the net weight. [optional]  # noqa: E501
+            allowable_weight (int): Indicates the maximum reimbursable weight of the shipment. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -263,6 +269,7 @@ class UpdateWeightTicket(ModelNormal):
             trailer_meets_criteria (bool): Indicates if the trailer that the customer used meets all the criteria to be claimable.. [optional]  # noqa: E501
             adjusted_net_weight (int): Indicates the adjusted net weight of the vehicle. [optional]  # noqa: E501
             net_weight_remarks (str): Remarks explaining any edits made to the net weight. [optional]  # noqa: E501
+            allowable_weight (int): Indicates the maximum reimbursable weight of the shipment. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

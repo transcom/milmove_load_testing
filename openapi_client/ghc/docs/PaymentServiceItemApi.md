@@ -57,7 +57,6 @@ with ghc_client.ApiClient() as api_client:
                 value="3025",
                 type=ServiceItemParamType("STRING"),
                 origin=ServiceItemParamOrigin("PRIME"),
-                e_tag="e_tag_example",
             ),
         ]),
         e_tag="e_tag_example",

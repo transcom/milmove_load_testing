@@ -5,6 +5,7 @@ All URIs are relative to */ghc/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**finish_document_review**](PpmApi.md#finish_document_review) | **PATCH** /ppm-shipments/{ppmShipmentId}/finish-document-review | Updates a PPM shipment&#39;s status after document review
+[**get_ppm_closeout**](PpmApi.md#get_ppm_closeout) | **GET** /ppm-shipments/{ppmShipmentId}/closeout | Get the closeout calcuations for the specified PPM shipment
 [**get_ppm_documents**](PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
 [**update_moving_expense**](PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
 [**update_pro_gear_weight_ticket**](PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
@@ -85,6 +86,80 @@ No authorization required
 **404** | The requested resource wasn&#39;t found |  -  |
 **409** | Conflict error |  -  |
 **412** | Precondition failed |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_ppm_closeout**
+> PPMCloseout get_ppm_closeout(ppm_shipment_id)
+
+Get the closeout calcuations for the specified PPM shipment
+
+Retrieves the closeout calculations for the specified PPM shipment. 
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import ppm_api
+from ghc_client.model.error import Error
+from ghc_client.model.validation_error import ValidationError
+from ghc_client.model.ppm_closeout import PPMCloseout
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the PPM shipment
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Get the closeout calcuations for the specified PPM shipment
+        api_response = api_instance.get_ppm_closeout(ppm_shipment_id)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling PpmApi->get_ppm_closeout: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| UUID of the PPM shipment |
+
+### Return type
+
+[**PPMCloseout**](PPMCloseout.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Returns closeout for the specified PPM shipment. |  -  |
+**400** | The request payload is invalid |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
 
@@ -383,6 +458,7 @@ with ghc_client.ApiClient() as api_client:
         reason="reason_example",
         adjusted_net_weight=0,
         net_weight_remarks="net_weight_remarks_example",
+        allowable_weight=0,
     ) # UpdateWeightTicket | 
 
     # example passing only required values which don't have defaults set

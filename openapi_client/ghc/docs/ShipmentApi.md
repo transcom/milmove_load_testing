@@ -7,13 +7,15 @@ Method | HTTP request | Description
 [**approve_shipment**](ShipmentApi.md#approve_shipment) | **POST** /shipments/{shipmentID}/approve | Approves a shipment
 [**approve_shipment_diversion**](ShipmentApi.md#approve_shipment_diversion) | **POST** /shipments/{shipmentID}/approve-diversion | Approves a shipment diversion
 [**approve_sit_extension**](ShipmentApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-[**create_approved_sit_duration_update**](ShipmentApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
+[**create_approved_sit_duration_update**](ShipmentApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions | Create an approved SIT Duration Update
 [**delete_shipment**](ShipmentApi.md#delete_shipment) | **DELETE** /shipments/{shipmentID} | Soft deletes a shipment by ID
 [**deny_sit_extension**](ShipmentApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 [**reject_shipment**](ShipmentApi.md#reject_shipment) | **POST** /shipments/{shipmentID}/reject | rejects a shipment
 [**request_shipment_cancellation**](ShipmentApi.md#request_shipment_cancellation) | **POST** /shipments/{shipmentID}/request-cancellation | Requests a shipment cancellation
 [**request_shipment_diversion**](ShipmentApi.md#request_shipment_diversion) | **POST** /shipments/{shipmentID}/request-diversion | Requests a shipment diversion
 [**request_shipment_reweigh**](ShipmentApi.md#request_shipment_reweigh) | **POST** /shipments/{shipmentID}/request-reweigh | Requests a shipment reweigh
+[**review_shipment_address_update**](ShipmentApi.md#review_shipment_address_update) | **PATCH** /shipments/{shipmentID}/review-shipment-address-update | Allows TOO to review a shipment address update
+[**update_sit_service_item_customer_expense**](ShipmentApi.md#update_sit_service_item_customer_expense) | **PATCH** /shipments/{shipmentID}/sit-service-item/convert-to-customer-expense | Converts a SIT to customer expense
 
 
 # **approve_shipment**
@@ -447,6 +449,7 @@ with ghc_client.ApiClient() as api_client:
     if_match = "If-Match_example" # str | 
     body = DenySITExtension(
         office_remarks="Denied this extension as it does not match the criteria",
+        convert_to_customer_expense=False,
     ) # DenySITExtension | 
 
     # example passing only required values which don't have defaults set
@@ -798,6 +801,172 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successfully requested a reweigh of the shipment |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
+**409** | Conflict error |  -  |
+**412** | Precondition failed |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **review_shipment_address_update**
+> ShipmentAddressUpdate review_shipment_address_update(shipment_id, if_match, body)
+
+Allows TOO to review a shipment address update
+
+This endpoint is used to approve a address update request. Office remarks are required. Approving the address update will update the Destination Final Address of the associated service item
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import shipment_api
+from ghc_client.model.shipment_address_update import ShipmentAddressUpdate
+from ghc_client.model.error import Error
+from ghc_client.model.review_shipment_address_update_request import ReviewShipmentAddressUpdateRequest
+from ghc_client.model.validation_error import ValidationError
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = shipment_api.ShipmentApi(api_client)
+    shipment_id = "shipmentID_example" # str | ID of the shipment
+    if_match = "If-Match_example" # str | 
+    body = ReviewShipmentAddressUpdateRequest(
+        status="REJECTED",
+        office_remarks="office_remarks_example",
+    ) # ReviewShipmentAddressUpdateRequest | 
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Allows TOO to review a shipment address update
+        api_response = api_instance.review_shipment_address_update(shipment_id, if_match, body)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling ShipmentApi->review_shipment_address_update: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **shipment_id** | **str**| ID of the shipment |
+ **if_match** | **str**|  |
+ **body** | [**ReviewShipmentAddressUpdateRequest**](ReviewShipmentAddressUpdateRequest.md)|  |
+
+### Return type
+
+[**ShipmentAddressUpdate**](ShipmentAddressUpdate.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully requested a shipment address update |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
+**409** | Conflict error |  -  |
+**412** | Precondition failed |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **update_sit_service_item_customer_expense**
+> MTOShipment update_sit_service_item_customer_expense(shipment_id, if_match, body)
+
+Converts a SIT to customer expense
+
+Converts a SIT to customer expense
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import shipment_api
+from ghc_client.model.error import Error
+from ghc_client.model.update_sit_service_item_customer_expense import UpdateSITServiceItemCustomerExpense
+from ghc_client.model.mto_shipment import MTOShipment
+from ghc_client.model.validation_error import ValidationError
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = shipment_api.ShipmentApi(api_client)
+    shipment_id = "shipmentID_example" # str | ID of the shipment
+    if_match = "If-Match_example" # str | 
+    body = UpdateSITServiceItemCustomerExpense(
+        convert_to_customer_expense=True,
+        customer_expense_reason="Insufficent details provided",
+    ) # UpdateSITServiceItemCustomerExpense | 
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Converts a SIT to customer expense
+        api_response = api_instance.update_sit_service_item_customer_expense(shipment_id, if_match, body)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling ShipmentApi->update_sit_service_item_customer_expense: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **shipment_id** | **str**| ID of the shipment |
+ **if_match** | **str**|  |
+ **body** | [**UpdateSITServiceItemCustomerExpense**](UpdateSITServiceItemCustomerExpense.md)|  |
+
+### Return type
+
+[**MTOShipment**](MTOShipment.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully converted to customer expense |  -  |
 **403** | The request was denied |  -  |
 **404** | The requested resource wasn&#39;t found |  -  |
 **409** | Conflict error |  -  |

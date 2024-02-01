@@ -59,6 +59,7 @@ class Affiliation(ModelSimple):
             'MARINES': "MARINES",
             'AIR_FORCE': "AIR_FORCE",
             'COAST_GUARD': "COAST_GUARD",
+            'SPACE_FORCE': "SPACE_FORCE",
             'OTHER': "OTHER",
         },
     }
@@ -111,10 +112,10 @@ class Affiliation(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "OTHER", ]  # noqa: E501
+            args[0] (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "SPACE_FORCE", "OTHER", ]  # noqa: E501
 
         Keyword Args:
-            value (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "OTHER", ]  # noqa: E501
+            value (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "SPACE_FORCE", "OTHER", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -205,10 +206,10 @@ class Affiliation(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "OTHER", ]  # noqa: E501
+            args[0] (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "SPACE_FORCE", "OTHER", ]  # noqa: E501
 
         Keyword Args:
-            value (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "OTHER", ]  # noqa: E501
+            value (str): Military branch of service., must be one of ["ARMY", "NAVY", "MARINES", "AIR_FORCE", "COAST_GUARD", "SPACE_FORCE", "OTHER", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

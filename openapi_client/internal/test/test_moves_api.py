@@ -38,13 +38,6 @@ class TestMovesApi(unittest.TestCase):
         """
         pass
 
-    def test_show_move_dates_summary(self):
-        """Test case for show_move_dates_summary
-
-        Returns projected move-related dates for a given move date  # noqa: E501
-        """
-        pass
-
     def test_show_shipment_summary_worksheet(self):
         """Test case for show_shipment_summary_worksheet
 

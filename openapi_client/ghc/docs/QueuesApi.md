@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**get_moves_queue**](QueuesApi.md#get_moves_queue) | **GET** /queues/moves | Gets queued list of all customer moves by GBLOC origin
 [**get_payment_requests_queue**](QueuesApi.md#get_payment_requests_queue) | **GET** /queues/payment-requests | Gets queued list of all payment requests by GBLOC origin
 [**get_services_counseling_queue**](QueuesApi.md#get_services_counseling_queue) | **GET** /queues/counseling | Gets queued list of all customer moves needing services counseling by GBLOC origin
+[**list_prime_moves**](QueuesApi.md#list_prime_moves) | **GET** /queues/prime-moves | getPrimeMovesQueue
 
 
 # **get_moves_queue**
@@ -303,6 +304,85 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successfully returned all moves matching the criteria |  -  |
+**403** | The request was denied |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_prime_moves**
+> ListPrimeMovesResult list_prime_moves()
+
+getPrimeMovesQueue
+
+Gets all moves that have been reviewed and approved by the TOO. The `since` parameter can be used to filter this list down to only the moves that have been updated since the provided timestamp. A move will be considered updated if the `updatedAt` timestamp on the move or on its orders, shipments, service items, or payment requests, is later than the provided date and time.  **WIP**: Include what causes moves to leave this list. Currently, once the `availableToPrimeAt` timestamp has been set, that move will always appear in this list. 
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import queues_api
+from ghc_client.model.list_prime_moves_result import ListPrimeMovesResult
+from ghc_client.model.error import Error
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = queues_api.QueuesApi(api_client)
+    since = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Only return moves updated since this time. Formatted like \"2021-07-23T18:30:47.116Z\" (optional)
+    page = 1 # int | requested page of results (optional)
+    per_page = 1 # int | results per page (optional)
+    id = "id_example" # str |  (optional)
+    move_code = "moveCode_example" # str |  (optional)
+
+    # example passing only required values which don't have defaults set
+    # and optional values
+    try:
+        # getPrimeMovesQueue
+        api_response = api_instance.list_prime_moves(since=since, page=page, per_page=per_page, id=id, move_code=move_code)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling QueuesApi->list_prime_moves: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **since** | **datetime**| Only return moves updated since this time. Formatted like \&quot;2021-07-23T18:30:47.116Z\&quot; | [optional]
+ **page** | **int**| requested page of results | [optional]
+ **per_page** | **int**| results per page | [optional]
+ **id** | **str**|  | [optional]
+ **move_code** | **str**|  | [optional]
+
+### Return type
+
+[**ListPrimeMovesResult**](ListPrimeMovesResult.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully retrieved moves. A successful fetch might still return zero moves. |  -  |
 **403** | The request was denied |  -  |
 **500** | A server error occurred |  -  |
 

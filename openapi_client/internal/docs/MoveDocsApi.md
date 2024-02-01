@@ -359,6 +359,7 @@ with internal_client.ApiClient() as api_client:
             service_member_id="service_member_id_example",
             uploads=[
                 Upload(
+                    is_weight_ticket=True,
                 ),
             ],
         ),

@@ -32,9 +32,11 @@ from internal_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from internal_client.model.dept_indicator import DeptIndicator
+    from internal_client.model.order_pay_grade import OrderPayGrade
     from internal_client.model.orders_type import OrdersType
     from internal_client.model.orders_type_detail import OrdersTypeDetail
     globals()['DeptIndicator'] = DeptIndicator
+    globals()['OrderPayGrade'] = OrderPayGrade
     globals()['OrdersType'] = OrdersType
     globals()['OrdersTypeDetail'] = OrdersTypeDetail
 
@@ -104,6 +106,8 @@ class CreateUpdateOrders(ModelNormal):
             'tac': (str, none_type,),  # noqa: E501
             'sac': (str, none_type,),  # noqa: E501
             'department_indicator': (DeptIndicator,),  # noqa: E501
+            'grade': (OrderPayGrade,),  # noqa: E501
+            'origin_duty_location_id': (str,),  # noqa: E501
         }
 
     @cached_property
@@ -124,6 +128,8 @@ class CreateUpdateOrders(ModelNormal):
         'tac': 'tac',  # noqa: E501
         'sac': 'sac',  # noqa: E501
         'department_indicator': 'department_indicator',  # noqa: E501
+        'grade': 'grade',  # noqa: E501
+        'origin_duty_location_id': 'origin_duty_location_id',  # noqa: E501
     }
 
     read_only_vars = {
@@ -181,6 +187,8 @@ class CreateUpdateOrders(ModelNormal):
             tac (str, none_type): [optional]  # noqa: E501
             sac (str, none_type): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
+            grade (OrderPayGrade): [optional]  # noqa: E501
+            origin_duty_location_id (str): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -287,6 +295,8 @@ class CreateUpdateOrders(ModelNormal):
             tac (str, none_type): [optional]  # noqa: E501
             sac (str, none_type): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
+            grade (OrderPayGrade): [optional]  # noqa: E501
+            origin_duty_location_id (str): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

@@ -13,6 +13,8 @@ Method | HTTP request | Description
 [**update_mto_shipment_address**](MtoShipmentApi.md#update_mto_shipment_address) | **PUT** /mto-shipments/{mtoShipmentID}/addresses/{addressID} | updateMTOShipmentAddress
 [**update_mto_shipment_status**](MtoShipmentApi.md#update_mto_shipment_status) | **PATCH** /mto-shipments/{mtoShipmentID}/status | updateMTOShipmentStatus
 [**update_reweigh**](MtoShipmentApi.md#update_reweigh) | **PATCH** /mto-shipments/{mtoShipmentID}/reweighs/{reweighID} | updateReweigh
+[**update_shipment_destination_address**](MtoShipmentApi.md#update_shipment_destination_address) | **POST** /mto-shipments/{mtoShipmentID}/shipment-address-updates | updateShipmentDestinationAddress
+[**update_sit_delivery_request**](MtoShipmentApi.md#update_sit_delivery_request) | **PATCH** /mto-shipments/{mtoShipmentID}/sit-delivery | Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
 
 
 # **create_mto_agent**
@@ -105,7 +107,7 @@ No authorization required
 
 createMTOShipment
 
-Creates a new shipment within the specified move. This endpoint should be used whenever the movers identify a need for an additional shipment. The new shipment will be submitted to the TOO for review, and the TOO must approve it before the contractor can proceed with billing.  **WIP**: The Prime should be notified by a push notification whenever the TOO approves a shipment connected to one of their moves. Otherwise, the Prime can fetch the related move using the [getMoveTaskOrder](#operation/getMoveTaskOrder) endpoint and see if this shipment has the status `\"APPROVED\"`. 
+_[Deprecated: sunset on 2024-04-08]_ This endpoint is deprecated and will be removed in a future version. Please use the new endpoint at `/prime/v2/createMTOShipment` instead.  Creates a new shipment within the specified move. This endpoint should be used whenever the movers identify a need for an additional shipment. The new shipment will be submitted to the TOO for review, and the TOO must approve it before the contractor can proceed with billing.  **WIP**: The Prime should be notified by a push notification whenever the TOO approves a shipment connected to one of their moves. Otherwise, the Prime can fetch the related move using the [getMoveTaskOrder](#operation/getMoveTaskOrder) endpoint and see if this shipment has the status `\"APPROVED\"`. 
 
 ### Example
 
@@ -504,12 +506,12 @@ with prime_client.ApiClient() as api_client:
         prime_estimated_weight=4500,
         prime_actual_weight=4500,
         nts_recorded_weight=4500,
-        pickup_address=MTOShipmentPickupAddress(),
-        destination_address=MTOShipmentDestinationAddress(),
+        pickup_address=UpdateMTOShipmentPickupAddress(),
+        destination_address=UpdateMTOShipmentDestinationAddress(),
         destination_type=DestinationType("OTHER_THAN_AUTHORIZED"),
-        secondary_pickup_address=MTOShipmentSecondaryPickupAddress(),
-        secondary_delivery_address=MTOShipmentSecondaryDeliveryAddress(),
-        storage_facility=MTOShipmentStorageFacility(),
+        secondary_pickup_address=UpdateMTOShipmentSecondaryPickupAddress(),
+        secondary_delivery_address=UpdateMTOShipmentSecondaryDeliveryAddress(),
+        storage_facility=UpdateMTOShipmentStorageFacility(),
         shipment_type=MTOShipmentType("HHG"),
         diversion=True,
         point_of_contact="point_of_contact_example",
@@ -584,7 +586,7 @@ No authorization required
 
 updateMTOShipmentAddress
 
-### Functionality This endpoint is used to **update** the addresses on an MTO Shipment. The address details completely replace the original, except for the UUID. Therefore a complete address should be sent in the request.  This endpoint **cannot create** an address. To create an address on an MTO shipment, the caller must use [updateMTOShipment](#operation/updateMTOShipment) as the parent shipment has to be updated with the appropriate link to the address.  ### Errors The address must be associated with the mtoShipment passed in the url. In other words, it should be listed as pickupAddress, destinationAddress, secondaryPickupAddress or secondaryDeliveryAddress on the mtoShipment provided. If it is not, caller will receive a **Conflict** Error.  The mtoShipment should be associated with an MTO that is available to prime. If the caller requests an update to an address, and the shipment is not on an available MTO, the caller will receive a **NotFound** Error. 
+### Functionality This endpoint is used to **update** the pickup, secondary, and destination addresses on an MTO Shipment. mto-shipments/{mtoShipmentID}/shipment-address-updates is for updating a delivery address. The address details completely replace the original, except for the UUID. Therefore a complete address should be sent in the request. When a destination address on a shipment is updated, the destination SIT service items address ID will also be updated so that shipment and service item final destinations match.  This endpoint **cannot create** an address. To create an address on an MTO shipment, the caller must use [updateMTOShipment](#operation/updateMTOShipment) as the parent shipment has to be updated with the appropriate link to the address.  ### Errors The address must be associated with the mtoShipment passed in the url. In other words, it should be listed as pickupAddress, destinationAddress, secondaryPickupAddress or secondaryDeliveryAddress on the mtoShipment provided. If it is not, caller will receive a **Conflict** Error.  The mtoShipment should be associated with an MTO that is available to prime. If the caller requests an update to an address, and the shipment is not on an available MTO, the caller will receive a **NotFound** Error. 
 
 ### Example
 
@@ -839,6 +841,184 @@ No authorization required
 **403** | The request was denied. |  -  |
 **404** | The requested resource wasn&#39;t found. |  -  |
 **409** | The request could not be processed because of conflict in the current state of the resource. |  -  |
+**412** | Precondition failed, likely due to a stale eTag (If-Match). Fetch the request again to get the updated eTag value. |  -  |
+**422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
+**500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **update_shipment_destination_address**
+> ShipmentAddressUpdate update_shipment_destination_address(mto_shipment_id, if_match, body)
+
+updateShipmentDestinationAddress
+
+### Functionality This endpoint is used so the Prime can request an **update** for the destination address on an MTO Shipment, after the destination address has already been approved. If automatically approved or TOO approves, this will update the final destination address values for destination SIT service items to be the same as the changed destination address that was approved. Address updates will be automatically approved unless they change:   - The service area   - Mileage bracket for direct delivery   - the address and the distance between the old and new address is > 50   - Domestic Short Haul to Domestic Line Haul or vice versa       - Shipments that start and end in one ZIP3 use Short Haul pricing       - Shipments that start and end in different ZIP3s use Line Haul pricing  For those, changes will require TOO approval. 
+
+### Example
+
+
+```python
+import time
+import prime_client
+from prime_client.api import mto_shipment_api
+from prime_client.model.validation_error import ValidationError
+from prime_client.model.update_shipment_destination_address import UpdateShipmentDestinationAddress
+from prime_client.model.error import Error
+from prime_client.model.client_error import ClientError
+from prime_client.model.shipment_address_update import ShipmentAddressUpdate
+from pprint import pprint
+# Defining the host is optional and defaults to /prime/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = prime_client.Configuration(
+    host = "/prime/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with prime_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = mto_shipment_api.MtoShipmentApi(api_client)
+    mto_shipment_id = "mtoShipmentID_example" # str | UUID of the shipment associated with the address
+    if_match = "If-Match_example" # str | Needs to be the eTag of the mtoShipment. Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
+    body = UpdateShipmentDestinationAddress(
+        new_address=Address(
+            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+            street_address1="123 Main Ave",
+            street_address2="Apartment 9000",
+            street_address3="Montmârtre",
+            city="Anytown",
+            state="AL",
+            postal_code="90210",
+            country="USA",
+        ),
+        contractor_remarks="Customer reached out to me this week and let me know they want to move somewhere else.",
+    ) # UpdateShipmentDestinationAddress | 
+
+    # example passing only required values which don't have defaults set
+    try:
+        # updateShipmentDestinationAddress
+        api_response = api_instance.update_shipment_destination_address(mto_shipment_id, if_match, body)
+        pprint(api_response)
+    except prime_client.ApiException as e:
+        print("Exception when calling MtoShipmentApi->update_shipment_destination_address: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **mto_shipment_id** | **str**| UUID of the shipment associated with the address |
+ **if_match** | **str**| Needs to be the eTag of the mtoShipment. Optimistic locking is implemented via the &#x60;If-Match&#x60; header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a &#x60;412 Precondition Failed&#x60; error.  |
+ **body** | [**UpdateShipmentDestinationAddress**](UpdateShipmentDestinationAddress.md)|  |
+
+### Return type
+
+[**ShipmentAddressUpdate**](ShipmentAddressUpdate.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**201** | Successfully created the address update request. |  -  |
+**400** | The request payload is invalid. |  -  |
+**401** | The request was denied. |  -  |
+**403** | The request was denied. |  -  |
+**404** | The requested resource wasn&#39;t found. |  -  |
+**409** | The request could not be processed because of conflict in the current state of the resource. |  -  |
+**412** | Precondition failed, likely due to a stale eTag (If-Match). Fetch the request again to get the updated eTag value. |  -  |
+**422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
+**500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **update_sit_delivery_request**
+> SITStatus update_sit_delivery_request(mto_shipment_id, if_match, body)
+
+Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
+
+### Functionality This endpoint can be used to update the Authorized End Date for shipments in Origin or Destination SIT and the Required Delivery Date for shipments in Origin SIT. The provided Customer Contact Date and the Customer Requested Delivery Date are used to calculate the new Authorized End Date and Required Delivery Date. 
+
+### Example
+
+
+```python
+import time
+import prime_client
+from prime_client.api import mto_shipment_api
+from prime_client.model.validation_error import ValidationError
+from prime_client.model.sit_status import SITStatus
+from prime_client.model.error import Error
+from prime_client.model.client_error import ClientError
+from prime_client.model.sit_delivery_update import SITDeliveryUpdate
+from pprint import pprint
+# Defining the host is optional and defaults to /prime/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = prime_client.Configuration(
+    host = "/prime/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with prime_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = mto_shipment_api.MtoShipmentApi(api_client)
+    mto_shipment_id = "mtoShipmentID_example" # str | UUID of the shipment associated with the agent
+    if_match = "If-Match_example" # str | Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
+    body = SITDeliveryUpdate(
+        sit_customer_contacted=dateutil_parser('1970-01-01').date(),
+        sit_requested_delivery=dateutil_parser('1970-01-01').date(),
+    ) # SITDeliveryUpdate | 
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
+        api_response = api_instance.update_sit_delivery_request(mto_shipment_id, if_match, body)
+        pprint(api_response)
+    except prime_client.ApiException as e:
+        print("Exception when calling MtoShipmentApi->update_sit_delivery_request: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **mto_shipment_id** | **str**| UUID of the shipment associated with the agent |
+ **if_match** | **str**| Optimistic locking is implemented via the &#x60;If-Match&#x60; header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a &#x60;412 Precondition Failed&#x60; error.  |
+ **body** | [**SITDeliveryUpdate**](SITDeliveryUpdate.md)|  |
+
+### Return type
+
+[**SITStatus**](SITStatus.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully updated the shipment&#39;s authorized end date. |  -  |
+**400** | The request payload is invalid. |  -  |
+**404** | The requested resource wasn&#39;t found. |  -  |
 **412** | Precondition failed, likely due to a stale eTag (If-Match). Fetch the request again to get the updated eTag value. |  -  |
 **422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
 **500** | A server error occurred. |  -  |

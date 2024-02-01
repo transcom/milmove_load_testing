@@ -5,7 +5,7 @@ All URIs are relative to */ghc/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**approve_sit_extension**](SitExtensionApi.md#approve_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/approve | Approves a SIT extension
-[**create_approved_sit_duration_update**](SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions/ | Create an approved SIT Duration Update
+[**create_approved_sit_duration_update**](SitExtensionApi.md#create_approved_sit_duration_update) | **POST** /shipments/{shipmentID}/sit-extensions | Create an approved SIT Duration Update
 [**deny_sit_extension**](SitExtensionApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 
 
@@ -213,6 +213,7 @@ with ghc_client.ApiClient() as api_client:
     if_match = "If-Match_example" # str | 
     body = DenySITExtension(
         office_remarks="Denied this extension as it does not match the criteria",
+        convert_to_customer_expense=False,
     ) # DenySITExtension | 
 
     # example passing only required values which don't have defaults set

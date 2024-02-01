@@ -27,6 +27,7 @@ Name | Type | Description | Notes
 **adjusted_net_weight** | **int, none_type** | Indicates the adjusted net weight of the vehicle | [optional] 
 **net_weight_remarks** | **str, none_type** | Remarks explaining any edits made to the net weight | [optional] 
 **e_tag** | **str** | A hash that should be used as the \&quot;If-Match\&quot; header for any updates. | [optional] [readonly] 
+**allowable_weight** | **int, none_type** | Maximum reimbursable weight. | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
