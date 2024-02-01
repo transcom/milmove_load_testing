@@ -18,3 +18,4 @@ from prime_client.api.move_task_order_api import MoveTaskOrderApi
 from prime_client.api.mto_service_item_api import MtoServiceItemApi
 from prime_client.api.mto_shipment_api import MtoShipmentApi
 from prime_client.api.payment_request_api import PaymentRequestApi
+from prime_client.api.sit_address_update_api import SitAddressUpdateApi

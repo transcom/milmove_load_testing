@@ -54,8 +54,8 @@ with ghc_client.ApiClient() as api_client:
                 updated_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
                 first_name="first_name_example",
                 last_name="last_name_example",
-                email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
-                phone="748-072-8880",
+                email="",
+                phone="",
                 agent_type="RELEASING_AGENT",
                 e_tag="e_tag_example",
             ),
@@ -68,10 +68,13 @@ with ghc_client.ApiClient() as api_client:
                 re_service_code="re_service_code_example",
                 re_service_name="re_service_name_example",
                 created_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
+                convert_to_customer_expense=False,
+                customer_expense_reason="customer_expense_reason_example",
                 customer_contacts=MTOServiceItemCustomerContacts([
                     MTOServiceItemCustomerContact(
                         id="1f2270c7-7166-40ae-981e-b200ebdf3054",
                         type=CustomerContactType("FIRST"),
+                        date_of_contact=dateutil_parser('1970-01-01').date(),
                         time_military="0400Z",
                         first_available_delivery_date=dateutil_parser('Thu Dec 31 00:00:00 UTC 2020').date(),
                     ),
@@ -92,6 +95,58 @@ with ghc_client.ApiClient() as api_client:
                 pickup_postal_code="pickup_postal_code_example",
                 sit_entry_date=dateutil_parser('1970-01-01T00:00:00.00Z'),
                 sit_departure_date=dateutil_parser('1970-01-01T00:00:00.00Z'),
+                sit_customer_contacted=dateutil_parser('1970-01-01').date(),
+                sit_requested_delivery=dateutil_parser('1970-01-01').date(),
+                sit_destination_original_address=Address(
+                    id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                    street_address1="123 Main Ave",
+                    street_address2="Apartment 9000",
+                    street_address3="Montmârtre",
+                    city="Anytown",
+                    state="AL",
+                    postal_code="90210",
+                    country="USA",
+                ),
+                sit_destination_final_address=Address(
+                    id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                    street_address1="123 Main Ave",
+                    street_address2="Apartment 9000",
+                    street_address3="Montmârtre",
+                    city="Anytown",
+                    state="AL",
+                    postal_code="90210",
+                    country="USA",
+                ),
+                sit_address_updates=SITAddressUpdates([
+                    SITAddressUpdate(
+                        id="1f2270c7-7166-40ae-981e-b200ebdf3054",
+                        mto_service_item_id="1f2270c7-7166-40ae-981e-b200ebdf3054",
+                        distance=54,
+                        contractor_remarks="The customer has found a new house closer to base.",
+                        office_remarks="The customer has found a new house closer to base.",
+                        status="REQUESTED",
+                        old_address=Address(
+                            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                            street_address1="123 Main Ave",
+                            street_address2="Apartment 9000",
+                            street_address3="Montmârtre",
+                            city="Anytown",
+                            state="AL",
+                            postal_code="90210",
+                            country="USA",
+                        ),
+                        new_address=Address(
+                            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                            street_address1="123 Main Ave",
+                            street_address2="Apartment 9000",
+                            street_address3="Montmârtre",
+                            city="Anytown",
+                            state="AL",
+                            postal_code="90210",
+                            country="USA",
+                        ),
+                    ),
+                ]),
                 fee_type="COUNSELING",
                 id="1f2270c7-7166-40ae-981e-b200ebdf3054",
                 quantity=1,
@@ -104,6 +159,17 @@ with ghc_client.ApiClient() as api_client:
                 approved_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
                 rejected_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
                 e_tag="e_tag_example",
+                update_reason="update_reason_example",
+                service_request_documents=ServiceRequestDocuments([
+                    ServiceRequestDocument(
+                        mto_service_item_id="mto_service_item_id_example",
+                        uploads=[
+                            Upload(
+                                is_weight_ticket=True,
+                            ),
+                        ],
+                    ),
+                ]),
             ),
         ]),
         pickup_address=CreateMTOShipmentPickupAddress(),
@@ -345,7 +411,7 @@ No authorization required
 
 updateMTOShipment
 
-Updates a specified MTO shipment. Required fields include: * MTO Shipment ID required in path * If-Match required in headers * No fields required in body Optional fields include: * New shipment status type * Shipment Type * Customer requested pick-up date * Pick-up Address * Delivery Address * Secondary Pick-up Address * SecondaryDelivery Address * Delivery Address Type * Customer Remarks * Counselor Remarks * Releasing / Receiving agents 
+_[Deprecated: sunset on 2024-05-06]_ This endpoint is deprecated and will be removed in a future version. Please use the new endpoint at `/ghc/v2/updateMTOShipment` instead.  Updates a specified MTO shipment. Required fields include: * MTO Shipment ID required in path * If-Match required in headers * No fields required in body Optional fields include: * New shipment status type * Shipment Type * Customer requested pick-up date * Pick-up Address * Delivery Address * Secondary Pick-up Address * SecondaryDelivery Address * Delivery Address Type * Customer Remarks * Counselor Remarks * Releasing / Receiving agents 
 
 ### Example
 
@@ -396,8 +462,8 @@ with ghc_client.ApiClient() as api_client:
                 updated_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
                 first_name="first_name_example",
                 last_name="last_name_example",
-                email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
-                phone="748-072-8880",
+                email="",
+                phone="",
                 agent_type="RELEASING_AGENT",
                 e_tag="e_tag_example",
             ),

@@ -91,10 +91,12 @@ All URIs are relative to */prime/v1*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *MoveTaskOrderApi* | [**create_excess_weight_record**](docs/MoveTaskOrderApi.md#create_excess_weight_record) | **POST** /move-task-orders/{moveTaskOrderID}/excess-weight-record | createExcessWeightRecord
+*MoveTaskOrderApi* | [**download_move_order**](docs/MoveTaskOrderApi.md#download_move_order) | **GET** /moves/{locator}/order/download | Downloads move order as a PDF
 *MoveTaskOrderApi* | [**get_move_task_order**](docs/MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveID} | getMoveTaskOrder
 *MoveTaskOrderApi* | [**list_moves**](docs/MoveTaskOrderApi.md#list_moves) | **GET** /moves | listMoves
 *MoveTaskOrderApi* | [**update_mto_post_counseling_information**](docs/MoveTaskOrderApi.md#update_mto_post_counseling_information) | **PATCH** /move-task-orders/{moveTaskOrderID}/post-counseling-info | updateMTOPostCounselingInformation
 *MtoServiceItemApi* | [**create_mto_service_item**](docs/MtoServiceItemApi.md#create_mto_service_item) | **POST** /mto-service-items | createMTOServiceItem
+*MtoServiceItemApi* | [**create_service_request_document_upload**](docs/MtoServiceItemApi.md#create_service_request_document_upload) | **POST** /mto-service-items/{mtoServiceItemID}/uploads | createServiceRequestDocumentUpload
 *MtoServiceItemApi* | [**update_mto_service_item**](docs/MtoServiceItemApi.md#update_mto_service_item) | **PATCH** /mto-service-items/{mtoServiceItemID} | updateMTOServiceItem
 *MtoShipmentApi* | [**create_mto_agent**](docs/MtoShipmentApi.md#create_mto_agent) | **POST** /mto-shipments/{mtoShipmentID}/agents | createMTOAgent
 *MtoShipmentApi* | [**create_mto_shipment**](docs/MtoShipmentApi.md#create_mto_shipment) | **POST** /mto-shipments | createMTOShipment
@@ -105,8 +107,11 @@ Class | Method | HTTP request | Description
 *MtoShipmentApi* | [**update_mto_shipment_address**](docs/MtoShipmentApi.md#update_mto_shipment_address) | **PUT** /mto-shipments/{mtoShipmentID}/addresses/{addressID} | updateMTOShipmentAddress
 *MtoShipmentApi* | [**update_mto_shipment_status**](docs/MtoShipmentApi.md#update_mto_shipment_status) | **PATCH** /mto-shipments/{mtoShipmentID}/status | updateMTOShipmentStatus
 *MtoShipmentApi* | [**update_reweigh**](docs/MtoShipmentApi.md#update_reweigh) | **PATCH** /mto-shipments/{mtoShipmentID}/reweighs/{reweighID} | updateReweigh
+*MtoShipmentApi* | [**update_shipment_destination_address**](docs/MtoShipmentApi.md#update_shipment_destination_address) | **POST** /mto-shipments/{mtoShipmentID}/shipment-address-updates | updateShipmentDestinationAddress
+*MtoShipmentApi* | [**update_sit_delivery_request**](docs/MtoShipmentApi.md#update_sit_delivery_request) | **PATCH** /mto-shipments/{mtoShipmentID}/sit-delivery | Update the SIT Customer Contact and SIT Requested Delivery Dates for a service item currently in SIT
 *PaymentRequestApi* | [**create_payment_request**](docs/PaymentRequestApi.md#create_payment_request) | **POST** /payment-requests | createPaymentRequest
 *PaymentRequestApi* | [**create_upload**](docs/PaymentRequestApi.md#create_upload) | **POST** /payment-requests/{paymentRequestID}/uploads | createUpload
+*SitAddressUpdateApi* | [**create_sit_address_update_request**](docs/SitAddressUpdateApi.md#create_sit_address_update_request) | **POST** /sit-address-updates | createSITAddressUpdateRequest
 
 
 ## Documentation For Models
@@ -118,6 +123,7 @@ Class | Method | HTTP request | Description
  - [CreateMTOShipmentPickupAddress](docs/CreateMTOShipmentPickupAddress.md)
  - [CreatePPMShipment](docs/CreatePPMShipment.md)
  - [CreatePaymentRequest](docs/CreatePaymentRequest.md)
+ - [CreateSITAddressUpdateRequest](docs/CreateSITAddressUpdateRequest.md)
  - [CreateSITExtension](docs/CreateSITExtension.md)
  - [Customer](docs/Customer.md)
  - [DestinationType](docs/DestinationType.md)
@@ -146,13 +152,9 @@ Class | Method | HTTP request | Description
  - [MTOServiceItemShuttleAllOf](docs/MTOServiceItemShuttleAllOf.md)
  - [MTOServiceItemStatus](docs/MTOServiceItemStatus.md)
  - [MTOShipment](docs/MTOShipment.md)
- - [MTOShipmentDestinationAddress](docs/MTOShipmentDestinationAddress.md)
- - [MTOShipmentPickupAddress](docs/MTOShipmentPickupAddress.md)
- - [MTOShipmentSecondaryDeliveryAddress](docs/MTOShipmentSecondaryDeliveryAddress.md)
- - [MTOShipmentSecondaryPickupAddress](docs/MTOShipmentSecondaryPickupAddress.md)
- - [MTOShipmentStorageFacility](docs/MTOShipmentStorageFacility.md)
  - [MTOShipmentType](docs/MTOShipmentType.md)
- - [MTOShipments](docs/MTOShipments.md)
+ - [MTOShipmentWithoutServiceItems](docs/MTOShipmentWithoutServiceItems.md)
+ - [MTOShipmentsWithoutServiceObjects](docs/MTOShipmentsWithoutServiceObjects.md)
  - [MoveTaskOrder](docs/MoveTaskOrder.md)
  - [Order](docs/Order.md)
  - [OrdersType](docs/OrdersType.md)
@@ -166,18 +168,29 @@ Class | Method | HTTP request | Description
  - [PaymentServiceItemParams](docs/PaymentServiceItemParams.md)
  - [PaymentServiceItemStatus](docs/PaymentServiceItemStatus.md)
  - [PaymentServiceItems](docs/PaymentServiceItems.md)
+ - [ProofOfServiceDoc](docs/ProofOfServiceDoc.md)
  - [ProofOfServiceDocs](docs/ProofOfServiceDocs.md)
  - [ReServiceCode](docs/ReServiceCode.md)
  - [Reweigh](docs/Reweigh.md)
  - [ReweighRequester](docs/ReweighRequester.md)
+ - [SITDeliveryUpdate](docs/SITDeliveryUpdate.md)
  - [SITExtension](docs/SITExtension.md)
  - [SITExtensions](docs/SITExtensions.md)
  - [SITLocationType](docs/SITLocationType.md)
+ - [SITStatus](docs/SITStatus.md)
+ - [SITStatusCurrentSIT](docs/SITStatusCurrentSIT.md)
  - [ServiceItem](docs/ServiceItem.md)
  - [ServiceItemParamName](docs/ServiceItemParamName.md)
  - [ServiceItemParamOrigin](docs/ServiceItemParamOrigin.md)
  - [ServiceItemParamType](docs/ServiceItemParamType.md)
  - [ServiceItemParamsInner](docs/ServiceItemParamsInner.md)
+ - [ServiceRequestDocument](docs/ServiceRequestDocument.md)
+ - [ServiceRequestDocuments](docs/ServiceRequestDocuments.md)
+ - [ShipmentAddressUpdate](docs/ShipmentAddressUpdate.md)
+ - [ShipmentAddressUpdateStatus](docs/ShipmentAddressUpdateStatus.md)
+ - [SitAddressUpdate](docs/SitAddressUpdate.md)
+ - [SitAddressUpdateStatus](docs/SitAddressUpdateStatus.md)
+ - [SitAddressUpdates](docs/SitAddressUpdates.md)
  - [StorageFacility](docs/StorageFacility.md)
  - [UpdateMTOServiceItem](docs/UpdateMTOServiceItem.md)
  - [UpdateMTOServiceItemModelType](docs/UpdateMTOServiceItemModelType.md)
@@ -186,9 +199,15 @@ Class | Method | HTTP request | Description
  - [UpdateMTOServiceItemShuttle](docs/UpdateMTOServiceItemShuttle.md)
  - [UpdateMTOServiceItemShuttleAllOf](docs/UpdateMTOServiceItemShuttleAllOf.md)
  - [UpdateMTOShipment](docs/UpdateMTOShipment.md)
+ - [UpdateMTOShipmentDestinationAddress](docs/UpdateMTOShipmentDestinationAddress.md)
+ - [UpdateMTOShipmentPickupAddress](docs/UpdateMTOShipmentPickupAddress.md)
+ - [UpdateMTOShipmentSecondaryDeliveryAddress](docs/UpdateMTOShipmentSecondaryDeliveryAddress.md)
+ - [UpdateMTOShipmentSecondaryPickupAddress](docs/UpdateMTOShipmentSecondaryPickupAddress.md)
  - [UpdateMTOShipmentStatus](docs/UpdateMTOShipmentStatus.md)
+ - [UpdateMTOShipmentStorageFacility](docs/UpdateMTOShipmentStorageFacility.md)
  - [UpdatePPMShipment](docs/UpdatePPMShipment.md)
  - [UpdateReweigh](docs/UpdateReweigh.md)
+ - [UpdateShipmentDestinationAddress](docs/UpdateShipmentDestinationAddress.md)
  - [UploadWithOmissions](docs/UploadWithOmissions.md)
  - [ValidationError](docs/ValidationError.md)
  - [ValidationErrorAllOf](docs/ValidationErrorAllOf.md)
@@ -200,7 +219,7 @@ Class | Method | HTTP request | Description
 
 ## Author
 
-dp3@truss.works
+milmove-developers@caci.com
 
 
 ## Notes for Large OpenAPI documents

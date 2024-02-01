@@ -78,6 +78,9 @@ class WeightTicket(ModelNormal):
         ('adjusted_net_weight',): {
             'inclusive_minimum': 0,
         },
+        ('allowable_weight',): {
+            'inclusive_minimum': 0,
+        },
     }
 
     @cached_property
@@ -125,6 +128,7 @@ class WeightTicket(ModelNormal):
             'adjusted_net_weight': (int, none_type,),  # noqa: E501
             'net_weight_remarks': (str, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
+            'allowable_weight': (int, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -155,6 +159,7 @@ class WeightTicket(ModelNormal):
         'adjusted_net_weight': 'adjustedNetWeight',  # noqa: E501
         'net_weight_remarks': 'netWeightRemarks',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
+        'allowable_weight': 'allowableWeight',  # noqa: E501
     }
 
     read_only_vars = {
@@ -230,6 +235,7 @@ class WeightTicket(ModelNormal):
             adjusted_net_weight (int, none_type): Indicates the adjusted net weight of the vehicle. [optional]  # noqa: E501
             net_weight_remarks (str, none_type): Remarks explaining any edits made to the net weight. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
+            allowable_weight (int, none_type): Maximum reimbursable weight.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -341,6 +347,7 @@ class WeightTicket(ModelNormal):
             adjusted_net_weight (int, none_type): Indicates the adjusted net weight of the vehicle. [optional]  # noqa: E501
             net_weight_remarks (str, none_type): Remarks explaining any edits made to the net weight. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
+            allowable_weight (int, none_type): Maximum reimbursable weight.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

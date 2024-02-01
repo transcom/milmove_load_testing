@@ -14,9 +14,11 @@ import unittest
 
 import internal_client
 from internal_client.model.dept_indicator import DeptIndicator
+from internal_client.model.order_pay_grade import OrderPayGrade
 from internal_client.model.orders_type import OrdersType
 from internal_client.model.orders_type_detail import OrdersTypeDetail
 globals()['DeptIndicator'] = DeptIndicator
+globals()['OrderPayGrade'] = OrderPayGrade
 globals()['OrdersType'] = OrdersType
 globals()['OrdersTypeDetail'] = OrdersTypeDetail
 from internal_client.model.create_update_orders import CreateUpdateOrders

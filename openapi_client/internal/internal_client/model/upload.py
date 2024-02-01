@@ -95,6 +95,7 @@ class Upload(ModelNormal):
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'status': (str,),  # noqa: E501
+            'is_weight_ticket': (bool,),  # noqa: E501
         }
 
     @cached_property
@@ -111,6 +112,7 @@ class Upload(ModelNormal):
         'created_at': 'createdAt',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
         'status': 'status',  # noqa: E501
+        'is_weight_ticket': 'isWeightTicket',  # noqa: E501
     }
 
     read_only_vars = {
@@ -172,6 +174,7 @@ class Upload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             status (str): [optional]  # noqa: E501
+            is_weight_ticket (bool): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -265,6 +268,7 @@ class Upload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             status (str): [optional]  # noqa: E501
+            is_weight_ticket (bool): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

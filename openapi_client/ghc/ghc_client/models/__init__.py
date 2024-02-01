@@ -47,6 +47,9 @@ from ghc_client.model.gbloc import GBLOC
 from ghc_client.model.grade import Grade
 from ghc_client.model.loa_type import LOAType
 from ghc_client.model.loa_type_nullable import LOATypeNullable
+from ghc_client.model.list_prime_move import ListPrimeMove
+from ghc_client.model.list_prime_moves import ListPrimeMoves
+from ghc_client.model.list_prime_moves_result import ListPrimeMovesResult
 from ghc_client.model.mto_agent import MTOAgent
 from ghc_client.model.mto_agents import MTOAgents
 from ghc_client.model.mto_approval_service_item_codes import MTOApprovalServiceItemCodes
@@ -55,6 +58,7 @@ from ghc_client.model.mto_service_item_customer_contact import MTOServiceItemCus
 from ghc_client.model.mto_service_item_customer_contacts import MTOServiceItemCustomerContacts
 from ghc_client.model.mto_service_item_dimension import MTOServiceItemDimension
 from ghc_client.model.mto_service_item_dimensions import MTOServiceItemDimensions
+from ghc_client.model.mto_service_item_single import MTOServiceItemSingle
 from ghc_client.model.mto_service_item_status import MTOServiceItemStatus
 from ghc_client.model.mto_service_items import MTOServiceItems
 from ghc_client.model.mto_shipment import MTOShipment
@@ -80,6 +84,7 @@ from ghc_client.model.order import Order
 from ghc_client.model.orders_type import OrdersType
 from ghc_client.model.orders_type_detail import OrdersTypeDetail
 from ghc_client.model.ppm_advance_status import PPMAdvanceStatus
+from ghc_client.model.ppm_closeout import PPMCloseout
 from ghc_client.model.ppm_document_status import PPMDocumentStatus
 from ghc_client.model.ppm_documents import PPMDocuments
 from ghc_client.model.ppm_shipment import PPMShipment
@@ -110,12 +115,16 @@ from ghc_client.model.queue_payment_requests_result import QueuePaymentRequestsR
 from ghc_client.model.reject_shipment import RejectShipment
 from ghc_client.model.report_violation import ReportViolation
 from ghc_client.model.report_violations import ReportViolations
+from ghc_client.model.review_shipment_address_update_request import ReviewShipmentAddressUpdateRequest
 from ghc_client.model.reweigh import Reweigh
 from ghc_client.model.reweigh_requester import ReweighRequester
+from ghc_client.model.sit_address_update import SITAddressUpdate
+from ghc_client.model.sit_address_updates import SITAddressUpdates
 from ghc_client.model.sit_extension import SITExtension
 from ghc_client.model.sit_extensions import SITExtensions
 from ghc_client.model.sit_location_type import SITLocationType
 from ghc_client.model.sit_status import SITStatus
+from ghc_client.model.sit_status_current_sit import SITStatusCurrentSIT
 from ghc_client.model.search_move import SearchMove
 from ghc_client.model.search_moves import SearchMoves
 from ghc_client.model.search_moves_request import SearchMovesRequest
@@ -123,7 +132,12 @@ from ghc_client.model.search_moves_result import SearchMovesResult
 from ghc_client.model.service_item_param_name import ServiceItemParamName
 from ghc_client.model.service_item_param_origin import ServiceItemParamOrigin
 from ghc_client.model.service_item_param_type import ServiceItemParamType
+from ghc_client.model.service_item_sit_entry_date import ServiceItemSitEntryDate
+from ghc_client.model.service_request_document import ServiceRequestDocument
+from ghc_client.model.service_request_documents import ServiceRequestDocuments
 from ghc_client.model.set_financial_review_flag_request import SetFinancialReviewFlagRequest
+from ghc_client.model.shipment_address_update import ShipmentAddressUpdate
+from ghc_client.model.shipment_address_update_status import ShipmentAddressUpdateStatus
 from ghc_client.model.shipment_payment_sit_balance import ShipmentPaymentSITBalance
 from ghc_client.model.shipments_payment_sit_balance import ShipmentsPaymentSITBalance
 from ghc_client.model.signed_certification import SignedCertification
@@ -144,6 +158,7 @@ from ghc_client.model.update_order_payload import UpdateOrderPayload
 from ghc_client.model.update_ppm_shipment import UpdatePPMShipment
 from ghc_client.model.update_payment_request_status_payload import UpdatePaymentRequestStatusPayload
 from ghc_client.model.update_pro_gear_weight_ticket import UpdateProGearWeightTicket
+from ghc_client.model.update_sit_service_item_customer_expense import UpdateSITServiceItemCustomerExpense
 from ghc_client.model.update_shipment import UpdateShipment
 from ghc_client.model.update_weight_ticket import UpdateWeightTicket
 from ghc_client.model.upload import Upload

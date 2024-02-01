@@ -5,6 +5,7 @@ All URIs are relative to */prime/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_excess_weight_record**](MoveTaskOrderApi.md#create_excess_weight_record) | **POST** /move-task-orders/{moveTaskOrderID}/excess-weight-record | createExcessWeightRecord
+[**download_move_order**](MoveTaskOrderApi.md#download_move_order) | **GET** /moves/{locator}/order/download | Downloads move order as a PDF
 [**get_move_task_order**](MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveID} | getMoveTaskOrder
 [**list_moves**](MoveTaskOrderApi.md#list_moves) | **GET** /moves | listMoves
 [**update_mto_post_counseling_information**](MoveTaskOrderApi.md#update_mto_post_counseling_information) | **PATCH** /move-task-orders/{moveTaskOrderID}/post-counseling-info | updateMTOPostCounselingInformation
@@ -80,6 +81,80 @@ No authorization required
 |-------------|-------------|------------------|
 **201** | Successfully uploaded the excess weight record file. |  -  |
 **401** | The request was denied. |  -  |
+**403** | The request was denied. |  -  |
+**404** | The requested resource wasn&#39;t found. |  -  |
+**422** | The request was unprocessable, likely due to bad input from the requester. |  -  |
+**500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **download_move_order**
+> file_type download_move_order(locator)
+
+Downloads move order as a PDF
+
+### Functionality This endpoint downloads all uploaded move order documentations into one download file by locator.  ### Errors * The move must be in need counseling state. * The move client's origin duty location must not currently have gov counseling. 
+
+### Example
+
+
+```python
+import time
+import prime_client
+from prime_client.api import move_task_order_api
+from prime_client.model.validation_error import ValidationError
+from prime_client.model.error import Error
+from prime_client.model.client_error import ClientError
+from pprint import pprint
+# Defining the host is optional and defaults to /prime/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = prime_client.Configuration(
+    host = "/prime/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with prime_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = move_task_order_api.MoveTaskOrderApi(api_client)
+    locator = "locator_example" # str | the locator code for move order to be downloaded
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Downloads move order as a PDF
+        api_response = api_instance.download_move_order(locator)
+        pprint(api_response)
+    except prime_client.ApiException as e:
+        print("Exception when calling MoveTaskOrderApi->download_move_order: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **locator** | **str**| the locator code for move order to be downloaded |
+
+### Return type
+
+**file_type**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Move Order PDF |  * Content-Disposition - File name to download <br>  |
+**400** | The request payload is invalid. |  -  |
 **403** | The request was denied. |  -  |
 **404** | The requested resource wasn&#39;t found. |  -  |
 **422** | The request was unprocessable, likely due to bad input from the requester. |  -  |

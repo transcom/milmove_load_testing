@@ -21,10 +21,12 @@ from internal_client.api.certification_api import CertificationApi
 from internal_client.api.documents_api import DocumentsApi
 from internal_client.api.duty_locations_api import DutyLocationsApi
 from internal_client.api.entitlements_api import EntitlementsApi
+from internal_client.api.feature_flags_api import FeatureFlagsApi
 from internal_client.api.move_docs_api import MoveDocsApi
 from internal_client.api.moves_api import MovesApi
 from internal_client.api.mto_shipment_api import MtoShipmentApi
 from internal_client.api.office_api import OfficeApi
+from internal_client.api.okta_profile_api import OktaProfileApi
 from internal_client.api.orders_api import OrdersApi
 from internal_client.api.postal_codes_api import PostalCodesApi
 from internal_client.api.ppm_api import PpmApi

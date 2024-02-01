@@ -51,6 +51,8 @@ with internal_client.ApiClient() as api_client:
         tac="F8J1",
         sac="N002214CSW32Y9",
         department_indicator=DeptIndicator("NAVY_AND_MARINES"),
+        grade=OrderPayGrade("E_1"),
+        origin_duty_location_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
     ) # CreateUpdateOrders | 
 
     # example passing only required values which don't have defaults set
@@ -209,6 +211,8 @@ with internal_client.ApiClient() as api_client:
         tac="F8J1",
         sac="N002214CSW32Y9",
         department_indicator=DeptIndicator("NAVY_AND_MARINES"),
+        grade=OrderPayGrade("E_1"),
+        origin_duty_location_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
     ) # CreateUpdateOrders | 
 
     # example passing only required values which don't have defaults set

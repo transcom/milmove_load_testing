@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **total_sit_days_remaining** | **int** |  | [optional] 
 **total_sit_end_date** | **date, none_type** |  | [optional] 
 **pending_sit_days_invoiced** | **int** |  | [optional] 
+**pending_billed_start_date** | **date, none_type** |  | [optional] 
 **pending_billed_end_date** | **date, none_type** |  | [optional] 
 **previously_billed_days** | **int, none_type** |  | [optional] 
 **previously_billed_start_date** | **date, none_type** |  | [optional] 

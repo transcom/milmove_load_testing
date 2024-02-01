@@ -31,20 +31,6 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
-    def test_create_personally_procured_move(self):
-        """Test case for create_personally_procured_move
-
-        Creates a new PPM for the given move  # noqa: E501
-        """
-        pass
-
-    def test_create_ppm_attachments(self):
-        """Test case for create_ppm_attachments
-
-        Creates PPM attachments PDF  # noqa: E501
-        """
-        pass
-
     def test_create_ppm_upload(self):
         """Test case for create_ppm_upload
 
@@ -87,24 +73,10 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
-    def test_index_personally_procured_moves(self):
-        """Test case for index_personally_procured_moves
-
-        Returns a list of all PPMs associated with this move  # noqa: E501
-        """
-        pass
-
     def test_patch_personally_procured_move(self):
         """Test case for patch_personally_procured_move
 
         Patches the PPM  # noqa: E501
-        """
-        pass
-
-    def test_request_ppm_expense_summary(self):
-        """Test case for request_ppm_expense_summary
-
-        Returns an expense summary organized by expense type  # noqa: E501
         """
         pass
 
@@ -119,13 +91,6 @@ class TestPpmApi(unittest.TestCase):
         """Test case for resubmit_ppm_shipment_documentation
 
         Updates signature and routes PPM shipment to service counselor  # noqa: E501
-        """
-        pass
-
-    def test_show_personally_procured_move(self):
-        """Test case for show_personally_procured_move
-
-        Returns the given PPM  # noqa: E501
         """
         pass
 
@@ -168,13 +133,6 @@ class TestPpmApi(unittest.TestCase):
         """Test case for update_moving_expense
 
         Updates the moving expense  # noqa: E501
-        """
-        pass
-
-    def test_update_personally_procured_move(self):
-        """Test case for update_personally_procured_move
-
-        Updates the PPM  # noqa: E501
         """
         pass
 
