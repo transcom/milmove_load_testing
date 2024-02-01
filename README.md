@@ -164,6 +164,15 @@ that section.
     1. This will install `pyenv` and `pipenv` along with other tools like `pre-commit`.
 
 2. Restart your terminal.
+   1. If you see something similar to the following
+   ```shell
+    direnv: loading ~/Projects/milmove_load_testing/.envrc
+    direnv: Want to load secrets from chamber? 'ln -s .envrc.chamber.template .envrc.chamber'
+    /bin/bash:979: pipenv: command not found
+    /bin/bash:980: pipenv: command not found
+   ```
+   Then please run `install_tools` again.
+
 3. Now run
 
     ```shell
