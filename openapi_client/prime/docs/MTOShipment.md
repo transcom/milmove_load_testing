@@ -22,6 +22,8 @@ Name | Type | Description | Notes
 **nts_recorded_weight** | **int, none_type** | The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was. | [optional] 
 **customer_remarks** | **str, none_type** | The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field.  | [optional] [readonly] 
 **counselor_remarks** | **str, none_type** | The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Counselors enters this information when creating or editing an MTO Shipment. Optional field.  | [optional] [readonly] 
+**actual_pro_gear_weight** | **int, none_type** | The actual weight of any pro gear being shipped.  | [optional] 
+**actual_spouse_pro_gear_weight** | **int, none_type** | The actual weight of any spouse pro gear being shipped.  | [optional] 
 **agents** | [**MTOAgents**](MTOAgents.md) |  | [optional] 
 **sit_extensions** | [**SITExtensions**](SITExtensions.md) |  | [optional] 
 **reweigh** | [**Reweigh**](Reweigh.md) |  | [optional] 

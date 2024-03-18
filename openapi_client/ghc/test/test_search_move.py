@@ -13,7 +13,9 @@ import sys
 import unittest
 
 import ghc_client
+from ghc_client.model.gbloc import GBLOC
 from ghc_client.model.move_status import MoveStatus
+globals()['GBLOC'] = GBLOC
 globals()['MoveStatus'] = MoveStatus
 from ghc_client.model.search_move import SearchMove
 

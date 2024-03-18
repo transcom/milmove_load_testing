@@ -14,7 +14,9 @@ import unittest
 
 import internal_client
 from internal_client.model.mto_shipments import MTOShipments
+from internal_client.model.transportation_office import TransportationOffice
 globals()['MTOShipments'] = MTOShipments
+globals()['TransportationOffice'] = TransportationOffice
 from internal_client.model.internal_move import InternalMove
 
 

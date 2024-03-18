@@ -105,6 +105,7 @@ class UploadsApi(object):
             params_map={
                 'all': [
                     'upload_id',
+                    'order_id',
                 ],
                 'required': [
                     'upload_id',
@@ -124,12 +125,16 @@ class UploadsApi(object):
                 'openapi_types': {
                     'upload_id':
                         (str,),
+                    'order_id':
+                        (str,),
                 },
                 'attribute_map': {
                     'upload_id': 'uploadId',
+                    'order_id': 'orderId',
                 },
                 'location_map': {
                     'upload_id': 'path',
+                    'order_id': 'query',
                 },
                 'collection_format_map': {
                 }
@@ -295,6 +300,7 @@ class UploadsApi(object):
             upload_id (str): UUID of the upload to be deleted
 
         Keyword Args:
+            order_id (str): ID of the order that the upload belongs to. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object

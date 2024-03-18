@@ -32,7 +32,9 @@ from internal_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from internal_client.model.mto_shipments import MTOShipments
+    from internal_client.model.transportation_office import TransportationOffice
     globals()['MTOShipments'] = MTOShipments
+    globals()['TransportationOffice'] = TransportationOffice
 
 
 class InternalMove(ModelNormal):
@@ -93,8 +95,11 @@ class InternalMove(ModelNormal):
             'created_at': (datetime,),  # noqa: E501
             'order_id': (str,),  # noqa: E501
             'orders': (bool, date, datetime, dict, float, int, list, str, none_type,),  # noqa: E501
+            'status': (str,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
+            'submitted_at': (datetime,),  # noqa: E501
             'mto_shipments': (MTOShipments,),  # noqa: E501
+            'closeout_office': (TransportationOffice,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -109,15 +114,20 @@ class InternalMove(ModelNormal):
         'created_at': 'createdAt',  # noqa: E501
         'order_id': 'orderID',  # noqa: E501
         'orders': 'orders',  # noqa: E501
+        'status': 'status',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
+        'submitted_at': 'submittedAt',  # noqa: E501
         'mto_shipments': 'mtoShipments',  # noqa: E501
+        'closeout_office': 'closeoutOffice',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
     read_only_vars = {
         'move_code',  # noqa: E501
         'created_at',  # noqa: E501
+        'status',  # noqa: E501
         'updated_at',  # noqa: E501
+        'submitted_at',  # noqa: E501
         'e_tag',  # noqa: E501
     }
 
@@ -164,8 +174,11 @@ class InternalMove(ModelNormal):
             created_at (datetime): [optional]  # noqa: E501
             order_id (str): [optional]  # noqa: E501
             orders (bool, date, datetime, dict, float, int, list, str, none_type): [optional]  # noqa: E501
+            status (str): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
+            submitted_at (datetime): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
+            closeout_office (TransportationOffice): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -257,8 +270,11 @@ class InternalMove(ModelNormal):
             created_at (datetime): [optional]  # noqa: E501
             order_id (str): [optional]  # noqa: E501
             orders (bool, date, datetime, dict, float, int, list, str, none_type): [optional]  # noqa: E501
+            status (str): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
+            submitted_at (datetime): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
+            closeout_office (TransportationOffice): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 

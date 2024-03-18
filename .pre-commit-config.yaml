@@ -1,10 +1,9 @@
 repos:
-
   - repo: https://github.com/ambv/black
     rev: 22.10.0
     hooks:
       - id: black
-        language_version: python3.10
+        language_version: python3.11
         exclude: ^openapi_client
 
   - repo: https://github.com/pycqa/flake8
@@ -54,4 +53,4 @@ repos:
         language: system
         pass_filenames: false
         types: [python]
-        args: ['locustfiles', 'tasks', 'utils']
+        args: ["locustfiles", "tasks", "utils"]

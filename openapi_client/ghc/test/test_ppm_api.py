@@ -45,6 +45,20 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
+    def test_show_aoa_packet(self):
+        """Test case for show_aoa_packet
+
+        Downloads AOA Packet form PPMShipment as a PDF  # noqa: E501
+        """
+        pass
+
+    def test_show_payment_packet(self):
+        """Test case for show_payment_packet
+
+        Returns PPM payment packet  # noqa: E501
+        """
+        pass
+
     def test_update_moving_expense(self):
         """Test case for update_moving_expense
 

@@ -18,6 +18,7 @@ from ghc_client.model.customer import Customer
 from ghc_client.model.dept_indicator import DeptIndicator
 from ghc_client.model.duty_location import DutyLocation
 from ghc_client.model.entitlements import Entitlements
+from ghc_client.model.gbloc import GBLOC
 from ghc_client.model.grade import Grade
 from ghc_client.model.orders_type import OrdersType
 from ghc_client.model.orders_type_detail import OrdersTypeDetail
@@ -26,6 +27,7 @@ globals()['Customer'] = Customer
 globals()['DeptIndicator'] = DeptIndicator
 globals()['DutyLocation'] = DutyLocation
 globals()['Entitlements'] = Entitlements
+globals()['GBLOC'] = GBLOC
 globals()['Grade'] = Grade
 globals()['OrdersType'] = OrdersType
 globals()['OrdersTypeDetail'] = OrdersTypeDetail

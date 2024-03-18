@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **nts_sac** | **str** |  | [optional] 
 **department_indicator** | [**DeptIndicator**](DeptIndicator.md) |  | [optional] 
 **orders_acknowledgement** | **bool, none_type** | Confirmation that the new amended orders were reviewed after previously approving the original orders | [optional] 
+**grade** | [**Grade**](Grade.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

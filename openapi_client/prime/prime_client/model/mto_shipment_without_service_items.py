@@ -141,6 +141,8 @@ class MTOShipmentWithoutServiceItems(ModelNormal):
             'nts_recorded_weight': (int, none_type,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
             'counselor_remarks': (str, none_type,),  # noqa: E501
+            'actual_pro_gear_weight': (int, none_type,),  # noqa: E501
+            'actual_spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
             'sit_extensions': (SITExtensions,),  # noqa: E501
             'reweigh': (Reweigh,),  # noqa: E501
@@ -184,6 +186,8 @@ class MTOShipmentWithoutServiceItems(ModelNormal):
         'nts_recorded_weight': 'ntsRecordedWeight',  # noqa: E501
         'customer_remarks': 'customerRemarks',  # noqa: E501
         'counselor_remarks': 'counselorRemarks',  # noqa: E501
+        'actual_pro_gear_weight': 'actualProGearWeight',  # noqa: E501
+        'actual_spouse_pro_gear_weight': 'actualSpouseProGearWeight',  # noqa: E501
         'agents': 'agents',  # noqa: E501
         'sit_extensions': 'sitExtensions',  # noqa: E501
         'reweigh': 'reweigh',  # noqa: E501
@@ -275,6 +279,8 @@ class MTOShipmentWithoutServiceItems(ModelNormal):
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): The actual weight of any pro gear being shipped. . [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): The actual weight of any spouse pro gear being shipped. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             sit_extensions (SITExtensions): [optional]  # noqa: E501
             reweigh (Reweigh): [optional]  # noqa: E501
@@ -395,6 +401,8 @@ class MTOShipmentWithoutServiceItems(ModelNormal):
             nts_recorded_weight (int, none_type): The previously recorded weight for the NTS Shipment. Used for NTS Release to know what the previous primeActualWeight or billable weight was.. [optional]  # noqa: E501
             customer_remarks (str, none_type): The customer can use the customer remarks field to inform the services counselor and the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Customer enters this information during onboarding. Optional field. . [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address.  Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): The actual weight of any pro gear being shipped. . [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): The actual weight of any spouse pro gear being shipped. . [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             sit_extensions (SITExtensions): [optional]  # noqa: E501
             reweigh (Reweigh): [optional]  # noqa: E501

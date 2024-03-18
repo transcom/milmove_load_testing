@@ -126,6 +126,10 @@ with ghc_client.ApiClient() as api_client:
             email="A@9LCSLv1C1ylmgd0.Y2TA5TkIRHRRA401iz1CiIy.dNTRddzXYdswQltRTtwKQzBuNJxBelKTmfIQcBkWgeAShmXXoTaDzlkczbtHjkljEhQVqeWYqqMQZlEQb",
             phone="748-072-8880",
         ),
+        phone_is_preferred=True,
+        email_is_preferred=True,
+        secondary_telephone="748-072-8880",
+        backup_address=UpdateCustomerPayloadCurrentAddress(),
     ) # UpdateCustomerPayload | 
 
     # example passing only required values which don't have defaults set

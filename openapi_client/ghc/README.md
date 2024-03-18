@@ -138,6 +138,8 @@ Class | Method | HTTP request | Description
 *PpmApi* | [**finish_document_review**](docs/PpmApi.md#finish_document_review) | **PATCH** /ppm-shipments/{ppmShipmentId}/finish-document-review | Updates a PPM shipment&#39;s status after document review
 *PpmApi* | [**get_ppm_closeout**](docs/PpmApi.md#get_ppm_closeout) | **GET** /ppm-shipments/{ppmShipmentId}/closeout | Get the closeout calcuations for the specified PPM shipment
 *PpmApi* | [**get_ppm_documents**](docs/PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
+*PpmApi* | [**show_aoa_packet**](docs/PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
+*PpmApi* | [**show_payment_packet**](docs/PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
 *PpmApi* | [**update_moving_expense**](docs/PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
 *PpmApi* | [**update_pro_gear_weight_ticket**](docs/PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
 *PpmApi* | [**update_weight_ticket**](docs/PpmApi.md#update_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Updates a weight ticket document
@@ -249,6 +251,7 @@ Class | Method | HTTP request | Description
  - [PPMDocumentStatus](docs/PPMDocumentStatus.md)
  - [PPMDocuments](docs/PPMDocuments.md)
  - [PPMShipment](docs/PPMShipment.md)
+ - [PPMShipmentSecondaryPickupAddress](docs/PPMShipmentSecondaryPickupAddress.md)
  - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
  - [PWSViolation](docs/PWSViolation.md)
  - [PWSViolations](docs/PWSViolations.md)

@@ -13,6 +13,8 @@ import sys
 import unittest
 
 import internal_client
+from internal_client.model.address import Address
+globals()['Address'] = Address
 from internal_client.model.create_ppm_shipment import CreatePPMShipment
 
 

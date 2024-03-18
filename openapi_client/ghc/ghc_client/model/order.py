@@ -36,6 +36,7 @@ def lazy_import():
     from ghc_client.model.dept_indicator import DeptIndicator
     from ghc_client.model.duty_location import DutyLocation
     from ghc_client.model.entitlements import Entitlements
+    from ghc_client.model.gbloc import GBLOC
     from ghc_client.model.grade import Grade
     from ghc_client.model.orders_type import OrdersType
     from ghc_client.model.orders_type_detail import OrdersTypeDetail
@@ -44,6 +45,7 @@ def lazy_import():
     globals()['DeptIndicator'] = DeptIndicator
     globals()['DutyLocation'] = DutyLocation
     globals()['Entitlements'] = Entitlements
+    globals()['GBLOC'] = GBLOC
     globals()['Grade'] = Grade
     globals()['OrdersType'] = OrdersType
     globals()['OrdersTypeDetail'] = OrdersTypeDetail
@@ -113,6 +115,7 @@ class Order(ModelNormal):
             'entitlement': (Entitlements,),  # noqa: E501
             'destination_duty_location': (DutyLocation,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
+            'origin_duty_location_gbloc': (GBLOC,),  # noqa: E501
             'move_task_order_id': (str,),  # noqa: E501
             'uploaded_order_id': (str,),  # noqa: E501
             'uploaded_amended_order_id': (str, none_type,),  # noqa: E501
@@ -153,6 +156,7 @@ class Order(ModelNormal):
         'entitlement': 'entitlement',  # noqa: E501
         'destination_duty_location': 'destinationDutyLocation',  # noqa: E501
         'origin_duty_location': 'originDutyLocation',  # noqa: E501
+        'origin_duty_location_gbloc': 'originDutyLocationGBLOC',  # noqa: E501
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
         'uploaded_order_id': 'uploaded_order_id',  # noqa: E501
         'uploaded_amended_order_id': 'uploadedAmendedOrderID',  # noqa: E501
@@ -230,6 +234,7 @@ class Order(ModelNormal):
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location_gbloc (GBLOC): [optional]  # noqa: E501
             move_task_order_id (str): [optional]  # noqa: E501
             uploaded_order_id (str): [optional]  # noqa: E501
             uploaded_amended_order_id (str, none_type): [optional]  # noqa: E501
@@ -347,6 +352,7 @@ class Order(ModelNormal):
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
+            origin_duty_location_gbloc (GBLOC): [optional]  # noqa: E501
             move_task_order_id (str): [optional]  # noqa: E501
             uploaded_order_id (str): [optional]  # noqa: E501
             uploaded_amended_order_id (str, none_type): [optional]  # noqa: E501

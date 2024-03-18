@@ -128,6 +128,7 @@ class MTOShipment(ModelNormal):
             'required_delivery_date': (date, none_type,),  # noqa: E501
             'approved_date': (datetime, none_type,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
+            'distance': (int, none_type,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
@@ -135,6 +136,8 @@ class MTOShipment(ModelNormal):
             'secondary_delivery_address': (Address,),  # noqa: E501
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
+            'actual_pro_gear_weight': (int, none_type,),  # noqa: E501
+            'actual_spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'customer_remarks': (str, none_type,),  # noqa: E501
             'counselor_remarks': (str, none_type,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
@@ -182,6 +185,7 @@ class MTOShipment(ModelNormal):
         'required_delivery_date': 'requiredDeliveryDate',  # noqa: E501
         'approved_date': 'approvedDate',  # noqa: E501
         'diversion': 'diversion',  # noqa: E501
+        'distance': 'distance',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
         'destination_type': 'destinationType',  # noqa: E501
@@ -189,6 +193,8 @@ class MTOShipment(ModelNormal):
         'secondary_delivery_address': 'secondaryDeliveryAddress',  # noqa: E501
         'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
+        'actual_pro_gear_weight': 'actualProGearWeight',  # noqa: E501
+        'actual_spouse_pro_gear_weight': 'actualSpouseProGearWeight',  # noqa: E501
         'customer_remarks': 'customerRemarks',  # noqa: E501
         'counselor_remarks': 'counselorRemarks',  # noqa: E501
         'shipment_type': 'shipmentType',  # noqa: E501
@@ -272,6 +278,7 @@ class MTOShipment(ModelNormal):
             required_delivery_date (date, none_type): [optional]  # noqa: E501
             approved_date (datetime, none_type): [optional]  # noqa: E501
             diversion (bool): [optional]  # noqa: E501
+            distance (int, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
@@ -279,6 +286,8 @@ class MTOShipment(ModelNormal):
             secondary_delivery_address (Address): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address. Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
@@ -403,6 +412,7 @@ class MTOShipment(ModelNormal):
             required_delivery_date (date, none_type): [optional]  # noqa: E501
             approved_date (datetime, none_type): [optional]  # noqa: E501
             diversion (bool): [optional]  # noqa: E501
+            distance (int, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
@@ -410,6 +420,8 @@ class MTOShipment(ModelNormal):
             secondary_delivery_address (Address): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             customer_remarks (str, none_type): [optional]  # noqa: E501
             counselor_remarks (str, none_type): The counselor can use the counselor remarks field to inform the movers about any special circumstances for this shipment. Typical examples:   * bulky or fragile items,   * weapons,   * access info for their address. Counselors enters this information when creating or editing an MTO Shipment. Optional field. . [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501

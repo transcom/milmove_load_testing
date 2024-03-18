@@ -53,12 +53,13 @@ with ghc_client.ApiClient() as api_client:
     status = [
         "SUBMITTED",
     ] # [str] | Filtering for the status. (optional)
+    order_type = "orderType_example" # str | order type (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Gets queued list of all customer moves by GBLOC origin
-        api_response = api_instance.get_moves_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, appeared_in_too_at=appeared_in_too_at, requested_move_date=requested_move_date, status=status)
+        api_response = api_instance.get_moves_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, appeared_in_too_at=appeared_in_too_at, requested_move_date=requested_move_date, status=status, order_type=order_type)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_moves_queue: %s\n" % e)
@@ -82,6 +83,7 @@ Name | Type | Description  | Notes
  **appeared_in_too_at** | **datetime**|  | [optional]
  **requested_move_date** | **str**| filters the requested pickup date of a shipment on the move | [optional]
  **status** | **[str]**| Filtering for the status. | [optional]
+ **order_type** | **str**| order type | [optional]
 
 ### Return type
 
@@ -149,12 +151,13 @@ with ghc_client.ApiClient() as api_client:
     status = [
         "Payment requested",
     ] # [str] | Filtering for the status. (optional)
+    order_type = "orderType_example" # str | order type (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Gets queued list of all payment requests by GBLOC origin
-        api_response = api_instance.get_payment_requests_queue(sort=sort, order=order, page=page, per_page=per_page, submitted_at=submitted_at, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, destination_duty_location=destination_duty_location, origin_duty_location=origin_duty_location, status=status)
+        api_response = api_instance.get_payment_requests_queue(sort=sort, order=order, page=page, per_page=per_page, submitted_at=submitted_at, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, destination_duty_location=destination_duty_location, origin_duty_location=origin_duty_location, status=status, order_type=order_type)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_payment_requests_queue: %s\n" % e)
@@ -177,6 +180,7 @@ Name | Type | Description  | Notes
  **destination_duty_location** | **str**|  | [optional]
  **origin_duty_location** | **str**|  | [optional]
  **status** | **[str]**| Filtering for the status. | [optional]
+ **order_type** | **str**| order type | [optional]
 
 ### Return type
 
@@ -250,12 +254,13 @@ with ghc_client.ApiClient() as api_client:
     ppm_type = "FULL" # str | filters PPM type (optional)
     closeout_initiated = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Latest date that closeout was initiated on a PPM on the move (optional)
     closeout_location = "closeoutLocation_example" # str | closeout location (optional)
+    order_type = "orderType_example" # str | order type (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Gets queued list of all customer moves needing services counseling by GBLOC origin
-        api_response = api_instance.get_services_counseling_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, requested_move_date=requested_move_date, submitted_at=submitted_at, origin_gbloc=origin_gbloc, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, status=status, needs_ppm_closeout=needs_ppm_closeout, ppm_type=ppm_type, closeout_initiated=closeout_initiated, closeout_location=closeout_location)
+        api_response = api_instance.get_services_counseling_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, requested_move_date=requested_move_date, submitted_at=submitted_at, origin_gbloc=origin_gbloc, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, status=status, needs_ppm_closeout=needs_ppm_closeout, ppm_type=ppm_type, closeout_initiated=closeout_initiated, closeout_location=closeout_location, order_type=order_type)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_services_counseling_queue: %s\n" % e)
@@ -284,6 +289,7 @@ Name | Type | Description  | Notes
  **ppm_type** | **str**| filters PPM type | [optional]
  **closeout_initiated** | **datetime**| Latest date that closeout was initiated on a PPM on the move | [optional]
  **closeout_location** | **str**| closeout location | [optional]
+ **order_type** | **str**| order type | [optional]
 
 ### Return type
 
@@ -342,12 +348,13 @@ with ghc_client.ApiClient() as api_client:
     per_page = 1 # int | results per page (optional)
     id = "id_example" # str |  (optional)
     move_code = "moveCode_example" # str |  (optional)
+    order_type = "orderType_example" # str | order type (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # getPrimeMovesQueue
-        api_response = api_instance.list_prime_moves(since=since, page=page, per_page=per_page, id=id, move_code=move_code)
+        api_response = api_instance.list_prime_moves(since=since, page=page, per_page=per_page, id=id, move_code=move_code, order_type=order_type)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->list_prime_moves: %s\n" % e)
@@ -363,6 +370,7 @@ Name | Type | Description  | Notes
  **per_page** | **int**| results per page | [optional]
  **id** | **str**|  | [optional]
  **move_code** | **str**|  | [optional]
+ **order_type** | **str**| order type | [optional]
 
 ### Return type
 

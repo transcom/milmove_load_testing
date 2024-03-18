@@ -92,6 +92,7 @@ docs/PPMCloseout.md
 docs/PPMDocumentStatus.md
 docs/PPMDocuments.md
 docs/PPMShipment.md
+docs/PPMShipmentSecondaryPickupAddress.md
 docs/PPMShipmentStatus.md
 docs/PWSViolation.md
 docs/PWSViolations.md
@@ -299,6 +300,7 @@ ghc_client/model/ppm_closeout.py
 ghc_client/model/ppm_document_status.py
 ghc_client/model/ppm_documents.py
 ghc_client/model/ppm_shipment.py
+ghc_client/model/ppm_shipment_secondary_pickup_address.py
 ghc_client/model/ppm_shipment_status.py
 ghc_client/model/pro_gear_weight_ticket.py
 ghc_client/model/pro_gear_weight_ticket_document.py
@@ -480,6 +482,7 @@ test/test_ppm_closeout.py
 test/test_ppm_document_status.py
 test/test_ppm_documents.py
 test/test_ppm_shipment.py
+test/test_ppm_shipment_secondary_pickup_address.py
 test/test_ppm_shipment_status.py
 test/test_pro_gear_weight_ticket.py
 test/test_pro_gear_weight_ticket_document.py

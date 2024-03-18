@@ -88,6 +88,7 @@ from ghc_client.model.ppm_closeout import PPMCloseout
 from ghc_client.model.ppm_document_status import PPMDocumentStatus
 from ghc_client.model.ppm_documents import PPMDocuments
 from ghc_client.model.ppm_shipment import PPMShipment
+from ghc_client.model.ppm_shipment_secondary_pickup_address import PPMShipmentSecondaryPickupAddress
 from ghc_client.model.ppm_shipment_status import PPMShipmentStatus
 from ghc_client.model.pws_violation import PWSViolation
 from ghc_client.model.pws_violations import PWSViolations

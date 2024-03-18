@@ -113,6 +113,8 @@ class MTOShipment(ModelNormal):
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'secondary_delivery_address': (Address,),  # noqa: E501
             'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
+            'actual_pro_gear_weight': (int, none_type,),  # noqa: E501
+            'actual_spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -139,6 +141,8 @@ class MTOShipment(ModelNormal):
         'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'secondary_delivery_address': 'secondaryDeliveryAddress',  # noqa: E501
         'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
+        'actual_pro_gear_weight': 'actualProGearWeight',  # noqa: E501
+        'actual_spouse_pro_gear_weight': 'actualSpouseProGearWeight',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -207,6 +211,8 @@ class MTOShipment(ModelNormal):
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -310,6 +316,8 @@ class MTOShipment(ModelNormal):
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 

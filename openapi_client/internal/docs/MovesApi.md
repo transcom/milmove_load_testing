@@ -7,7 +7,6 @@ Method | HTTP request | Description
 [**get_all_moves**](MovesApi.md#get_all_moves) | **GET** /allmoves/{serviceMemberId} | Return the current and previous moves of a service member
 [**patch_move**](MovesApi.md#patch_move) | **PATCH** /moves/{moveId} | Patches the move
 [**show_move**](MovesApi.md#show_move) | **GET** /moves/{moveId} | Returns the given move
-[**show_shipment_summary_worksheet**](MovesApi.md#show_shipment_summary_worksheet) | **GET** /moves/{ppmShipmentId}/shipment_summary_worksheet | Returns Shipment Summary Worksheet
 [**submit_amended_orders**](MovesApi.md#submit_amended_orders) | **POST** /moves/{moveId}/submit_amended_orders | Submits amended orders for review
 [**submit_move_for_approval**](MovesApi.md#submit_move_for_approval) | **POST** /moves/{moveId}/submit | Submits a move for approval
 
@@ -233,78 +232,6 @@ No authorization required
 **401** | request requires user authentication |  -  |
 **403** | user is not authorized |  -  |
 **404** | move is not found |  -  |
-**500** | internal server error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **show_shipment_summary_worksheet**
-> file_type show_shipment_summary_worksheet(ppm_shipment_id, preparation_date)
-
-Returns Shipment Summary Worksheet
-
-Generates pre-filled PDF using data already collected
-
-### Example
-
-
-```python
-import time
-import internal_client
-from internal_client.api import moves_api
-from pprint import pprint
-# Defining the host is optional and defaults to /internal
-# See configuration.py for a list of all supported configuration parameters.
-configuration = internal_client.Configuration(
-    host = "/internal"
-)
-
-
-# Enter a context with an instance of the API client
-with internal_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = moves_api.MovesApi(api_client)
-    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the ppmShipment
-    preparation_date = dateutil_parser('1970-01-01').date() # date | The preparationDate of PDF
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Returns Shipment Summary Worksheet
-        api_response = api_instance.show_shipment_summary_worksheet(ppm_shipment_id, preparation_date)
-        pprint(api_response)
-    except internal_client.ApiException as e:
-        print("Exception when calling MovesApi->show_shipment_summary_worksheet: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ppm_shipment_id** | **str**| UUID of the ppmShipment |
- **preparation_date** | **date**| The preparationDate of PDF |
-
-### Return type
-
-**file_type**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/pdf
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Pre-filled worksheet PDF |  * Content-Disposition - File name to download <br>  |
-**400** | invalid request |  -  |
-**401** | request requires user authentication |  -  |
-**403** | user is not authorized |  -  |
 **500** | internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **secondary_pickup_address** | [**UpdateCustomerPayloadCurrentAddress**](UpdateCustomerPayloadCurrentAddress.md) |  | [optional] 
 **has_secondary_pickup_address** | **bool, none_type** |  | [optional] 
 **has_secondary_delivery_address** | **bool, none_type** |  | [optional] 
+**actual_pro_gear_weight** | **int, none_type** |  | [optional] 
+**actual_spouse_pro_gear_weight** | **int, none_type** |  | [optional] 
 **destination_type** | [**DestinationType**](DestinationType.md) |  | [optional] 
 **agents** | [**MTOAgents**](MTOAgents.md) |  | [optional] 
 **tac_type** | [**LOATypeNullable**](LOATypeNullable.md) |  | [optional] 

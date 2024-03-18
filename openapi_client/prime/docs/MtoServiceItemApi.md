@@ -170,7 +170,7 @@ No authorization required
 
 updateMTOServiceItem
 
-Updates MTOServiceItems after creation. Not all service items or fields may be updated, please see details below.  This endpoint supports different body definitions. In the modelType field below, select the modelType corresponding  to the service item you wish to update and the documentation will update with the new definition.  * Addresses: You can add a new SIT Destination final address using this endpoint (and must use this endpoint to do so), but you cannot update an existing one. Please use [createSITAddressUpdateRequest](#operation/createSITAddressUpdateRequest) instead.  To create a service item, please use [createMTOServiceItem](#operation/createMTOServiceItem)) endpoint. 
+Updates MTOServiceItems after creation. Not all service items or fields may be updated, please see details below.  This endpoint supports different body definitions. In the modelType field below, select the modelType corresponding  to the service item you wish to update and the documentation will update with the new definition.  * Addresses: To update a destination service item's SIT destination final address, update the shipment destination address. For approved shipments, please use [updateShipmentDestinationAddress](#mtoShipment/updateShipmentDestinationAddress). For shipments not yet approved, please use [updateMTOShipmentAddress](#mtoShipment/updateMTOShipmentAddress).  To create a service item, please use [createMTOServiceItem](#mtoServiceItem/createMTOServiceItem)) endpoint. 
 
 ### Example
 

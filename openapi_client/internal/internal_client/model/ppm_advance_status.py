@@ -57,6 +57,8 @@ class PPMAdvanceStatus(ModelSimple):
             'APPROVED': "APPROVED",
             'REJECTED': "REJECTED",
             'EDITED': "EDITED",
+            'RECEIVED': "RECEIVED",
+            'NOT_RECEIVED': "NOT_RECEIVED",
         },
     }
 
@@ -108,10 +110,10 @@ class PPMAdvanceStatus(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): Indicates whether an advance status has been accepted, rejected, or edited.., must be one of ["APPROVED", "REJECTED", "EDITED", ]  # noqa: E501
+            args[0] (str): Indicates whether an advance status has been accepted, rejected, or edited, or a prime counseled PPM has been received or not received., must be one of ["APPROVED", "REJECTED", "EDITED", "RECEIVED", "NOT_RECEIVED", ]  # noqa: E501
 
         Keyword Args:
-            value (str): Indicates whether an advance status has been accepted, rejected, or edited.., must be one of ["APPROVED", "REJECTED", "EDITED", ]  # noqa: E501
+            value (str): Indicates whether an advance status has been accepted, rejected, or edited, or a prime counseled PPM has been received or not received., must be one of ["APPROVED", "REJECTED", "EDITED", "RECEIVED", "NOT_RECEIVED", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -202,10 +204,10 @@ class PPMAdvanceStatus(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): Indicates whether an advance status has been accepted, rejected, or edited.., must be one of ["APPROVED", "REJECTED", "EDITED", ]  # noqa: E501
+            args[0] (str): Indicates whether an advance status has been accepted, rejected, or edited, or a prime counseled PPM has been received or not received., must be one of ["APPROVED", "REJECTED", "EDITED", "RECEIVED", "NOT_RECEIVED", ]  # noqa: E501
 
         Keyword Args:
-            value (str): Indicates whether an advance status has been accepted, rejected, or edited.., must be one of ["APPROVED", "REJECTED", "EDITED", ]  # noqa: E501
+            value (str): Indicates whether an advance status has been accepted, rejected, or edited, or a prime counseled PPM has been received or not received., must be one of ["APPROVED", "REJECTED", "EDITED", "RECEIVED", "NOT_RECEIVED", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

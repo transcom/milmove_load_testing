@@ -14,9 +14,11 @@ import unittest
 
 import ghc_client
 from ghc_client.model.dept_indicator import DeptIndicator
+from ghc_client.model.grade import Grade
 from ghc_client.model.orders_type import OrdersType
 from ghc_client.model.orders_type_detail import OrdersTypeDetail
 globals()['DeptIndicator'] = DeptIndicator
+globals()['Grade'] = Grade
 globals()['OrdersType'] = OrdersType
 globals()['OrdersTypeDetail'] = OrdersTypeDetail
 from ghc_client.model.update_order_payload import UpdateOrderPayload
