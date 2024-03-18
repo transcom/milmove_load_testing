@@ -63,6 +63,7 @@ class QueuesApi(object):
                     'appeared_in_too_at',
                     'requested_move_date',
                     'status',
+                    'order_type',
                 ],
                 'required': [],
                 'nullable': [
@@ -134,6 +135,8 @@ class QueuesApi(object):
                         (str,),
                     'status':
                         ([str],),
+                    'order_type':
+                        (str,),
                 },
                 'attribute_map': {
                     'page': 'page',
@@ -149,6 +152,7 @@ class QueuesApi(object):
                     'appeared_in_too_at': 'appearedInTooAt',
                     'requested_move_date': 'requestedMoveDate',
                     'status': 'status',
+                    'order_type': 'orderType',
                 },
                 'location_map': {
                     'page': 'query',
@@ -164,6 +168,7 @@ class QueuesApi(object):
                     'appeared_in_too_at': 'query',
                     'requested_move_date': 'query',
                     'status': 'query',
+                    'order_type': 'query',
                 },
                 'collection_format_map': {
                     'status': 'csv',
@@ -200,6 +205,7 @@ class QueuesApi(object):
                     'destination_duty_location',
                     'origin_duty_location',
                     'status',
+                    'order_type',
                 ],
                 'required': [],
                 'nullable': [
@@ -271,6 +277,8 @@ class QueuesApi(object):
                         (str,),
                     'status':
                         ([str],),
+                    'order_type':
+                        (str,),
                 },
                 'attribute_map': {
                     'sort': 'sort',
@@ -285,6 +293,7 @@ class QueuesApi(object):
                     'destination_duty_location': 'destinationDutyLocation',
                     'origin_duty_location': 'originDutyLocation',
                     'status': 'status',
+                    'order_type': 'orderType',
                 },
                 'location_map': {
                     'sort': 'query',
@@ -299,6 +308,7 @@ class QueuesApi(object):
                     'destination_duty_location': 'query',
                     'origin_duty_location': 'query',
                     'status': 'query',
+                    'order_type': 'query',
                 },
                 'collection_format_map': {
                     'status': 'csv',
@@ -341,6 +351,7 @@ class QueuesApi(object):
                     'ppm_type',
                     'closeout_initiated',
                     'closeout_location',
+                    'order_type',
                 ],
                 'required': [],
                 'nullable': [
@@ -431,6 +442,8 @@ class QueuesApi(object):
                         (datetime,),
                     'closeout_location':
                         (str,),
+                    'order_type':
+                        (str,),
                 },
                 'attribute_map': {
                     'page': 'page',
@@ -451,6 +464,7 @@ class QueuesApi(object):
                     'ppm_type': 'ppmType',
                     'closeout_initiated': 'closeoutInitiated',
                     'closeout_location': 'closeoutLocation',
+                    'order_type': 'orderType',
                 },
                 'location_map': {
                     'page': 'query',
@@ -471,6 +485,7 @@ class QueuesApi(object):
                     'ppm_type': 'query',
                     'closeout_initiated': 'query',
                     'closeout_location': 'query',
+                    'order_type': 'query',
                 },
                 'collection_format_map': {
                     'status': 'csv',
@@ -500,6 +515,7 @@ class QueuesApi(object):
                     'per_page',
                     'id',
                     'move_code',
+                    'order_type',
                 ],
                 'required': [],
                 'nullable': [
@@ -525,6 +541,8 @@ class QueuesApi(object):
                         (str,),
                     'move_code':
                         (str,),
+                    'order_type':
+                        (str,),
                 },
                 'attribute_map': {
                     'since': 'since',
@@ -532,6 +550,7 @@ class QueuesApi(object):
                     'per_page': 'perPage',
                     'id': 'id',
                     'move_code': 'moveCode',
+                    'order_type': 'orderType',
                 },
                 'location_map': {
                     'since': 'query',
@@ -539,6 +558,7 @@ class QueuesApi(object):
                     'per_page': 'query',
                     'id': 'query',
                     'move_code': 'query',
+                    'order_type': 'query',
                 },
                 'collection_format_map': {
                 }
@@ -580,6 +600,7 @@ class QueuesApi(object):
             appeared_in_too_at (datetime): [optional]
             requested_move_date (str): filters the requested pickup date of a shipment on the move. [optional]
             status ([str]): Filtering for the status.. [optional]
+            order_type (str): order type. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -670,6 +691,7 @@ class QueuesApi(object):
             destination_duty_location (str): [optional]
             origin_duty_location (str): [optional]
             status ([str]): Filtering for the status.. [optional]
+            order_type (str): order type. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -766,6 +788,7 @@ class QueuesApi(object):
             ppm_type (str): filters PPM type. [optional]
             closeout_initiated (datetime): Latest date that closeout was initiated on a PPM on the move. [optional]
             closeout_location (str): closeout location. [optional]
+            order_type (str): order type. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -849,6 +872,7 @@ class QueuesApi(object):
             per_page (int): results per page. [optional]
             id (str): [optional]
             move_code (str): [optional]
+            order_type (str): order type. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object

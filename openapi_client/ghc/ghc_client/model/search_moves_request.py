@@ -57,9 +57,12 @@ class SearchMovesRequest(ModelNormal):
 
     allowed_values = {
         ('status',): {
+            'DRAFT': "DRAFT",
             'SUBMITTED': "SUBMITTED",
             'APPROVALS_REQUESTED': "APPROVALS REQUESTED",
             'APPROVED': "APPROVED",
+            'NEEDS_SERVICE_COUNSELING': "NEEDS SERVICE COUNSELING",
+            'SERVICE_COUNSELING_COMPLETED': "SERVICE COUNSELING COMPLETED",
         },
         ('sort',): {
             'None': None,
@@ -126,6 +129,8 @@ class SearchMovesRequest(ModelNormal):
             'destination_postal_code': (str, none_type,),  # noqa: E501
             'branch': (str, none_type,),  # noqa: E501
             'shipments_count': (int, none_type,),  # noqa: E501
+            'pickup_date': (datetime, none_type,),  # noqa: E501
+            'delivery_date': (datetime, none_type,),  # noqa: E501
             'sort': (str, none_type,),  # noqa: E501
             'order': (str, none_type,),  # noqa: E501
         }
@@ -146,6 +151,8 @@ class SearchMovesRequest(ModelNormal):
         'destination_postal_code': 'destinationPostalCode',  # noqa: E501
         'branch': 'branch',  # noqa: E501
         'shipments_count': 'shipmentsCount',  # noqa: E501
+        'pickup_date': 'pickupDate',  # noqa: E501
+        'delivery_date': 'deliveryDate',  # noqa: E501
         'sort': 'sort',  # noqa: E501
         'order': 'order',  # noqa: E501
     }
@@ -201,6 +208,8 @@ class SearchMovesRequest(ModelNormal):
             destination_postal_code (str, none_type): [optional]  # noqa: E501
             branch (str, none_type): [optional]  # noqa: E501
             shipments_count (int, none_type): [optional]  # noqa: E501
+            pickup_date (datetime, none_type): [optional]  # noqa: E501
+            delivery_date (datetime, none_type): [optional]  # noqa: E501
             sort (str, none_type): [optional]  # noqa: E501
             order (str, none_type): [optional]  # noqa: E501
         """
@@ -298,6 +307,8 @@ class SearchMovesRequest(ModelNormal):
             destination_postal_code (str, none_type): [optional]  # noqa: E501
             branch (str, none_type): [optional]  # noqa: E501
             shipments_count (int, none_type): [optional]  # noqa: E501
+            pickup_date (datetime, none_type): [optional]  # noqa: E501
+            delivery_date (datetime, none_type): [optional]  # noqa: E501
             sort (str, none_type): [optional]  # noqa: E501
             order (str, none_type): [optional]  # noqa: E501
         """

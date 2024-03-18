@@ -129,6 +129,7 @@ class Orders(ModelNormal):
             'department_indicator': (DeptIndicator,),  # noqa: E501
             'authorized_weight': (int, none_type,),  # noqa: E501
             'entitlement': (Entitlement,),  # noqa: E501
+            'provides_services_counseling': (bool,),  # noqa: E501
         }
 
     @cached_property
@@ -162,6 +163,7 @@ class Orders(ModelNormal):
         'department_indicator': 'department_indicator',  # noqa: E501
         'authorized_weight': 'authorizedWeight',  # noqa: E501
         'entitlement': 'entitlement',  # noqa: E501
+        'provides_services_counseling': 'provides_services_counseling',  # noqa: E501
     }
 
     read_only_vars = {
@@ -232,6 +234,7 @@ class Orders(ModelNormal):
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             authorized_weight (int, none_type): [optional]  # noqa: E501
             entitlement (Entitlement): [optional]  # noqa: E501
+            provides_services_counseling (bool): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -355,6 +358,7 @@ class Orders(ModelNormal):
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             authorized_weight (int, none_type): [optional]  # noqa: E501
             entitlement (Entitlement): [optional]  # noqa: E501
+            provides_services_counseling (bool): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

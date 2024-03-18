@@ -75,6 +75,11 @@ class UpdateCustomerPayload(ModelNormal):
                 'pattern': r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',  # noqa: E501
             },
         },
+        ('secondary_telephone',): {
+            'regex': {
+                'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$',  # noqa: E501
+            },
+        },
     }
 
     @cached_property
@@ -108,6 +113,10 @@ class UpdateCustomerPayload(ModelNormal):
             'middle_name': (str, none_type,),  # noqa: E501
             'current_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'backup_contact': (BackupContact,),  # noqa: E501
+            'phone_is_preferred': (bool,),  # noqa: E501
+            'email_is_preferred': (bool,),  # noqa: E501
+            'secondary_telephone': (str, none_type,),  # noqa: E501
+            'backup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
         }
 
     @cached_property
@@ -124,6 +133,10 @@ class UpdateCustomerPayload(ModelNormal):
         'middle_name': 'middle_name',  # noqa: E501
         'current_address': 'current_address',  # noqa: E501
         'backup_contact': 'backup_contact',  # noqa: E501
+        'phone_is_preferred': 'phoneIsPreferred',  # noqa: E501
+        'email_is_preferred': 'emailIsPreferred',  # noqa: E501
+        'secondary_telephone': 'secondaryTelephone',  # noqa: E501
+        'backup_address': 'backupAddress',  # noqa: E501
     }
 
     read_only_vars = {
@@ -175,6 +188,10 @@ class UpdateCustomerPayload(ModelNormal):
             middle_name (str, none_type): [optional]  # noqa: E501
             current_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             backup_contact (BackupContact): [optional]  # noqa: E501
+            phone_is_preferred (bool): [optional]  # noqa: E501
+            email_is_preferred (bool): [optional]  # noqa: E501
+            secondary_telephone (str, none_type): [optional]  # noqa: E501
+            backup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -268,6 +285,10 @@ class UpdateCustomerPayload(ModelNormal):
             middle_name (str, none_type): [optional]  # noqa: E501
             current_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             backup_contact (BackupContact): [optional]  # noqa: E501
+            phone_is_preferred (bool): [optional]  # noqa: E501
+            email_is_preferred (bool): [optional]  # noqa: E501
+            secondary_telephone (str, none_type): [optional]  # noqa: E501
+            backup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

@@ -116,6 +116,7 @@ class QueueMove(ModelNormal):
             'ppm_type': (str, none_type,),  # noqa: E501
             'closeout_initiated': (datetime, none_type,),  # noqa: E501
             'closeout_location': (str, none_type,),  # noqa: E501
+            'order_type': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -139,6 +140,7 @@ class QueueMove(ModelNormal):
         'ppm_type': 'ppmType',  # noqa: E501
         'closeout_initiated': 'closeoutInitiated',  # noqa: E501
         'closeout_location': 'closeoutLocation',  # noqa: E501
+        'order_type': 'orderType',  # noqa: E501
     }
 
     read_only_vars = {
@@ -197,6 +199,7 @@ class QueueMove(ModelNormal):
             ppm_type (str, none_type): [optional]  # noqa: E501
             closeout_initiated (datetime, none_type): [optional]  # noqa: E501
             closeout_location (str, none_type): [optional]  # noqa: E501
+            order_type (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -297,6 +300,7 @@ class QueueMove(ModelNormal):
             ppm_type (str, none_type): [optional]  # noqa: E501
             closeout_initiated (datetime, none_type): [optional]  # noqa: E501
             closeout_location (str, none_type): [optional]  # noqa: E501
+            order_type (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

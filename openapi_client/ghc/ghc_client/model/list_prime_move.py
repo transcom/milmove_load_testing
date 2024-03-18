@@ -95,6 +95,7 @@ class ListPrimeMove(ModelNormal):
             'updated_at': (datetime,),  # noqa: E501
             'ppm_type': (str,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
+            'order_type': (str,),  # noqa: E501
         }
 
     @cached_property
@@ -112,6 +113,7 @@ class ListPrimeMove(ModelNormal):
         'updated_at': 'updatedAt',  # noqa: E501
         'ppm_type': 'ppmType',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
+        'order_type': 'orderType',  # noqa: E501
     }
 
     read_only_vars = {
@@ -169,6 +171,7 @@ class ListPrimeMove(ModelNormal):
             updated_at (datetime): [optional]  # noqa: E501
             ppm_type (str): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
+            order_type (str): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -263,6 +266,7 @@ class ListPrimeMove(ModelNormal):
             updated_at (datetime): [optional]  # noqa: E501
             ppm_type (str): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
+            order_type (str): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

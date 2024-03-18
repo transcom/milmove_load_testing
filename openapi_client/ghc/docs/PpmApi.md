@@ -7,6 +7,8 @@ Method | HTTP request | Description
 [**finish_document_review**](PpmApi.md#finish_document_review) | **PATCH** /ppm-shipments/{ppmShipmentId}/finish-document-review | Updates a PPM shipment&#39;s status after document review
 [**get_ppm_closeout**](PpmApi.md#get_ppm_closeout) | **GET** /ppm-shipments/{ppmShipmentId}/closeout | Get the closeout calcuations for the specified PPM shipment
 [**get_ppm_documents**](PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
+[**show_aoa_packet**](PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
+[**show_payment_packet**](PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
 [**update_moving_expense**](PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
 [**update_pro_gear_weight_ticket**](PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
 [**update_weight_ticket**](PpmApi.md#update_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Updates a weight ticket document
@@ -235,6 +237,150 @@ No authorization required
 **403** | The request was denied |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **show_aoa_packet**
+> file_type show_aoa_packet(ppm_shipment_id)
+
+Downloads AOA Packet form PPMShipment as a PDF
+
+### Functionality This endpoint downloads all uploaded move order documentation combined with the Shipment Summary Worksheet into a single PDF. ### Errors * The PPMShipment must have requested an AOA. * The PPMShipment AOA Request must have been approved. 
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import ppm_api
+from ghc_client.model.error import Error
+from ghc_client.model.validation_error import ValidationError
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | the id for the ppmshipment with aoa to be downloaded
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Downloads AOA Packet form PPMShipment as a PDF
+        api_response = api_instance.show_aoa_packet(ppm_shipment_id)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling PpmApi->show_aoa_packet: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| the id for the ppmshipment with aoa to be downloaded |
+
+### Return type
+
+**file_type**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | AOA PDF |  * Content-Disposition - File name to download <br>  |
+**400** | The request payload is invalid |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **show_payment_packet**
+> file_type show_payment_packet(ppm_shipment_id)
+
+Returns PPM payment packet
+
+Generates a PDF containing all user uploaded documentations for PPM. Contains SSW form, orders, weight and expense documentations.
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import ppm_api
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the ppmShipment
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Returns PPM payment packet
+        api_response = api_instance.show_payment_packet(ppm_shipment_id)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling PpmApi->show_payment_packet: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| UUID of the ppmShipment |
+
+### Return type
+
+**file_type**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | PPM Payment Packet PDF |  * Content-Disposition - File name to download <br>  |
+**400** | invalid request |  -  |
+**401** | request requires user authentication |  -  |
+**403** | user is not authorized |  -  |
+**404** | ppm not found |  -  |
+**500** | internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

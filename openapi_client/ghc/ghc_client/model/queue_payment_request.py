@@ -106,6 +106,7 @@ class QueuePaymentRequest(ModelNormal):
             'department_indicator': (DeptIndicator,),  # noqa: E501
             'origin_gbloc': (GBLOC,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
+            'order_type': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -124,6 +125,7 @@ class QueuePaymentRequest(ModelNormal):
         'department_indicator': 'departmentIndicator',  # noqa: E501
         'origin_gbloc': 'originGBLOC',  # noqa: E501
         'origin_duty_location': 'originDutyLocation',  # noqa: E501
+        'order_type': 'orderType',  # noqa: E501
     }
 
     read_only_vars = {
@@ -177,6 +179,7 @@ class QueuePaymentRequest(ModelNormal):
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             origin_gbloc (GBLOC): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
+            order_type (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -272,6 +275,7 @@ class QueuePaymentRequest(ModelNormal):
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             origin_gbloc (GBLOC): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
+            order_type (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

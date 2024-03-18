@@ -13,7 +13,6 @@ Name | Type | Description | Notes
 **service_member_id** | **str** |  | [optional] [readonly] 
 **status** | [**MoveStatus**](MoveStatus.md) |  | [optional] 
 **submitted_at** | **datetime, none_type** |  | [optional] 
-**personally_procured_moves** | [**IndexPersonallyProcuredMovePayload**](IndexPersonallyProcuredMovePayload.md) |  | [optional] 
 **mto_shipments** | [**MTOShipments**](MTOShipments.md) |  | [optional] 
 **closeout_office** | [**TransportationOffice**](TransportationOffice.md) |  | [optional] 
 **cancel_reason** | **str, none_type** |  | [optional] 

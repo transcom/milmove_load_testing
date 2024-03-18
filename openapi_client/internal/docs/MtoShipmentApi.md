@@ -47,9 +47,49 @@ with internal_client.ApiClient() as api_client:
         ppm_shipment=CreatePPMShipment(
             expected_departure_date=dateutil_parser('1970-01-01').date(),
             pickup_postal_code="90210",
+            pickup_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
             secondary_pickup_postal_code="secondary_pickup_postal_code_example",
+            secondary_pickup_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
             destination_postal_code="90210",
+            destination_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
             secondary_destination_postal_code="secondary_destination_postal_code_example",
+            secondary_destination_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
             sit_expected=True,
         ),
         requested_pickup_date=dateutil_parser('1970-01-01').date(),
@@ -304,7 +344,7 @@ No authorization required
 
 updateMTOShipment
 
-Updates a specified MTO shipment.  Required fields include: * MTO Shipment ID required in path * If-Match required in headers * Shipment type is required in body  Optional fields include: * New shipment status type * Customer requested pick-up date * Pick-up Address * Delivery Address * Customer Remarks * Releasing / Receiving agents 
+Updates a specified MTO shipment.  Required fields include: * MTO Shipment ID required in path * If-Match required in headers * Shipment type is required in body  Optional fields include: * New shipment status type * Customer requested pick-up date * Pick-up Address * Delivery Address * Customer Remarks * Releasing / Receiving agents * Actual Pro Gear Weight * Actual Spouse Pro Gear Weight 
 
 ### Example
 
@@ -339,10 +379,52 @@ with internal_client.ApiClient() as api_client:
             expected_departure_date=dateutil_parser('1970-01-01').date(),
             actual_move_date=dateutil_parser('1970-01-01').date(),
             pickup_postal_code="90210",
+            pickup_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
             secondary_pickup_postal_code="secondary_pickup_postal_code_example",
+            secondary_pickup_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
+            has_secondary_pickup_address=True,
             actual_pickup_postal_code="90210",
             destination_postal_code="90210",
+            destination_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
             secondary_destination_postal_code="secondary_destination_postal_code_example",
+            secondary_destination_address=Address(
+                id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+                street_address1="123 Main Ave",
+                street_address2="Apartment 9000",
+                street_address3="Montmârtre",
+                city="Anytown",
+                state="AL",
+                postal_code="90210",
+                country="USA",
+            ),
+            has_secondary_destination_address=True,
             actual_destination_postal_code="90210",
             w2_address=Address(
                 id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -409,6 +491,8 @@ with internal_client.ApiClient() as api_client:
             country="USA",
         ),
         has_secondary_delivery_address=True,
+        actual_pro_gear_weight=1,
+        actual_spouse_pro_gear_weight=1,
         agents=MTOAgents([
             MTOAgent(
                 id="1f2270c7-7166-40ae-981e-b200ebdf3054",

@@ -113,6 +113,8 @@ class UpdateShipment(ModelNormal):
             'secondary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
+            'actual_pro_gear_weight': (int, none_type,),  # noqa: E501
+            'actual_spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
             'tac_type': (LOATypeNullable,),  # noqa: E501
@@ -143,6 +145,8 @@ class UpdateShipment(ModelNormal):
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
         'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
+        'actual_pro_gear_weight': 'actualProGearWeight',  # noqa: E501
+        'actual_spouse_pro_gear_weight': 'actualSpouseProGearWeight',  # noqa: E501
         'destination_type': 'destinationType',  # noqa: E501
         'agents': 'agents',  # noqa: E501
         'tac_type': 'tacType',  # noqa: E501
@@ -208,6 +212,8 @@ class UpdateShipment(ModelNormal):
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             tac_type (LOATypeNullable): [optional]  # noqa: E501
@@ -315,6 +321,8 @@ class UpdateShipment(ModelNormal):
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
             tac_type (LOATypeNullable): [optional]  # noqa: E501

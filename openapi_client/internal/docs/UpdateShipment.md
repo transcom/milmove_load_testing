@@ -16,6 +16,8 @@ Name | Type | Description | Notes
 **destination_address** | [**Address**](Address.md) |  | [optional] 
 **secondary_delivery_address** | [**Address**](Address.md) |  | [optional] 
 **has_secondary_delivery_address** | **bool, none_type** |  | [optional] 
+**actual_pro_gear_weight** | **int, none_type** |  | [optional] 
+**actual_spouse_pro_gear_weight** | **int, none_type** |  | [optional] 
 **agents** | [**MTOAgents**](MTOAgents.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **entitlement** | [**Entitlements**](Entitlements.md) |  | [optional] 
 **destination_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 
 **origin_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 
+**origin_duty_location_gbloc** | [**GBLOC**](GBLOC.md) |  | [optional] 
 **move_task_order_id** | **str** |  | [optional] 
 **uploaded_order_id** | **str** |  | [optional] 
 **uploaded_amended_order_id** | **str, none_type** |  | [optional] 

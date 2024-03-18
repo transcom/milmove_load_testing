@@ -105,7 +105,6 @@ Class | Method | HTTP request | Description
 *MovesApi* | [**get_all_moves**](docs/MovesApi.md#get_all_moves) | **GET** /allmoves/{serviceMemberId} | Return the current and previous moves of a service member
 *MovesApi* | [**patch_move**](docs/MovesApi.md#patch_move) | **PATCH** /moves/{moveId} | Patches the move
 *MovesApi* | [**show_move**](docs/MovesApi.md#show_move) | **GET** /moves/{moveId} | Returns the given move
-*MovesApi* | [**show_shipment_summary_worksheet**](docs/MovesApi.md#show_shipment_summary_worksheet) | **GET** /moves/{ppmShipmentId}/shipment_summary_worksheet | Returns Shipment Summary Worksheet
 *MovesApi* | [**submit_amended_orders**](docs/MovesApi.md#submit_amended_orders) | **POST** /moves/{moveId}/submit_amended_orders | Submits amended orders for review
 *MovesApi* | [**submit_move_for_approval**](docs/MovesApi.md#submit_move_for_approval) | **POST** /moves/{moveId}/submit | Submits a move for approval
 *MtoShipmentApi* | [**create_mto_shipment**](docs/MtoShipmentApi.md#create_mto_shipment) | **POST** /mto_shipments | createMTOShipment
@@ -131,6 +130,8 @@ Class | Method | HTTP request | Description
 *PpmApi* | [**delete_pro_gear_weight_ticket**](docs/PpmApi.md#delete_pro_gear_weight_ticket) | **DELETE** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Soft deletes a pro-gear weight line item by ID
 *PpmApi* | [**delete_weight_ticket**](docs/PpmApi.md#delete_weight_ticket) | **DELETE** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Soft deletes a weight ticket by ID
 *PpmApi* | [**resubmit_ppm_shipment_documentation**](docs/PpmApi.md#resubmit_ppm_shipment_documentation) | **PUT** /ppm-shipments/{ppmShipmentId}/resubmit-ppm-shipment-documentation/{signedCertificationId} | Updates signature and routes PPM shipment to service counselor
+*PpmApi* | [**show_aoa_packet**](docs/PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
+*PpmApi* | [**show_payment_packet**](docs/PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
 *PpmApi* | [**show_ppm_estimate**](docs/PpmApi.md#show_ppm_estimate) | **GET** /estimates/ppm | Return a PPM cost estimate
 *PpmApi* | [**show_ppm_sit_estimate**](docs/PpmApi.md#show_ppm_sit_estimate) | **GET** /estimates/ppm_sit | Return a PPM move&#39;s SIT cost estimate
 *PpmApi* | [**submit_ppm_shipment_documentation**](docs/PpmApi.md#submit_ppm_shipment_documentation) | **POST** /ppm-shipments/{ppmShipmentId}/submit-ppm-shipment-documentation | Saves signature and routes PPM shipment to service counselor
@@ -158,11 +159,9 @@ Class | Method | HTTP request | Description
  - [AvailableMoveDates](docs/AvailableMoveDates.md)
  - [BackupContactPermission](docs/BackupContactPermission.md)
  - [CancelMove](docs/CancelMove.md)
- - [CategoryExpenseSummary](docs/CategoryExpenseSummary.md)
  - [ClientError](docs/ClientError.md)
  - [CreateGenericMoveDocumentPayload](docs/CreateGenericMoveDocumentPayload.md)
  - [CreatePPMShipment](docs/CreatePPMShipment.md)
- - [CreateReimbursement](docs/CreateReimbursement.md)
  - [CreateServiceMemberBackupContactPayload](docs/CreateServiceMemberBackupContactPayload.md)
  - [CreateServiceMemberPayload](docs/CreateServiceMemberPayload.md)
  - [CreateShipment](docs/CreateShipment.md)
@@ -179,7 +178,6 @@ Class | Method | HTTP request | Description
  - [FeatureFlagVariant](docs/FeatureFlagVariant.md)
  - [IndexEntitlements](docs/IndexEntitlements.md)
  - [IndexMovesPayload](docs/IndexMovesPayload.md)
- - [IndexPersonallyProcuredMovePayload](docs/IndexPersonallyProcuredMovePayload.md)
  - [IndexServiceMemberBackupContactsPayload](docs/IndexServiceMemberBackupContactsPayload.md)
  - [InternalMove](docs/InternalMove.md)
  - [InvalidRequestResponsePayload](docs/InvalidRequestResponsePayload.md)
@@ -193,7 +191,6 @@ Class | Method | HTTP request | Description
  - [MTOShipmentType](docs/MTOShipmentType.md)
  - [MTOShipments](docs/MTOShipments.md)
  - [MethodOfReceipt](docs/MethodOfReceipt.md)
- - [MoveDatesSummary](docs/MoveDatesSummary.md)
  - [MoveDocumentPayload](docs/MoveDocumentPayload.md)
  - [MoveDocumentStatus](docs/MoveDocumentStatus.md)
  - [MoveDocumentType](docs/MoveDocumentType.md)
@@ -218,13 +215,11 @@ Class | Method | HTTP request | Description
  - [PPMAdvanceStatus](docs/PPMAdvanceStatus.md)
  - [PPMEstimateRange](docs/PPMEstimateRange.md)
  - [PPMShipment](docs/PPMShipment.md)
+ - [PPMShipmentSecondaryPickupAddress](docs/PPMShipmentSecondaryPickupAddress.md)
  - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
  - [PPMSitEstimate](docs/PPMSitEstimate.md)
- - [PPMStatus](docs/PPMStatus.md)
  - [PatchMovePayload](docs/PatchMovePayload.md)
  - [PatchServiceMemberPayload](docs/PatchServiceMemberPayload.md)
- - [PaymentMethodsTotals](docs/PaymentMethodsTotals.md)
- - [PersonallyProcuredMovePayload](docs/PersonallyProcuredMovePayload.md)
  - [PostDocumentPayload](docs/PostDocumentPayload.md)
  - [ProGearWeightTicket](docs/ProGearWeightTicket.md)
  - [ProGearWeightTicketDocument](docs/ProGearWeightTicketDocument.md)
@@ -242,7 +237,6 @@ Class | Method | HTTP request | Description
  - [SignedCertificationTypeCreate](docs/SignedCertificationTypeCreate.md)
  - [SignedCertifications](docs/SignedCertifications.md)
  - [SubmitMoveForApprovalPayload](docs/SubmitMoveForApprovalPayload.md)
- - [TShirtSize](docs/TShirtSize.md)
  - [TransportationOffice](docs/TransportationOffice.md)
  - [TransportationOffices](docs/TransportationOffices.md)
  - [UpdateMovingExpense](docs/UpdateMovingExpense.md)

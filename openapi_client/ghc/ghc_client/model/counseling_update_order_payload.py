@@ -32,9 +32,11 @@ from ghc_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from ghc_client.model.dept_indicator import DeptIndicator
+    from ghc_client.model.grade import Grade
     from ghc_client.model.orders_type import OrdersType
     from ghc_client.model.orders_type_detail import OrdersTypeDetail
     globals()['DeptIndicator'] = DeptIndicator
+    globals()['Grade'] = Grade
     globals()['OrdersType'] = OrdersType
     globals()['OrdersTypeDetail'] = OrdersTypeDetail
 
@@ -108,6 +110,7 @@ class CounselingUpdateOrderPayload(ModelNormal):
             'sac': (str,),  # noqa: E501
             'nts_tac': (str,),  # noqa: E501
             'nts_sac': (str,),  # noqa: E501
+            'grade': (Grade,),  # noqa: E501
         }
 
     @cached_property
@@ -128,6 +131,7 @@ class CounselingUpdateOrderPayload(ModelNormal):
         'sac': 'sac',  # noqa: E501
         'nts_tac': 'ntsTac',  # noqa: E501
         'nts_sac': 'ntsSac',  # noqa: E501
+        'grade': 'grade',  # noqa: E501
     }
 
     read_only_vars = {
@@ -185,6 +189,7 @@ class CounselingUpdateOrderPayload(ModelNormal):
             sac (str): [optional]  # noqa: E501
             nts_tac (str): [optional]  # noqa: E501
             nts_sac (str): [optional]  # noqa: E501
+            grade (Grade): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -289,6 +294,7 @@ class CounselingUpdateOrderPayload(ModelNormal):
             sac (str): [optional]  # noqa: E501
             nts_tac (str): [optional]  # noqa: E501
             nts_sac (str): [optional]  # noqa: E501
+            grade (Grade): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

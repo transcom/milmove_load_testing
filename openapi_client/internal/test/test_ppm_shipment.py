@@ -16,6 +16,7 @@ import internal_client
 from internal_client.model.address import Address
 from internal_client.model.moving_expense import MovingExpense
 from internal_client.model.ppm_advance_status import PPMAdvanceStatus
+from internal_client.model.ppm_shipment_secondary_pickup_address import PPMShipmentSecondaryPickupAddress
 from internal_client.model.ppm_shipment_status import PPMShipmentStatus
 from internal_client.model.pro_gear_weight_ticket import ProGearWeightTicket
 from internal_client.model.signed_certification import SignedCertification
@@ -23,6 +24,7 @@ from internal_client.model.weight_tickets import WeightTickets
 globals()['Address'] = Address
 globals()['MovingExpense'] = MovingExpense
 globals()['PPMAdvanceStatus'] = PPMAdvanceStatus
+globals()['PPMShipmentSecondaryPickupAddress'] = PPMShipmentSecondaryPickupAddress
 globals()['PPMShipmentStatus'] = PPMShipmentStatus
 globals()['ProGearWeightTicket'] = ProGearWeightTicket
 globals()['SignedCertification'] = SignedCertification

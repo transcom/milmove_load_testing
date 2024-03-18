@@ -31,11 +31,9 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
-    from internal_client.model.index_personally_procured_move_payload import IndexPersonallyProcuredMovePayload
     from internal_client.model.move_status import MoveStatus
     from internal_client.model.mto_shipments import MTOShipments
     from internal_client.model.transportation_office import TransportationOffice
-    globals()['IndexPersonallyProcuredMovePayload'] = IndexPersonallyProcuredMovePayload
     globals()['MTOShipments'] = MTOShipments
     globals()['MoveStatus'] = MoveStatus
     globals()['TransportationOffice'] = TransportationOffice
@@ -103,7 +101,6 @@ class MovePayload(ModelNormal):
             'service_member_id': (str,),  # noqa: E501
             'status': (MoveStatus,),  # noqa: E501
             'submitted_at': (datetime, none_type,),  # noqa: E501
-            'personally_procured_moves': (IndexPersonallyProcuredMovePayload,),  # noqa: E501
             'mto_shipments': (MTOShipments,),  # noqa: E501
             'closeout_office': (TransportationOffice,),  # noqa: E501
             'cancel_reason': (str, none_type,),  # noqa: E501
@@ -124,7 +121,6 @@ class MovePayload(ModelNormal):
         'service_member_id': 'service_member_id',  # noqa: E501
         'status': 'status',  # noqa: E501
         'submitted_at': 'submitted_at',  # noqa: E501
-        'personally_procured_moves': 'personally_procured_moves',  # noqa: E501
         'mto_shipments': 'mto_shipments',  # noqa: E501
         'closeout_office': 'closeout_office',  # noqa: E501
         'cancel_reason': 'cancel_reason',  # noqa: E501
@@ -183,7 +179,6 @@ class MovePayload(ModelNormal):
             service_member_id (str): [optional]  # noqa: E501
             status (MoveStatus): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
-            personally_procured_moves (IndexPersonallyProcuredMovePayload): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501
@@ -289,7 +284,6 @@ class MovePayload(ModelNormal):
             service_member_id (str): [optional]  # noqa: E501
             status (MoveStatus): [optional]  # noqa: E501
             submitted_at (datetime, none_type): [optional]  # noqa: E501
-            personally_procured_moves (IndexPersonallyProcuredMovePayload): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501

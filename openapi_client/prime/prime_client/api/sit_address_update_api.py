@@ -95,7 +95,7 @@ class SitAddressUpdateApi(object):
     ):
         """createSITAddressUpdateRequest  # noqa: E501
 
-        **Functionality:** Creates an update request for a SIT service item's final delivery address. A newly created update request is assigned the status 'REQUESTED'  if the change in address is > 50 miles and automatically approved otherwise.  **Limitations:** The update can be requested for APPROVED SIT service items only. Only ONE request is allowed per approved SIT service item.   # noqa: E501
+        **Functionality:** Creates an update request for a SIT service item's final delivery address. A newly created update request is assigned the status 'REQUESTED'  if the change in address is > 50 miles and automatically approved otherwise.  **Limitations:** The update can be requested for APPROVED SIT service items only. Only ONE request is allowed per approved SIT service item.  **DEPRECATION ON AUGUST 5TH, 2024** Following deprecation, when updating a service item's final delivery address, you will need to update the shipment's destination address. This will update the destination SIT service items' final delivery address upon approval. For `APPROVED` shipments, you can use [updateShipmentDestinationAddress](#mtoShipment/updateShipmentDestinationAddress) For shipments in any other status, you can use [updateMTOShipmentAddress](#mtoShipment/updateMTOShipmentAddress)   # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
