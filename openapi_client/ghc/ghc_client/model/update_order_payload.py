@@ -32,9 +32,11 @@ from ghc_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from ghc_client.model.dept_indicator import DeptIndicator
+    from ghc_client.model.grade import Grade
     from ghc_client.model.orders_type import OrdersType
     from ghc_client.model.orders_type_detail import OrdersTypeDetail
     globals()['DeptIndicator'] = DeptIndicator
+    globals()['Grade'] = Grade
     globals()['OrdersType'] = OrdersType
     globals()['OrdersTypeDetail'] = OrdersTypeDetail
 
@@ -109,6 +111,7 @@ class UpdateOrderPayload(ModelNormal):
             'nts_sac': (str,),  # noqa: E501
             'department_indicator': (DeptIndicator,),  # noqa: E501
             'orders_acknowledgement': (bool, none_type,),  # noqa: E501
+            'grade': (Grade,),  # noqa: E501
         }
 
     @cached_property
@@ -130,6 +133,7 @@ class UpdateOrderPayload(ModelNormal):
         'nts_sac': 'ntsSac',  # noqa: E501
         'department_indicator': 'departmentIndicator',  # noqa: E501
         'orders_acknowledgement': 'ordersAcknowledgement',  # noqa: E501
+        'grade': 'grade',  # noqa: E501
     }
 
     read_only_vars = {
@@ -188,6 +192,7 @@ class UpdateOrderPayload(ModelNormal):
             nts_sac (str): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             orders_acknowledgement (bool, none_type): Confirmation that the new amended orders were reviewed after previously approving the original orders. [optional]  # noqa: E501
+            grade (Grade): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -293,6 +298,7 @@ class UpdateOrderPayload(ModelNormal):
             nts_sac (str): [optional]  # noqa: E501
             department_indicator (DeptIndicator): [optional]  # noqa: E501
             orders_acknowledgement (bool, none_type): Confirmation that the new amended orders were reviewed after previously approving the original orders. [optional]  # noqa: E501
+            grade (Grade): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

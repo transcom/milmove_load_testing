@@ -45,13 +45,6 @@ class TestMovesApi(unittest.TestCase):
         """
         pass
 
-    def test_show_shipment_summary_worksheet(self):
-        """Test case for show_shipment_summary_worksheet
-
-        Returns Shipment Summary Worksheet  # noqa: E501
-        """
-        pass
-
     def test_submit_amended_orders(self):
         """Test case for submit_amended_orders
 

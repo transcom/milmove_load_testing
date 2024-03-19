@@ -14,6 +14,11 @@ Name | Type | Description | Notes
 **shipments_count** | **int** |  | [optional] 
 **origin_duty_location_postal_code** | **str** |  | [optional] 
 **destination_duty_location_postal_code** | **str** |  | [optional] 
+**order_type** | **str** |  | [optional] 
+**requested_pickup_date** | **date, none_type** |  | [optional] 
+**requested_delivery_date** | **date, none_type** |  | [optional] 
+**origin_gbloc** | [**GBLOC**](GBLOC.md) |  | [optional] 
+**destination_gbloc** | [**GBLOC**](GBLOC.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

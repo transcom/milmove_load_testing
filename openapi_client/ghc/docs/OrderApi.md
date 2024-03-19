@@ -224,6 +224,7 @@ with ghc_client.ApiClient() as api_client:
         sac="sac_example",
         nts_tac="nts_tac_example",
         nts_sac="nts_sac_example",
+        grade=Grade("E_1"),
     ) # CounselingUpdateOrderPayload | 
 
     # example passing only required values which don't have defaults set
@@ -714,6 +715,7 @@ with ghc_client.ApiClient() as api_client:
         nts_sac="nts_sac_example",
         department_indicator=DeptIndicator("NAVY_AND_MARINES"),
         orders_acknowledgement=True,
+        grade=Grade("E_1"),
     ) # UpdateOrderPayload | 
 
     # example passing only required values which don't have defaults set

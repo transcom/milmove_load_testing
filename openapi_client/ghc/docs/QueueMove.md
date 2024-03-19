@@ -19,6 +19,7 @@ Name | Type | Description | Notes
 **ppm_type** | **str, none_type** |  | [optional] 
 **closeout_initiated** | **datetime, none_type** |  | [optional] 
 **closeout_location** | **str, none_type** |  | [optional] 
+**order_type** | **str, none_type** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

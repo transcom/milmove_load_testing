@@ -17,6 +17,10 @@ Name | Type | Description | Notes
 **dod_id** | **str** |  | [optional] 
 **user_id** | **str** |  | [optional] 
 **e_tag** | **str** |  | [optional] 
+**phone_is_preferred** | **bool** |  | [optional] 
+**email_is_preferred** | **bool** |  | [optional] 
+**secondary_telephone** | **str, none_type** |  | [optional] 
+**backup_address** | [**Address**](Address.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

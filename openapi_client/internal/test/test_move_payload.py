@@ -13,11 +13,9 @@ import sys
 import unittest
 
 import internal_client
-from internal_client.model.index_personally_procured_move_payload import IndexPersonallyProcuredMovePayload
 from internal_client.model.move_status import MoveStatus
 from internal_client.model.mto_shipments import MTOShipments
 from internal_client.model.transportation_office import TransportationOffice
-globals()['IndexPersonallyProcuredMovePayload'] = IndexPersonallyProcuredMovePayload
 globals()['MTOShipments'] = MTOShipments
 globals()['MoveStatus'] = MoveStatus
 globals()['TransportationOffice'] = TransportationOffice

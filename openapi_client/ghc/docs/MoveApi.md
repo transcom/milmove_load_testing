@@ -354,12 +354,14 @@ with ghc_client.ApiClient() as api_client:
         dod_id="dod_id_example",
         customer_name="customer_name_example",
         status=[
-            "SUBMITTED",
+            "DRAFT",
         ],
         origin_postal_code="origin_postal_code_example",
         destination_postal_code="destination_postal_code_example",
         branch="branch_example",
         shipments_count=1,
+        pickup_date=dateutil_parser('1970-01-01T00:00:00.00Z'),
+        delivery_date=dateutil_parser('1970-01-01T00:00:00.00Z'),
         sort="customerName",
         order="asc",
     ) # SearchMovesRequest | field that results should be sorted by (optional)

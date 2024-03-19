@@ -14,6 +14,8 @@ Name | Type | Description | Notes
 **destination_postal_code** | **str, none_type** |  | [optional] 
 **branch** | **str, none_type** |  | [optional] 
 **shipments_count** | **int, none_type** |  | [optional] 
+**pickup_date** | **datetime, none_type** |  | [optional] 
+**delivery_date** | **datetime, none_type** |  | [optional] 
 **sort** | **str, none_type** |  | [optional] 
 **order** | **str, none_type** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]

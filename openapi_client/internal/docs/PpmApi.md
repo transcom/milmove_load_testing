@@ -12,6 +12,8 @@ Method | HTTP request | Description
 [**delete_pro_gear_weight_ticket**](PpmApi.md#delete_pro_gear_weight_ticket) | **DELETE** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Soft deletes a pro-gear weight line item by ID
 [**delete_weight_ticket**](PpmApi.md#delete_weight_ticket) | **DELETE** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Soft deletes a weight ticket by ID
 [**resubmit_ppm_shipment_documentation**](PpmApi.md#resubmit_ppm_shipment_documentation) | **PUT** /ppm-shipments/{ppmShipmentId}/resubmit-ppm-shipment-documentation/{signedCertificationId} | Updates signature and routes PPM shipment to service counselor
+[**show_aoa_packet**](PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
+[**show_payment_packet**](PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
 [**show_ppm_estimate**](PpmApi.md#show_ppm_estimate) | **GET** /estimates/ppm | Return a PPM cost estimate
 [**show_ppm_sit_estimate**](PpmApi.md#show_ppm_sit_estimate) | **GET** /estimates/ppm_sit | Return a PPM move&#39;s SIT cost estimate
 [**submit_ppm_shipment_documentation**](PpmApi.md#submit_ppm_shipment_documentation) | **POST** /ppm-shipments/{ppmShipmentId}/submit-ppm-shipment-documentation | Saves signature and routes PPM shipment to service counselor
@@ -647,6 +649,151 @@ No authorization required
 **412** | Precondition failed, likely due to a stale eTag (If-Match). Fetch the request again to get the updated eTag value. |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **show_aoa_packet**
+> file_type show_aoa_packet(ppm_shipment_id)
+
+Downloads AOA Packet form PPMShipment as a PDF
+
+### Functionality This endpoint downloads all uploaded move order documentation combined with the Shipment Summary Worksheet into a single PDF. ### Errors * The PPMShipment must have requested an AOA. * The PPMShipment AOA Request must have been approved. 
+
+### Example
+
+
+```python
+import time
+import internal_client
+from internal_client.api import ppm_api
+from internal_client.model.error import Error
+from internal_client.model.validation_error import ValidationError
+from internal_client.model.client_error import ClientError
+from pprint import pprint
+# Defining the host is optional and defaults to /internal
+# See configuration.py for a list of all supported configuration parameters.
+configuration = internal_client.Configuration(
+    host = "/internal"
+)
+
+
+# Enter a context with an instance of the API client
+with internal_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | the id for the ppmshipment with aoa to be downloaded
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Downloads AOA Packet form PPMShipment as a PDF
+        api_response = api_instance.show_aoa_packet(ppm_shipment_id)
+        pprint(api_response)
+    except internal_client.ApiException as e:
+        print("Exception when calling PpmApi->show_aoa_packet: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| the id for the ppmshipment with aoa to be downloaded |
+
+### Return type
+
+**file_type**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | AOA PDF |  * Content-Disposition - File name to download <br>  |
+**400** | The request payload is invalid. |  -  |
+**403** | The request was denied. |  -  |
+**404** | The requested resource wasn&#39;t found. |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **show_payment_packet**
+> file_type show_payment_packet(ppm_shipment_id)
+
+Returns PPM payment packet
+
+Generates a PDF containing all user uploaded documentations for PPM. Contains SSW form, orders, weight and expense documentations.
+
+### Example
+
+
+```python
+import time
+import internal_client
+from internal_client.api import ppm_api
+from pprint import pprint
+# Defining the host is optional and defaults to /internal
+# See configuration.py for a list of all supported configuration parameters.
+configuration = internal_client.Configuration(
+    host = "/internal"
+)
+
+
+# Enter a context with an instance of the API client
+with internal_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the ppmShipment
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Returns PPM payment packet
+        api_response = api_instance.show_payment_packet(ppm_shipment_id)
+        pprint(api_response)
+    except internal_client.ApiException as e:
+        print("Exception when calling PpmApi->show_payment_packet: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| UUID of the ppmShipment |
+
+### Return type
+
+**file_type**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | PPM Payment Packet PDF |  * Content-Disposition - File name to download <br>  |
+**400** | invalid request |  -  |
+**401** | request requires user authentication |  -  |
+**403** | user is not authorized |  -  |
+**404** | ppm not found |  -  |
+**500** | internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

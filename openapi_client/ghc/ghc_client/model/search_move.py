@@ -31,7 +31,9 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from ghc_client.model.gbloc import GBLOC
     from ghc_client.model.move_status import MoveStatus
+    globals()['GBLOC'] = GBLOC
     globals()['MoveStatus'] = MoveStatus
 
 
@@ -108,6 +110,11 @@ class SearchMove(ModelNormal):
             'shipments_count': (int,),  # noqa: E501
             'origin_duty_location_postal_code': (str,),  # noqa: E501
             'destination_duty_location_postal_code': (str,),  # noqa: E501
+            'order_type': (str,),  # noqa: E501
+            'requested_pickup_date': (date, none_type,),  # noqa: E501
+            'requested_delivery_date': (date, none_type,),  # noqa: E501
+            'origin_gbloc': (GBLOC,),  # noqa: E501
+            'destination_gbloc': (GBLOC,),  # noqa: E501
         }
 
     @cached_property
@@ -126,6 +133,11 @@ class SearchMove(ModelNormal):
         'shipments_count': 'shipmentsCount',  # noqa: E501
         'origin_duty_location_postal_code': 'originDutyLocationPostalCode',  # noqa: E501
         'destination_duty_location_postal_code': 'destinationDutyLocationPostalCode',  # noqa: E501
+        'order_type': 'orderType',  # noqa: E501
+        'requested_pickup_date': 'requestedPickupDate',  # noqa: E501
+        'requested_delivery_date': 'requestedDeliveryDate',  # noqa: E501
+        'origin_gbloc': 'originGBLOC',  # noqa: E501
+        'destination_gbloc': 'destinationGBLOC',  # noqa: E501
     }
 
     read_only_vars = {
@@ -179,6 +191,11 @@ class SearchMove(ModelNormal):
             shipments_count (int): [optional]  # noqa: E501
             origin_duty_location_postal_code (str): [optional]  # noqa: E501
             destination_duty_location_postal_code (str): [optional]  # noqa: E501
+            order_type (str): [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): [optional]  # noqa: E501
+            origin_gbloc (GBLOC): [optional]  # noqa: E501
+            destination_gbloc (GBLOC): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -274,6 +291,11 @@ class SearchMove(ModelNormal):
             shipments_count (int): [optional]  # noqa: E501
             origin_duty_location_postal_code (str): [optional]  # noqa: E501
             destination_duty_location_postal_code (str): [optional]  # noqa: E501
+            order_type (str): [optional]  # noqa: E501
+            requested_pickup_date (date, none_type): [optional]  # noqa: E501
+            requested_delivery_date (date, none_type): [optional]  # noqa: E501
+            origin_gbloc (GBLOC): [optional]  # noqa: E501
+            destination_gbloc (GBLOC): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

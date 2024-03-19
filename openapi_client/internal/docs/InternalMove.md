@@ -9,8 +9,11 @@ Name | Type | Description | Notes
 **created_at** | **datetime** |  | [optional] [readonly] 
 **order_id** | **str** |  | [optional] 
 **orders** | **bool, date, datetime, dict, float, int, list, str, none_type** |  | [optional] 
+**status** | **str** |  | [optional] [readonly] 
 **updated_at** | **datetime** |  | [optional] [readonly] 
+**submitted_at** | **datetime** |  | [optional] [readonly] 
 **mto_shipments** | [**MTOShipments**](MTOShipments.md) |  | [optional] 
+**closeout_office** | [**TransportationOffice**](TransportationOffice.md) |  | [optional] 
 **e_tag** | **str** |  | [optional] [readonly] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
