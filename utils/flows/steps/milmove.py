@@ -129,7 +129,7 @@ def do_flow(
             street_address2="P.O. Box " + fake.building_number(),
             city=fake.city(),
             state=state,
-            postal_code=fake.postcode(),
+            postal_code="67449",
         ),
     )
 
