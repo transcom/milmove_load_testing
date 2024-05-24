@@ -26,9 +26,7 @@ from internal_client.model.client_error import ClientError
 from internal_client.model.error import Error
 from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
 from internal_client.model.moving_expense import MovingExpense
-from internal_client.model.ppm_estimate_range import PPMEstimateRange
 from internal_client.model.ppm_shipment import PPMShipment
-from internal_client.model.ppm_sit_estimate import PPMSitEstimate
 from internal_client.model.pro_gear_weight_ticket import ProGearWeightTicket
 from internal_client.model.save_ppm_shipment_signed_certification import SavePPMShipmentSignedCertification
 from internal_client.model.update_moving_expense import UpdateMovingExpense
@@ -112,11 +110,13 @@ class PpmApi(object):
                 'all': [
                     'ppm_shipment_id',
                     'document_id',
+                    'weight_receipt',
                     'file',
                 ],
                 'required': [
                     'ppm_shipment_id',
                     'document_id',
+                    'weight_receipt',
                     'file',
                 ],
                 'nullable': [
@@ -136,17 +136,21 @@ class PpmApi(object):
                         (str,),
                     'document_id':
                         (str,),
+                    'weight_receipt':
+                        (bool,),
                     'file':
                         (file_type,),
                 },
                 'attribute_map': {
                     'ppm_shipment_id': 'ppmShipmentId',
                     'document_id': 'documentId',
+                    'weight_receipt': 'weightReceipt',
                     'file': 'file',
                 },
                 'location_map': {
                     'ppm_shipment_id': 'path',
                     'document_id': 'query',
+                    'weight_receipt': 'query',
                     'file': 'form',
                 },
                 'collection_format_map': {
@@ -591,179 +595,6 @@ class PpmApi(object):
             },
             api_client=api_client
         )
-        self.show_ppm_estimate_endpoint = _Endpoint(
-            settings={
-                'response_type': (PPMEstimateRange,),
-                'auth': [],
-                'endpoint_path': '/estimates/ppm',
-                'operation_id': 'show_ppm_estimate',
-                'http_method': 'GET',
-                'servers': None,
-            },
-            params_map={
-                'all': [
-                    'original_move_date',
-                    'origin_zip',
-                    'origin_duty_location_zip',
-                    'orders_id',
-                    'weight_estimate',
-                ],
-                'required': [
-                    'original_move_date',
-                    'origin_zip',
-                    'origin_duty_location_zip',
-                    'orders_id',
-                    'weight_estimate',
-                ],
-                'nullable': [
-                ],
-                'enum': [
-                ],
-                'validation': [
-                    'origin_zip',
-                    'origin_duty_location_zip',
-                ]
-            },
-            root_map={
-                'validations': {
-                    ('origin_zip',): {
-
-                        'regex': {
-                            'pattern': r'^(\d{5}([\-]\d{4})?)$',  # noqa: E501
-                        },
-                    },
-                    ('origin_duty_location_zip',): {
-
-                        'regex': {
-                            'pattern': r'^(\d{5}([\-]\d{4})?)$',  # noqa: E501
-                        },
-                    },
-                },
-                'allowed_values': {
-                },
-                'openapi_types': {
-                    'original_move_date':
-                        (date,),
-                    'origin_zip':
-                        (str,),
-                    'origin_duty_location_zip':
-                        (str,),
-                    'orders_id':
-                        (str,),
-                    'weight_estimate':
-                        (int,),
-                },
-                'attribute_map': {
-                    'original_move_date': 'original_move_date',
-                    'origin_zip': 'origin_zip',
-                    'origin_duty_location_zip': 'origin_duty_location_zip',
-                    'orders_id': 'orders_id',
-                    'weight_estimate': 'weight_estimate',
-                },
-                'location_map': {
-                    'original_move_date': 'query',
-                    'origin_zip': 'query',
-                    'origin_duty_location_zip': 'query',
-                    'orders_id': 'query',
-                    'weight_estimate': 'query',
-                },
-                'collection_format_map': {
-                }
-            },
-            headers_map={
-                'accept': [
-                    'application/json'
-                ],
-                'content_type': [],
-            },
-            api_client=api_client
-        )
-        self.show_ppm_sit_estimate_endpoint = _Endpoint(
-            settings={
-                'response_type': (PPMSitEstimate,),
-                'auth': [],
-                'endpoint_path': '/estimates/ppm_sit',
-                'operation_id': 'show_ppm_sit_estimate',
-                'http_method': 'GET',
-                'servers': None,
-            },
-            params_map={
-                'all': [
-                    'personally_procured_move_id',
-                    'original_move_date',
-                    'days_in_storage',
-                    'origin_zip',
-                    'orders_id',
-                    'weight_estimate',
-                ],
-                'required': [
-                    'personally_procured_move_id',
-                    'original_move_date',
-                    'days_in_storage',
-                    'origin_zip',
-                    'orders_id',
-                    'weight_estimate',
-                ],
-                'nullable': [
-                ],
-                'enum': [
-                ],
-                'validation': [
-                    'origin_zip',
-                ]
-            },
-            root_map={
-                'validations': {
-                    ('origin_zip',): {
-
-                        'regex': {
-                            'pattern': r'^(\d{5}([\-]\d{4})?)$',  # noqa: E501
-                        },
-                    },
-                },
-                'allowed_values': {
-                },
-                'openapi_types': {
-                    'personally_procured_move_id':
-                        (str,),
-                    'original_move_date':
-                        (date,),
-                    'days_in_storage':
-                        (int,),
-                    'origin_zip':
-                        (str,),
-                    'orders_id':
-                        (str,),
-                    'weight_estimate':
-                        (int,),
-                },
-                'attribute_map': {
-                    'personally_procured_move_id': 'personally_procured_move_id',
-                    'original_move_date': 'original_move_date',
-                    'days_in_storage': 'days_in_storage',
-                    'origin_zip': 'origin_zip',
-                    'orders_id': 'orders_id',
-                    'weight_estimate': 'weight_estimate',
-                },
-                'location_map': {
-                    'personally_procured_move_id': 'query',
-                    'original_move_date': 'query',
-                    'days_in_storage': 'query',
-                    'origin_zip': 'query',
-                    'orders_id': 'query',
-                    'weight_estimate': 'query',
-                },
-                'collection_format_map': {
-                }
-            },
-            headers_map={
-                'accept': [
-                    'application/json'
-                ],
-                'content_type': [],
-            },
-            api_client=api_client
-        )
         self.submit_ppm_shipment_documentation_endpoint = _Endpoint(
             settings={
                 'response_type': (PPMShipment,),
@@ -1112,6 +943,7 @@ class PpmApi(object):
         self,
         ppm_shipment_id,
         document_id,
+        weight_receipt,
         file,
         **kwargs
     ):
@@ -1121,12 +953,13 @@ class PpmApi(object):
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.create_ppm_upload(ppm_shipment_id, document_id, file, async_req=True)
+        >>> thread = api.create_ppm_upload(ppm_shipment_id, document_id, weight_receipt, file, async_req=True)
         >>> result = thread.get()
 
         Args:
             ppm_shipment_id (str): UUID of the ppm shipment
             document_id (str): UUID of the document to add an upload to
+            weight_receipt (bool): If the upload is a Weight Receipt
             file (file_type): The file to upload.
 
         Keyword Args:
@@ -1195,6 +1028,8 @@ class PpmApi(object):
             ppm_shipment_id
         kwargs['document_id'] = \
             document_id
+        kwargs['weight_receipt'] = \
+            weight_receipt
         kwargs['file'] = \
             file
         return self.create_ppm_upload_endpoint.call_with_http_info(**kwargs)
@@ -1886,208 +1721,6 @@ class PpmApi(object):
         kwargs['ppm_shipment_id'] = \
             ppm_shipment_id
         return self.show_payment_packet_endpoint.call_with_http_info(**kwargs)
-
-    def show_ppm_estimate(
-        self,
-        original_move_date,
-        origin_zip,
-        origin_duty_location_zip,
-        orders_id,
-        weight_estimate,
-        **kwargs
-    ):
-        """Return a PPM cost estimate  # noqa: E501
-
-        Calculates a reimbursement range for a PPM move (excluding SIT)  # noqa: E501
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-
-        >>> thread = api.show_ppm_estimate(original_move_date, origin_zip, origin_duty_location_zip, orders_id, weight_estimate, async_req=True)
-        >>> result = thread.get()
-
-        Args:
-            original_move_date (date):
-            origin_zip (str):
-            origin_duty_location_zip (str):
-            orders_id (str):
-            weight_estimate (int):
-
-        Keyword Args:
-            _return_http_data_only (bool): response data without head status
-                code and headers. Default is True.
-            _preload_content (bool): if False, the urllib3.HTTPResponse object
-                will be returned without reading/decoding response data.
-                Default is True.
-            _request_timeout (int/float/tuple): timeout setting for this request. If
-                one number provided, it will be total request timeout. It can also
-                be a pair (tuple) of (connection, read) timeouts.
-                Default is None.
-            _check_input_type (bool): specifies if type checking
-                should be done one the data sent to the server.
-                Default is True.
-            _check_return_type (bool): specifies if type checking
-                should be done one the data received from the server.
-                Default is True.
-            _spec_property_naming (bool): True if the variable names in the input data
-                are serialized names, as specified in the OpenAPI document.
-                False if the variable names in the input data
-                are pythonic names, e.g. snake case (default)
-            _content_type (str/None): force body content-type.
-                Default is None and content-type will be predicted by allowed
-                content-types and body.
-            _host_index (int/None): specifies the index of the server
-                that we want to use.
-                Default is read from the configuration.
-            _request_auths (list): set to override the auth_settings for an a single
-                request; this effectively ignores the authentication
-                in the spec for a single request.
-                Default is None
-            async_req (bool): execute request asynchronously
-
-        Returns:
-            PPMEstimateRange
-                If the method is called asynchronously, returns the request
-                thread.
-        """
-        kwargs['async_req'] = kwargs.get(
-            'async_req', False
-        )
-        kwargs['_return_http_data_only'] = kwargs.get(
-            '_return_http_data_only', True
-        )
-        kwargs['_preload_content'] = kwargs.get(
-            '_preload_content', True
-        )
-        kwargs['_request_timeout'] = kwargs.get(
-            '_request_timeout', None
-        )
-        kwargs['_check_input_type'] = kwargs.get(
-            '_check_input_type', True
-        )
-        kwargs['_check_return_type'] = kwargs.get(
-            '_check_return_type', True
-        )
-        kwargs['_spec_property_naming'] = kwargs.get(
-            '_spec_property_naming', False
-        )
-        kwargs['_content_type'] = kwargs.get(
-            '_content_type')
-        kwargs['_host_index'] = kwargs.get('_host_index')
-        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
-        kwargs['original_move_date'] = \
-            original_move_date
-        kwargs['origin_zip'] = \
-            origin_zip
-        kwargs['origin_duty_location_zip'] = \
-            origin_duty_location_zip
-        kwargs['orders_id'] = \
-            orders_id
-        kwargs['weight_estimate'] = \
-            weight_estimate
-        return self.show_ppm_estimate_endpoint.call_with_http_info(**kwargs)
-
-    def show_ppm_sit_estimate(
-        self,
-        personally_procured_move_id,
-        original_move_date,
-        days_in_storage,
-        origin_zip,
-        orders_id,
-        weight_estimate,
-        **kwargs
-    ):
-        """Return a PPM move's SIT cost estimate  # noqa: E501
-
-        Calculates a reimbursment for a PPM move's SIT  # noqa: E501
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-
-        >>> thread = api.show_ppm_sit_estimate(personally_procured_move_id, original_move_date, days_in_storage, origin_zip, orders_id, weight_estimate, async_req=True)
-        >>> result = thread.get()
-
-        Args:
-            personally_procured_move_id (str):
-            original_move_date (date):
-            days_in_storage (int):
-            origin_zip (str):
-            orders_id (str):
-            weight_estimate (int):
-
-        Keyword Args:
-            _return_http_data_only (bool): response data without head status
-                code and headers. Default is True.
-            _preload_content (bool): if False, the urllib3.HTTPResponse object
-                will be returned without reading/decoding response data.
-                Default is True.
-            _request_timeout (int/float/tuple): timeout setting for this request. If
-                one number provided, it will be total request timeout. It can also
-                be a pair (tuple) of (connection, read) timeouts.
-                Default is None.
-            _check_input_type (bool): specifies if type checking
-                should be done one the data sent to the server.
-                Default is True.
-            _check_return_type (bool): specifies if type checking
-                should be done one the data received from the server.
-                Default is True.
-            _spec_property_naming (bool): True if the variable names in the input data
-                are serialized names, as specified in the OpenAPI document.
-                False if the variable names in the input data
-                are pythonic names, e.g. snake case (default)
-            _content_type (str/None): force body content-type.
-                Default is None and content-type will be predicted by allowed
-                content-types and body.
-            _host_index (int/None): specifies the index of the server
-                that we want to use.
-                Default is read from the configuration.
-            _request_auths (list): set to override the auth_settings for an a single
-                request; this effectively ignores the authentication
-                in the spec for a single request.
-                Default is None
-            async_req (bool): execute request asynchronously
-
-        Returns:
-            PPMSitEstimate
-                If the method is called asynchronously, returns the request
-                thread.
-        """
-        kwargs['async_req'] = kwargs.get(
-            'async_req', False
-        )
-        kwargs['_return_http_data_only'] = kwargs.get(
-            '_return_http_data_only', True
-        )
-        kwargs['_preload_content'] = kwargs.get(
-            '_preload_content', True
-        )
-        kwargs['_request_timeout'] = kwargs.get(
-            '_request_timeout', None
-        )
-        kwargs['_check_input_type'] = kwargs.get(
-            '_check_input_type', True
-        )
-        kwargs['_check_return_type'] = kwargs.get(
-            '_check_return_type', True
-        )
-        kwargs['_spec_property_naming'] = kwargs.get(
-            '_spec_property_naming', False
-        )
-        kwargs['_content_type'] = kwargs.get(
-            '_content_type')
-        kwargs['_host_index'] = kwargs.get('_host_index')
-        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
-        kwargs['personally_procured_move_id'] = \
-            personally_procured_move_id
-        kwargs['original_move_date'] = \
-            original_move_date
-        kwargs['days_in_storage'] = \
-            days_in_storage
-        kwargs['origin_zip'] = \
-            origin_zip
-        kwargs['orders_id'] = \
-            orders_id
-        kwargs['weight_estimate'] = \
-            weight_estimate
-        return self.show_ppm_sit_estimate_endpoint.call_with_http_info(**kwargs)
 
     def submit_ppm_shipment_documentation(
         self,

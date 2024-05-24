@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **gcc** | **int, none_type** | Government Constructive Cost (GCC) | [optional] 
 **aoa** | **int, none_type** | Advance Operating Allowance (AOA). | [optional] 
 **remaining_incentive** | **int, none_type** | The remaining reimbursement amount that is still owed to the customer. | [optional] 
+**haul_type** | **str, none_type** | The type of haul calculation used for this shipment (shorthaul or linehaul). | [optional] 
 **haul_price** | **int, none_type** | The price of the linehaul or shorthaul. | [optional] 
 **haul_fsc** | **int, none_type** | The linehaul/shorthaul Fuel Surcharge (FSC). | [optional] 
 **dop** | **int, none_type** | The Domestic Origin Price (DOP). | [optional] 

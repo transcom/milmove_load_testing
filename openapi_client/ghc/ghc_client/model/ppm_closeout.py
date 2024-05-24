@@ -97,6 +97,7 @@ class PPMCloseout(ModelNormal):
             'gcc': (int, none_type,),  # noqa: E501
             'aoa': (int, none_type,),  # noqa: E501
             'remaining_incentive': (int, none_type,),  # noqa: E501
+            'haul_type': (str, none_type,),  # noqa: E501
             'haul_price': (int, none_type,),  # noqa: E501
             'haul_fsc': (int, none_type,),  # noqa: E501
             'dop': (int, none_type,),  # noqa: E501
@@ -124,6 +125,7 @@ class PPMCloseout(ModelNormal):
         'gcc': 'gcc',  # noqa: E501
         'aoa': 'aoa',  # noqa: E501
         'remaining_incentive': 'remainingIncentive',  # noqa: E501
+        'haul_type': 'haulType',  # noqa: E501
         'haul_price': 'haulPrice',  # noqa: E501
         'haul_fsc': 'haulFSC',  # noqa: E501
         'dop': 'dop',  # noqa: E501
@@ -190,6 +192,7 @@ class PPMCloseout(ModelNormal):
             gcc (int, none_type): Government Constructive Cost (GCC). [optional]  # noqa: E501
             aoa (int, none_type): Advance Operating Allowance (AOA).. [optional]  # noqa: E501
             remaining_incentive (int, none_type): The remaining reimbursement amount that is still owed to the customer.. [optional]  # noqa: E501
+            haul_type (str, none_type): The type of haul calculation used for this shipment (shorthaul or linehaul).. [optional]  # noqa: E501
             haul_price (int, none_type): The price of the linehaul or shorthaul.. [optional]  # noqa: E501
             haul_fsc (int, none_type): The linehaul/shorthaul Fuel Surcharge (FSC).. [optional]  # noqa: E501
             dop (int, none_type): The Domestic Origin Price (DOP).. [optional]  # noqa: E501
@@ -294,6 +297,7 @@ class PPMCloseout(ModelNormal):
             gcc (int, none_type): Government Constructive Cost (GCC). [optional]  # noqa: E501
             aoa (int, none_type): Advance Operating Allowance (AOA).. [optional]  # noqa: E501
             remaining_incentive (int, none_type): The remaining reimbursement amount that is still owed to the customer.. [optional]  # noqa: E501
+            haul_type (str, none_type): The type of haul calculation used for this shipment (shorthaul or linehaul).. [optional]  # noqa: E501
             haul_price (int, none_type): The price of the linehaul or shorthaul.. [optional]  # noqa: E501
             haul_fsc (int, none_type): The linehaul/shorthaul Fuel Surcharge (FSC).. [optional]  # noqa: E501
             dop (int, none_type): The Domestic Origin Price (DOP).. [optional]  # noqa: E501

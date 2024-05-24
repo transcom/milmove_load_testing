@@ -93,7 +93,7 @@ class AddressesApi(object):
     ):
         """Returns an address  # noqa: E501
 
-        Returns an address  # noqa: E501
+        Find by API using address ID that returns an address json object containing address 1, address 2, address 3, city and postal code.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 

@@ -41,6 +41,8 @@ Name | Type | Description | Notes
 **created_at** | **datetime** |  | [optional] [readonly] 
 **updated_at** | **datetime** |  | [optional] [readonly] 
 **point_of_contact** | **str** | Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor.  | [optional] 
+**origin_sit_auth_end_date** | **date, none_type** | The SIT authorized end date for origin SIT. | [optional] 
+**destination_sit_auth_end_date** | **date, none_type** | The SIT authorized end date for destination SIT. | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

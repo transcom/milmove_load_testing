@@ -80,6 +80,13 @@ class ServiceMemberPayload(ModelNormal):
                 'pattern': r'^\d{10}$',  # noqa: E501
             },
         },
+        ('emplid',): {
+            'max_length': 7,
+            'min_length': 7,
+            'regex': {
+                'pattern': r'^\d{7}$',  # noqa: E501
+            },
+        },
         ('telephone',): {
             'regex': {
                 'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$',  # noqa: E501
@@ -126,6 +133,7 @@ class ServiceMemberPayload(ModelNormal):
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'edipi': (str, none_type,),  # noqa: E501
+            'emplid': (str, none_type,),  # noqa: E501
             'orders': ([Orders],),  # noqa: E501
             'affiliation': (Affiliation,),  # noqa: E501
             'grade': (OrderPayGrade,),  # noqa: E501
@@ -141,6 +149,7 @@ class ServiceMemberPayload(ModelNormal):
             'residential_address': (Address,),  # noqa: E501
             'backup_mailing_address': (Address,),  # noqa: E501
             'backup_contacts': (IndexServiceMemberBackupContactsPayload,),  # noqa: E501
+            'cac_validated': (bool,),  # noqa: E501
             'weight_allotment': (WeightAllotment,),  # noqa: E501
         }
 
@@ -156,6 +165,7 @@ class ServiceMemberPayload(ModelNormal):
         'created_at': 'created_at',  # noqa: E501
         'updated_at': 'updated_at',  # noqa: E501
         'edipi': 'edipi',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'orders': 'orders',  # noqa: E501
         'affiliation': 'affiliation',  # noqa: E501
         'grade': 'grade',  # noqa: E501
@@ -171,6 +181,7 @@ class ServiceMemberPayload(ModelNormal):
         'residential_address': 'residential_address',  # noqa: E501
         'backup_mailing_address': 'backup_mailing_address',  # noqa: E501
         'backup_contacts': 'backup_contacts',  # noqa: E501
+        'cac_validated': 'cac_validated',  # noqa: E501
         'weight_allotment': 'weight_allotment',  # noqa: E501
     }
 
@@ -223,6 +234,7 @@ class ServiceMemberPayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             edipi (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             orders ([Orders]): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
             grade (OrderPayGrade): [optional]  # noqa: E501
@@ -238,6 +250,7 @@ class ServiceMemberPayload(ModelNormal):
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
             backup_contacts (IndexServiceMemberBackupContactsPayload): [optional]  # noqa: E501
+            cac_validated (bool): [optional]  # noqa: E501
             weight_allotment (WeightAllotment): [optional]  # noqa: E501
         """
 
@@ -337,6 +350,7 @@ class ServiceMemberPayload(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             edipi (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             orders ([Orders]): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
             grade (OrderPayGrade): [optional]  # noqa: E501
@@ -352,6 +366,7 @@ class ServiceMemberPayload(ModelNormal):
             residential_address (Address): [optional]  # noqa: E501
             backup_mailing_address (Address): [optional]  # noqa: E501
             backup_contacts (IndexServiceMemberBackupContactsPayload): [optional]  # noqa: E501
+            cac_validated (bool): [optional]  # noqa: E501
             weight_allotment (WeightAllotment): [optional]  # noqa: E501
         """
 

@@ -95,6 +95,7 @@ class UpdateMovingExpense(ModelNormal):
             'missing_receipt': (bool,),  # noqa: E501
             'sit_start_date': (date,),  # noqa: E501
             'sit_end_date': (date,),  # noqa: E501
+            'weight_stored': (int,),  # noqa: E501
         }
 
     @cached_property
@@ -110,6 +111,7 @@ class UpdateMovingExpense(ModelNormal):
         'missing_receipt': 'missingReceipt',  # noqa: E501
         'sit_start_date': 'sitStartDate',  # noqa: E501
         'sit_end_date': 'sitEndDate',  # noqa: E501
+        'weight_stored': 'weightStored',  # noqa: E501
     }
 
     read_only_vars = {
@@ -162,6 +164,7 @@ class UpdateMovingExpense(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             sit_start_date (date): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
+            weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -261,6 +264,7 @@ class UpdateMovingExpense(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             sit_start_date (date): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
+            weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

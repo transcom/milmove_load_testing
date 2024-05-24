@@ -5,6 +5,7 @@ All URIs are relative to */ghc/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**finish_document_review**](PpmApi.md#finish_document_review) | **PATCH** /ppm-shipments/{ppmShipmentId}/finish-document-review | Updates a PPM shipment&#39;s status after document review
+[**get_ppm_actual_weight**](PpmApi.md#get_ppm_actual_weight) | **GET** /ppm-shipments/{ppmShipmentId}/actual-weight | Get the actual weight for a PPM shipment
 [**get_ppm_closeout**](PpmApi.md#get_ppm_closeout) | **GET** /ppm-shipments/{ppmShipmentId}/closeout | Get the closeout calcuations for the specified PPM shipment
 [**get_ppm_documents**](PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
 [**show_aoa_packet**](PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
@@ -88,6 +89,80 @@ No authorization required
 **404** | The requested resource wasn&#39;t found |  -  |
 **409** | Conflict error |  -  |
 **412** | Precondition failed |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_ppm_actual_weight**
+> PPMActualWeight get_ppm_actual_weight(ppm_shipment_id)
+
+Get the actual weight for a PPM shipment
+
+Retrieves the actual weight for the specified PPM shipment. 
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import ppm_api
+from ghc_client.model.error import Error
+from ghc_client.model.ppm_actual_weight import PPMActualWeight
+from ghc_client.model.validation_error import ValidationError
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the PPM shipment
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Get the actual weight for a PPM shipment
+        api_response = api_instance.get_ppm_actual_weight(ppm_shipment_id)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling PpmApi->get_ppm_actual_weight: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| UUID of the PPM shipment |
+
+### Return type
+
+[**PPMActualWeight**](PPMActualWeight.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Returns actual weight for the specified PPM shipment. |  -  |
+**400** | The request payload is invalid |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
 
@@ -418,11 +493,14 @@ with ghc_client.ApiClient() as api_client:
     moving_expense_id = "movingExpenseId_example" # str | UUID of the moving expense
     if_match = "If-Match_example" # str | Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
     update_moving_expense = UpdateMovingExpense(
+        moving_expense_type=OmittableMovingExpenseType("CONTRACTED_EXPENSE"),
+        description="description_example",
         amount=1,
         sit_start_date=dateutil_parser('1970-01-01').date(),
         sit_end_date=dateutil_parser('1970-01-01').date(),
         status=PPMDocumentStatus("APPROVED"),
         reason="reason_example",
+        weight_stored=1,
     ) # UpdateMovingExpense | 
 
     # example passing only required values which don't have defaults set

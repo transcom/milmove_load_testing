@@ -68,6 +68,7 @@ class UpdateMTOServiceItemSIT(ModelComposed):
     allowed_values = {
         ('re_service_code',): {
             'DDDSIT': "DDDSIT",
+            'DDASIT': "DDASIT",
             'DOPSIT': "DOPSIT",
             'DOASIT': "DOASIT",
             'DOFSIT': "DOFSIT",

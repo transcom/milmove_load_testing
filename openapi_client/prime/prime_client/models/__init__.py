@@ -10,6 +10,7 @@
 # sys.setrecursionlimit(n)
 
 from prime_client.model.address import Address
+from prime_client.model.amendments import Amendments
 from prime_client.model.client_error import ClientError
 from prime_client.model.create_mto_shipment import CreateMTOShipment
 from prime_client.model.create_mto_shipment_destination_address import CreateMTOShipmentDestinationAddress
@@ -38,6 +39,8 @@ from prime_client.model.mto_service_item_dest_sit_all_of import MTOServiceItemDe
 from prime_client.model.mto_service_item_dimension import MTOServiceItemDimension
 from prime_client.model.mto_service_item_domestic_crating import MTOServiceItemDomesticCrating
 from prime_client.model.mto_service_item_domestic_crating_all_of import MTOServiceItemDomesticCratingAllOf
+from prime_client.model.mto_service_item_domestic_standalone_crating import MTOServiceItemDomesticStandaloneCrating
+from prime_client.model.mto_service_item_domestic_standalone_crating_all_of import MTOServiceItemDomesticStandaloneCratingAllOf
 from prime_client.model.mto_service_item_model_type import MTOServiceItemModelType
 from prime_client.model.mto_service_item_origin_sit import MTOServiceItemOriginSIT
 from prime_client.model.mto_service_item_origin_sit_all_of import MTOServiceItemOriginSITAllOf

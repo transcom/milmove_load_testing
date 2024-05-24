@@ -155,6 +155,7 @@ class UpdateMTOShipmentDestinationAddress(ModelComposed):
             'street_address3': (str, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
             'country': (str, none_type,),  # noqa: E501
+            'county': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -172,6 +173,7 @@ class UpdateMTOShipmentDestinationAddress(ModelComposed):
         'street_address3': 'streetAddress3',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
         'country': 'country',  # noqa: E501
+        'county': 'county',  # noqa: E501
     }
 
     read_only_vars = {
@@ -223,6 +225,7 @@ class UpdateMTOShipmentDestinationAddress(ModelComposed):
             street_address3 (str, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
             country (str, none_type): [optional] if omitted the server will use the default value of "USA"  # noqa: E501
+            county (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -335,6 +338,7 @@ class UpdateMTOShipmentDestinationAddress(ModelComposed):
             street_address3 (str, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
             country (str, none_type): [optional] if omitted the server will use the default value of "USA"  # noqa: E501
+            county (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

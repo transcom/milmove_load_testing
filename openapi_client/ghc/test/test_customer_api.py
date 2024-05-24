@@ -24,10 +24,24 @@ class TestCustomerApi(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_create_customer_with_okta_option(self):
+        """Test case for create_customer_with_okta_option
+
+        Creates a customer with Okta option  # noqa: E501
+        """
+        pass
+
     def test_get_customer(self):
         """Test case for get_customer
 
         Returns a given customer  # noqa: E501
+        """
+        pass
+
+    def test_search_customers(self):
+        """Test case for search_customers
+
+        Search customers by DOD ID or customer name  # noqa: E501
         """
         pass
 

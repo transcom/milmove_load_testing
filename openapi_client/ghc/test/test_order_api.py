@@ -45,6 +45,13 @@ class TestOrderApi(unittest.TestCase):
         """
         pass
 
+    def test_create_order(self):
+        """Test case for create_order
+
+        Creates an orders model for a logged-in user  # noqa: E501
+        """
+        pass
+
     def test_get_order(self):
         """Test case for get_order
 

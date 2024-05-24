@@ -15,8 +15,10 @@ import unittest
 import ghc_client
 from ghc_client.model.address import Address
 from ghc_client.model.ppm_advance_status import PPMAdvanceStatus
+from ghc_client.model.update_customer_payload_current_address import UpdateCustomerPayloadCurrentAddress
 globals()['Address'] = Address
 globals()['PPMAdvanceStatus'] = PPMAdvanceStatus
+globals()['UpdateCustomerPayloadCurrentAddress'] = UpdateCustomerPayloadCurrentAddress
 from ghc_client.model.update_ppm_shipment import UpdatePPMShipment
 
 

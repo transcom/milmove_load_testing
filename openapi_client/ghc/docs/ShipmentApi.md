@@ -659,7 +659,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **request_shipment_diversion**
-> MTOShipment request_shipment_diversion(shipment_id, if_match)
+> MTOShipment request_shipment_diversion(shipment_id, if_match, body)
 
 Requests a shipment diversion
 
@@ -673,6 +673,7 @@ import time
 import ghc_client
 from ghc_client.api import shipment_api
 from ghc_client.model.error import Error
+from ghc_client.model.request_diversion import RequestDiversion
 from ghc_client.model.mto_shipment import MTOShipment
 from ghc_client.model.validation_error import ValidationError
 from pprint import pprint
@@ -689,11 +690,14 @@ with ghc_client.ApiClient() as api_client:
     api_instance = shipment_api.ShipmentApi(api_client)
     shipment_id = "shipmentID_example" # str | ID of the shipment
     if_match = "If-Match_example" # str | 
+    body = RequestDiversion(
+        diversion_reason="Shipment route needs to change",
+    ) # RequestDiversion | 
 
     # example passing only required values which don't have defaults set
     try:
         # Requests a shipment diversion
-        api_response = api_instance.request_shipment_diversion(shipment_id, if_match)
+        api_response = api_instance.request_shipment_diversion(shipment_id, if_match, body)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling ShipmentApi->request_shipment_diversion: %s\n" % e)
@@ -706,6 +710,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **shipment_id** | **str**| ID of the shipment |
  **if_match** | **str**|  |
+ **body** | [**RequestDiversion**](RequestDiversion.md)|  |
 
 ### Return type
 
@@ -717,7 +722,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 

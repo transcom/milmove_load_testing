@@ -11,6 +11,7 @@
 
 from internal_client.model.address import Address
 from internal_client.model.affiliation import Affiliation
+from internal_client.model.application_parameters import ApplicationParameters
 from internal_client.model.available_move_dates import AvailableMoveDates
 from internal_client.model.backup_contact_permission import BackupContactPermission
 from internal_client.model.cancel_move import CancelMove
@@ -72,10 +73,10 @@ from internal_client.model.ppm_estimate_range import PPMEstimateRange
 from internal_client.model.ppm_shipment import PPMShipment
 from internal_client.model.ppm_shipment_secondary_pickup_address import PPMShipmentSecondaryPickupAddress
 from internal_client.model.ppm_shipment_status import PPMShipmentStatus
-from internal_client.model.ppm_sit_estimate import PPMSitEstimate
 from internal_client.model.patch_move_payload import PatchMovePayload
 from internal_client.model.patch_service_member_payload import PatchServiceMemberPayload
 from internal_client.model.post_document_payload import PostDocumentPayload
+from internal_client.model.privilege import Privilege
 from internal_client.model.pro_gear_weight_ticket import ProGearWeightTicket
 from internal_client.model.pro_gear_weight_ticket_document import ProGearWeightTicketDocument
 from internal_client.model.rate_engine_postal_code_payload import RateEnginePostalCodePayload

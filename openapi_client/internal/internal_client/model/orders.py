@@ -163,7 +163,7 @@ class Orders(ModelNormal):
         'department_indicator': 'department_indicator',  # noqa: E501
         'authorized_weight': 'authorizedWeight',  # noqa: E501
         'entitlement': 'entitlement',  # noqa: E501
-        'provides_services_counseling': 'provides_services_counseling',  # noqa: E501
+        'provides_services_counseling': 'providesServicesCounseling',  # noqa: E501
     }
 
     read_only_vars = {

@@ -58,6 +58,7 @@ class MTOServiceItemModelType(ModelSimple):
             'MTOSERVICEITEMDESTSIT': "MTOServiceItemDestSIT",
             'MTOSERVICEITEMSHUTTLE': "MTOServiceItemShuttle",
             'MTOSERVICEITEMDOMESTICCRATING': "MTOServiceItemDomesticCrating",
+            'MTOSERVICEITEMDOMESTICSTANDALONECRATING': "MTOServiceItemDomesticStandaloneCrating",
         },
     }
 
@@ -109,10 +110,10 @@ class MTOServiceItemModelType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", ]  # noqa: E501
+            args[0] (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating   * DCRTSA - MTOServiceItemDomesticStandaloneCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", "MTOServiceItemDomesticStandaloneCrating", ]  # noqa: E501
 
         Keyword Args:
-            value (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", ]  # noqa: E501
+            value (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating   * DCRTSA - MTOServiceItemDomesticStandaloneCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", "MTOServiceItemDomesticStandaloneCrating", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -203,10 +204,10 @@ class MTOServiceItemModelType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", ]  # noqa: E501
+            args[0] (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating   * DCRTSA - MTOServiceItemDomesticStandaloneCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", "MTOServiceItemDomesticStandaloneCrating", ]  # noqa: E501
 
         Keyword Args:
-            value (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", ]  # noqa: E501
+            value (str): Describes all model sub-types for a MTOServiceItem model.  Using this list, choose the correct modelType in the dropdown, corresponding to the service item type.   * DOFSIT, DOASIT - MTOServiceItemOriginSIT   * DDFSIT, DDASIT - MTOServiceItemDestSIT   * DOSHUT, DDSHUT - MTOServiceItemShuttle   * DCRT, DUCRT - MTOServiceItemDomesticCrating   * DCRTSA - MTOServiceItemDomesticStandaloneCrating  The documentation will then update with the supported fields. ., must be one of ["MTOServiceItemBasic", "MTOServiceItemOriginSIT", "MTOServiceItemDestSIT", "MTOServiceItemShuttle", "MTOServiceItemDomesticCrating", "MTOServiceItemDomesticStandaloneCrating", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

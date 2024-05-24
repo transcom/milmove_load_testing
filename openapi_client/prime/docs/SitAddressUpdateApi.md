@@ -48,6 +48,7 @@ with prime_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         contractor_remarks="Customer reached out to me this week & let me know they want to move closer to family.",
         mto_service_item_id="c56a4180-65aa-42ec-a945-5fd21dec0538",

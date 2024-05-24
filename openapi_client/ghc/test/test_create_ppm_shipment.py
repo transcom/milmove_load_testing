@@ -13,6 +13,8 @@ import sys
 import unittest
 
 import ghc_client
+from ghc_client.model.update_customer_payload_current_address import UpdateCustomerPayloadCurrentAddress
+globals()['UpdateCustomerPayloadCurrentAddress'] = UpdateCustomerPayloadCurrentAddress
 from ghc_client.model.create_ppm_shipment import CreatePPMShipment
 
 

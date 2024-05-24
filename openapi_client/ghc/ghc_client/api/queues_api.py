@@ -244,12 +244,12 @@ class QueuesApi(object):
                     },
                     ('status',): {
 
-                        "PAYMENT_REQUESTED": "Payment requested",
-                        "REVIEWED": "Reviewed",
-                        "REJECTED": "Rejected",
-                        "PAID": "Paid",
-                        "DEPRECATED": "Deprecated",
-                        "ERROR": "Error"
+                        "PENDING": "PENDING",
+                        "REVIEWED": "REVIEWED",
+                        "REVIEWED_AND_ALL_SERVICE_ITEMS_REJECTED": "REVIEWED_AND_ALL_SERVICE_ITEMS_REJECTED",
+                        "PAID": "PAID",
+                        "DEPRECATED": "DEPRECATED",
+                        "EDI_ERROR": "EDI_ERROR"
                     },
                 },
                 'openapi_types': {

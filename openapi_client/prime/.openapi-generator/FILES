@@ -4,6 +4,7 @@
 .travis.yml
 README.md
 docs/Address.md
+docs/Amendments.md
 docs/ClientError.md
 docs/CreateMTOShipment.md
 docs/CreateMTOShipmentDestinationAddress.md
@@ -32,6 +33,8 @@ docs/MTOServiceItemDestSITAllOf.md
 docs/MTOServiceItemDimension.md
 docs/MTOServiceItemDomesticCrating.md
 docs/MTOServiceItemDomesticCratingAllOf.md
+docs/MTOServiceItemDomesticStandaloneCrating.md
+docs/MTOServiceItemDomesticStandaloneCratingAllOf.md
 docs/MTOServiceItemModelType.md
 docs/MTOServiceItemOriginSIT.md
 docs/MTOServiceItemOriginSITAllOf.md
@@ -114,6 +117,7 @@ prime_client/configuration.py
 prime_client/exceptions.py
 prime_client/model/__init__.py
 prime_client/model/address.py
+prime_client/model/amendments.py
 prime_client/model/client_error.py
 prime_client/model/create_mto_shipment.py
 prime_client/model/create_mto_shipment_destination_address.py
@@ -143,6 +147,8 @@ prime_client/model/mto_service_item_dest_sit_all_of.py
 prime_client/model/mto_service_item_dimension.py
 prime_client/model/mto_service_item_domestic_crating.py
 prime_client/model/mto_service_item_domestic_crating_all_of.py
+prime_client/model/mto_service_item_domestic_standalone_crating.py
+prime_client/model/mto_service_item_domestic_standalone_crating_all_of.py
 prime_client/model/mto_service_item_model_type.py
 prime_client/model/mto_service_item_origin_sit.py
 prime_client/model/mto_service_item_origin_sit_all_of.py
@@ -214,6 +220,7 @@ setup.py
 test-requirements.txt
 test/__init__.py
 test/test_address.py
+test/test_amendments.py
 test/test_client_error.py
 test/test_create_mto_shipment.py
 test/test_create_mto_shipment_destination_address.py
@@ -245,6 +252,8 @@ test/test_mto_service_item_dest_sit_all_of.py
 test/test_mto_service_item_dimension.py
 test/test_mto_service_item_domestic_crating.py
 test/test_mto_service_item_domestic_crating_all_of.py
+test/test_mto_service_item_domestic_standalone_crating.py
+test/test_mto_service_item_domestic_standalone_crating_all_of.py
 test/test_mto_service_item_model_type.py
 test/test_mto_service_item_origin_sit.py
 test/test_mto_service_item_origin_sit_all_of.py

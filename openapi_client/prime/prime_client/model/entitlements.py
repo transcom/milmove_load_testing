@@ -85,6 +85,7 @@ class Entitlements(ModelNormal):
             'id': (str,),  # noqa: E501
             'authorized_weight': (int, none_type,),  # noqa: E501
             'dependents_authorized': (bool, none_type,),  # noqa: E501
+            'gun_safe': (bool,),  # noqa: E501
             'non_temporary_storage': (bool, none_type,),  # noqa: E501
             'privately_owned_vehicle': (bool, none_type,),  # noqa: E501
             'pro_gear_weight': (int,),  # noqa: E501
@@ -106,6 +107,7 @@ class Entitlements(ModelNormal):
         'id': 'id',  # noqa: E501
         'authorized_weight': 'authorizedWeight',  # noqa: E501
         'dependents_authorized': 'dependentsAuthorized',  # noqa: E501
+        'gun_safe': 'gunSafe',  # noqa: E501
         'non_temporary_storage': 'nonTemporaryStorage',  # noqa: E501
         'privately_owned_vehicle': 'privatelyOwnedVehicle',  # noqa: E501
         'pro_gear_weight': 'proGearWeight',  # noqa: E501
@@ -163,6 +165,7 @@ class Entitlements(ModelNormal):
             id (str): [optional]  # noqa: E501
             authorized_weight (int, none_type): [optional]  # noqa: E501
             dependents_authorized (bool, none_type): [optional]  # noqa: E501
+            gun_safe (bool): [optional]  # noqa: E501
             non_temporary_storage (bool, none_type): [optional]  # noqa: E501
             privately_owned_vehicle (bool, none_type): [optional]  # noqa: E501
             pro_gear_weight (int): [optional]  # noqa: E501
@@ -261,6 +264,7 @@ class Entitlements(ModelNormal):
             id (str): [optional]  # noqa: E501
             authorized_weight (int, none_type): [optional]  # noqa: E501
             dependents_authorized (bool, none_type): [optional]  # noqa: E501
+            gun_safe (bool): [optional]  # noqa: E501
             non_temporary_storage (bool, none_type): [optional]  # noqa: E501
             privately_owned_vehicle (bool, none_type): [optional]  # noqa: E501
             pro_gear_weight (int): [optional]  # noqa: E501

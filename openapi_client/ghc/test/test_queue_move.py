@@ -17,11 +17,13 @@ from ghc_client.model.customer import Customer
 from ghc_client.model.dept_indicator import DeptIndicator
 from ghc_client.model.duty_location import DutyLocation
 from ghc_client.model.gbloc import GBLOC
+from ghc_client.model.locked_office_user import LockedOfficeUser
 from ghc_client.model.move_status import MoveStatus
 globals()['Customer'] = Customer
 globals()['DeptIndicator'] = DeptIndicator
 globals()['DutyLocation'] = DutyLocation
 globals()['GBLOC'] = GBLOC
+globals()['LockedOfficeUser'] = LockedOfficeUser
 globals()['MoveStatus'] = MoveStatus
 from ghc_client.model.queue_move import QueueMove
 

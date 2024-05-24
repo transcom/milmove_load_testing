@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **created_at** | **datetime** |  | 
 **updated_at** | **datetime** |  | 
 **edipi** | **str, none_type** |  | [optional] 
+**emplid** | **str, none_type** |  | [optional] 
 **orders** | [**[Orders]**](Orders.md) |  | [optional] 
 **affiliation** | [**Affiliation**](Affiliation.md) |  | [optional] 
 **grade** | [**OrderPayGrade**](OrderPayGrade.md) |  | [optional] 
@@ -25,6 +26,7 @@ Name | Type | Description | Notes
 **residential_address** | [**Address**](Address.md) |  | [optional] 
 **backup_mailing_address** | [**Address**](Address.md) |  | [optional] 
 **backup_contacts** | [**IndexServiceMemberBackupContactsPayload**](IndexServiceMemberBackupContactsPayload.md) |  | [optional] 
+**cac_validated** | **bool** |  | [optional] 
 **weight_allotment** | [**WeightAllotment**](WeightAllotment.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

@@ -23,6 +23,7 @@ from ghc_client.api.move_task_order_api import MoveTaskOrderApi
 from ghc_client.api.mto_agent_api import MtoAgentApi
 from ghc_client.api.mto_service_item_api import MtoServiceItemApi
 from ghc_client.api.mto_shipment_api import MtoShipmentApi
+from ghc_client.api.office_users_api import OfficeUsersApi
 from ghc_client.api.order_api import OrderApi
 from ghc_client.api.payment_requests_api import PaymentRequestsApi
 from ghc_client.api.payment_service_item_api import PaymentServiceItemApi
@@ -35,3 +36,4 @@ from ghc_client.api.shipment_api import ShipmentApi
 from ghc_client.api.sit_extension_api import SitExtensionApi
 from ghc_client.api.tac_api import TacApi
 from ghc_client.api.transportation_office_api import TransportationOfficeApi
+from ghc_client.api.uploads_api import UploadsApi

@@ -77,7 +77,7 @@ class Customer(ModelNormal):
         },
         ('secondary_telephone',): {
             'regex': {
-                'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$',  # noqa: E501
+                'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$|^$',  # noqa: E501
             },
         },
     }
@@ -122,6 +122,7 @@ class Customer(ModelNormal):
             'email_is_preferred': (bool,),  # noqa: E501
             'secondary_telephone': (str, none_type,),  # noqa: E501
             'backup_address': (Address,),  # noqa: E501
+            'cac_validated': (bool,),  # noqa: E501
         }
 
     @cached_property
@@ -147,6 +148,7 @@ class Customer(ModelNormal):
         'email_is_preferred': 'emailIsPreferred',  # noqa: E501
         'secondary_telephone': 'secondaryTelephone',  # noqa: E501
         'backup_address': 'backupAddress',  # noqa: E501
+        'cac_validated': 'cacValidated',  # noqa: E501
     }
 
     read_only_vars = {
@@ -207,6 +209,7 @@ class Customer(ModelNormal):
             email_is_preferred (bool): [optional]  # noqa: E501
             secondary_telephone (str, none_type): [optional]  # noqa: E501
             backup_address (Address): [optional]  # noqa: E501
+            cac_validated (bool): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -309,6 +312,7 @@ class Customer(ModelNormal):
             email_is_preferred (bool): [optional]  # noqa: E501
             secondary_telephone (str, none_type): [optional]  # noqa: E501
             backup_address (Address): [optional]  # noqa: E501
+            cac_validated (bool): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

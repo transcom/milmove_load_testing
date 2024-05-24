@@ -149,7 +149,7 @@ with ghc_client.ApiClient() as api_client:
     destination_duty_location = "destinationDutyLocation_example" # str |  (optional)
     origin_duty_location = "originDutyLocation_example" # str |  (optional)
     status = [
-        "Payment requested",
+        "PENDING",
     ] # [str] | Filtering for the status. (optional)
     order_type = "orderType_example" # str | order type (optional)
 

@@ -94,20 +94,6 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
-    def test_show_ppm_estimate(self):
-        """Test case for show_ppm_estimate
-
-        Return a PPM cost estimate  # noqa: E501
-        """
-        pass
-
-    def test_show_ppm_sit_estimate(self):
-        """Test case for show_ppm_sit_estimate
-
-        Return a PPM move's SIT cost estimate  # noqa: E501
-        """
-        pass
-
     def test_submit_ppm_shipment_documentation(self):
         """Test case for submit_ppm_shipment_documentation
 

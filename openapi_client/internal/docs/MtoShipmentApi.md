@@ -56,6 +56,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             secondary_pickup_postal_code="secondary_pickup_postal_code_example",
             secondary_pickup_address=Address(
@@ -67,6 +68,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             destination_postal_code="90210",
             destination_address=Address(
@@ -78,6 +80,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             secondary_destination_postal_code="secondary_destination_postal_code_example",
             secondary_destination_address=Address(
@@ -89,6 +92,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             sit_expected=True,
         ),
@@ -104,6 +108,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         secondary_pickup_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -114,6 +119,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         destination_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -124,6 +130,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         secondary_delivery_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -134,6 +141,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         agents=MTOAgents([
             MTOAgent(
@@ -388,6 +396,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             secondary_pickup_postal_code="secondary_pickup_postal_code_example",
             secondary_pickup_address=Address(
@@ -399,6 +408,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             has_secondary_pickup_address=True,
             actual_pickup_postal_code="90210",
@@ -412,6 +422,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             secondary_destination_postal_code="secondary_destination_postal_code_example",
             secondary_destination_address=Address(
@@ -423,6 +434,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             has_secondary_destination_address=True,
             actual_destination_postal_code="90210",
@@ -435,6 +447,7 @@ with internal_client.ApiClient() as api_client:
                 state="AL",
                 postal_code="90210",
                 country="USA",
+                county="LOS ANGELES",
             ),
             sit_expected=True,
             estimated_weight=4200,
@@ -458,6 +471,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         secondary_pickup_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -468,6 +482,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         has_secondary_pickup_address=True,
         destination_address=Address(
@@ -479,6 +494,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         secondary_delivery_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -489,6 +505,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         has_secondary_delivery_address=True,
         actual_pro_gear_weight=1,

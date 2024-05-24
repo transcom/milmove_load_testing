@@ -31,7 +31,9 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from ghc_client.model.omittable_moving_expense_type import OmittableMovingExpenseType
     from ghc_client.model.ppm_document_status import PPMDocumentStatus
+    globals()['OmittableMovingExpenseType'] = OmittableMovingExpenseType
     globals()['PPMDocumentStatus'] = PPMDocumentStatus
 
 
@@ -88,11 +90,14 @@ class UpdateMovingExpense(ModelNormal):
         """
         lazy_import()
         return {
+            'moving_expense_type': (OmittableMovingExpenseType,),  # noqa: E501
+            'description': (str, none_type,),  # noqa: E501
             'amount': (int,),  # noqa: E501
             'sit_start_date': (date,),  # noqa: E501
             'sit_end_date': (date,),  # noqa: E501
             'status': (PPMDocumentStatus,),  # noqa: E501
             'reason': (str,),  # noqa: E501
+            'weight_stored': (int,),  # noqa: E501
         }
 
     @cached_property
@@ -101,11 +106,14 @@ class UpdateMovingExpense(ModelNormal):
 
 
     attribute_map = {
+        'moving_expense_type': 'movingExpenseType',  # noqa: E501
+        'description': 'description',  # noqa: E501
         'amount': 'amount',  # noqa: E501
         'sit_start_date': 'sitStartDate',  # noqa: E501
         'sit_end_date': 'sitEndDate',  # noqa: E501
         'status': 'status',  # noqa: E501
         'reason': 'reason',  # noqa: E501
+        'weight_stored': 'weightStored',  # noqa: E501
     }
 
     read_only_vars = {
@@ -149,11 +157,14 @@ class UpdateMovingExpense(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            moving_expense_type (OmittableMovingExpenseType): [optional]  # noqa: E501
+            description (str, none_type): A brief description of the expense.. [optional]  # noqa: E501
             amount (int): The total amount of the expense as indicated on the receipt. [optional]  # noqa: E501
             sit_start_date (date): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             status (PPMDocumentStatus): [optional]  # noqa: E501
             reason (str): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
+            weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -239,11 +250,14 @@ class UpdateMovingExpense(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            moving_expense_type (OmittableMovingExpenseType): [optional]  # noqa: E501
+            description (str, none_type): A brief description of the expense.. [optional]  # noqa: E501
             amount (int): The total amount of the expense as indicated on the receipt. [optional]  # noqa: E501
             sit_start_date (date): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             status (PPMDocumentStatus): [optional]  # noqa: E501
             reason (str): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
+            weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

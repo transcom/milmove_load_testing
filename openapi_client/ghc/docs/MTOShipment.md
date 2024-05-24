@@ -22,6 +22,7 @@ Name | Type | Description | Notes
 **required_delivery_date** | **date, none_type** |  | [optional] 
 **approved_date** | **datetime, none_type** |  | [optional] 
 **diversion** | **bool** |  | [optional] 
+**diversion_reason** | **str, none_type** |  | [optional] 
 **distance** | **int, none_type** |  | [optional] 
 **pickup_address** | [**Address**](Address.md) |  | [optional] 
 **destination_address** | [**Address**](Address.md) |  | [optional] 
@@ -53,6 +54,9 @@ Name | Type | Description | Notes
 **storage_facility** | [**StorageFacility**](StorageFacility.md) |  | [optional] 
 **ppm_shipment** | [**PPMShipment**](PPMShipment.md) |  | [optional] 
 **delivery_address_update** | [**ShipmentAddressUpdate**](ShipmentAddressUpdate.md) |  | [optional] 
+**shipment_locator** | **str, none_type** |  | [optional] [readonly] 
+**origin_sit_auth_end_date** | **datetime** |  | [optional] 
+**destination_sit_auth_end_date** | **datetime** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

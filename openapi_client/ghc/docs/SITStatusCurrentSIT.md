@@ -9,7 +9,6 @@ Name | Type | Description | Notes
 **days_in_sit** | **int** |  | [optional] 
 **sit_entry_date** | **date, none_type** |  | [optional] 
 **sit_departure_date** | **date, none_type** |  | [optional] 
-**sit_allowance_end_date** | **date, none_type** |  | [optional] 
 **sit_authorized_end_date** | **date, none_type** |  | [optional] 
 **sit_customer_contacted** | **date, none_type** |  | [optional] 
 **sit_requested_delivery** | **date, none_type** |  | [optional] 

@@ -72,6 +72,13 @@ class PatchServiceMemberPayload(ModelNormal):
                 'pattern': r'^\d{10}$',  # noqa: E501
             },
         },
+        ('emplid',): {
+            'max_length': 7,
+            'min_length': 7,
+            'regex': {
+                'pattern': r'^\d{7}$',  # noqa: E501
+            },
+        },
         ('telephone',): {
             'regex': {
                 'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$',  # noqa: E501
@@ -114,6 +121,7 @@ class PatchServiceMemberPayload(ModelNormal):
         return {
             'user_id': (str,),  # noqa: E501
             'edipi': (str, none_type,),  # noqa: E501
+            'emplid': (str, none_type,),  # noqa: E501
             'affiliation': (Affiliation,),  # noqa: E501
             'first_name': (str, none_type,),  # noqa: E501
             'middle_name': (str, none_type,),  # noqa: E501
@@ -137,6 +145,7 @@ class PatchServiceMemberPayload(ModelNormal):
     attribute_map = {
         'user_id': 'user_id',  # noqa: E501
         'edipi': 'edipi',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'affiliation': 'affiliation',  # noqa: E501
         'first_name': 'first_name',  # noqa: E501
         'middle_name': 'middle_name',  # noqa: E501
@@ -195,6 +204,7 @@ class PatchServiceMemberPayload(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             user_id (str): [optional]  # noqa: E501
             edipi (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
             first_name (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
@@ -295,6 +305,7 @@ class PatchServiceMemberPayload(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             user_id (str): [optional]  # noqa: E501
             edipi (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             affiliation (Affiliation): [optional]  # noqa: E501
             first_name (str, none_type): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501

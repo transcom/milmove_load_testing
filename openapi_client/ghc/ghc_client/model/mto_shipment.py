@@ -128,6 +128,7 @@ class MTOShipment(ModelNormal):
             'required_delivery_date': (date, none_type,),  # noqa: E501
             'approved_date': (datetime, none_type,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
+            'diversion_reason': (str, none_type,),  # noqa: E501
             'distance': (int, none_type,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
@@ -159,6 +160,9 @@ class MTOShipment(ModelNormal):
             'storage_facility': (StorageFacility,),  # noqa: E501
             'ppm_shipment': (PPMShipment,),  # noqa: E501
             'delivery_address_update': (ShipmentAddressUpdate,),  # noqa: E501
+            'shipment_locator': (str, none_type,),  # noqa: E501
+            'origin_sit_auth_end_date': (datetime,),  # noqa: E501
+            'destination_sit_auth_end_date': (datetime,),  # noqa: E501
         }
 
     @cached_property
@@ -185,6 +189,7 @@ class MTOShipment(ModelNormal):
         'required_delivery_date': 'requiredDeliveryDate',  # noqa: E501
         'approved_date': 'approvedDate',  # noqa: E501
         'diversion': 'diversion',  # noqa: E501
+        'diversion_reason': 'diversionReason',  # noqa: E501
         'distance': 'distance',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
@@ -216,10 +221,14 @@ class MTOShipment(ModelNormal):
         'storage_facility': 'storageFacility',  # noqa: E501
         'ppm_shipment': 'ppmShipment',  # noqa: E501
         'delivery_address_update': 'deliveryAddressUpdate',  # noqa: E501
+        'shipment_locator': 'shipmentLocator',  # noqa: E501
+        'origin_sit_auth_end_date': 'originSitAuthEndDate',  # noqa: E501
+        'destination_sit_auth_end_date': 'destinationSitAuthEndDate',  # noqa: E501
     }
 
     read_only_vars = {
         'calculated_billable_weight',  # noqa: E501
+        'shipment_locator',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -278,6 +287,7 @@ class MTOShipment(ModelNormal):
             required_delivery_date (date, none_type): [optional]  # noqa: E501
             approved_date (datetime, none_type): [optional]  # noqa: E501
             diversion (bool): [optional]  # noqa: E501
+            diversion_reason (str, none_type): [optional]  # noqa: E501
             distance (int, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
@@ -309,6 +319,9 @@ class MTOShipment(ModelNormal):
             storage_facility (StorageFacility): [optional]  # noqa: E501
             ppm_shipment (PPMShipment): [optional]  # noqa: E501
             delivery_address_update (ShipmentAddressUpdate): [optional]  # noqa: E501
+            shipment_locator (str, none_type): [optional]  # noqa: E501
+            origin_sit_auth_end_date (datetime): [optional]  # noqa: E501
+            destination_sit_auth_end_date (datetime): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -412,6 +425,7 @@ class MTOShipment(ModelNormal):
             required_delivery_date (date, none_type): [optional]  # noqa: E501
             approved_date (datetime, none_type): [optional]  # noqa: E501
             diversion (bool): [optional]  # noqa: E501
+            diversion_reason (str, none_type): [optional]  # noqa: E501
             distance (int, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
@@ -443,6 +457,9 @@ class MTOShipment(ModelNormal):
             storage_facility (StorageFacility): [optional]  # noqa: E501
             ppm_shipment (PPMShipment): [optional]  # noqa: E501
             delivery_address_update (ShipmentAddressUpdate): [optional]  # noqa: E501
+            shipment_locator (str, none_type): [optional]  # noqa: E501
+            origin_sit_auth_end_date (datetime): [optional]  # noqa: E501
+            destination_sit_auth_end_date (datetime): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

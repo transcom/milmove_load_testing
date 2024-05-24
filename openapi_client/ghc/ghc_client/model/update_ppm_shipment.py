@@ -33,8 +33,10 @@ from ghc_client.exceptions import ApiAttributeError
 def lazy_import():
     from ghc_client.model.address import Address
     from ghc_client.model.ppm_advance_status import PPMAdvanceStatus
+    from ghc_client.model.update_customer_payload_current_address import UpdateCustomerPayloadCurrentAddress
     globals()['Address'] = Address
     globals()['PPMAdvanceStatus'] = PPMAdvanceStatus
+    globals()['UpdateCustomerPayloadCurrentAddress'] = UpdateCustomerPayloadCurrentAddress
 
 
 class UpdatePPMShipment(ModelNormal):
@@ -65,26 +67,6 @@ class UpdatePPMShipment(ModelNormal):
     }
 
     validations = {
-        ('pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('secondary_pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('destination_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('secondary_destination_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
     }
 
     @cached_property
@@ -112,10 +94,12 @@ class UpdatePPMShipment(ModelNormal):
         return {
             'expected_departure_date': (date, none_type,),  # noqa: E501
             'actual_move_date': (date, none_type,),  # noqa: E501
-            'pickup_postal_code': (str, none_type,),  # noqa: E501
-            'secondary_pickup_postal_code': (str, none_type,),  # noqa: E501
-            'destination_postal_code': (str, none_type,),  # noqa: E501
-            'secondary_destination_postal_code': (str, none_type,),  # noqa: E501
+            'pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'secondary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'secondary_destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
+            'has_secondary_destination_address': (bool, none_type,),  # noqa: E501
             'w2_address': (Address,),  # noqa: E501
             'sit_expected': (bool, none_type,),  # noqa: E501
             'sit_location': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
@@ -127,7 +111,9 @@ class UpdatePPMShipment(ModelNormal):
             'pro_gear_weight': (int, none_type,),  # noqa: E501
             'spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'has_requested_advance': (bool, none_type,),  # noqa: E501
+            'has_received_advance': (bool, none_type,),  # noqa: E501
             'advance_amount_requested': (int, none_type,),  # noqa: E501
+            'advance_amount_received': (int, none_type,),  # noqa: E501
             'advance_status': (PPMAdvanceStatus,),  # noqa: E501
         }
 
@@ -139,10 +125,12 @@ class UpdatePPMShipment(ModelNormal):
     attribute_map = {
         'expected_departure_date': 'expectedDepartureDate',  # noqa: E501
         'actual_move_date': 'actualMoveDate',  # noqa: E501
-        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
-        'secondary_pickup_postal_code': 'secondaryPickupPostalCode',  # noqa: E501
-        'destination_postal_code': 'destinationPostalCode',  # noqa: E501
-        'secondary_destination_postal_code': 'secondaryDestinationPostalCode',  # noqa: E501
+        'pickup_address': 'pickupAddress',  # noqa: E501
+        'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
+        'destination_address': 'destinationAddress',  # noqa: E501
+        'secondary_destination_address': 'secondaryDestinationAddress',  # noqa: E501
+        'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
+        'has_secondary_destination_address': 'hasSecondaryDestinationAddress',  # noqa: E501
         'w2_address': 'w2Address',  # noqa: E501
         'sit_expected': 'sitExpected',  # noqa: E501
         'sit_location': 'sitLocation',  # noqa: E501
@@ -154,7 +142,9 @@ class UpdatePPMShipment(ModelNormal):
         'pro_gear_weight': 'proGearWeight',  # noqa: E501
         'spouse_pro_gear_weight': 'spouseProGearWeight',  # noqa: E501
         'has_requested_advance': 'hasRequestedAdvance',  # noqa: E501
+        'has_received_advance': 'hasReceivedAdvance',  # noqa: E501
         'advance_amount_requested': 'advanceAmountRequested',  # noqa: E501
+        'advance_amount_received': 'advanceAmountReceived',  # noqa: E501
         'advance_status': 'advanceStatus',  # noqa: E501
     }
 
@@ -201,10 +191,12 @@ class UpdatePPMShipment(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             expected_departure_date (date, none_type): Date the customer expects to move. . [optional]  # noqa: E501
             actual_move_date (date, none_type): [optional]  # noqa: E501
-            pickup_postal_code (str, none_type): zip code. [optional]  # noqa: E501
-            secondary_pickup_postal_code (str, none_type): [optional]  # noqa: E501
-            destination_postal_code (str, none_type): [optional]  # noqa: E501
-            secondary_destination_postal_code (str, none_type): [optional]  # noqa: E501
+            pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
             w2_address (Address): [optional]  # noqa: E501
             sit_expected (bool, none_type): [optional]  # noqa: E501
             sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
@@ -216,7 +208,9 @@ class UpdatePPMShipment(ModelNormal):
             pro_gear_weight (int, none_type): [optional]  # noqa: E501
             spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             has_requested_advance (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
+            has_received_advance (bool, none_type): Indicates whether an advance was received for the PPM shipment. . [optional]  # noqa: E501
             advance_amount_requested (int, none_type): The amount request for an advance, or null if no advance is requested . [optional]  # noqa: E501
+            advance_amount_received (int, none_type): The amount received for an advance, or null if no advance is received . [optional]  # noqa: E501
             advance_status (PPMAdvanceStatus): [optional]  # noqa: E501
         """
 
@@ -305,10 +299,12 @@ class UpdatePPMShipment(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             expected_departure_date (date, none_type): Date the customer expects to move. . [optional]  # noqa: E501
             actual_move_date (date, none_type): [optional]  # noqa: E501
-            pickup_postal_code (str, none_type): zip code. [optional]  # noqa: E501
-            secondary_pickup_postal_code (str, none_type): [optional]  # noqa: E501
-            destination_postal_code (str, none_type): [optional]  # noqa: E501
-            secondary_destination_postal_code (str, none_type): [optional]  # noqa: E501
+            pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
             w2_address (Address): [optional]  # noqa: E501
             sit_expected (bool, none_type): [optional]  # noqa: E501
             sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
@@ -320,7 +316,9 @@ class UpdatePPMShipment(ModelNormal):
             pro_gear_weight (int, none_type): [optional]  # noqa: E501
             spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             has_requested_advance (bool, none_type): Indicates whether an advance has been requested for the PPM shipment. . [optional]  # noqa: E501
+            has_received_advance (bool, none_type): Indicates whether an advance was received for the PPM shipment. . [optional]  # noqa: E501
             advance_amount_requested (int, none_type): The amount request for an advance, or null if no advance is requested . [optional]  # noqa: E501
+            advance_amount_received (int, none_type): The amount received for an advance, or null if no advance is received . [optional]  # noqa: E501
             advance_status (PPMAdvanceStatus): [optional]  # noqa: E501
         """
 

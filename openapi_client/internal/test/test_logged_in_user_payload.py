@@ -14,9 +14,11 @@ import unittest
 
 import internal_client
 from internal_client.model.office_user import OfficeUser
+from internal_client.model.privilege import Privilege
 from internal_client.model.role import Role
 from internal_client.model.service_member_payload import ServiceMemberPayload
 globals()['OfficeUser'] = OfficeUser
+globals()['Privilege'] = Privilege
 globals()['Role'] = Role
 globals()['ServiceMemberPayload'] = ServiceMemberPayload
 from internal_client.model.logged_in_user_payload import LoggedInUserPayload

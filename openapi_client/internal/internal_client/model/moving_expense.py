@@ -108,6 +108,7 @@ class MovingExpense(ModelNormal):
             'sit_start_date': (date, none_type,),  # noqa: E501
             'sit_end_date': (date, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
+            'weight_stored': (int, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -132,6 +133,7 @@ class MovingExpense(ModelNormal):
         'sit_start_date': 'sitStartDate',  # noqa: E501
         'sit_end_date': 'sitEndDate',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
+        'weight_stored': 'weightStored',  # noqa: E501
     }
 
     read_only_vars = {
@@ -199,6 +201,7 @@ class MovingExpense(ModelNormal):
             sit_start_date (date, none_type): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date, none_type): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
+            weight_stored (int, none_type): The total weight stored in PPM SIT. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -301,6 +304,7 @@ class MovingExpense(ModelNormal):
             sit_start_date (date, none_type): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date, none_type): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
+            weight_stored (int, none_type): The total weight stored in PPM SIT. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

@@ -31,6 +31,13 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
+    def test_get_ppm_actual_weight(self):
+        """Test case for get_ppm_actual_weight
+
+        Get the actual weight for a PPM shipment  # noqa: E501
+        """
+        pass
+
     def test_get_ppm_closeout(self):
         """Test case for get_ppm_closeout
 

@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **id** | **str** |  | [optional] 
 **authorized_weight** | **int, none_type** |  | [optional] 
 **dependents_authorized** | **bool, none_type** |  | [optional] 
+**gun_safe** | **bool** |  | [optional] 
 **non_temporary_storage** | **bool, none_type** |  | [optional] 
 **privately_owned_vehicle** | **bool, none_type** |  | [optional] 
 **pro_gear_weight** | **int** |  | [optional] 

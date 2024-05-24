@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **user_id** | **str** |  | [optional] 
 **edipi** | **str, none_type** |  | [optional] 
+**emplid** | **str, none_type** |  | [optional] 
 **affiliation** | [**Affiliation**](Affiliation.md) |  | [optional] 
 **first_name** | **str, none_type** |  | [optional] 
 **middle_name** | **str, none_type** |  | [optional] 

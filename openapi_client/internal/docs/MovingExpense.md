@@ -21,6 +21,7 @@ Name | Type | Description | Notes
 **sit_start_date** | **date, none_type** | The date the shipment entered storage, applicable for the &#x60;STORAGE&#x60; movingExpenseType only | [optional] 
 **sit_end_date** | **date, none_type** | The date the shipment exited storage, applicable for the &#x60;STORAGE&#x60; movingExpenseType only | [optional] 
 **e_tag** | **str** | A hash that should be used as the \&quot;If-Match\&quot; header for any updates. | [optional] [readonly] 
+**weight_stored** | **int, none_type** | The total weight stored in PPM SIT | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

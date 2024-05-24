@@ -59,11 +59,6 @@ class BackupContact(ModelNormal):
     }
 
     validations = {
-        ('email',): {
-            'regex': {
-                'pattern': r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',  # noqa: E501
-            },
-        },
         ('phone',): {
             'regex': {
                 'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$',  # noqa: E501

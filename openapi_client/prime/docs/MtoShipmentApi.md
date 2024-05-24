@@ -622,6 +622,7 @@ with prime_client.ApiClient() as api_client:
         state="AL",
         postal_code="90210",
         country="USA",
+        county="LOS ANGELES",
     ) # Address | 
 
     # example passing only required values which don't have defaults set
@@ -889,6 +890,7 @@ with prime_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         contractor_remarks="Customer reached out to me this week and let me know they want to move somewhere else.",
     ) # UpdateShipmentDestinationAddress | 

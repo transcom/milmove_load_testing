@@ -115,6 +115,8 @@ class SearchMove(ModelNormal):
             'requested_delivery_date': (date, none_type,),  # noqa: E501
             'origin_gbloc': (GBLOC,),  # noqa: E501
             'destination_gbloc': (GBLOC,),  # noqa: E501
+            'locked_by_office_user_id': (str, none_type,),  # noqa: E501
+            'lock_expires_at': (datetime, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -138,6 +140,8 @@ class SearchMove(ModelNormal):
         'requested_delivery_date': 'requestedDeliveryDate',  # noqa: E501
         'origin_gbloc': 'originGBLOC',  # noqa: E501
         'destination_gbloc': 'destinationGBLOC',  # noqa: E501
+        'locked_by_office_user_id': 'lockedByOfficeUserID',  # noqa: E501
+        'lock_expires_at': 'lockExpiresAt',  # noqa: E501
     }
 
     read_only_vars = {
@@ -196,6 +200,8 @@ class SearchMove(ModelNormal):
             requested_delivery_date (date, none_type): [optional]  # noqa: E501
             origin_gbloc (GBLOC): [optional]  # noqa: E501
             destination_gbloc (GBLOC): [optional]  # noqa: E501
+            locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
+            lock_expires_at (datetime, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -296,6 +302,8 @@ class SearchMove(ModelNormal):
             requested_delivery_date (date, none_type): [optional]  # noqa: E501
             origin_gbloc (GBLOC): [optional]  # noqa: E501
             destination_gbloc (GBLOC): [optional]  # noqa: E501
+            locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
+            lock_expires_at (datetime, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

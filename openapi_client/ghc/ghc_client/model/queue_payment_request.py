@@ -107,6 +107,8 @@ class QueuePaymentRequest(ModelNormal):
             'origin_gbloc': (GBLOC,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
             'order_type': (str, none_type,),  # noqa: E501
+            'locked_by_office_user_id': (str, none_type,),  # noqa: E501
+            'lock_expires_at': (datetime, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -126,6 +128,8 @@ class QueuePaymentRequest(ModelNormal):
         'origin_gbloc': 'originGBLOC',  # noqa: E501
         'origin_duty_location': 'originDutyLocation',  # noqa: E501
         'order_type': 'orderType',  # noqa: E501
+        'locked_by_office_user_id': 'lockedByOfficeUserID',  # noqa: E501
+        'lock_expires_at': 'lockExpiresAt',  # noqa: E501
     }
 
     read_only_vars = {
@@ -180,6 +184,8 @@ class QueuePaymentRequest(ModelNormal):
             origin_gbloc (GBLOC): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             order_type (str, none_type): [optional]  # noqa: E501
+            locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
+            lock_expires_at (datetime, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -276,6 +282,8 @@ class QueuePaymentRequest(ModelNormal):
             origin_gbloc (GBLOC): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             order_type (str, none_type): [optional]  # noqa: E501
+            locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
+            lock_expires_at (datetime, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

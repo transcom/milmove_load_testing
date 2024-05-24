@@ -84,6 +84,7 @@ All URIs are relative to */internal*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AddressesApi* | [**show_address**](docs/AddressesApi.md#show_address) | **GET** /addresses/{addressId} | Returns an address
+*ApplicationParametersApi* | [**validate**](docs/ApplicationParametersApi.md#validate) | **POST** /application_parameters | Searches for an application parameter by name and value, returns nil if not found
 *BackupContactsApi* | [**create_service_member_backup_contact**](docs/BackupContactsApi.md#create_service_member_backup_contact) | **POST** /service_members/{serviceMemberId}/backup_contacts | Submits backup contact for a logged-in user
 *BackupContactsApi* | [**index_service_member_backup_contacts**](docs/BackupContactsApi.md#index_service_member_backup_contacts) | **GET** /service_members/{serviceMemberId}/backup_contacts | List all service member backup contacts
 *BackupContactsApi* | [**show_service_member_backup_contact**](docs/BackupContactsApi.md#show_service_member_backup_contact) | **GET** /backup_contacts/{backupContactId} | Returns the given service member backup contact
@@ -132,8 +133,6 @@ Class | Method | HTTP request | Description
 *PpmApi* | [**resubmit_ppm_shipment_documentation**](docs/PpmApi.md#resubmit_ppm_shipment_documentation) | **PUT** /ppm-shipments/{ppmShipmentId}/resubmit-ppm-shipment-documentation/{signedCertificationId} | Updates signature and routes PPM shipment to service counselor
 *PpmApi* | [**show_aoa_packet**](docs/PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
 *PpmApi* | [**show_payment_packet**](docs/PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
-*PpmApi* | [**show_ppm_estimate**](docs/PpmApi.md#show_ppm_estimate) | **GET** /estimates/ppm | Return a PPM cost estimate
-*PpmApi* | [**show_ppm_sit_estimate**](docs/PpmApi.md#show_ppm_sit_estimate) | **GET** /estimates/ppm_sit | Return a PPM move&#39;s SIT cost estimate
 *PpmApi* | [**submit_ppm_shipment_documentation**](docs/PpmApi.md#submit_ppm_shipment_documentation) | **POST** /ppm-shipments/{ppmShipmentId}/submit-ppm-shipment-documentation | Saves signature and routes PPM shipment to service counselor
 *PpmApi* | [**update_moving_expense**](docs/PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
 *PpmApi* | [**update_pro_gear_weight_ticket**](docs/PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
@@ -156,6 +155,7 @@ Class | Method | HTTP request | Description
 
  - [Address](docs/Address.md)
  - [Affiliation](docs/Affiliation.md)
+ - [ApplicationParameters](docs/ApplicationParameters.md)
  - [AvailableMoveDates](docs/AvailableMoveDates.md)
  - [BackupContactPermission](docs/BackupContactPermission.md)
  - [CancelMove](docs/CancelMove.md)
@@ -217,10 +217,10 @@ Class | Method | HTTP request | Description
  - [PPMShipment](docs/PPMShipment.md)
  - [PPMShipmentSecondaryPickupAddress](docs/PPMShipmentSecondaryPickupAddress.md)
  - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
- - [PPMSitEstimate](docs/PPMSitEstimate.md)
  - [PatchMovePayload](docs/PatchMovePayload.md)
  - [PatchServiceMemberPayload](docs/PatchServiceMemberPayload.md)
  - [PostDocumentPayload](docs/PostDocumentPayload.md)
+ - [Privilege](docs/Privilege.md)
  - [ProGearWeightTicket](docs/ProGearWeightTicket.md)
  - [ProGearWeightTicketDocument](docs/ProGearWeightTicketDocument.md)
  - [RateEnginePostalCodePayload](docs/RateEnginePostalCodePayload.md)

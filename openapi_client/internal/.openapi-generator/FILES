@@ -6,6 +6,8 @@ README.md
 docs/Address.md
 docs/AddressesApi.md
 docs/Affiliation.md
+docs/ApplicationParameters.md
+docs/ApplicationParametersApi.md
 docs/AvailableMoveDates.md
 docs/BackupContactPermission.md
 docs/BackupContactsApi.md
@@ -80,12 +82,12 @@ docs/PPMEstimateRange.md
 docs/PPMShipment.md
 docs/PPMShipmentSecondaryPickupAddress.md
 docs/PPMShipmentStatus.md
-docs/PPMSitEstimate.md
 docs/PatchMovePayload.md
 docs/PatchServiceMemberPayload.md
 docs/PostDocumentPayload.md
 docs/PostalCodesApi.md
 docs/PpmApi.md
+docs/Privilege.md
 docs/ProGearWeightTicket.md
 docs/ProGearWeightTicketDocument.md
 docs/QueuesApi.md
@@ -129,6 +131,7 @@ git_push.sh
 internal_client/__init__.py
 internal_client/api/__init__.py
 internal_client/api/addresses_api.py
+internal_client/api/application_parameters_api.py
 internal_client/api/backup_contacts_api.py
 internal_client/api/calendar_api.py
 internal_client/api/certification_api.py
@@ -156,6 +159,7 @@ internal_client/exceptions.py
 internal_client/model/__init__.py
 internal_client/model/address.py
 internal_client/model/affiliation.py
+internal_client/model/application_parameters.py
 internal_client/model/available_move_dates.py
 internal_client/model/backup_contact_permission.py
 internal_client/model/cancel_move.py
@@ -220,7 +224,7 @@ internal_client/model/ppm_estimate_range.py
 internal_client/model/ppm_shipment.py
 internal_client/model/ppm_shipment_secondary_pickup_address.py
 internal_client/model/ppm_shipment_status.py
-internal_client/model/ppm_sit_estimate.py
+internal_client/model/privilege.py
 internal_client/model/pro_gear_weight_ticket.py
 internal_client/model/pro_gear_weight_ticket_document.py
 internal_client/model/rate_engine_postal_code_payload.py
@@ -266,6 +270,8 @@ test/__init__.py
 test/test_address.py
 test/test_addresses_api.py
 test/test_affiliation.py
+test/test_application_parameters.py
+test/test_application_parameters_api.py
 test/test_available_move_dates.py
 test/test_backup_contact_permission.py
 test/test_backup_contacts_api.py
@@ -345,7 +351,7 @@ test/test_ppm_estimate_range.py
 test/test_ppm_shipment.py
 test/test_ppm_shipment_secondary_pickup_address.py
 test/test_ppm_shipment_status.py
-test/test_ppm_sit_estimate.py
+test/test_privilege.py
 test/test_pro_gear_weight_ticket.py
 test/test_pro_gear_weight_ticket_document.py
 test/test_queues_api.py

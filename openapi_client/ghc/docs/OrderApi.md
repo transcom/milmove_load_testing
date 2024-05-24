@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**acknowledge_excess_weight_risk**](OrderApi.md#acknowledge_excess_weight_risk) | **POST** /orders/{orderID}/acknowledge-excess-weight-risk | Saves the date and time a TOO acknowledged the excess weight risk by dismissing the alert
 [**counseling_update_allowance**](OrderApi.md#counseling_update_allowance) | **PATCH** /counseling/orders/{orderID}/allowances | Updates an allowance (Orders with Entitlements)
 [**counseling_update_order**](OrderApi.md#counseling_update_order) | **PATCH** /counseling/orders/{orderID} | Updates an order (performed by a services counselor)
+[**create_order**](OrderApi.md#create_order) | **POST** /orders | Creates an orders model for a logged-in user
 [**get_order**](OrderApi.md#get_order) | **GET** /orders/{orderID} | Gets an order by ID
 [**tac_validation**](OrderApi.md#tac_validation) | **GET** /tac/valid | Validation of a TAC value
 [**update_allowance**](OrderApi.md#update_allowance) | **PATCH** /orders/{orderID}/allowances | Updates an allowance (Orders with Entitlements)
@@ -132,6 +133,7 @@ with ghc_client.ApiClient() as api_client:
         required_medical_equipment_weight=2000,
         organizational_clothing_and_individual_equipment=True,
         storage_in_transit=0,
+        gun_safe=True,
     ) # CounselingUpdateAllowancePayload | 
 
     # example passing only required values which don't have defaults set
@@ -269,6 +271,96 @@ No authorization required
 **412** | Precondition failed |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **create_order**
+> Order create_order()
+
+Creates an orders model for a logged-in user
+
+Creates an instance of orders tied to a service member, which allow for creation of a move and an entitlement. Orders are required before the creation of a move
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import order_api
+from ghc_client.model.order import Order
+from ghc_client.model.create_orders import CreateOrders
+from ghc_client.model.validation_error import ValidationError
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = order_api.OrderApi(api_client)
+    create_orders = CreateOrders(
+        service_member_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+        issue_date=dateutil_parser('1970-01-01').date(),
+        report_by_date=dateutil_parser('1970-01-01').date(),
+        orders_type=OrdersType("PERMANENT_CHANGE_OF_STATION"),
+        orders_type_detail=OrdersTypeDetail("HHG_PERMITTED"),
+        has_dependents=True,
+        spouse_has_pro_gear=True,
+        new_duty_location_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+        orders_number="030-00362",
+        tac="F8J1",
+        sac="N002214CSW32Y9",
+        department_indicator=DeptIndicator("NAVY_AND_MARINES"),
+        grade=Grade("E_1"),
+        origin_duty_location_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+    ) # CreateOrders |  (optional)
+
+    # example passing only required values which don't have defaults set
+    # and optional values
+    try:
+        # Creates an orders model for a logged-in user
+        api_response = api_instance.create_order(create_orders=create_orders)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling OrderApi->create_order: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **create_orders** | [**CreateOrders**](CreateOrders.md)|  | [optional]
+
+### Return type
+
+[**Order**](Order.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | created instance of orders |  -  |
+**400** | invalid request |  -  |
+**401** | request requires user authentication |  -  |
+**403** | user is not authorized |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -459,6 +551,7 @@ with ghc_client.ApiClient() as api_client:
         required_medical_equipment_weight=2000,
         organizational_clothing_and_individual_equipment=True,
         storage_in_transit=0,
+        gun_safe=True,
     ) # UpdateAllowancePayload | 
 
     # example passing only required values which don't have defaults set

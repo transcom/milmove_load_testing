@@ -62,6 +62,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         backup_mailing_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -72,6 +73,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
     ) # CreateServiceMemberPayload | 
 
@@ -150,6 +152,7 @@ with internal_client.ApiClient() as api_client:
     patch_service_member_payload = PatchServiceMemberPayload(
         user_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
         edipi="5789345789",
+        emplid="5789345",
         affiliation=Affiliation("ARMY"),
         first_name="John",
         middle_name="L.",
@@ -170,6 +173,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
         backup_mailing_address=Address(
             id="c56a4180-65aa-42ec-a945-5fd21dec0538",
@@ -180,6 +184,7 @@ with internal_client.ApiClient() as api_client:
             state="AL",
             postal_code="90210",
             country="USA",
+            county="LOS ANGELES",
         ),
     ) # PatchServiceMemberPayload | 
 

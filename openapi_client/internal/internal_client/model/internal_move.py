@@ -97,10 +97,11 @@ class InternalMove(ModelNormal):
             'orders': (bool, date, datetime, dict, float, int, list, str, none_type,),  # noqa: E501
             'status': (str,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
-            'submitted_at': (datetime,),  # noqa: E501
+            'submitted_at': (datetime, none_type,),  # noqa: E501
             'mto_shipments': (MTOShipments,),  # noqa: E501
             'closeout_office': (TransportationOffice,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
+            'prime_counseling_completed_at': (datetime,),  # noqa: E501
         }
 
     @cached_property
@@ -120,6 +121,7 @@ class InternalMove(ModelNormal):
         'mto_shipments': 'mtoShipments',  # noqa: E501
         'closeout_office': 'closeoutOffice',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
+        'prime_counseling_completed_at': 'primeCounselingCompletedAt',  # noqa: E501
     }
 
     read_only_vars = {
@@ -129,6 +131,7 @@ class InternalMove(ModelNormal):
         'updated_at',  # noqa: E501
         'submitted_at',  # noqa: E501
         'e_tag',  # noqa: E501
+        'prime_counseling_completed_at',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -176,10 +179,11 @@ class InternalMove(ModelNormal):
             orders (bool, date, datetime, dict, float, int, list, str, none_type): [optional]  # noqa: E501
             status (str): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
-            submitted_at (datetime): [optional]  # noqa: E501
+            submitted_at (datetime, none_type): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
+            prime_counseling_completed_at (datetime): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -272,10 +276,11 @@ class InternalMove(ModelNormal):
             orders (bool, date, datetime, dict, float, int, list, str, none_type): [optional]  # noqa: E501
             status (str): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
-            submitted_at (datetime): [optional]  # noqa: E501
+            submitted_at (datetime, none_type): [optional]  # noqa: E501
             mto_shipments (MTOShipments): [optional]  # noqa: E501
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
+            prime_counseling_completed_at (datetime): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

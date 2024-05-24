@@ -104,6 +104,7 @@ class MovePayload(ModelNormal):
             'mto_shipments': (MTOShipments,),  # noqa: E501
             'closeout_office': (TransportationOffice,),  # noqa: E501
             'cancel_reason': (str, none_type,),  # noqa: E501
+            'prime_counseling_completed_at': (datetime,),  # noqa: E501
         }
 
     @cached_property
@@ -124,10 +125,12 @@ class MovePayload(ModelNormal):
         'mto_shipments': 'mto_shipments',  # noqa: E501
         'closeout_office': 'closeout_office',  # noqa: E501
         'cancel_reason': 'cancel_reason',  # noqa: E501
+        'prime_counseling_completed_at': 'primeCounselingCompletedAt',  # noqa: E501
     }
 
     read_only_vars = {
         'service_member_id',  # noqa: E501
+        'prime_counseling_completed_at',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -182,6 +185,7 @@ class MovePayload(ModelNormal):
             mto_shipments (MTOShipments): [optional]  # noqa: E501
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501
+            prime_counseling_completed_at (datetime): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -287,6 +291,7 @@ class MovePayload(ModelNormal):
             mto_shipments (MTOShipments): [optional]  # noqa: E501
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501
+            prime_counseling_completed_at (datetime): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

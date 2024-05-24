@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 Returns an address
 
-Returns an address
+Find by API using address ID that returns an address json object containing address 1, address 2, address 3, city and postal code.
 
 ### Example
 

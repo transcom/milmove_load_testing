@@ -53,8 +53,12 @@ import time
 import ghc_client
 from pprint import pprint
 from ghc_client.api import customer_api
+from ghc_client.model.create_customer_payload import CreateCustomerPayload
+from ghc_client.model.created_customer import CreatedCustomer
 from ghc_client.model.customer import Customer
 from ghc_client.model.error import Error
+from ghc_client.model.search_customers_request import SearchCustomersRequest
+from ghc_client.model.search_customers_result import SearchCustomersResult
 from ghc_client.model.update_customer_payload import UpdateCustomerPayload
 from ghc_client.model.validation_error import ValidationError
 # Defining the host is optional and defaults to /ghc/v1
@@ -69,14 +73,35 @@ configuration = ghc_client.Configuration(
 with ghc_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = customer_api.CustomerApi(api_client)
-    customer_id = "customerID_example" # str | ID of customer to use
+    body = CreateCustomerPayload(
+        affiliation=Affiliation("ARMY"),
+        edipi="John",
+        first_name="John",
+        middle_name="David",
+        last_name="Doe",
+        suffix="Jr.",
+        telephone="748-072-8880",
+        secondary_telephone="748-072-8880",
+        personal_email="personalEmail@email.com",
+        phone_is_preferred=True,
+        email_is_preferred=True,
+        residential_address=UpdateCustomerPayloadCurrentAddress(),
+        backup_contact=BackupContact(
+            name="name_example",
+            email="backupContact@mail.com",
+            phone="748-072-8880",
+        ),
+        backup_mailing_address=UpdateCustomerPayloadCurrentAddress(),
+        create_okta_account=True,
+        cac_user=True,
+    ) # CreateCustomerPayload | 
 
     try:
-        # Returns a given customer
-        api_response = api_instance.get_customer(customer_id)
+        # Creates a customer with Okta option
+        api_response = api_instance.create_customer_with_okta_option(body)
         pprint(api_response)
     except ghc_client.ApiException as e:
-        print("Exception when calling CustomerApi->get_customer: %s\n" % e)
+        print("Exception when calling CustomerApi->create_customer_with_okta_option: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -85,7 +110,9 @@ All URIs are relative to */ghc/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*CustomerApi* | [**create_customer_with_okta_option**](docs/CustomerApi.md#create_customer_with_okta_option) | **POST** /customer | Creates a customer with Okta option
 *CustomerApi* | [**get_customer**](docs/CustomerApi.md#get_customer) | **GET** /customer/{customerID} | Returns a given customer
+*CustomerApi* | [**search_customers**](docs/CustomerApi.md#search_customers) | **POST** /customer/search | Search customers by DOD ID or customer name
 *CustomerApi* | [**update_customer**](docs/CustomerApi.md#update_customer) | **PATCH** /customer/{customerID} | Updates customer info
 *CustomerSupportRemarksApi* | [**create_customer_support_remark_for_move**](docs/CustomerSupportRemarksApi.md#create_customer_support_remark_for_move) | **POST** /moves/{locator}/customer-support-remarks | Creates a customer support remark for a move
 *CustomerSupportRemarksApi* | [**delete_customer_support_remark**](docs/CustomerSupportRemarksApi.md#delete_customer_support_remark) | **DELETE** /customer-support-remarks/{customerSupportRemarkID} | Soft deletes a customer support remark by ID
@@ -121,9 +148,11 @@ Class | Method | HTTP request | Description
 *MtoShipmentApi* | [**get_shipment**](docs/MtoShipmentApi.md#get_shipment) | **GET** /shipments/{shipmentID} | fetches a shipment by ID
 *MtoShipmentApi* | [**list_mto_shipments**](docs/MtoShipmentApi.md#list_mto_shipments) | **GET** /move_task_orders/{moveTaskOrderID}/mto_shipments | Gets all shipments for a move task order
 *MtoShipmentApi* | [**update_mto_shipment**](docs/MtoShipmentApi.md#update_mto_shipment) | **PATCH** /move_task_orders/{moveTaskOrderID}/mto_shipments/{shipmentID} | updateMTOShipment
+*OfficeUsersApi* | [**create_requested_office_user**](docs/OfficeUsersApi.md#create_requested_office_user) | **POST** /open/requested-office-users | Create an Office User
 *OrderApi* | [**acknowledge_excess_weight_risk**](docs/OrderApi.md#acknowledge_excess_weight_risk) | **POST** /orders/{orderID}/acknowledge-excess-weight-risk | Saves the date and time a TOO acknowledged the excess weight risk by dismissing the alert
 *OrderApi* | [**counseling_update_allowance**](docs/OrderApi.md#counseling_update_allowance) | **PATCH** /counseling/orders/{orderID}/allowances | Updates an allowance (Orders with Entitlements)
 *OrderApi* | [**counseling_update_order**](docs/OrderApi.md#counseling_update_order) | **PATCH** /counseling/orders/{orderID} | Updates an order (performed by a services counselor)
+*OrderApi* | [**create_order**](docs/OrderApi.md#create_order) | **POST** /orders | Creates an orders model for a logged-in user
 *OrderApi* | [**get_order**](docs/OrderApi.md#get_order) | **GET** /orders/{orderID} | Gets an order by ID
 *OrderApi* | [**tac_validation**](docs/OrderApi.md#tac_validation) | **GET** /tac/valid | Validation of a TAC value
 *OrderApi* | [**update_allowance**](docs/OrderApi.md#update_allowance) | **PATCH** /orders/{orderID}/allowances | Updates an allowance (Orders with Entitlements)
@@ -136,6 +165,7 @@ Class | Method | HTTP request | Description
 *PaymentRequestsApi* | [**update_payment_request_status**](docs/PaymentRequestsApi.md#update_payment_request_status) | **PATCH** /payment-requests/{paymentRequestID}/status | Updates status of a payment request by id
 *PaymentServiceItemApi* | [**update_payment_service_item_status**](docs/PaymentServiceItemApi.md#update_payment_service_item_status) | **PATCH** /move-task-orders/{moveTaskOrderID}/payment-service-items/{paymentServiceItemID}/status | Change the status of a payment service item for a move by ID
 *PpmApi* | [**finish_document_review**](docs/PpmApi.md#finish_document_review) | **PATCH** /ppm-shipments/{ppmShipmentId}/finish-document-review | Updates a PPM shipment&#39;s status after document review
+*PpmApi* | [**get_ppm_actual_weight**](docs/PpmApi.md#get_ppm_actual_weight) | **GET** /ppm-shipments/{ppmShipmentId}/actual-weight | Get the actual weight for a PPM shipment
 *PpmApi* | [**get_ppm_closeout**](docs/PpmApi.md#get_ppm_closeout) | **GET** /ppm-shipments/{ppmShipmentId}/closeout | Get the closeout calcuations for the specified PPM shipment
 *PpmApi* | [**get_ppm_documents**](docs/PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
 *PpmApi* | [**show_aoa_packet**](docs/PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
@@ -168,6 +198,8 @@ Class | Method | HTTP request | Description
 *SitExtensionApi* | [**deny_sit_extension**](docs/SitExtensionApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 *TacApi* | [**tac_validation**](docs/TacApi.md#tac_validation) | **GET** /tac/valid | Validation of a TAC value
 *TransportationOfficeApi* | [**get_transportation_offices**](docs/TransportationOfficeApi.md#get_transportation_offices) | **GET** /transportation-offices | Returns the transportation offices matching the search query
+*TransportationOfficeApi* | [**get_transportation_offices_open**](docs/TransportationOfficeApi.md#get_transportation_offices_open) | **GET** /open/transportation-offices | Returns the transportation offices matching the search query
+*UploadsApi* | [**create_upload**](docs/UploadsApi.md#create_upload) | **POST** /uploads | Create a new upload
 
 
 ## Documentation For Models
@@ -182,12 +214,15 @@ Class | Method | HTTP request | Description
  - [CounselingUpdateAllowancePayload](docs/CounselingUpdateAllowancePayload.md)
  - [CounselingUpdateOrderPayload](docs/CounselingUpdateOrderPayload.md)
  - [CreateApprovedSITDurationUpdate](docs/CreateApprovedSITDurationUpdate.md)
+ - [CreateCustomerPayload](docs/CreateCustomerPayload.md)
  - [CreateCustomerSupportRemark](docs/CreateCustomerSupportRemark.md)
  - [CreateEvaluationReport](docs/CreateEvaluationReport.md)
  - [CreateMTOShipment](docs/CreateMTOShipment.md)
  - [CreateMTOShipmentDestinationAddress](docs/CreateMTOShipmentDestinationAddress.md)
  - [CreateMTOShipmentPickupAddress](docs/CreateMTOShipmentPickupAddress.md)
+ - [CreateOrders](docs/CreateOrders.md)
  - [CreatePPMShipment](docs/CreatePPMShipment.md)
+ - [CreatedCustomer](docs/CreatedCustomer.md)
  - [Customer](docs/Customer.md)
  - [CustomerContactType](docs/CustomerContactType.md)
  - [CustomerSupportRemark](docs/CustomerSupportRemark.md)
@@ -213,6 +248,7 @@ Class | Method | HTTP request | Description
  - [ListPrimeMove](docs/ListPrimeMove.md)
  - [ListPrimeMoves](docs/ListPrimeMoves.md)
  - [ListPrimeMovesResult](docs/ListPrimeMovesResult.md)
+ - [LockedOfficeUser](docs/LockedOfficeUser.md)
  - [MTOAgent](docs/MTOAgent.md)
  - [MTOAgents](docs/MTOAgents.md)
  - [MTOApprovalServiceItemCodes](docs/MTOApprovalServiceItemCodes.md)
@@ -241,11 +277,16 @@ Class | Method | HTTP request | Description
  - [MovingExpense](docs/MovingExpense.md)
  - [MovingExpenseDocument](docs/MovingExpenseDocument.md)
  - [MovingExpenses](docs/MovingExpenses.md)
+ - [OfficeUser](docs/OfficeUser.md)
+ - [OfficeUserCreate](docs/OfficeUserCreate.md)
+ - [OfficeUserRole](docs/OfficeUserRole.md)
  - [OmittableMovingExpenseType](docs/OmittableMovingExpenseType.md)
  - [OmittablePPMDocumentStatus](docs/OmittablePPMDocumentStatus.md)
  - [Order](docs/Order.md)
+ - [OrderBody](docs/OrderBody.md)
  - [OrdersType](docs/OrdersType.md)
  - [OrdersTypeDetail](docs/OrdersTypeDetail.md)
+ - [PPMActualWeight](docs/PPMActualWeight.md)
  - [PPMAdvanceStatus](docs/PPMAdvanceStatus.md)
  - [PPMCloseout](docs/PPMCloseout.md)
  - [PPMDocumentStatus](docs/PPMDocumentStatus.md)
@@ -279,9 +320,11 @@ Class | Method | HTTP request | Description
  - [RejectShipment](docs/RejectShipment.md)
  - [ReportViolation](docs/ReportViolation.md)
  - [ReportViolations](docs/ReportViolations.md)
+ - [RequestDiversion](docs/RequestDiversion.md)
  - [ReviewShipmentAddressUpdateRequest](docs/ReviewShipmentAddressUpdateRequest.md)
  - [Reweigh](docs/Reweigh.md)
  - [ReweighRequester](docs/ReweighRequester.md)
+ - [Role](docs/Role.md)
  - [SITAddressUpdate](docs/SITAddressUpdate.md)
  - [SITAddressUpdates](docs/SITAddressUpdates.md)
  - [SITExtension](docs/SITExtension.md)
@@ -289,6 +332,10 @@ Class | Method | HTTP request | Description
  - [SITLocationType](docs/SITLocationType.md)
  - [SITStatus](docs/SITStatus.md)
  - [SITStatusCurrentSIT](docs/SITStatusCurrentSIT.md)
+ - [SearchCustomer](docs/SearchCustomer.md)
+ - [SearchCustomers](docs/SearchCustomers.md)
+ - [SearchCustomersRequest](docs/SearchCustomersRequest.md)
+ - [SearchCustomersResult](docs/SearchCustomersResult.md)
  - [SearchMove](docs/SearchMove.md)
  - [SearchMoves](docs/SearchMoves.md)
  - [SearchMovesRequest](docs/SearchMovesRequest.md)

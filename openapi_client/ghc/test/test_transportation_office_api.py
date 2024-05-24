@@ -31,6 +31,13 @@ class TestTransportationOfficeApi(unittest.TestCase):
         """
         pass
 
+    def test_get_transportation_offices_open(self):
+        """Test case for get_transportation_offices_open
+
+        Returns the transportation offices matching the search query  # noqa: E501
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

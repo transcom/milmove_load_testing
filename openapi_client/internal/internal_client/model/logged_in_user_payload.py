@@ -32,9 +32,11 @@ from internal_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from internal_client.model.office_user import OfficeUser
+    from internal_client.model.privilege import Privilege
     from internal_client.model.role import Role
     from internal_client.model.service_member_payload import ServiceMemberPayload
     globals()['OfficeUser'] = OfficeUser
+    globals()['Privilege'] = Privilege
     globals()['Role'] = Role
     globals()['ServiceMemberPayload'] = ServiceMemberPayload
 
@@ -104,6 +106,7 @@ class LoggedInUserPayload(ModelNormal):
             'office_user': (OfficeUser,),  # noqa: E501
             'roles': ([Role], none_type,),  # noqa: E501
             'permissions': ([str],),  # noqa: E501
+            'privileges': ([Privilege],),  # noqa: E501
         }
 
     @cached_property
@@ -119,6 +122,7 @@ class LoggedInUserPayload(ModelNormal):
         'office_user': 'office_user',  # noqa: E501
         'roles': 'roles',  # noqa: E501
         'permissions': 'permissions',  # noqa: E501
+        'privileges': 'privileges',  # noqa: E501
     }
 
     read_only_vars = {
@@ -173,6 +177,7 @@ class LoggedInUserPayload(ModelNormal):
             office_user (OfficeUser): [optional]  # noqa: E501
             roles ([Role], none_type): [optional]  # noqa: E501
             permissions ([str]): [optional]  # noqa: E501
+            privileges ([Privilege]): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -268,6 +273,7 @@ class LoggedInUserPayload(ModelNormal):
             office_user (OfficeUser): [optional]  # noqa: E501
             roles ([Role], none_type): [optional]  # noqa: E501
             permissions ([str]): [optional]  # noqa: E501
+            privileges ([Privilege]): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

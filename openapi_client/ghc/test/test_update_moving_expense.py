@@ -13,7 +13,9 @@ import sys
 import unittest
 
 import ghc_client
+from ghc_client.model.omittable_moving_expense_type import OmittableMovingExpenseType
 from ghc_client.model.ppm_document_status import PPMDocumentStatus
+globals()['OmittableMovingExpenseType'] = OmittableMovingExpenseType
 globals()['PPMDocumentStatus'] = PPMDocumentStatus
 from ghc_client.model.update_moving_expense import UpdateMovingExpense
 

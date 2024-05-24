@@ -14,8 +14,6 @@ Method | HTTP request | Description
 [**resubmit_ppm_shipment_documentation**](PpmApi.md#resubmit_ppm_shipment_documentation) | **PUT** /ppm-shipments/{ppmShipmentId}/resubmit-ppm-shipment-documentation/{signedCertificationId} | Updates signature and routes PPM shipment to service counselor
 [**show_aoa_packet**](PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
 [**show_payment_packet**](PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
-[**show_ppm_estimate**](PpmApi.md#show_ppm_estimate) | **GET** /estimates/ppm | Return a PPM cost estimate
-[**show_ppm_sit_estimate**](PpmApi.md#show_ppm_sit_estimate) | **GET** /estimates/ppm_sit | Return a PPM move&#39;s SIT cost estimate
 [**submit_ppm_shipment_documentation**](PpmApi.md#submit_ppm_shipment_documentation) | **POST** /ppm-shipments/{ppmShipmentId}/submit-ppm-shipment-documentation | Saves signature and routes PPM shipment to service counselor
 [**update_moving_expense**](PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
 [**update_pro_gear_weight_ticket**](PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
@@ -99,7 +97,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_ppm_upload**
-> Upload create_ppm_upload(ppm_shipment_id, document_id, file)
+> Upload create_ppm_upload(ppm_shipment_id, document_id, weight_receipt, file)
 
 Create a new upload for a PPM weight ticket, pro-gear, or moving expense document
 
@@ -131,12 +129,13 @@ with internal_client.ApiClient() as api_client:
     api_instance = ppm_api.PpmApi(api_client)
     ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the ppm shipment
     document_id = "documentId_example" # str | UUID of the document to add an upload to
+    weight_receipt = True # bool | If the upload is a Weight Receipt
     file = open('/path/to/file', 'rb') # file_type | The file to upload.
 
     # example passing only required values which don't have defaults set
     try:
         # Create a new upload for a PPM weight ticket, pro-gear, or moving expense document
-        api_response = api_instance.create_ppm_upload(ppm_shipment_id, document_id, file)
+        api_response = api_instance.create_ppm_upload(ppm_shipment_id, document_id, weight_receipt, file)
         pprint(api_response)
     except internal_client.ApiException as e:
         print("Exception when calling PpmApi->create_ppm_upload: %s\n" % e)
@@ -149,6 +148,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ppm_shipment_id** | **str**| UUID of the ppm shipment |
  **document_id** | **str**| UUID of the document to add an upload to |
+ **weight_receipt** | **bool**| If the upload is a Weight Receipt |
  **file** | **file_type**| The file to upload. |
 
 ### Return type
@@ -797,171 +797,6 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **show_ppm_estimate**
-> PPMEstimateRange show_ppm_estimate(original_move_date, origin_zip, origin_duty_location_zip, orders_id, weight_estimate)
-
-Return a PPM cost estimate
-
-Calculates a reimbursement range for a PPM move (excluding SIT)
-
-### Example
-
-
-```python
-import time
-import internal_client
-from internal_client.api import ppm_api
-from internal_client.model.ppm_estimate_range import PPMEstimateRange
-from pprint import pprint
-# Defining the host is optional and defaults to /internal
-# See configuration.py for a list of all supported configuration parameters.
-configuration = internal_client.Configuration(
-    host = "/internal"
-)
-
-
-# Enter a context with an instance of the API client
-with internal_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = ppm_api.PpmApi(api_client)
-    original_move_date = dateutil_parser('1970-01-01').date() # date | 
-    origin_zip = "04807" # str | 
-    origin_duty_location_zip = "04807" # str | 
-    orders_id = "orders_id_example" # str | 
-    weight_estimate = 1 # int | 
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Return a PPM cost estimate
-        api_response = api_instance.show_ppm_estimate(original_move_date, origin_zip, origin_duty_location_zip, orders_id, weight_estimate)
-        pprint(api_response)
-    except internal_client.ApiException as e:
-        print("Exception when calling PpmApi->show_ppm_estimate: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **original_move_date** | **date**|  |
- **origin_zip** | **str**|  |
- **origin_duty_location_zip** | **str**|  |
- **orders_id** | **str**|  |
- **weight_estimate** | **int**|  |
-
-### Return type
-
-[**PPMEstimateRange**](PPMEstimateRange.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Made estimate of PPM cost range |  -  |
-**400** | invalid request |  -  |
-**401** | request requires user authentication |  -  |
-**403** | user is not authorized |  -  |
-**404** | ppm discount not found for provided postal codes and original move date |  -  |
-**409** | distance is less than 50 miles (no short haul moves) |  -  |
-**422** | cannot process request with given information |  -  |
-**500** | internal server error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **show_ppm_sit_estimate**
-> PPMSitEstimate show_ppm_sit_estimate(personally_procured_move_id, original_move_date, days_in_storage, origin_zip, orders_id, weight_estimate)
-
-Return a PPM move's SIT cost estimate
-
-Calculates a reimbursment for a PPM move's SIT
-
-### Example
-
-
-```python
-import time
-import internal_client
-from internal_client.api import ppm_api
-from internal_client.model.ppm_sit_estimate import PPMSitEstimate
-from pprint import pprint
-# Defining the host is optional and defaults to /internal
-# See configuration.py for a list of all supported configuration parameters.
-configuration = internal_client.Configuration(
-    host = "/internal"
-)
-
-
-# Enter a context with an instance of the API client
-with internal_client.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = ppm_api.PpmApi(api_client)
-    personally_procured_move_id = "personally_procured_move_id_example" # str | 
-    original_move_date = dateutil_parser('1970-01-01').date() # date | 
-    days_in_storage = 1 # int | 
-    origin_zip = "04807" # str | 
-    orders_id = "orders_id_example" # str | 
-    weight_estimate = 1 # int | 
-
-    # example passing only required values which don't have defaults set
-    try:
-        # Return a PPM move's SIT cost estimate
-        api_response = api_instance.show_ppm_sit_estimate(personally_procured_move_id, original_move_date, days_in_storage, origin_zip, orders_id, weight_estimate)
-        pprint(api_response)
-    except internal_client.ApiException as e:
-        print("Exception when calling PpmApi->show_ppm_sit_estimate: %s\n" % e)
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **personally_procured_move_id** | **str**|  |
- **original_move_date** | **date**|  |
- **days_in_storage** | **int**|  |
- **origin_zip** | **str**|  |
- **orders_id** | **str**|  |
- **weight_estimate** | **int**|  |
-
-### Return type
-
-[**PPMSitEstimate**](PPMSitEstimate.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | show PPM SIT estimate |  -  |
-**400** | invalid request |  -  |
-**401** | request requires user authentication |  -  |
-**403** | user is not authorized |  -  |
-**409** | distance is less than 50 miles (no short haul moves) |  -  |
-**422** | the payload was unprocessable |  -  |
-**500** | internal server error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **submit_ppm_shipment_documentation**
 > PPMShipment submit_ppm_shipment_documentation(ppm_shipment_id, save_ppm_shipment_signed_certification_payload)
 
@@ -1086,8 +921,9 @@ with internal_client.ApiClient() as api_client:
         paid_with_gtcc=True,
         amount=1,
         missing_receipt=True,
-        sit_start_date=dateutil_parser('Tue Apr 26 00:00:00 UTC 2022').date(),
-        sit_end_date=dateutil_parser('Sat May 26 00:00:00 UTC 2018').date(),
+        sit_start_date=dateutil_parser('1970-01-01').date(),
+        sit_end_date=dateutil_parser('1970-01-01').date(),
+        weight_stored=1,
     ) # UpdateMovingExpense | 
 
     # example passing only required values which don't have defaults set

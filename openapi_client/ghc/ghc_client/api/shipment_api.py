@@ -28,6 +28,7 @@ from ghc_client.model.deny_sit_extension import DenySITExtension
 from ghc_client.model.error import Error
 from ghc_client.model.mto_shipment import MTOShipment
 from ghc_client.model.reject_shipment import RejectShipment
+from ghc_client.model.request_diversion import RequestDiversion
 from ghc_client.model.review_shipment_address_update_request import ReviewShipmentAddressUpdateRequest
 from ghc_client.model.reweigh import Reweigh
 from ghc_client.model.shipment_address_update import ShipmentAddressUpdate
@@ -533,10 +534,12 @@ class ShipmentApi(object):
                 'all': [
                     'shipment_id',
                     'if_match',
+                    'body',
                 ],
                 'required': [
                     'shipment_id',
                     'if_match',
+                    'body',
                 ],
                 'nullable': [
                 ],
@@ -555,6 +558,8 @@ class ShipmentApi(object):
                         (str,),
                     'if_match':
                         (str,),
+                    'body':
+                        (RequestDiversion,),
                 },
                 'attribute_map': {
                     'shipment_id': 'shipmentID',
@@ -563,6 +568,7 @@ class ShipmentApi(object):
                 'location_map': {
                     'shipment_id': 'path',
                     'if_match': 'header',
+                    'body': 'body',
                 },
                 'collection_format_map': {
                 }
@@ -571,7 +577,9 @@ class ShipmentApi(object):
                 'accept': [
                     'application/json'
                 ],
-                'content_type': [],
+                'content_type': [
+                    'application/json'
+                ]
             },
             api_client=api_client
         )
@@ -1469,6 +1477,7 @@ class ShipmentApi(object):
         self,
         shipment_id,
         if_match,
+        body,
         **kwargs
     ):
         """Requests a shipment diversion  # noqa: E501
@@ -1477,12 +1486,13 @@ class ShipmentApi(object):
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.request_shipment_diversion(shipment_id, if_match, async_req=True)
+        >>> thread = api.request_shipment_diversion(shipment_id, if_match, body, async_req=True)
         >>> result = thread.get()
 
         Args:
             shipment_id (str): ID of the shipment
             if_match (str):
+            body (RequestDiversion):
 
         Keyword Args:
             _return_http_data_only (bool): response data without head status
@@ -1550,6 +1560,8 @@ class ShipmentApi(object):
             shipment_id
         kwargs['if_match'] = \
             if_match
+        kwargs['body'] = \
+            body
         return self.request_shipment_diversion_endpoint.call_with_http_info(**kwargs)
 
     def request_shipment_reweigh(

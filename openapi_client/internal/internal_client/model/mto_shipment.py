@@ -116,6 +116,7 @@ class MTOShipment(ModelNormal):
             'actual_pro_gear_weight': (int, none_type,),  # noqa: E501
             'actual_spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
+            'shipment_locator': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -144,6 +145,7 @@ class MTOShipment(ModelNormal):
         'actual_pro_gear_weight': 'actualProGearWeight',  # noqa: E501
         'actual_spouse_pro_gear_weight': 'actualSpouseProGearWeight',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
+        'shipment_locator': 'shipmentLocator',  # noqa: E501
     }
 
     read_only_vars = {
@@ -154,6 +156,7 @@ class MTOShipment(ModelNormal):
         'requested_pickup_date',  # noqa: E501
         'requested_delivery_date',  # noqa: E501
         'customer_remarks',  # noqa: E501
+        'shipment_locator',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -214,6 +217,7 @@ class MTOShipment(ModelNormal):
             actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
+            shipment_locator (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -319,6 +323,7 @@ class MTOShipment(ModelNormal):
             actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
+            shipment_locator (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

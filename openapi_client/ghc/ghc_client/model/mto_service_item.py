@@ -126,8 +126,11 @@ class MTOServiceItem(ModelNormal):
             'sit_customer_contacted': (date, none_type,),  # noqa: E501
             'sit_requested_delivery': (date, none_type,),  # noqa: E501
             'sit_destination_original_address': (Address,),  # noqa: E501
+            'sit_origin_hhg_original_address': (Address,),  # noqa: E501
+            'sit_origin_hhg_actual_address': (Address,),  # noqa: E501
             'sit_destination_final_address': (Address,),  # noqa: E501
             'sit_address_updates': (SITAddressUpdates,),  # noqa: E501
+            'sit_delivery_miles': (int, none_type,),  # noqa: E501
             'fee_type': (str,),  # noqa: E501
             'quantity': (int,),  # noqa: E501
             'rate': (int,),  # noqa: E501
@@ -171,8 +174,11 @@ class MTOServiceItem(ModelNormal):
         'sit_customer_contacted': 'sitCustomerContacted',  # noqa: E501
         'sit_requested_delivery': 'sitRequestedDelivery',  # noqa: E501
         'sit_destination_original_address': 'sitDestinationOriginalAddress',  # noqa: E501
+        'sit_origin_hhg_original_address': 'sitOriginHHGOriginalAddress',  # noqa: E501
+        'sit_origin_hhg_actual_address': 'sitOriginHHGActualAddress',  # noqa: E501
         'sit_destination_final_address': 'sitDestinationFinalAddress',  # noqa: E501
         'sit_address_updates': 'sitAddressUpdates',  # noqa: E501
+        'sit_delivery_miles': 'sitDeliveryMiles',  # noqa: E501
         'fee_type': 'feeType',  # noqa: E501
         'quantity': 'quantity',  # noqa: E501
         'rate': 'rate',  # noqa: E501
@@ -254,8 +260,11 @@ class MTOServiceItem(ModelNormal):
             sit_customer_contacted (date, none_type): [optional]  # noqa: E501
             sit_requested_delivery (date, none_type): [optional]  # noqa: E501
             sit_destination_original_address (Address): [optional]  # noqa: E501
+            sit_origin_hhg_original_address (Address): [optional]  # noqa: E501
+            sit_origin_hhg_actual_address (Address): [optional]  # noqa: E501
             sit_destination_final_address (Address): [optional]  # noqa: E501
             sit_address_updates (SITAddressUpdates): [optional]  # noqa: E501
+            sit_delivery_miles (int, none_type): [optional]  # noqa: E501
             fee_type (str): [optional]  # noqa: E501
             quantity (int): [optional]  # noqa: E501
             rate (int): [optional]  # noqa: E501
@@ -383,8 +392,11 @@ class MTOServiceItem(ModelNormal):
             sit_customer_contacted (date, none_type): [optional]  # noqa: E501
             sit_requested_delivery (date, none_type): [optional]  # noqa: E501
             sit_destination_original_address (Address): [optional]  # noqa: E501
+            sit_origin_hhg_original_address (Address): [optional]  # noqa: E501
+            sit_origin_hhg_actual_address (Address): [optional]  # noqa: E501
             sit_destination_final_address (Address): [optional]  # noqa: E501
             sit_address_updates (SITAddressUpdates): [optional]  # noqa: E501
+            sit_delivery_miles (int, none_type): [optional]  # noqa: E501
             fee_type (str): [optional]  # noqa: E501
             quantity (int): [optional]  # noqa: E501
             rate (int): [optional]  # noqa: E501

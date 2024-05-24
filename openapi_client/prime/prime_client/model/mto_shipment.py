@@ -166,6 +166,8 @@ class MTOShipment(ModelComposed):
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'point_of_contact': (str,),  # noqa: E501
+            'origin_sit_auth_end_date': (date, none_type,),  # noqa: E501
+            'destination_sit_auth_end_date': (date, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -212,6 +214,8 @@ class MTOShipment(ModelComposed):
         'created_at': 'createdAt',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
         'point_of_contact': 'pointOfContact',  # noqa: E501
+        'origin_sit_auth_end_date': 'originSitAuthEndDate',  # noqa: E501
+        'destination_sit_auth_end_date': 'destinationSitAuthEndDate',  # noqa: E501
     }
 
     read_only_vars = {
@@ -305,6 +309,8 @@ class MTOShipment(ModelComposed):
             created_at (datetime): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
+            origin_sit_auth_end_date (date, none_type): The SIT authorized end date for origin SIT.. [optional]  # noqa: E501
+            destination_sit_auth_end_date (date, none_type): The SIT authorized end date for destination SIT.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -446,6 +452,8 @@ class MTOShipment(ModelComposed):
             created_at (datetime): [optional]  # noqa: E501
             updated_at (datetime): [optional]  # noqa: E501
             point_of_contact (str): Email or ID of the person who will be contacted in the event of questions or concerns about this update. May be the person performing the update, or someone else working with the Prime contractor. . [optional]  # noqa: E501
+            origin_sit_auth_end_date (date, none_type): The SIT authorized end date for origin SIT.. [optional]  # noqa: E501
+            destination_sit_auth_end_date (date, none_type): The SIT authorized end date for destination SIT.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

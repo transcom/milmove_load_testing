@@ -116,6 +116,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [Address](docs/Address.md)
+ - [Amendments](docs/Amendments.md)
  - [ClientError](docs/ClientError.md)
  - [CreateMTOShipment](docs/CreateMTOShipment.md)
  - [CreateMTOShipmentDestinationAddress](docs/CreateMTOShipmentDestinationAddress.md)
@@ -144,6 +145,8 @@ Class | Method | HTTP request | Description
  - [MTOServiceItemDimension](docs/MTOServiceItemDimension.md)
  - [MTOServiceItemDomesticCrating](docs/MTOServiceItemDomesticCrating.md)
  - [MTOServiceItemDomesticCratingAllOf](docs/MTOServiceItemDomesticCratingAllOf.md)
+ - [MTOServiceItemDomesticStandaloneCrating](docs/MTOServiceItemDomesticStandaloneCrating.md)
+ - [MTOServiceItemDomesticStandaloneCratingAllOf](docs/MTOServiceItemDomesticStandaloneCratingAllOf.md)
  - [MTOServiceItemModelType](docs/MTOServiceItemModelType.md)
  - [MTOServiceItemOriginSIT](docs/MTOServiceItemOriginSIT.md)
  - [MTOServiceItemOriginSITAllOf](docs/MTOServiceItemOriginSITAllOf.md)

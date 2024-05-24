@@ -15,6 +15,7 @@
 
 # Import APIs into API package:
 from internal_client.api.addresses_api import AddressesApi
+from internal_client.api.application_parameters_api import ApplicationParametersApi
 from internal_client.api.backup_contacts_api import BackupContactsApi
 from internal_client.api.calendar_api import CalendarApi
 from internal_client.api.certification_api import CertificationApi

@@ -13,6 +13,8 @@ import sys
 import unittest
 
 import prime_client
+from prime_client.model.amendments import Amendments
+globals()['Amendments'] = Amendments
 from prime_client.model.list_move import ListMove
 
 

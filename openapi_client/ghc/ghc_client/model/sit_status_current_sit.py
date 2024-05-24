@@ -90,7 +90,6 @@ class SITStatusCurrentSIT(ModelNormal):
             'days_in_sit': (int,),  # noqa: E501
             'sit_entry_date': (date, none_type,),  # noqa: E501
             'sit_departure_date': (date, none_type,),  # noqa: E501
-            'sit_allowance_end_date': (date, none_type,),  # noqa: E501
             'sit_authorized_end_date': (date, none_type,),  # noqa: E501
             'sit_customer_contacted': (date, none_type,),  # noqa: E501
             'sit_requested_delivery': (date, none_type,),  # noqa: E501
@@ -107,7 +106,6 @@ class SITStatusCurrentSIT(ModelNormal):
         'days_in_sit': 'daysInSIT',  # noqa: E501
         'sit_entry_date': 'sitEntryDate',  # noqa: E501
         'sit_departure_date': 'sitDepartureDate',  # noqa: E501
-        'sit_allowance_end_date': 'sitAllowanceEndDate',  # noqa: E501
         'sit_authorized_end_date': 'sitAuthorizedEndDate',  # noqa: E501
         'sit_customer_contacted': 'sitCustomerContacted',  # noqa: E501
         'sit_requested_delivery': 'sitRequestedDelivery',  # noqa: E501
@@ -159,7 +157,6 @@ class SITStatusCurrentSIT(ModelNormal):
             days_in_sit (int): [optional]  # noqa: E501
             sit_entry_date (date, none_type): [optional]  # noqa: E501
             sit_departure_date (date, none_type): [optional]  # noqa: E501
-            sit_allowance_end_date (date, none_type): [optional]  # noqa: E501
             sit_authorized_end_date (date, none_type): [optional]  # noqa: E501
             sit_customer_contacted (date, none_type): [optional]  # noqa: E501
             sit_requested_delivery (date, none_type): [optional]  # noqa: E501
@@ -253,7 +250,6 @@ class SITStatusCurrentSIT(ModelNormal):
             days_in_sit (int): [optional]  # noqa: E501
             sit_entry_date (date, none_type): [optional]  # noqa: E501
             sit_departure_date (date, none_type): [optional]  # noqa: E501
-            sit_allowance_end_date (date, none_type): [optional]  # noqa: E501
             sit_authorized_end_date (date, none_type): [optional]  # noqa: E501
             sit_customer_contacted (date, none_type): [optional]  # noqa: E501
             sit_requested_delivery (date, none_type): [optional]  # noqa: E501

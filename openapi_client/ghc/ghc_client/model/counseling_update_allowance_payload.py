@@ -112,6 +112,7 @@ class CounselingUpdateAllowancePayload(ModelNormal):
             'required_medical_equipment_weight': (int,),  # noqa: E501
             'organizational_clothing_and_individual_equipment': (bool, none_type,),  # noqa: E501
             'storage_in_transit': (int,),  # noqa: E501
+            'gun_safe': (bool, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -128,6 +129,7 @@ class CounselingUpdateAllowancePayload(ModelNormal):
         'required_medical_equipment_weight': 'requiredMedicalEquipmentWeight',  # noqa: E501
         'organizational_clothing_and_individual_equipment': 'organizationalClothingAndIndividualEquipment',  # noqa: E501
         'storage_in_transit': 'storageInTransit',  # noqa: E501
+        'gun_safe': 'gunSafe',  # noqa: E501
     }
 
     read_only_vars = {
@@ -179,6 +181,7 @@ class CounselingUpdateAllowancePayload(ModelNormal):
             required_medical_equipment_weight (int): unit is in lbs. [optional]  # noqa: E501
             organizational_clothing_and_individual_equipment (bool, none_type): only for Army. [optional]  # noqa: E501
             storage_in_transit (int): the number of storage in transit days that the customer is entitled to for a given shipment on their move. [optional]  # noqa: E501
+            gun_safe (bool, none_type): True if user is entitled to move a gun safe (up to 500 lbs) as part of their move without it being charged against their weight allowance.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -272,6 +275,7 @@ class CounselingUpdateAllowancePayload(ModelNormal):
             required_medical_equipment_weight (int): unit is in lbs. [optional]  # noqa: E501
             organizational_clothing_and_individual_equipment (bool, none_type): only for Army. [optional]  # noqa: E501
             storage_in_transit (int): the number of storage in transit days that the customer is entitled to for a given shipment on their move. [optional]  # noqa: E501
+            gun_safe (bool, none_type): True if user is entitled to move a gun safe (up to 500 lbs) as part of their move without it being charged against their weight allowance.. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
