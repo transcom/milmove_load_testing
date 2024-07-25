@@ -31,6 +31,13 @@ class TestTransportationOfficeApi(unittest.TestCase):
         """
         pass
 
+    def test_get_transportation_offices_gblocs(self):
+        """Test case for get_transportation_offices_gblocs
+
+        Returns a list of distinct GBLOCs that exist in the transportation offices table  # noqa: E501
+        """
+        pass
+
     def test_get_transportation_offices_open(self):
         """Test case for get_transportation_offices_open
 

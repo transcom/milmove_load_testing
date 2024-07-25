@@ -24,6 +24,13 @@ class TestGhcDocumentsApi(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_create_document(self):
+        """Test case for create_document
+
+        Create a new document  # noqa: E501
+        """
+        pass
+
     def test_get_document(self):
         """Test case for get_document
 

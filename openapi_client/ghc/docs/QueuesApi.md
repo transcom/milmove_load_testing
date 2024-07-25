@@ -6,6 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_moves_queue**](QueuesApi.md#get_moves_queue) | **GET** /queues/moves | Gets queued list of all customer moves by GBLOC origin
 [**get_payment_requests_queue**](QueuesApi.md#get_payment_requests_queue) | **GET** /queues/payment-requests | Gets queued list of all payment requests by GBLOC origin
+[**get_services_counseling_origin_list**](QueuesApi.md#get_services_counseling_origin_list) | **GET** /queues/counseling/origin-list | Gets queued list of all moves origin locations in the counselors queue
 [**get_services_counseling_queue**](QueuesApi.md#get_services_counseling_queue) | **GET** /queues/counseling | Gets queued list of all customer moves needing services counseling by GBLOC origin
 [**list_prime_moves**](QueuesApi.md#list_prime_moves) | **GET** /queues/prime-moves | getPrimeMovesQueue
 
@@ -46,7 +47,10 @@ with ghc_client.ApiClient() as api_client:
     locator = "locator_example" # str |  (optional)
     last_name = "lastName_example" # str |  (optional)
     dod_id = "dodID_example" # str |  (optional)
-    origin_duty_location = "originDutyLocation_example" # str |  (optional)
+    emplid = "emplid_example" # str |  (optional)
+    origin_duty_location = [
+        "originDutyLocation_example",
+    ] # [str] |  (optional)
     destination_duty_location = "destinationDutyLocation_example" # str |  (optional)
     appeared_in_too_at = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime |  (optional)
     requested_move_date = "requestedMoveDate_example" # str | filters the requested pickup date of a shipment on the move (optional)
@@ -54,12 +58,13 @@ with ghc_client.ApiClient() as api_client:
         "SUBMITTED",
     ] # [str] | Filtering for the status. (optional)
     order_type = "orderType_example" # str | order type (optional)
+    view_as_gbloc = "viewAsGBLOC_example" # str | Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role.  (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Gets queued list of all customer moves by GBLOC origin
-        api_response = api_instance.get_moves_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, appeared_in_too_at=appeared_in_too_at, requested_move_date=requested_move_date, status=status, order_type=order_type)
+        api_response = api_instance.get_moves_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, emplid=emplid, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, appeared_in_too_at=appeared_in_too_at, requested_move_date=requested_move_date, status=status, order_type=order_type, view_as_gbloc=view_as_gbloc)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_moves_queue: %s\n" % e)
@@ -78,12 +83,14 @@ Name | Type | Description  | Notes
  **locator** | **str**|  | [optional]
  **last_name** | **str**|  | [optional]
  **dod_id** | **str**|  | [optional]
- **origin_duty_location** | **str**|  | [optional]
+ **emplid** | **str**|  | [optional]
+ **origin_duty_location** | **[str]**|  | [optional]
  **destination_duty_location** | **str**|  | [optional]
  **appeared_in_too_at** | **datetime**|  | [optional]
  **requested_move_date** | **str**| filters the requested pickup date of a shipment on the move | [optional]
  **status** | **[str]**| Filtering for the status. | [optional]
  **order_type** | **str**| order type | [optional]
+ **view_as_gbloc** | **str**| Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role.  | [optional]
 
 ### Return type
 
@@ -146,18 +153,20 @@ with ghc_client.ApiClient() as api_client:
     locator = "locator_example" # str |  (optional)
     last_name = "lastName_example" # str |  (optional)
     dod_id = "dodID_example" # str |  (optional)
+    emplid = "emplid_example" # str |  (optional)
     destination_duty_location = "destinationDutyLocation_example" # str |  (optional)
     origin_duty_location = "originDutyLocation_example" # str |  (optional)
     status = [
         "PENDING",
     ] # [str] | Filtering for the status. (optional)
     order_type = "orderType_example" # str | order type (optional)
+    view_as_gbloc = "viewAsGBLOC_example" # str | Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role.  (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Gets queued list of all payment requests by GBLOC origin
-        api_response = api_instance.get_payment_requests_queue(sort=sort, order=order, page=page, per_page=per_page, submitted_at=submitted_at, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, destination_duty_location=destination_duty_location, origin_duty_location=origin_duty_location, status=status, order_type=order_type)
+        api_response = api_instance.get_payment_requests_queue(sort=sort, order=order, page=page, per_page=per_page, submitted_at=submitted_at, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, emplid=emplid, destination_duty_location=destination_duty_location, origin_duty_location=origin_duty_location, status=status, order_type=order_type, view_as_gbloc=view_as_gbloc)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_payment_requests_queue: %s\n" % e)
@@ -177,14 +186,87 @@ Name | Type | Description  | Notes
  **locator** | **str**|  | [optional]
  **last_name** | **str**|  | [optional]
  **dod_id** | **str**|  | [optional]
+ **emplid** | **str**|  | [optional]
  **destination_duty_location** | **str**|  | [optional]
  **origin_duty_location** | **str**|  | [optional]
  **status** | **[str]**| Filtering for the status. | [optional]
  **order_type** | **str**| order type | [optional]
+ **view_as_gbloc** | **str**| Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role.  | [optional]
 
 ### Return type
 
 [**QueuePaymentRequestsResult**](QueuePaymentRequestsResult.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully returned all moves matching the criteria |  -  |
+**403** | The request was denied |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_services_counseling_origin_list**
+> Locations get_services_counseling_origin_list()
+
+Gets queued list of all moves origin locations in the counselors queue
+
+An office services counselor user will be assigned a transportation office that will determine which moves are displayed in their queue based on the origin duty location. This pulls the availalble origin duty locations. 
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import queues_api
+from ghc_client.model.error import Error
+from ghc_client.model.locations import Locations
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = queues_api.QueuesApi(api_client)
+    needs_ppm_closeout = True # bool | Only used for Services Counseling queue. If true, show PPM moves origin locations that are ready for closeout. Otherwise, show all other moves origin locations. (optional)
+
+    # example passing only required values which don't have defaults set
+    # and optional values
+    try:
+        # Gets queued list of all moves origin locations in the counselors queue
+        api_response = api_instance.get_services_counseling_origin_list(needs_ppm_closeout=needs_ppm_closeout)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling QueuesApi->get_services_counseling_origin_list: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **needs_ppm_closeout** | **bool**| Only used for Services Counseling queue. If true, show PPM moves origin locations that are ready for closeout. Otherwise, show all other moves origin locations. | [optional]
+
+### Return type
+
+[**Locations**](Locations.md)
 
 ### Authorization
 
@@ -242,10 +324,13 @@ with ghc_client.ApiClient() as api_client:
     locator = "locator_example" # str | filters to match the unique move code locator (optional)
     last_name = "lastName_example" # str | filters using a prefix match on the service member's last name (optional)
     dod_id = "dodID_example" # str | filters to match the unique service member's DoD ID (optional)
+    emplid = "emplid_example" # str | filters to match the unique service member's EMPLID (optional)
     requested_move_date = "requestedMoveDate_example" # str | filters the requested pickup date of a shipment on the move (optional)
     submitted_at = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Start of the submitted at date in the user's local time zone converted to UTC (optional)
     origin_gbloc = "originGBLOC_example" # str | filters the GBLOC of the service member's origin duty location (optional)
-    origin_duty_location = "originDutyLocation_example" # str | filters the name of the origin duty location on the orders (optional)
+    origin_duty_location = [
+        "originDutyLocation_example",
+    ] # [str] | filters the name of the origin duty location on the orders (optional)
     destination_duty_location = "destinationDutyLocation_example" # str | filters the name of the destination duty location on the orders (optional)
     status = [
         "NEEDS SERVICE COUNSELING",
@@ -255,12 +340,14 @@ with ghc_client.ApiClient() as api_client:
     closeout_initiated = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Latest date that closeout was initiated on a PPM on the move (optional)
     closeout_location = "closeoutLocation_example" # str | closeout location (optional)
     order_type = "orderType_example" # str | order type (optional)
+    ppm_status = "WAITING_ON_CUSTOMER" # str | filters the status of the PPM shipment (optional)
+    view_as_gbloc = "viewAsGBLOC_example" # str | Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role.  (optional)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Gets queued list of all customer moves needing services counseling by GBLOC origin
-        api_response = api_instance.get_services_counseling_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, requested_move_date=requested_move_date, submitted_at=submitted_at, origin_gbloc=origin_gbloc, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, status=status, needs_ppm_closeout=needs_ppm_closeout, ppm_type=ppm_type, closeout_initiated=closeout_initiated, closeout_location=closeout_location, order_type=order_type)
+        api_response = api_instance.get_services_counseling_queue(page=page, per_page=per_page, sort=sort, order=order, branch=branch, locator=locator, last_name=last_name, dod_id=dod_id, emplid=emplid, requested_move_date=requested_move_date, submitted_at=submitted_at, origin_gbloc=origin_gbloc, origin_duty_location=origin_duty_location, destination_duty_location=destination_duty_location, status=status, needs_ppm_closeout=needs_ppm_closeout, ppm_type=ppm_type, closeout_initiated=closeout_initiated, closeout_location=closeout_location, order_type=order_type, ppm_status=ppm_status, view_as_gbloc=view_as_gbloc)
         pprint(api_response)
     except ghc_client.ApiException as e:
         print("Exception when calling QueuesApi->get_services_counseling_queue: %s\n" % e)
@@ -279,10 +366,11 @@ Name | Type | Description  | Notes
  **locator** | **str**| filters to match the unique move code locator | [optional]
  **last_name** | **str**| filters using a prefix match on the service member&#39;s last name | [optional]
  **dod_id** | **str**| filters to match the unique service member&#39;s DoD ID | [optional]
+ **emplid** | **str**| filters to match the unique service member&#39;s EMPLID | [optional]
  **requested_move_date** | **str**| filters the requested pickup date of a shipment on the move | [optional]
  **submitted_at** | **datetime**| Start of the submitted at date in the user&#39;s local time zone converted to UTC | [optional]
  **origin_gbloc** | **str**| filters the GBLOC of the service member&#39;s origin duty location | [optional]
- **origin_duty_location** | **str**| filters the name of the origin duty location on the orders | [optional]
+ **origin_duty_location** | **[str]**| filters the name of the origin duty location on the orders | [optional]
  **destination_duty_location** | **str**| filters the name of the destination duty location on the orders | [optional]
  **status** | **[str]**| filters the status of the move | [optional]
  **needs_ppm_closeout** | **bool**| Only used for Services Counseling queue. If true, show PPM moves that are ready for closeout. Otherwise, show all other moves. | [optional]
@@ -290,6 +378,8 @@ Name | Type | Description  | Notes
  **closeout_initiated** | **datetime**| Latest date that closeout was initiated on a PPM on the move | [optional]
  **closeout_location** | **str**| closeout location | [optional]
  **order_type** | **str**| order type | [optional]
+ **ppm_status** | **str**| filters the status of the PPM shipment | [optional]
+ **view_as_gbloc** | **str**| Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role.  | [optional]
 
 ### Return type
 

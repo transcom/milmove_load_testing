@@ -106,6 +106,8 @@ class UploadsApi(object):
                 'all': [
                     'upload_id',
                     'order_id',
+                    'move_id',
+                    'ppm_id',
                 ],
                 'required': [
                     'upload_id',
@@ -127,14 +129,22 @@ class UploadsApi(object):
                         (str,),
                     'order_id':
                         (str,),
+                    'move_id':
+                        (str,),
+                    'ppm_id':
+                        (str,),
                 },
                 'attribute_map': {
                     'upload_id': 'uploadId',
                     'order_id': 'orderId',
+                    'move_id': 'moveId',
+                    'ppm_id': 'ppmId',
                 },
                 'location_map': {
                     'upload_id': 'path',
                     'order_id': 'query',
+                    'move_id': 'query',
+                    'ppm_id': 'query',
                 },
                 'collection_format_map': {
                 }
@@ -301,6 +311,8 @@ class UploadsApi(object):
 
         Keyword Args:
             order_id (str): ID of the order that the upload belongs to. [optional]
+            move_id (str): Optional ID of the move that the upload belongs to. [optional]
+            ppm_id (str): Optional PPM shipment ID related to the upload. [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object

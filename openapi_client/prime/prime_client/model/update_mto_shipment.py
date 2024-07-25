@@ -77,6 +77,12 @@ class UpdateMTOShipment(ModelNormal):
     }
 
     validations = {
+        ('actual_pro_gear_weight',): {
+            'inclusive_minimum': 1,
+        },
+        ('actual_spouse_pro_gear_weight',): {
+            'inclusive_minimum': 1,
+        },
         ('prime_estimated_weight',): {
             'inclusive_minimum': 1,
         },
@@ -108,6 +114,8 @@ class UpdateMTOShipment(ModelNormal):
         """
         lazy_import()
         return {
+            'actual_pro_gear_weight': (int, none_type,),  # noqa: E501
+            'actual_spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'scheduled_pickup_date': (date, none_type,),  # noqa: E501
             'actual_pickup_date': (date, none_type,),  # noqa: E501
             'first_available_delivery_date': (date, none_type,),  # noqa: E501
@@ -135,6 +143,8 @@ class UpdateMTOShipment(ModelNormal):
 
 
     attribute_map = {
+        'actual_pro_gear_weight': 'actualProGearWeight',  # noqa: E501
+        'actual_spouse_pro_gear_weight': 'actualSpouseProGearWeight',  # noqa: E501
         'scheduled_pickup_date': 'scheduledPickupDate',  # noqa: E501
         'actual_pickup_date': 'actualPickupDate',  # noqa: E501
         'first_available_delivery_date': 'firstAvailableDeliveryDate',  # noqa: E501
@@ -197,6 +207,8 @@ class UpdateMTOShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            actual_pro_gear_weight (int, none_type): The actual weight of any pro gear shipped during a move.. [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): The actual weight of any pro gear shipped during a move.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
             actual_pickup_date (date, none_type): The date when the Prime contractor actually picked up the shipment. Updated after-the-fact.. [optional]  # noqa: E501
             first_available_delivery_date (date, none_type): The date the Prime provides to the customer as the first possible delivery date so that they can plan their travel accordingly. . [optional]  # noqa: E501
@@ -301,6 +313,8 @@ class UpdateMTOShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            actual_pro_gear_weight (int, none_type): The actual weight of any pro gear shipped during a move.. [optional]  # noqa: E501
+            actual_spouse_pro_gear_weight (int, none_type): The actual weight of any pro gear shipped during a move.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
             actual_pickup_date (date, none_type): The date when the Prime contractor actually picked up the shipment. Updated after-the-fact.. [optional]  # noqa: E501
             first_available_delivery_date (date, none_type): The date the Prime provides to the customer as the first possible delivery date so that they can plan their travel accordingly. . [optional]  # noqa: E501

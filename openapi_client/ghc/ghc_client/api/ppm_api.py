@@ -27,7 +27,9 @@ from ghc_client.model.moving_expense import MovingExpense
 from ghc_client.model.ppm_actual_weight import PPMActualWeight
 from ghc_client.model.ppm_closeout import PPMCloseout
 from ghc_client.model.ppm_documents import PPMDocuments
+from ghc_client.model.ppmsit_estimated_cost import PPMSITEstimatedCost
 from ghc_client.model.ppm_shipment import PPMShipment
+from ghc_client.model.ppm_shipment_sit import PPMShipmentSIT
 from ghc_client.model.pro_gear_weight_ticket import ProGearWeightTicket
 from ghc_client.model.update_moving_expense import UpdateMovingExpense
 from ghc_client.model.update_pro_gear_weight_ticket import UpdateProGearWeightTicket
@@ -249,6 +251,90 @@ class PpmApi(object):
             },
             api_client=api_client
         )
+        self.get_ppmsit_estimated_cost_endpoint = _Endpoint(
+            settings={
+                'response_type': (PPMSITEstimatedCost,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/sit_location/{sitLocation}/sit-estimated-cost',
+                'operation_id': 'get_ppmsit_estimated_cost',
+                'http_method': 'GET',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'sit_location',
+                    'sit_entry_date',
+                    'sit_departure_date',
+                    'weight_stored',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'sit_location',
+                    'sit_entry_date',
+                    'sit_departure_date',
+                    'weight_stored',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                    'sit_location',
+                ],
+                'validation': [
+                    'weight_stored',
+                ]
+            },
+            root_map={
+                'validations': {
+                    ('weight_stored',): {
+
+                        'inclusive_minimum': 0,
+                    },
+                },
+                'allowed_values': {
+                    ('sit_location',): {
+
+                        "ORIGIN": "ORIGIN",
+                        "DESTINATION": "DESTINATION"
+                    },
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'sit_location':
+                        (str,),
+                    'sit_entry_date':
+                        (datetime,),
+                    'sit_departure_date':
+                        (datetime,),
+                    'weight_stored':
+                        (int,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'sit_location': 'sitLocation',
+                    'sit_entry_date': 'sitEntryDate',
+                    'sit_departure_date': 'sitDepartureDate',
+                    'weight_stored': 'weightStored',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'sit_location': 'path',
+                    'sit_entry_date': 'query',
+                    'sit_departure_date': 'query',
+                    'weight_stored': 'query',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
         self.show_aoa_packet_endpoint = _Endpoint(
             settings={
                 'response_type': (file_type,),
@@ -401,6 +487,68 @@ class PpmApi(object):
                     'moving_expense_id': 'path',
                     'if_match': 'header',
                     'update_moving_expense': 'body',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
+            },
+            api_client=api_client
+        )
+        self.update_ppmsit_endpoint = _Endpoint(
+            settings={
+                'response_type': (PPMShipment,),
+                'auth': [],
+                'endpoint_path': '/ppm-shipments/{ppmShipmentId}/ppm-sit',
+                'operation_id': 'update_ppmsit',
+                'http_method': 'PATCH',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'ppm_shipment_id',
+                    'if_match',
+                    'body',
+                ],
+                'required': [
+                    'ppm_shipment_id',
+                    'if_match',
+                ],
+                'nullable': [
+                    'body',
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'ppm_shipment_id':
+                        (str,),
+                    'if_match':
+                        (str,),
+                    'body':
+                        (PPMShipmentSIT,),
+                },
+                'attribute_map': {
+                    'ppm_shipment_id': 'ppmShipmentId',
+                    'if_match': 'If-Match',
+                },
+                'location_map': {
+                    'ppm_shipment_id': 'path',
+                    'if_match': 'header',
+                    'body': 'body',
                 },
                 'collection_format_map': {
                 }
@@ -888,6 +1036,105 @@ class PpmApi(object):
             shipment_id
         return self.get_ppm_documents_endpoint.call_with_http_info(**kwargs)
 
+    def get_ppmsit_estimated_cost(
+        self,
+        ppm_shipment_id,
+        sit_location,
+        sit_entry_date,
+        sit_departure_date,
+        weight_stored,
+        **kwargs
+    ):
+        """Get the SIT estimated cost for a PPM shipment  # noqa: E501
+
+        Calculates and returns the SIT estimated cost for the specified PPM shipment.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.get_ppmsit_estimated_cost(ppm_shipment_id, sit_location, sit_entry_date, sit_departure_date, weight_stored, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            sit_location (str): location of sit
+            sit_entry_date (datetime): Date entered into SIT
+            sit_departure_date (datetime): Date departed SIT
+            weight_stored (int): Weight stored in SIT
+
+        Keyword Args:
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            PPMSITEstimatedCost
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['sit_location'] = \
+            sit_location
+        kwargs['sit_entry_date'] = \
+            sit_entry_date
+        kwargs['sit_departure_date'] = \
+            sit_departure_date
+        kwargs['weight_stored'] = \
+            weight_stored
+        return self.get_ppmsit_estimated_cost_endpoint.call_with_http_info(**kwargs)
+
     def show_aoa_packet(
         self,
         ppm_shipment_id,
@@ -1148,6 +1395,94 @@ class PpmApi(object):
         kwargs['update_moving_expense'] = \
             update_moving_expense
         return self.update_moving_expense_endpoint.call_with_http_info(**kwargs)
+
+    def update_ppmsit(
+        self,
+        ppm_shipment_id,
+        if_match,
+        **kwargs
+    ):
+        """Updates a PPM shipment's SIT values  # noqa: E501
+
+        Updates a PPM shipment's SIT values   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.update_ppmsit(ppm_shipment_id, if_match, async_req=True)
+        >>> result = thread.get()
+
+        Args:
+            ppm_shipment_id (str): UUID of the PPM shipment
+            if_match (str):
+
+        Keyword Args:
+            body (PPMShipmentSIT): [optional]
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            PPMShipment
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
+        kwargs['ppm_shipment_id'] = \
+            ppm_shipment_id
+        kwargs['if_match'] = \
+            if_match
+        return self.update_ppmsit_endpoint.call_with_http_info(**kwargs)
 
     def update_pro_gear_weight_ticket(
         self,

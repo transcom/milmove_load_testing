@@ -13,9 +13,11 @@ import sys
 import unittest
 
 import internal_client
+from internal_client.model.document import Document
 from internal_client.model.move_status import MoveStatus
 from internal_client.model.mto_shipments import MTOShipments
 from internal_client.model.transportation_office import TransportationOffice
+globals()['Document'] = Document
 globals()['MTOShipments'] = MTOShipments
 globals()['MoveStatus'] = MoveStatus
 globals()['TransportationOffice'] = TransportationOffice

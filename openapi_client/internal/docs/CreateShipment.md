@@ -12,8 +12,10 @@ Name | Type | Description | Notes
 **customer_remarks** | **str, none_type** |  | [optional] 
 **pickup_address** | [**Address**](Address.md) |  | [optional] 
 **secondary_pickup_address** | [**Address**](Address.md) |  | [optional] 
+**tertiary_pickup_address** | [**Address**](Address.md) |  | [optional] 
 **destination_address** | [**Address**](Address.md) |  | [optional] 
 **secondary_delivery_address** | [**Address**](Address.md) |  | [optional] 
+**tertiary_delivery_address** | [**Address**](Address.md) |  | [optional] 
 **agents** | [**MTOAgents**](MTOAgents.md) |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

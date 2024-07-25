@@ -32,12 +32,14 @@ from ghc_client.exceptions import ApiAttributeError
 
 def lazy_import():
     from ghc_client.model.contractor import Contractor
+    from ghc_client.model.document import Document
     from ghc_client.model.gbloc import GBLOC
     from ghc_client.model.locked_office_user import LockedOfficeUser
     from ghc_client.model.move_status import MoveStatus
     from ghc_client.model.order import Order
     from ghc_client.model.transportation_office import TransportationOffice
     globals()['Contractor'] = Contractor
+    globals()['Document'] = Document
     globals()['GBLOC'] = GBLOC
     globals()['LockedOfficeUser'] = LockedOfficeUser
     globals()['MoveStatus'] = MoveStatus
@@ -125,6 +127,7 @@ class Move(ModelNormal):
             'locked_by_office_user_id': (str, none_type,),  # noqa: E501
             'locked_by_office_user': (LockedOfficeUser,),  # noqa: E501
             'lock_expires_at': (datetime, none_type,),  # noqa: E501
+            'additional_documents': (Document,),  # noqa: E501
         }
 
     @cached_property
@@ -160,6 +163,7 @@ class Move(ModelNormal):
         'locked_by_office_user_id': 'lockedByOfficeUserID',  # noqa: E501
         'locked_by_office_user': 'lockedByOfficeUser',  # noqa: E501
         'lock_expires_at': 'lockExpiresAt',  # noqa: E501
+        'additional_documents': 'additionalDocuments',  # noqa: E501
     }
 
     read_only_vars = {
@@ -232,6 +236,7 @@ class Move(ModelNormal):
             locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
             locked_by_office_user (LockedOfficeUser): [optional]  # noqa: E501
             lock_expires_at (datetime, none_type): [optional]  # noqa: E501
+            additional_documents (Document): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -344,6 +349,7 @@ class Move(ModelNormal):
             locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
             locked_by_office_user (LockedOfficeUser): [optional]  # noqa: E501
             lock_expires_at (datetime, none_type): [optional]  # noqa: E501
+            additional_documents (Document): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

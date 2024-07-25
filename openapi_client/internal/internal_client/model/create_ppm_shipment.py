@@ -63,16 +63,6 @@ class CreatePPMShipment(ModelNormal):
     }
 
     validations = {
-        ('pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('destination_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
     }
 
     @cached_property
@@ -99,15 +89,15 @@ class CreatePPMShipment(ModelNormal):
         lazy_import()
         return {
             'expected_departure_date': (date,),  # noqa: E501
-            'pickup_postal_code': (str,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
-            'destination_postal_code': (str,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
             'sit_expected': (bool,),  # noqa: E501
-            'secondary_pickup_postal_code': (str,),  # noqa: E501
             'secondary_pickup_address': (Address,),  # noqa: E501
-            'secondary_destination_postal_code': (str,),  # noqa: E501
             'secondary_destination_address': (Address,),  # noqa: E501
+            'tertiary_destination_address': (Address,),  # noqa: E501
+            'tertiary_pickup_address': (Address,),  # noqa: E501
+            'has_tertiary_pickup_address': (bool, none_type,),  # noqa: E501
+            'has_tertiary_destination_address': (bool, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -117,15 +107,15 @@ class CreatePPMShipment(ModelNormal):
 
     attribute_map = {
         'expected_departure_date': 'expectedDepartureDate',  # noqa: E501
-        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
-        'destination_postal_code': 'destinationPostalCode',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
         'sit_expected': 'sitExpected',  # noqa: E501
-        'secondary_pickup_postal_code': 'secondaryPickupPostalCode',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
-        'secondary_destination_postal_code': 'secondaryDestinationPostalCode',  # noqa: E501
         'secondary_destination_address': 'secondaryDestinationAddress',  # noqa: E501
+        'tertiary_destination_address': 'tertiaryDestinationAddress',  # noqa: E501
+        'tertiary_pickup_address': 'tertiaryPickupAddress',  # noqa: E501
+        'has_tertiary_pickup_address': 'hasTertiaryPickupAddress',  # noqa: E501
+        'has_tertiary_destination_address': 'hasTertiaryDestinationAddress',  # noqa: E501
     }
 
     read_only_vars = {
@@ -135,14 +125,12 @@ class CreatePPMShipment(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, expected_departure_date, pickup_postal_code, pickup_address, destination_postal_code, destination_address, sit_expected, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, expected_departure_date, pickup_address, destination_address, sit_expected, *args, **kwargs):  # noqa: E501
         """CreatePPMShipment - a model defined in OpenAPI
 
         Args:
             expected_departure_date (date): Date the customer expects to move. 
-            pickup_postal_code (str): zip code
             pickup_address (Address):
-            destination_postal_code (str):
             destination_address (Address):
             sit_expected (bool):
 
@@ -177,10 +165,12 @@ class CreatePPMShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            secondary_pickup_postal_code (str): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
-            secondary_destination_postal_code (str): [optional]  # noqa: E501
             secondary_destination_address (Address): [optional]  # noqa: E501
+            tertiary_destination_address (Address): [optional]  # noqa: E501
+            tertiary_pickup_address (Address): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -213,9 +203,7 @@ class CreatePPMShipment(ModelNormal):
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
         self.expected_departure_date = expected_departure_date
-        self.pickup_postal_code = pickup_postal_code
         self.pickup_address = pickup_address
-        self.destination_postal_code = destination_postal_code
         self.destination_address = destination_address
         self.sit_expected = sit_expected
         for var_name, var_value in kwargs.items():
@@ -238,14 +226,12 @@ class CreatePPMShipment(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, expected_departure_date, pickup_postal_code, pickup_address, destination_postal_code, destination_address, sit_expected, *args, **kwargs):  # noqa: E501
+    def __init__(self, expected_departure_date, pickup_address, destination_address, sit_expected, *args, **kwargs):  # noqa: E501
         """CreatePPMShipment - a model defined in OpenAPI
 
         Args:
             expected_departure_date (date): Date the customer expects to move. 
-            pickup_postal_code (str): zip code
             pickup_address (Address):
-            destination_postal_code (str):
             destination_address (Address):
             sit_expected (bool):
 
@@ -280,10 +266,12 @@ class CreatePPMShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            secondary_pickup_postal_code (str): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
-            secondary_destination_postal_code (str): [optional]  # noqa: E501
             secondary_destination_address (Address): [optional]  # noqa: E501
+            tertiary_destination_address (Address): [optional]  # noqa: E501
+            tertiary_pickup_address (Address): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -314,9 +302,7 @@ class CreatePPMShipment(ModelNormal):
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
         self.expected_departure_date = expected_departure_date
-        self.pickup_postal_code = pickup_postal_code
         self.pickup_address = pickup_address
-        self.destination_postal_code = destination_postal_code
         self.destination_address = destination_address
         self.sit_expected = sit_expected
         for var_name, var_value in kwargs.items():

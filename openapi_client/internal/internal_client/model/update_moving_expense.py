@@ -96,6 +96,8 @@ class UpdateMovingExpense(ModelNormal):
             'sit_start_date': (date,),  # noqa: E501
             'sit_end_date': (date,),  # noqa: E501
             'weight_stored': (int,),  # noqa: E501
+            'sit_location': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'sit_reimburseable_amount': (int, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -112,6 +114,8 @@ class UpdateMovingExpense(ModelNormal):
         'sit_start_date': 'sitStartDate',  # noqa: E501
         'sit_end_date': 'sitEndDate',  # noqa: E501
         'weight_stored': 'weightStored',  # noqa: E501
+        'sit_location': 'sitLocation',  # noqa: E501
+        'sit_reimburseable_amount': 'sitReimburseableAmount',  # noqa: E501
     }
 
     read_only_vars = {
@@ -165,6 +169,8 @@ class UpdateMovingExpense(ModelNormal):
             sit_start_date (date): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_reimburseable_amount (int, none_type): The amount of SIT that will be reimbursed. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -265,6 +271,8 @@ class UpdateMovingExpense(ModelNormal):
             sit_start_date (date): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_reimburseable_amount (int, none_type): The amount of SIT that will be reimbursed. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

@@ -10,8 +10,6 @@ Name | Type | Description | Notes
 **created_at** | **datetime** | Timestamp of when the PPM Shipment was initially created (UTC) | [readonly] 
 **status** | [**PPMShipmentStatus**](PPMShipmentStatus.md) |  | 
 **expected_departure_date** | **date** | Date the customer expects to begin their move.  | 
-**pickup_postal_code** | **str** | The postal code of the origin location where goods are being moved from. | 
-**destination_postal_code** | **str** | The postal code of the destination location where goods are being delivered to. | 
 **sit_expected** | **bool** | Captures whether some or all of the PPM shipment will require temporary storage at the origin or destination.  Must be set to &#x60;true&#x60; when providing &#x60;sitLocation&#x60;, &#x60;sitEstimatedWeight&#x60;, &#x60;sitEstimatedEntryDate&#x60;, and &#x60;sitEstimatedDepartureDate&#x60; values to calculate the &#x60;sitEstimatedCost&#x60;.  | 
 **e_tag** | **str** | A hash unique to this shipment that should be used as the \&quot;If-Match\&quot; header for any updates. | [readonly] 
 **updated_at** | **datetime** | Timestamp of when a property of this object was last updated (UTC) | [optional] [readonly] 
@@ -22,14 +20,16 @@ Name | Type | Description | Notes
 **reviewed_at** | **datetime, none_type** | The timestamp of when the Service Counselor has reviewed all of the closeout documents. | [optional] 
 **approved_at** | **datetime, none_type** | The timestamp of when the shipment was approved and the service member can begin their move. | [optional] 
 **pickup_address** | [**Address**](Address.md) |  | [optional] 
-**secondary_pickup_postal_code** | **str, none_type** |  | [optional] 
-**has_secondary_pickup_address** | **bool, none_type** |  | [optional] 
 **secondary_pickup_address** | [**PPMShipmentSecondaryPickupAddress**](PPMShipmentSecondaryPickupAddress.md) |  | [optional] 
+**has_secondary_pickup_address** | **bool, none_type** |  | [optional] 
+**tertiary_pickup_address** | [**PPMShipmentSecondaryPickupAddress**](PPMShipmentSecondaryPickupAddress.md) |  | [optional] 
+**has_tertiary_pickup_address** | **bool, none_type** |  | [optional] 
 **actual_pickup_postal_code** | **str, none_type** | The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment.  | [optional] 
 **destination_address** | [**Address**](Address.md) |  | [optional] 
-**secondary_destination_postal_code** | **str, none_type** | An optional secondary location near the destination where goods will be dropped off. | [optional] 
-**has_secondary_destination_address** | **bool, none_type** |  | [optional] 
 **secondary_destination_address** | [**PPMShipmentSecondaryPickupAddress**](PPMShipmentSecondaryPickupAddress.md) |  | [optional] 
+**has_secondary_destination_address** | **bool, none_type** |  | [optional] 
+**tertiary_destination_address** | [**PPMShipmentSecondaryPickupAddress**](PPMShipmentSecondaryPickupAddress.md) |  | [optional] 
+**has_tertiary_destination_address** | **bool, none_type** |  | [optional] 
 **actual_destination_postal_code** | **str, none_type** | The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment.  | [optional] 
 **estimated_weight** | **int, none_type** | The estimated weight of the PPM shipment goods being moved. | [optional] 
 **has_pro_gear** | **bool, none_type** | Indicates whether PPM shipment has pro gear for themselves or their spouse.  | [optional] 

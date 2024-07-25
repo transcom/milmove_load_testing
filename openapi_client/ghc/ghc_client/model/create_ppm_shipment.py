@@ -94,10 +94,14 @@ class CreatePPMShipment(ModelNormal):
             'sit_expected': (bool,),  # noqa: E501
             'estimated_weight': (int,),  # noqa: E501
             'has_pro_gear': (bool,),  # noqa: E501
-            'secondary_destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'secondary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'tertiary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'secondary_destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'tertiary_destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
+            'has_tertiary_pickup_address': (bool, none_type,),  # noqa: E501
             'has_secondary_destination_address': (bool, none_type,),  # noqa: E501
+            'has_tertiary_destination_address': (bool, none_type,),  # noqa: E501
             'sit_location': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'sit_estimated_weight': (int, none_type,),  # noqa: E501
             'sit_estimated_entry_date': (date, none_type,),  # noqa: E501
@@ -118,10 +122,14 @@ class CreatePPMShipment(ModelNormal):
         'sit_expected': 'sitExpected',  # noqa: E501
         'estimated_weight': 'estimatedWeight',  # noqa: E501
         'has_pro_gear': 'hasProGear',  # noqa: E501
-        'secondary_destination_address': 'secondaryDestinationAddress',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
+        'tertiary_pickup_address': 'tertiaryPickupAddress',  # noqa: E501
+        'secondary_destination_address': 'secondaryDestinationAddress',  # noqa: E501
+        'tertiary_destination_address': 'tertiaryDestinationAddress',  # noqa: E501
         'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
+        'has_tertiary_pickup_address': 'hasTertiaryPickupAddress',  # noqa: E501
         'has_secondary_destination_address': 'hasSecondaryDestinationAddress',  # noqa: E501
+        'has_tertiary_destination_address': 'hasTertiaryDestinationAddress',  # noqa: E501
         'sit_location': 'sitLocation',  # noqa: E501
         'sit_estimated_weight': 'sitEstimatedWeight',  # noqa: E501
         'sit_estimated_entry_date': 'sitEstimatedEntryDate',  # noqa: E501
@@ -179,10 +187,14 @@ class CreatePPMShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            tertiary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            tertiary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
             sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
             sit_estimated_weight (int, none_type): [optional]  # noqa: E501
             sit_estimated_entry_date (date, none_type): [optional]  # noqa: E501
@@ -288,10 +300,14 @@ class CreatePPMShipment(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            tertiary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            tertiary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
             sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
             sit_estimated_weight (int, none_type): [optional]  # noqa: E501
             sit_estimated_entry_date (date, none_type): [optional]  # noqa: E501

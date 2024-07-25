@@ -60,6 +60,7 @@ class SearchCustomersRequest(ModelNormal):
             'None': None,
             'CUSTOMERNAME': "customerName",
             'DODID': "dodID",
+            'EMPLID': "emplid",
             'BRANCH': "branch",
             'PERSONALEMAIL': "personalEmail",
             'TELEPHONE': "telephone",
@@ -75,6 +76,10 @@ class SearchCustomersRequest(ModelNormal):
         ('dod_id',): {
             'max_length': 10,
             'min_length': 10,
+        },
+        ('emplid',): {
+            'max_length': 7,
+            'min_length': 7,
         },
         ('branch',): {
             'min_length': 1,
@@ -108,6 +113,7 @@ class SearchCustomersRequest(ModelNormal):
             'page': (int,),  # noqa: E501
             'per_page': (int,),  # noqa: E501
             'dod_id': (str, none_type,),  # noqa: E501
+            'emplid': (str, none_type,),  # noqa: E501
             'branch': (str,),  # noqa: E501
             'customer_name': (str, none_type,),  # noqa: E501
             'sort': (str, none_type,),  # noqa: E501
@@ -123,6 +129,7 @@ class SearchCustomersRequest(ModelNormal):
         'page': 'page',  # noqa: E501
         'per_page': 'perPage',  # noqa: E501
         'dod_id': 'dodID',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'branch': 'branch',  # noqa: E501
         'customer_name': 'customerName',  # noqa: E501
         'sort': 'sort',  # noqa: E501
@@ -173,6 +180,7 @@ class SearchCustomersRequest(ModelNormal):
             page (int): requested page of results. [optional]  # noqa: E501
             per_page (int): [optional]  # noqa: E501
             dod_id (str, none_type): DOD ID. [optional]  # noqa: E501
+            emplid (str, none_type): EMPLID. [optional]  # noqa: E501
             branch (str): Branch. [optional]  # noqa: E501
             customer_name (str, none_type): Customer Name. [optional]  # noqa: E501
             sort (str, none_type): [optional]  # noqa: E501
@@ -265,6 +273,7 @@ class SearchCustomersRequest(ModelNormal):
             page (int): requested page of results. [optional]  # noqa: E501
             per_page (int): [optional]  # noqa: E501
             dod_id (str, none_type): DOD ID. [optional]  # noqa: E501
+            emplid (str, none_type): EMPLID. [optional]  # noqa: E501
             branch (str): Branch. [optional]  # noqa: E501
             customer_name (str, none_type): Customer Name. [optional]  # noqa: E501
             sort (str, none_type): [optional]  # noqa: E501

@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **page** | **int** | requested page of results | [optional] 
 **per_page** | **int** |  | [optional] 
 **dod_id** | **str, none_type** | DOD ID | [optional] 
+**emplid** | **str, none_type** | EMPLID | [optional] 
 **branch** | **str** | Branch | [optional] 
 **customer_name** | **str, none_type** | Customer Name | [optional] 
 **sort** | **str, none_type** |  | [optional] 

@@ -8,9 +8,11 @@ Method | HTTP request | Description
 [**get_ppm_actual_weight**](PpmApi.md#get_ppm_actual_weight) | **GET** /ppm-shipments/{ppmShipmentId}/actual-weight | Get the actual weight for a PPM shipment
 [**get_ppm_closeout**](PpmApi.md#get_ppm_closeout) | **GET** /ppm-shipments/{ppmShipmentId}/closeout | Get the closeout calcuations for the specified PPM shipment
 [**get_ppm_documents**](PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
+[**get_ppmsit_estimated_cost**](PpmApi.md#get_ppmsit_estimated_cost) | **GET** /ppm-shipments/{ppmShipmentId}/sit_location/{sitLocation}/sit-estimated-cost | Get the SIT estimated cost for a PPM shipment
 [**show_aoa_packet**](PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
 [**show_payment_packet**](PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
 [**update_moving_expense**](PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
+[**update_ppmsit**](PpmApi.md#update_ppmsit) | **PATCH** /ppm-shipments/{ppmShipmentId}/ppm-sit | Updates a PPM shipment&#39;s SIT values
 [**update_pro_gear_weight_ticket**](PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
 [**update_weight_ticket**](PpmApi.md#update_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Updates a weight ticket document
 
@@ -315,6 +317,88 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **get_ppmsit_estimated_cost**
+> PPMSITEstimatedCost get_ppmsit_estimated_cost(ppm_shipment_id, sit_location, sit_entry_date, sit_departure_date, weight_stored)
+
+Get the SIT estimated cost for a PPM shipment
+
+Calculates and returns the SIT estimated cost for the specified PPM shipment. 
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import ppm_api
+from ghc_client.model.error import Error
+from ghc_client.model.ppmsit_estimated_cost import PPMSITEstimatedCost
+from ghc_client.model.validation_error import ValidationError
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the PPM shipment
+    sit_location = "ORIGIN" # str | location of sit
+    sit_entry_date = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Date entered into SIT
+    sit_departure_date = dateutil_parser('1970-01-01T00:00:00.00Z') # datetime | Date departed SIT
+    weight_stored = 0 # int | Weight stored in SIT
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Get the SIT estimated cost for a PPM shipment
+        api_response = api_instance.get_ppmsit_estimated_cost(ppm_shipment_id, sit_location, sit_entry_date, sit_departure_date, weight_stored)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling PpmApi->get_ppmsit_estimated_cost: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| UUID of the PPM shipment |
+ **sit_location** | **str**| location of sit |
+ **sit_entry_date** | **datetime**| Date entered into SIT |
+ **sit_departure_date** | **datetime**| Date departed SIT |
+ **weight_stored** | **int**| Weight stored in SIT |
+
+### Return type
+
+[**PPMSITEstimatedCost**](PPMSITEstimatedCost.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Calculates and returns the SIT estimated cost for the specified PPM shipment. |  -  |
+**400** | The request payload is invalid |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **show_aoa_packet**
 > file_type show_aoa_packet(ppm_shipment_id)
 
@@ -501,6 +585,9 @@ with ghc_client.ApiClient() as api_client:
         status=PPMDocumentStatus("APPROVED"),
         reason="reason_example",
         weight_stored=1,
+        sit_location={},
+        sit_estimated_cost=1,
+        sit_reimburseable_amount=1,
     ) # UpdateMovingExpense | 
 
     # example passing only required values which don't have defaults set
@@ -543,6 +630,97 @@ No authorization required
 **200** | returns an updated moving expense object |  -  |
 **400** | The request payload is invalid |  -  |
 **401** | The request was denied |  -  |
+**403** | The request was denied |  -  |
+**404** | The requested resource wasn&#39;t found |  -  |
+**412** | Precondition failed |  -  |
+**422** | The payload was unprocessable. |  -  |
+**500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **update_ppmsit**
+> PPMShipment update_ppmsit(ppm_shipment_id, if_match)
+
+Updates a PPM shipment's SIT values
+
+Updates a PPM shipment's SIT values 
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import ppm_api
+from ghc_client.model.error import Error
+from ghc_client.model.ppm_shipment_sit import PPMShipmentSIT
+from ghc_client.model.validation_error import ValidationError
+from ghc_client.model.ppm_shipment import PPMShipment
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = ppm_api.PpmApi(api_client)
+    ppm_shipment_id = "ppmShipmentId_example" # str | UUID of the PPM shipment
+    if_match = "If-Match_example" # str | 
+    body = PPMShipmentSIT(
+        sit_location={},
+    ) # PPMShipmentSIT |  (optional)
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Updates a PPM shipment's SIT values
+        api_response = api_instance.update_ppmsit(ppm_shipment_id, if_match)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling PpmApi->update_ppmsit: %s\n" % e)
+
+    # example passing only required values which don't have defaults set
+    # and optional values
+    try:
+        # Updates a PPM shipment's SIT values
+        api_response = api_instance.update_ppmsit(ppm_shipment_id, if_match, body=body)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling PpmApi->update_ppmsit: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ppm_shipment_id** | **str**| UUID of the PPM shipment |
+ **if_match** | **str**|  |
+ **body** | [**PPMShipmentSIT**](PPMShipmentSIT.md)|  | [optional]
+
+### Return type
+
+[**PPMShipment**](PPMShipment.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successfully finished PPM SIT update |  -  |
+**400** | The request payload is invalid |  -  |
 **403** | The request was denied |  -  |
 **404** | The requested resource wasn&#39;t found |  -  |
 **412** | Precondition failed |  -  |

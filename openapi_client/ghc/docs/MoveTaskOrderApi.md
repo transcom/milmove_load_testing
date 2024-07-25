@@ -317,6 +317,7 @@ with ghc_client.ApiClient() as api_client:
                 ),
                 id="c56a4180-65aa-42ec-a945-5fd21dec0538",
                 dod_id="dod_id_example",
+                emplid="emplid_example",
                 user_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
                 e_tag="e_tag_example",
                 phone_is_preferred=True,
@@ -371,6 +372,7 @@ with ghc_client.ApiClient() as api_client:
                 ),
                 e_tag="e_tag_example",
             ),
+            destination_duty_location_gbloc=GBLOC("AGFM"),
             origin_duty_location=DutyLocation(
                 id="c56a4180-65aa-42ec-a945-5fd21dec0538",
                 name="Fort Bragg North Station",
@@ -409,6 +411,7 @@ with ghc_client.ApiClient() as api_client:
             packing_and_shipping_instructions="packing_and_shipping_instructions_example",
             method_of_payment="method_of_payment_example",
             naics="naics_example",
+            orders_type=OrdersType("PERMANENT_CHANGE_OF_STATION"),
             e_tag="e_tag_example",
         ),
         reference_id="1001-3456",
@@ -476,6 +479,15 @@ with ghc_client.ApiClient() as api_client:
             ),
         ),
         lock_expires_at=dateutil_parser('1970-01-01T00:00:00.00Z'),
+        additional_documents=Document(
+            id="c56a4180-65aa-42ec-a945-5fd21dec0538",
+            service_member_id="service_member_id_example",
+            uploads=[
+                Upload(
+                    is_weight_ticket=True,
+                ),
+            ],
+        ),
     ) # Move | 
 
     # example passing only required values which don't have defaults set

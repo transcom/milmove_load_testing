@@ -159,6 +159,7 @@ class MTOShipment(ModelComposed):
             'storage_facility': (UpdateMTOShipmentStorageFacility,),  # noqa: E501
             'shipment_type': (MTOShipmentType,),  # noqa: E501
             'diversion': (bool,),  # noqa: E501
+            'diversion_reason': (str, none_type,),  # noqa: E501
             'status': (str,),  # noqa: E501
             'ppm_shipment': (PPMShipment,),  # noqa: E501
             'delivery_address_update': (ShipmentAddressUpdate,),  # noqa: E501
@@ -207,6 +208,7 @@ class MTOShipment(ModelComposed):
         'storage_facility': 'storageFacility',  # noqa: E501
         'shipment_type': 'shipmentType',  # noqa: E501
         'diversion': 'diversion',  # noqa: E501
+        'diversion_reason': 'diversionReason',  # noqa: E501
         'status': 'status',  # noqa: E501
         'ppm_shipment': 'ppmShipment',  # noqa: E501
         'delivery_address_update': 'deliveryAddressUpdate',  # noqa: E501
@@ -229,6 +231,7 @@ class MTOShipment(ModelComposed):
         'prime_estimated_weight_recorded_date',  # noqa: E501
         'customer_remarks',  # noqa: E501
         'counselor_remarks',  # noqa: E501
+        'diversion_reason',  # noqa: E501
         'status',  # noqa: E501
         'e_tag',  # noqa: E501
         'created_at',  # noqa: E501
@@ -274,7 +277,7 @@ class MTOShipment(ModelComposed):
             mto_service_items ([MTOServiceItem]): A list of service items connected to this shipment.. [optional]  # noqa: E501
             id (str): The ID of the shipment.. [optional]  # noqa: E501
             move_task_order_id (str): The ID of the move for this shipment.. [optional]  # noqa: E501
-            approved_date (date, none_type): The date when the Transportation Ordering Officer first approved this shipment for the move.. [optional]  # noqa: E501
+            approved_date (date, none_type): The date when the Task Ordering Officer first approved this shipment for the move.. [optional]  # noqa: E501
             requested_pickup_date (date, none_type): The date the customer selects during onboarding as their preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. . [optional]  # noqa: E501
             requested_delivery_date (date, none_type): The customer's preferred delivery date.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
@@ -302,6 +305,7 @@ class MTOShipment(ModelComposed):
             storage_facility (UpdateMTOShipmentStorageFacility): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
+            diversion_reason (str, none_type): The reason the TOO provided when requesting a diversion for this shipment. . [optional]  # noqa: E501
             status (str): The status of a shipment, indicating where it is in the TOO's approval process. Can only be updated by the contractor in special circumstances. . [optional]  # noqa: E501
             ppm_shipment (PPMShipment): [optional]  # noqa: E501
             delivery_address_update (ShipmentAddressUpdate): [optional]  # noqa: E501
@@ -417,7 +421,7 @@ class MTOShipment(ModelComposed):
             mto_service_items ([MTOServiceItem]): A list of service items connected to this shipment.. [optional]  # noqa: E501
             id (str): The ID of the shipment.. [optional]  # noqa: E501
             move_task_order_id (str): The ID of the move for this shipment.. [optional]  # noqa: E501
-            approved_date (date, none_type): The date when the Transportation Ordering Officer first approved this shipment for the move.. [optional]  # noqa: E501
+            approved_date (date, none_type): The date when the Task Ordering Officer first approved this shipment for the move.. [optional]  # noqa: E501
             requested_pickup_date (date, none_type): The date the customer selects during onboarding as their preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date. . [optional]  # noqa: E501
             requested_delivery_date (date, none_type): The customer's preferred delivery date.. [optional]  # noqa: E501
             scheduled_pickup_date (date, none_type): The date the Prime contractor scheduled to pick up this shipment after consultation with the customer.. [optional]  # noqa: E501
@@ -445,6 +449,7 @@ class MTOShipment(ModelComposed):
             storage_facility (UpdateMTOShipmentStorageFacility): [optional]  # noqa: E501
             shipment_type (MTOShipmentType): [optional]  # noqa: E501
             diversion (bool): This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion. . [optional]  # noqa: E501
+            diversion_reason (str, none_type): The reason the TOO provided when requesting a diversion for this shipment. . [optional]  # noqa: E501
             status (str): The status of a shipment, indicating where it is in the TOO's approval process. Can only be updated by the contractor in special circumstances. . [optional]  # noqa: E501
             ppm_shipment (PPMShipment): [optional]  # noqa: E501
             delivery_address_update (ShipmentAddressUpdate): [optional]  # noqa: E501

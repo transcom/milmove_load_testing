@@ -38,6 +38,13 @@ class TestQueuesApi(unittest.TestCase):
         """
         pass
 
+    def test_get_services_counseling_origin_list(self):
+        """Test case for get_services_counseling_origin_list
+
+        Gets queued list of all moves origin locations in the counselors queue  # noqa: E501
+        """
+        pass
+
     def test_get_services_counseling_queue(self):
         """Test case for get_services_counseling_queue
 

@@ -31,6 +31,13 @@ class TestUploadsApi(unittest.TestCase):
         """
         pass
 
+    def test_delete_upload(self):
+        """Test case for delete_upload
+
+        Deletes an upload  # noqa: E501
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

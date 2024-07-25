@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **move_task_order_id** | **str** | The ID of the move for this service item. | 
 **model_type** | [**MTOServiceItemModelType**](MTOServiceItemModelType.md) |  | 
 **reason** | **str, none_type** | The contractor&#39;s explanation for why an item needed to be crated or uncrated. Used by the TOO while deciding to approve or reject the service item.  | [optional] 
+**standalone_crate** | **bool, none_type** |  | [optional] 
 **id** | **str** | The ID of the service item. | [optional] [readonly] 
 **mto_shipment_id** | **str** | The ID of the shipment this service is for, if any. Optional. | [optional] 
 **re_service_name** | **str** | The full descriptive name of the service. | [optional] [readonly] 

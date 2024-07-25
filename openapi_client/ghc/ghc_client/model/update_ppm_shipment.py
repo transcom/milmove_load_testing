@@ -67,6 +67,16 @@ class UpdatePPMShipment(ModelNormal):
     }
 
     validations = {
+        ('actual_pickup_postal_code',): {
+            'regex': {
+                'pattern': r'^(\d{5})$',  # noqa: E501
+            },
+        },
+        ('actual_destination_postal_code',): {
+            'regex': {
+                'pattern': r'^(\d{5})$',  # noqa: E501
+            },
+        },
     }
 
     @cached_property
@@ -95,8 +105,10 @@ class UpdatePPMShipment(ModelNormal):
             'expected_departure_date': (date, none_type,),  # noqa: E501
             'actual_move_date': (date, none_type,),  # noqa: E501
             'pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'actual_pickup_postal_code': (str, none_type,),  # noqa: E501
             'secondary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'actual_destination_postal_code': (str, none_type,),  # noqa: E501
             'secondary_destination_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'has_secondary_destination_address': (bool, none_type,),  # noqa: E501
@@ -126,8 +138,10 @@ class UpdatePPMShipment(ModelNormal):
         'expected_departure_date': 'expectedDepartureDate',  # noqa: E501
         'actual_move_date': 'actualMoveDate',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
+        'actual_pickup_postal_code': 'actualPickupPostalCode',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
+        'actual_destination_postal_code': 'actualDestinationPostalCode',  # noqa: E501
         'secondary_destination_address': 'secondaryDestinationAddress',  # noqa: E501
         'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'has_secondary_destination_address': 'hasSecondaryDestinationAddress',  # noqa: E501
@@ -192,8 +206,10 @@ class UpdatePPMShipment(ModelNormal):
             expected_departure_date (date, none_type): Date the customer expects to move. . [optional]  # noqa: E501
             actual_move_date (date, none_type): [optional]  # noqa: E501
             pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
@@ -300,8 +316,10 @@ class UpdatePPMShipment(ModelNormal):
             expected_departure_date (date, none_type): Date the customer expects to move. . [optional]  # noqa: E501
             actual_move_date (date, none_type): [optional]  # noqa: E501
             pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             secondary_destination_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501

@@ -91,6 +91,7 @@ class MTOServiceItemDomesticCratingAllOf(ModelNormal):
             'crate': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'description': (str,),  # noqa: E501
             'reason': (str, none_type,),  # noqa: E501
+            'standalone_crate': (bool, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -104,6 +105,7 @@ class MTOServiceItemDomesticCratingAllOf(ModelNormal):
         'crate': 'crate',  # noqa: E501
         'description': 'description',  # noqa: E501
         'reason': 'reason',  # noqa: E501
+        'standalone_crate': 'standaloneCrate',  # noqa: E501
     }
 
     read_only_vars = {
@@ -154,6 +156,7 @@ class MTOServiceItemDomesticCratingAllOf(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             reason (str, none_type): The contractor's explanation for why an item needed to be crated or uncrated. Used by the TOO while deciding to approve or reject the service item. . [optional]  # noqa: E501
+            standalone_crate (bool, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -250,6 +253,7 @@ class MTOServiceItemDomesticCratingAllOf(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             reason (str, none_type): The contractor's explanation for why an item needed to be crated or uncrated. Used by the TOO while deciding to approve or reject the service item. . [optional]  # noqa: E501
+            standalone_crate (bool, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

@@ -68,6 +68,9 @@ class ProGearWeightTicket(ModelNormal):
         ('weight',): {
             'inclusive_minimum': 0,
         },
+        ('submitted_weight',): {
+            'inclusive_minimum': 0,
+        },
     }
 
     @cached_property
@@ -100,9 +103,12 @@ class ProGearWeightTicket(ModelNormal):
             'document': (ProGearWeightTicketDocument,),  # noqa: E501
             'id': (str,),  # noqa: E501
             'belongs_to_self': (bool, none_type,),  # noqa: E501
+            'submitted_belongs_to_self': (bool, none_type,),  # noqa: E501
             'description': (str, none_type,),  # noqa: E501
             'has_weight_tickets': (bool, none_type,),  # noqa: E501
+            'submitted_has_weight_tickets': (bool, none_type,),  # noqa: E501
             'weight': (int, none_type,),  # noqa: E501
+            'submitted_weight': (int, none_type,),  # noqa: E501
             'status': (OmittablePPMDocumentStatus,),  # noqa: E501
             'reason': (str, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
@@ -121,9 +127,12 @@ class ProGearWeightTicket(ModelNormal):
         'document': 'document',  # noqa: E501
         'id': 'id',  # noqa: E501
         'belongs_to_self': 'belongsToSelf',  # noqa: E501
+        'submitted_belongs_to_self': 'submittedBelongsToSelf',  # noqa: E501
         'description': 'description',  # noqa: E501
         'has_weight_tickets': 'hasWeightTickets',  # noqa: E501
+        'submitted_has_weight_tickets': 'submittedHasWeightTickets',  # noqa: E501
         'weight': 'weight',  # noqa: E501
+        'submitted_weight': 'submittedWeight',  # noqa: E501
         'status': 'status',  # noqa: E501
         'reason': 'reason',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
@@ -185,9 +194,12 @@ class ProGearWeightTicket(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             id (str): The ID of the pro-gear weight ticket.. [optional]  # noqa: E501
             belongs_to_self (bool, none_type): Indicates if this information is for the customer's own pro-gear, otherwise, it's the spouse's.. [optional]  # noqa: E501
+            submitted_belongs_to_self (bool, none_type): Indicates if this information is for the customer's own pro-gear, otherwise, it's the spouse's.. [optional]  # noqa: E501
             description (str, none_type): Describes the pro-gear that was moved.. [optional]  # noqa: E501
             has_weight_tickets (bool, none_type): Indicates if the user has a weight ticket for their pro-gear, otherwise they have a constructed weight.. [optional]  # noqa: E501
+            submitted_has_weight_tickets (bool, none_type): Indicates if the user has a weight ticket for their pro-gear, otherwise they have a constructed weight.. [optional]  # noqa: E501
             weight (int, none_type): Weight of the pro-gear.. [optional]  # noqa: E501
+            submitted_weight (int, none_type): Customer submitted weight of the pro-gear.. [optional]  # noqa: E501
             status (OmittablePPMDocumentStatus): [optional]  # noqa: E501
             reason (str, none_type): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
@@ -285,9 +297,12 @@ class ProGearWeightTicket(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             id (str): The ID of the pro-gear weight ticket.. [optional]  # noqa: E501
             belongs_to_self (bool, none_type): Indicates if this information is for the customer's own pro-gear, otherwise, it's the spouse's.. [optional]  # noqa: E501
+            submitted_belongs_to_self (bool, none_type): Indicates if this information is for the customer's own pro-gear, otherwise, it's the spouse's.. [optional]  # noqa: E501
             description (str, none_type): Describes the pro-gear that was moved.. [optional]  # noqa: E501
             has_weight_tickets (bool, none_type): Indicates if the user has a weight ticket for their pro-gear, otherwise they have a constructed weight.. [optional]  # noqa: E501
+            submitted_has_weight_tickets (bool, none_type): Indicates if the user has a weight ticket for their pro-gear, otherwise they have a constructed weight.. [optional]  # noqa: E501
             weight (int, none_type): Weight of the pro-gear.. [optional]  # noqa: E501
+            submitted_weight (int, none_type): Customer submitted weight of the pro-gear.. [optional]  # noqa: E501
             status (OmittablePPMDocumentStatus): [optional]  # noqa: E501
             reason (str, none_type): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501

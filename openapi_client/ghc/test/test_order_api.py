@@ -94,6 +94,13 @@ class TestOrderApi(unittest.TestCase):
         """
         pass
 
+    def test_upload_amended_orders(self):
+        """Test case for upload_amended_orders
+
+        Create an amended order for a given order  # noqa: E501
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

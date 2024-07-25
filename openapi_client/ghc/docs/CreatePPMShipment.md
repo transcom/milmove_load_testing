@@ -11,10 +11,14 @@ Name | Type | Description | Notes
 **sit_expected** | **bool** |  | 
 **estimated_weight** | **int** |  | 
 **has_pro_gear** | **bool** | Indicates whether PPM shipment has pro gear.  | 
-**secondary_destination_address** | [**UpdateCustomerPayloadCurrentAddress**](UpdateCustomerPayloadCurrentAddress.md) |  | [optional] 
 **secondary_pickup_address** | [**UpdateCustomerPayloadCurrentAddress**](UpdateCustomerPayloadCurrentAddress.md) |  | [optional] 
+**tertiary_pickup_address** | [**UpdateCustomerPayloadCurrentAddress**](UpdateCustomerPayloadCurrentAddress.md) |  | [optional] 
+**secondary_destination_address** | [**UpdateCustomerPayloadCurrentAddress**](UpdateCustomerPayloadCurrentAddress.md) |  | [optional] 
+**tertiary_destination_address** | [**UpdateCustomerPayloadCurrentAddress**](UpdateCustomerPayloadCurrentAddress.md) |  | [optional] 
 **has_secondary_pickup_address** | **bool, none_type** |  | [optional] 
+**has_tertiary_pickup_address** | **bool, none_type** |  | [optional] 
 **has_secondary_destination_address** | **bool, none_type** |  | [optional] 
+**has_tertiary_destination_address** | **bool, none_type** |  | [optional] 
 **sit_location** | **{str: (bool, date, datetime, dict, float, int, list, str, none_type)}** |  | [optional] 
 **sit_estimated_weight** | **int, none_type** |  | [optional] 
 **sit_estimated_entry_date** | **date, none_type** |  | [optional] 

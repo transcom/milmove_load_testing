@@ -114,6 +114,7 @@ class Order(ModelNormal):
             'agency': (Affiliation,),  # noqa: E501
             'entitlement': (Entitlements,),  # noqa: E501
             'destination_duty_location': (DutyLocation,),  # noqa: E501
+            'destination_duty_location_gbloc': (GBLOC,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
             'origin_duty_location_gbloc': (GBLOC,),  # noqa: E501
             'move_task_order_id': (str,),  # noqa: E501
@@ -136,6 +137,7 @@ class Order(ModelNormal):
             'packing_and_shipping_instructions': (str,),  # noqa: E501
             'method_of_payment': (str,),  # noqa: E501
             'naics': (str,),  # noqa: E501
+            'orders_type': (OrdersType,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
         }
 
@@ -155,6 +157,7 @@ class Order(ModelNormal):
         'agency': 'agency',  # noqa: E501
         'entitlement': 'entitlement',  # noqa: E501
         'destination_duty_location': 'destinationDutyLocation',  # noqa: E501
+        'destination_duty_location_gbloc': 'destinationDutyLocationGBLOC',  # noqa: E501
         'origin_duty_location': 'originDutyLocation',  # noqa: E501
         'origin_duty_location_gbloc': 'originDutyLocationGBLOC',  # noqa: E501
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
@@ -177,6 +180,7 @@ class Order(ModelNormal):
         'packing_and_shipping_instructions': 'packingAndShippingInstructions',  # noqa: E501
         'method_of_payment': 'methodOfPayment',  # noqa: E501
         'naics': 'naics',  # noqa: E501
+        'orders_type': 'orders_type',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
     }
 
@@ -233,6 +237,7 @@ class Order(ModelNormal):
             agency (Affiliation): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            destination_duty_location_gbloc (GBLOC): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location_gbloc (GBLOC): [optional]  # noqa: E501
             move_task_order_id (str): [optional]  # noqa: E501
@@ -255,6 +260,7 @@ class Order(ModelNormal):
             packing_and_shipping_instructions (str): [optional]  # noqa: E501
             method_of_payment (str): [optional]  # noqa: E501
             naics (str): [optional]  # noqa: E501
+            orders_type (OrdersType): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 
@@ -351,6 +357,7 @@ class Order(ModelNormal):
             agency (Affiliation): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            destination_duty_location_gbloc (GBLOC): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location_gbloc (GBLOC): [optional]  # noqa: E501
             move_task_order_id (str): [optional]  # noqa: E501
@@ -373,6 +380,7 @@ class Order(ModelNormal):
             packing_and_shipping_instructions (str): [optional]  # noqa: E501
             method_of_payment (str): [optional]  # noqa: E501
             naics (str): [optional]  # noqa: E501
+            orders_type (OrdersType): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
         """
 

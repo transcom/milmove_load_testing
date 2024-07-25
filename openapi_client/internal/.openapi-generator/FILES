@@ -106,6 +106,7 @@ docs/SignedCertificationType.md
 docs/SignedCertificationTypeCreate.md
 docs/SignedCertifications.md
 docs/SubmitMoveForApprovalPayload.md
+docs/SubmittedMovingExpenseType.md
 docs/TransportationOffice.md
 docs/TransportationOffices.md
 docs/TransportationOfficesApi.md
@@ -241,6 +242,7 @@ internal_client/model/signed_certification_type_create.py
 internal_client/model/signed_certifications.py
 internal_client/model/sit_location_type.py
 internal_client/model/submit_move_for_approval_payload.py
+internal_client/model/submitted_moving_expense_type.py
 internal_client/model/transportation_office.py
 internal_client/model/transportation_offices.py
 internal_client/model/update_moving_expense.py
@@ -370,6 +372,7 @@ test/test_signed_certification_type_create.py
 test/test_signed_certifications.py
 test/test_sit_location_type.py
 test/test_submit_move_for_approval_payload.py
+test/test_submitted_moving_expense_type.py
 test/test_transportation_office.py
 test/test_transportation_offices.py
 test/test_transportation_offices_api.py

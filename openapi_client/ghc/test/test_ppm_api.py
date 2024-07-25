@@ -52,6 +52,13 @@ class TestPpmApi(unittest.TestCase):
         """
         pass
 
+    def test_get_ppmsit_estimated_cost(self):
+        """Test case for get_ppmsit_estimated_cost
+
+        Get the SIT estimated cost for a PPM shipment  # noqa: E501
+        """
+        pass
+
     def test_show_aoa_packet(self):
         """Test case for show_aoa_packet
 
@@ -70,6 +77,13 @@ class TestPpmApi(unittest.TestCase):
         """Test case for update_moving_expense
 
         Updates the moving expense  # noqa: E501
+        """
+        pass
+
+    def test_update_ppmsit(self):
+        """Test case for update_ppmsit
+
+        Updates a PPM shipment's SIT values  # noqa: E501
         """
         pass
 

@@ -68,6 +68,7 @@ class SearchMovesRequest(ModelNormal):
             'None': None,
             'CUSTOMERNAME': "customerName",
             'DODID': "dodID",
+            'EMPLID': "emplid",
             'BRANCH': "branch",
             'LOCATOR': "locator",
             'STATUS': "status",
@@ -90,6 +91,10 @@ class SearchMovesRequest(ModelNormal):
         ('dod_id',): {
             'max_length': 10,
             'min_length': 10,
+        },
+        ('emplid',): {
+            'max_length': 7,
+            'min_length': 7,
         },
         ('customer_name',): {
             'min_length': 1,
@@ -123,6 +128,7 @@ class SearchMovesRequest(ModelNormal):
             'per_page': (int,),  # noqa: E501
             'locator': (str, none_type,),  # noqa: E501
             'dod_id': (str, none_type,),  # noqa: E501
+            'emplid': (str, none_type,),  # noqa: E501
             'customer_name': (str, none_type,),  # noqa: E501
             'status': ([str],),  # noqa: E501
             'origin_postal_code': (str, none_type,),  # noqa: E501
@@ -145,6 +151,7 @@ class SearchMovesRequest(ModelNormal):
         'per_page': 'perPage',  # noqa: E501
         'locator': 'locator',  # noqa: E501
         'dod_id': 'dodID',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'customer_name': 'customerName',  # noqa: E501
         'status': 'status',  # noqa: E501
         'origin_postal_code': 'originPostalCode',  # noqa: E501
@@ -202,6 +209,7 @@ class SearchMovesRequest(ModelNormal):
             per_page (int): [optional]  # noqa: E501
             locator (str, none_type): Move locator. [optional]  # noqa: E501
             dod_id (str, none_type): DOD ID. [optional]  # noqa: E501
+            emplid (str, none_type): EMPLID. [optional]  # noqa: E501
             customer_name (str, none_type): Customer Name. [optional]  # noqa: E501
             status ([str]): Filtering for the status.. [optional]  # noqa: E501
             origin_postal_code (str, none_type): [optional]  # noqa: E501
@@ -301,6 +309,7 @@ class SearchMovesRequest(ModelNormal):
             per_page (int): [optional]  # noqa: E501
             locator (str, none_type): Move locator. [optional]  # noqa: E501
             dod_id (str, none_type): DOD ID. [optional]  # noqa: E501
+            emplid (str, none_type): EMPLID. [optional]  # noqa: E501
             customer_name (str, none_type): Customer Name. [optional]  # noqa: E501
             status ([str]): Filtering for the status.. [optional]  # noqa: E501
             origin_postal_code (str, none_type): [optional]  # noqa: E501

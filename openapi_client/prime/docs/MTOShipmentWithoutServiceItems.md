@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **str** | The ID of the shipment. | [optional] [readonly] 
 **move_task_order_id** | **str** | The ID of the move for this shipment. | [optional] [readonly] 
-**approved_date** | **date, none_type** | The date when the Transportation Ordering Officer first approved this shipment for the move. | [optional] [readonly] 
+**approved_date** | **date, none_type** | The date when the Task Ordering Officer first approved this shipment for the move. | [optional] [readonly] 
 **requested_pickup_date** | **date, none_type** | The date the customer selects during onboarding as their preferred pickup date. Other dates, such as required delivery date and (outside MilMove) the pack date, are derived from this date.  | [optional] [readonly] 
 **requested_delivery_date** | **date, none_type** | The customer&#39;s preferred delivery date. | [optional] [readonly] 
 **scheduled_pickup_date** | **date, none_type** | The date the Prime contractor scheduled to pick up this shipment after consultation with the customer. | [optional] 
@@ -34,6 +34,7 @@ Name | Type | Description | Notes
 **storage_facility** | [**UpdateMTOShipmentStorageFacility**](UpdateMTOShipmentStorageFacility.md) |  | [optional] 
 **shipment_type** | [**MTOShipmentType**](MTOShipmentType.md) |  | [optional] 
 **diversion** | **bool** | This value indicates whether or not this shipment is part of a diversion. If yes, the shipment can be either the starting or ending segment of the diversion.  | [optional] 
+**diversion_reason** | **str, none_type** | The reason the TOO provided when requesting a diversion for this shipment.  | [optional] [readonly] 
 **status** | **str** | The status of a shipment, indicating where it is in the TOO&#39;s approval process. Can only be updated by the contractor in special circumstances.  | [optional] [readonly] 
 **ppm_shipment** | [**PPMShipment**](PPMShipment.md) |  | [optional] 
 **delivery_address_update** | [**ShipmentAddressUpdate**](ShipmentAddressUpdate.md) |  | [optional] 

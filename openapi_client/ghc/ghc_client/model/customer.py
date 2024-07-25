@@ -116,13 +116,14 @@ class Customer(ModelNormal):
             'backup_contact': (BackupContact,),  # noqa: E501
             'id': (str,),  # noqa: E501
             'dod_id': (str,),  # noqa: E501
+            'emplid': (str,),  # noqa: E501
             'user_id': (str,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
             'phone_is_preferred': (bool,),  # noqa: E501
             'email_is_preferred': (bool,),  # noqa: E501
             'secondary_telephone': (str, none_type,),  # noqa: E501
             'backup_address': (Address,),  # noqa: E501
-            'cac_validated': (bool,),  # noqa: E501
+            'cac_validated': (bool, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -142,6 +143,7 @@ class Customer(ModelNormal):
         'backup_contact': 'backup_contact',  # noqa: E501
         'id': 'id',  # noqa: E501
         'dod_id': 'dodID',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'user_id': 'userID',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
         'phone_is_preferred': 'phoneIsPreferred',  # noqa: E501
@@ -203,13 +205,14 @@ class Customer(ModelNormal):
             backup_contact (BackupContact): [optional]  # noqa: E501
             id (str): [optional]  # noqa: E501
             dod_id (str): [optional]  # noqa: E501
+            emplid (str): [optional]  # noqa: E501
             user_id (str): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
             phone_is_preferred (bool): [optional]  # noqa: E501
             email_is_preferred (bool): [optional]  # noqa: E501
             secondary_telephone (str, none_type): [optional]  # noqa: E501
             backup_address (Address): [optional]  # noqa: E501
-            cac_validated (bool): [optional]  # noqa: E501
+            cac_validated (bool, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -306,13 +309,14 @@ class Customer(ModelNormal):
             backup_contact (BackupContact): [optional]  # noqa: E501
             id (str): [optional]  # noqa: E501
             dod_id (str): [optional]  # noqa: E501
+            emplid (str): [optional]  # noqa: E501
             user_id (str): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
             phone_is_preferred (bool): [optional]  # noqa: E501
             email_is_preferred (bool): [optional]  # noqa: E501
             secondary_telephone (str, none_type): [optional]  # noqa: E501
             backup_address (Address): [optional]  # noqa: E501
-            cac_validated (bool): [optional]  # noqa: E501
+            cac_validated (bool, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

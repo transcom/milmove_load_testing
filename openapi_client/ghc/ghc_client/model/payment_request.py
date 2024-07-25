@@ -107,6 +107,7 @@ class PaymentRequest(ModelNormal):
             'e_tag': (str,),  # noqa: E501
             'reviewed_at': (datetime, none_type,),  # noqa: E501
             'created_at': (datetime,),  # noqa: E501
+            'sent_to_gex_at': (datetime, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -128,6 +129,7 @@ class PaymentRequest(ModelNormal):
         'e_tag': 'eTag',  # noqa: E501
         'reviewed_at': 'reviewedAt',  # noqa: E501
         'created_at': 'createdAt',  # noqa: E501
+        'sent_to_gex_at': 'sentToGexAt',  # noqa: E501
     }
 
     read_only_vars = {
@@ -187,6 +189,7 @@ class PaymentRequest(ModelNormal):
             e_tag (str): [optional]  # noqa: E501
             reviewed_at (datetime, none_type): [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
+            sent_to_gex_at (datetime, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -285,6 +288,7 @@ class PaymentRequest(ModelNormal):
             e_tag (str): [optional]  # noqa: E501
             reviewed_at (datetime, none_type): [optional]  # noqa: E501
             created_at (datetime): [optional]  # noqa: E501
+            sent_to_gex_at (datetime, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

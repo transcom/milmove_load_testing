@@ -113,6 +113,10 @@ class UpdateShipment(ModelNormal):
             'secondary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'has_secondary_delivery_address': (bool, none_type,),  # noqa: E501
+            'tertiary_delivery_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'tertiary_pickup_address': (UpdateCustomerPayloadCurrentAddress,),  # noqa: E501
+            'has_tertiary_pickup_address': (bool, none_type,),  # noqa: E501
+            'has_tertiary_delivery_address': (bool, none_type,),  # noqa: E501
             'actual_pro_gear_weight': (int, none_type,),  # noqa: E501
             'actual_spouse_pro_gear_weight': (int, none_type,),  # noqa: E501
             'destination_type': (DestinationType,),  # noqa: E501
@@ -145,6 +149,10 @@ class UpdateShipment(ModelNormal):
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
         'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'has_secondary_delivery_address': 'hasSecondaryDeliveryAddress',  # noqa: E501
+        'tertiary_delivery_address': 'tertiaryDeliveryAddress',  # noqa: E501
+        'tertiary_pickup_address': 'tertiaryPickupAddress',  # noqa: E501
+        'has_tertiary_pickup_address': 'hasTertiaryPickupAddress',  # noqa: E501
+        'has_tertiary_delivery_address': 'hasTertiaryDeliveryAddress',  # noqa: E501
         'actual_pro_gear_weight': 'actualProGearWeight',  # noqa: E501
         'actual_spouse_pro_gear_weight': 'actualSpouseProGearWeight',  # noqa: E501
         'destination_type': 'destinationType',  # noqa: E501
@@ -212,6 +220,10 @@ class UpdateShipment(ModelNormal):
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_delivery_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            tertiary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_delivery_address (bool, none_type): [optional]  # noqa: E501
             actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501
@@ -321,6 +333,10 @@ class UpdateShipment(ModelNormal):
             secondary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             has_secondary_delivery_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_delivery_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            tertiary_pickup_address (UpdateCustomerPayloadCurrentAddress): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            has_tertiary_delivery_address (bool, none_type): [optional]  # noqa: E501
             actual_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             actual_spouse_pro_gear_weight (int, none_type): [optional]  # noqa: E501
             destination_type (DestinationType): [optional]  # noqa: E501

@@ -95,6 +95,7 @@ class Customer(ModelNormal):
         return {
             'id': (str,),  # noqa: E501
             'dod_id': (str,),  # noqa: E501
+            'emplid': (str,),  # noqa: E501
             'user_id': (str,),  # noqa: E501
             'current_address': (Address,),  # noqa: E501
             'first_name': (str,),  # noqa: E501
@@ -113,6 +114,7 @@ class Customer(ModelNormal):
     attribute_map = {
         'id': 'id',  # noqa: E501
         'dod_id': 'dodID',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'user_id': 'userID',  # noqa: E501
         'current_address': 'currentAddress',  # noqa: E501
         'first_name': 'firstName',  # noqa: E501
@@ -167,6 +169,7 @@ class Customer(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             id (str): [optional]  # noqa: E501
             dod_id (str): [optional]  # noqa: E501
+            emplid (str): [optional]  # noqa: E501
             user_id (str): [optional]  # noqa: E501
             current_address (Address): [optional]  # noqa: E501
             first_name (str): [optional]  # noqa: E501
@@ -262,6 +265,7 @@ class Customer(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             id (str): [optional]  # noqa: E501
             dod_id (str): [optional]  # noqa: E501
+            emplid (str): [optional]  # noqa: E501
             user_id (str): [optional]  # noqa: E501
             current_address (Address): [optional]  # noqa: E501
             first_name (str): [optional]  # noqa: E501
