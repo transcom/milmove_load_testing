@@ -63,17 +63,7 @@ class UpdatePPMShipment(ModelNormal):
     }
 
     validations = {
-        ('pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
         ('actual_pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('destination_postal_code',): {
             'regex': {
                 'pattern': r'^(\d{5})$',  # noqa: E501
             },
@@ -110,17 +100,17 @@ class UpdatePPMShipment(ModelNormal):
         return {
             'expected_departure_date': (date, none_type,),  # noqa: E501
             'actual_move_date': (date, none_type,),  # noqa: E501
-            'pickup_postal_code': (str, none_type,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
-            'secondary_pickup_postal_code': (str,),  # noqa: E501
             'secondary_pickup_address': (Address,),  # noqa: E501
             'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
+            'tertiary_pickup_address': (Address,),  # noqa: E501
+            'has_tertiary_pickup_address': (bool, none_type,),  # noqa: E501
             'actual_pickup_postal_code': (str, none_type,),  # noqa: E501
-            'destination_postal_code': (str, none_type,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
-            'secondary_destination_postal_code': (str,),  # noqa: E501
             'secondary_destination_address': (Address,),  # noqa: E501
             'has_secondary_destination_address': (bool, none_type,),  # noqa: E501
+            'tertiary_destination_address': (Address,),  # noqa: E501
+            'has_tertiary_destination_address': (bool, none_type,),  # noqa: E501
             'actual_destination_postal_code': (str, none_type,),  # noqa: E501
             'w2_address': (Address,),  # noqa: E501
             'final_incentive': (int, none_type,),  # noqa: E501
@@ -143,17 +133,17 @@ class UpdatePPMShipment(ModelNormal):
     attribute_map = {
         'expected_departure_date': 'expectedDepartureDate',  # noqa: E501
         'actual_move_date': 'actualMoveDate',  # noqa: E501
-        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
-        'secondary_pickup_postal_code': 'secondaryPickupPostalCode',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
         'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
+        'tertiary_pickup_address': 'tertiaryPickupAddress',  # noqa: E501
+        'has_tertiary_pickup_address': 'hasTertiaryPickupAddress',  # noqa: E501
         'actual_pickup_postal_code': 'actualPickupPostalCode',  # noqa: E501
-        'destination_postal_code': 'destinationPostalCode',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
-        'secondary_destination_postal_code': 'secondaryDestinationPostalCode',  # noqa: E501
         'secondary_destination_address': 'secondaryDestinationAddress',  # noqa: E501
         'has_secondary_destination_address': 'hasSecondaryDestinationAddress',  # noqa: E501
+        'tertiary_destination_address': 'tertiaryDestinationAddress',  # noqa: E501
+        'has_tertiary_destination_address': 'hasTertiaryDestinationAddress',  # noqa: E501
         'actual_destination_postal_code': 'actualDestinationPostalCode',  # noqa: E501
         'w2_address': 'w2Address',  # noqa: E501
         'final_incentive': 'finalIncentive',  # noqa: E501
@@ -212,17 +202,17 @@ class UpdatePPMShipment(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             expected_departure_date (date, none_type): Date the customer expects to move. . [optional]  # noqa: E501
             actual_move_date (date, none_type): [optional]  # noqa: E501
-            pickup_postal_code (str, none_type): zip code. [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
-            secondary_pickup_postal_code (str): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_pickup_address (Address): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
             actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
-            destination_postal_code (str, none_type): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
-            secondary_destination_postal_code (str): [optional]  # noqa: E501
             secondary_destination_address (Address): [optional]  # noqa: E501
             has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_destination_address (Address): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
             actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             w2_address (Address): [optional]  # noqa: E501
             final_incentive (int, none_type): The final calculated incentive for the PPM shipment. This does not include **SIT** as it is a reimbursement. . [optional]  # noqa: E501
@@ -322,17 +312,17 @@ class UpdatePPMShipment(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             expected_departure_date (date, none_type): Date the customer expects to move. . [optional]  # noqa: E501
             actual_move_date (date, none_type): [optional]  # noqa: E501
-            pickup_postal_code (str, none_type): zip code. [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
-            secondary_pickup_postal_code (str): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
             has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_pickup_address (Address): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
             actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
-            destination_postal_code (str, none_type): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
-            secondary_destination_postal_code (str): [optional]  # noqa: E501
             secondary_destination_address (Address): [optional]  # noqa: E501
             has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_destination_address (Address): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
             actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             w2_address (Address): [optional]  # noqa: E501
             final_incentive (int, none_type): The final calculated incentive for the PPM shipment. This does not include **SIT** as it is a reimbursement. . [optional]  # noqa: E501

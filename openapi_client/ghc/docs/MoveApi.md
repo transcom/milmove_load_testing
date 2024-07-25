@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**search_moves**](MoveApi.md#search_moves) | **POST** /moves/search | Search moves by locator, DOD ID, or customer name
 [**set_financial_review_flag**](MoveApi.md#set_financial_review_flag) | **POST** /moves/{moveID}/financial-review-flag | Flags a move for financial office review
 [**update_closeout_office**](MoveApi.md#update_closeout_office) | **PATCH** /moves/{locator}/closeout-office | Updates a Move&#39;s PPM closeout office for Army and Air Force customers
+[**upload_additional_documents**](MoveApi.md#upload_additional_documents) | **PATCH** /moves/{moveID}/uploadAdditionalDocuments | Patch the additional documents for a given move
 
 
 # **get_move**
@@ -352,6 +353,7 @@ with ghc_client.ApiClient() as api_client:
         per_page=1,
         locator="locator_example",
         dod_id="dod_id_example",
+        emplid="emplid_example",
         customer_name="customer_name_example",
         status=[
             "DRAFT",
@@ -587,6 +589,81 @@ No authorization required
 **412** | Precondition failed |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **upload_additional_documents**
+> Upload upload_additional_documents(move_id, file)
+
+Patch the additional documents for a given move
+
+Customers will on occaision need the ability to upload additional supporting documents, for a variety of reasons. This does not include amended order.
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import move_api
+from ghc_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
+from ghc_client.model.upload import Upload
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = move_api.MoveApi(api_client)
+    move_id = "moveID_example" # str | UUID of the order
+    file = open('/path/to/file', 'rb') # file_type | The file to upload.
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Patch the additional documents for a given move
+        api_response = api_instance.upload_additional_documents(move_id, file)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling MoveApi->upload_additional_documents: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **move_id** | **str**| UUID of the order |
+ **file** | **file_type**| The file to upload. |
+
+### Return type
+
+[**Upload**](Upload.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: */*
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**201** | created upload |  -  |
+**400** | invalid request |  -  |
+**403** | not authorized |  -  |
+**404** | not found |  -  |
+**413** | payload is too large |  -  |
+**500** | server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

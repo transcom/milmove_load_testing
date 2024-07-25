@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **customer_id** | **str** |  | [optional] 
 **entitlement** | [**Entitlements**](Entitlements.md) |  | [optional] 
 **destination_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 
+**destination_duty_location_gbloc** | **str** |  | [optional] 
 **origin_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 
 **origin_duty_location_gbloc** | **str** |  | [optional] 
 **report_by_date** | **date** |  | [optional] 

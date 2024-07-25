@@ -52,15 +52,8 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import time
 import ghc_client
 from pprint import pprint
-from ghc_client.api import customer_api
-from ghc_client.model.create_customer_payload import CreateCustomerPayload
-from ghc_client.model.created_customer import CreatedCustomer
-from ghc_client.model.customer import Customer
-from ghc_client.model.error import Error
-from ghc_client.model.search_customers_request import SearchCustomersRequest
-from ghc_client.model.search_customers_result import SearchCustomersResult
-from ghc_client.model.update_customer_payload import UpdateCustomerPayload
-from ghc_client.model.validation_error import ValidationError
+from ghc_client.api import application_parameters_api
+from ghc_client.model.application_parameters import ApplicationParameters
 # Defining the host is optional and defaults to /ghc/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ghc_client.Configuration(
@@ -72,36 +65,15 @@ configuration = ghc_client.Configuration(
 # Enter a context with an instance of the API client
 with ghc_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = customer_api.CustomerApi(api_client)
-    body = CreateCustomerPayload(
-        affiliation=Affiliation("ARMY"),
-        edipi="John",
-        first_name="John",
-        middle_name="David",
-        last_name="Doe",
-        suffix="Jr.",
-        telephone="748-072-8880",
-        secondary_telephone="748-072-8880",
-        personal_email="personalEmail@email.com",
-        phone_is_preferred=True,
-        email_is_preferred=True,
-        residential_address=UpdateCustomerPayloadCurrentAddress(),
-        backup_contact=BackupContact(
-            name="name_example",
-            email="backupContact@mail.com",
-            phone="748-072-8880",
-        ),
-        backup_mailing_address=UpdateCustomerPayloadCurrentAddress(),
-        create_okta_account=True,
-        cac_user=True,
-    ) # CreateCustomerPayload | 
+    api_instance = application_parameters_api.ApplicationParametersApi(api_client)
+    parameter_name = "parameterName_example" # str | Parameter Name
 
     try:
-        # Creates a customer with Okta option
-        api_response = api_instance.create_customer_with_okta_option(body)
+        # Searches for an application parameter by name, returns nil if not found
+        api_response = api_instance.get_param(parameter_name)
         pprint(api_response)
     except ghc_client.ApiException as e:
-        print("Exception when calling CustomerApi->create_customer_with_okta_option: %s\n" % e)
+        print("Exception when calling ApplicationParametersApi->get_param: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -110,6 +82,7 @@ All URIs are relative to */ghc/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*ApplicationParametersApi* | [**get_param**](docs/ApplicationParametersApi.md#get_param) | **GET** /application_parameters/{parameterName} | Searches for an application parameter by name, returns nil if not found
 *CustomerApi* | [**create_customer_with_okta_option**](docs/CustomerApi.md#create_customer_with_okta_option) | **POST** /customer | Creates a customer with Okta option
 *CustomerApi* | [**get_customer**](docs/CustomerApi.md#get_customer) | **GET** /customer/{customerID} | Returns a given customer
 *CustomerApi* | [**search_customers**](docs/CustomerApi.md#search_customers) | **POST** /customer/search | Search customers by DOD ID or customer name
@@ -124,7 +97,9 @@ Class | Method | HTTP request | Description
 *EvaluationReportsApi* | [**get_evaluation_report**](docs/EvaluationReportsApi.md#get_evaluation_report) | **GET** /evaluation-reports/{reportID} | Gets an evaluation report by ID
 *EvaluationReportsApi* | [**save_evaluation_report**](docs/EvaluationReportsApi.md#save_evaluation_report) | **PUT** /evaluation-reports/{reportID} | Saves an evaluation report as a draft
 *EvaluationReportsApi* | [**submit_evaluation_report**](docs/EvaluationReportsApi.md#submit_evaluation_report) | **POST** /evaluation-reports/{reportID}/submit | Submits an evaluation report
+*GhcDocumentsApi* | [**create_document**](docs/GhcDocumentsApi.md#create_document) | **POST** /documents | Create a new document
 *GhcDocumentsApi* | [**get_document**](docs/GhcDocumentsApi.md#get_document) | **GET** /documents/{documentId} | Returns a document
+*LinesOfAccountingApi* | [**request_line_of_accounting**](docs/LinesOfAccountingApi.md#request_line_of_accounting) | **POST** /lines-of-accounting | Fetch line of accounting
 *MoveApi* | [**get_move**](docs/MoveApi.md#get_move) | **GET** /move/{locator} | Returns a given move
 *MoveApi* | [**get_move_counseling_evaluation_reports_list**](docs/MoveApi.md#get_move_counseling_evaluation_reports_list) | **GET** /moves/{moveID}/counseling-evaluation-reports-list | Returns counseling evaluation reports for the specified move that are visible to the current office user
 *MoveApi* | [**get_move_history**](docs/MoveApi.md#get_move_history) | **GET** /move/{locator}/history | Returns the history of an identified move
@@ -132,6 +107,7 @@ Class | Method | HTTP request | Description
 *MoveApi* | [**search_moves**](docs/MoveApi.md#search_moves) | **POST** /moves/search | Search moves by locator, DOD ID, or customer name
 *MoveApi* | [**set_financial_review_flag**](docs/MoveApi.md#set_financial_review_flag) | **POST** /moves/{moveID}/financial-review-flag | Flags a move for financial office review
 *MoveApi* | [**update_closeout_office**](docs/MoveApi.md#update_closeout_office) | **PATCH** /moves/{locator}/closeout-office | Updates a Move&#39;s PPM closeout office for Army and Air Force customers
+*MoveApi* | [**upload_additional_documents**](docs/MoveApi.md#upload_additional_documents) | **PATCH** /moves/{moveID}/uploadAdditionalDocuments | Patch the additional documents for a given move
 *MoveTaskOrderApi* | [**get_entitlements**](docs/MoveTaskOrderApi.md#get_entitlements) | **GET** /move-task-orders/{moveTaskOrderID}/entitlements | Gets entitlements for a move by ID
 *MoveTaskOrderApi* | [**get_move_task_order**](docs/MoveTaskOrderApi.md#get_move_task_order) | **GET** /move-task-orders/{moveTaskOrderID} | Gets a move by ID
 *MoveTaskOrderApi* | [**update_move_task_order_status**](docs/MoveTaskOrderApi.md#update_move_task_order_status) | **PATCH** /move-task-orders/{moveTaskOrderID}/status | Change the status of a move task order to make it available to prime
@@ -159,6 +135,7 @@ Class | Method | HTTP request | Description
 *OrderApi* | [**update_billable_weight**](docs/OrderApi.md#update_billable_weight) | **PATCH** /orders/{orderID}/update-billable-weight | Updates the max billable weight
 *OrderApi* | [**update_max_billable_weight_as_tio**](docs/OrderApi.md#update_max_billable_weight_as_tio) | **PATCH** /orders/{orderID}/update-max-billable-weight/tio | Updates the max billable weight with TIO remarks
 *OrderApi* | [**update_order**](docs/OrderApi.md#update_order) | **PATCH** /orders/{orderID} | Updates an order
+*OrderApi* | [**upload_amended_orders**](docs/OrderApi.md#upload_amended_orders) | **POST** /orders/{orderID}/upload_amended_orders | Create an amended order for a given order
 *PaymentRequestsApi* | [**get_payment_request**](docs/PaymentRequestsApi.md#get_payment_request) | **GET** /payment-requests/{paymentRequestID} | Fetches a payment request by id
 *PaymentRequestsApi* | [**get_payment_requests_for_move**](docs/PaymentRequestsApi.md#get_payment_requests_for_move) | **GET** /moves/{locator}/payment-requests | Fetches payment requests using the move code (locator).
 *PaymentRequestsApi* | [**get_shipments_payment_sit_balance**](docs/PaymentRequestsApi.md#get_shipments_payment_sit_balance) | **GET** /payment-requests/{paymentRequestID}/shipments-payment-sit-balance | Returns all shipment payment request SIT usage to support partial SIT invoicing
@@ -168,14 +145,17 @@ Class | Method | HTTP request | Description
 *PpmApi* | [**get_ppm_actual_weight**](docs/PpmApi.md#get_ppm_actual_weight) | **GET** /ppm-shipments/{ppmShipmentId}/actual-weight | Get the actual weight for a PPM shipment
 *PpmApi* | [**get_ppm_closeout**](docs/PpmApi.md#get_ppm_closeout) | **GET** /ppm-shipments/{ppmShipmentId}/closeout | Get the closeout calcuations for the specified PPM shipment
 *PpmApi* | [**get_ppm_documents**](docs/PpmApi.md#get_ppm_documents) | **GET** /shipments/{shipmentID}/ppm-documents | Gets all the PPM documents for a PPM shipment
+*PpmApi* | [**get_ppmsit_estimated_cost**](docs/PpmApi.md#get_ppmsit_estimated_cost) | **GET** /ppm-shipments/{ppmShipmentId}/sit_location/{sitLocation}/sit-estimated-cost | Get the SIT estimated cost for a PPM shipment
 *PpmApi* | [**show_aoa_packet**](docs/PpmApi.md#show_aoa_packet) | **GET** /ppm-shipments/{ppmShipmentId}/aoa-packet | Downloads AOA Packet form PPMShipment as a PDF
 *PpmApi* | [**show_payment_packet**](docs/PpmApi.md#show_payment_packet) | **GET** /ppm-shipments/{ppmShipmentId}/payment-packet | Returns PPM payment packet
 *PpmApi* | [**update_moving_expense**](docs/PpmApi.md#update_moving_expense) | **PATCH** /ppm-shipments/{ppmShipmentId}/moving-expenses/{movingExpenseId} | Updates the moving expense
+*PpmApi* | [**update_ppmsit**](docs/PpmApi.md#update_ppmsit) | **PATCH** /ppm-shipments/{ppmShipmentId}/ppm-sit | Updates a PPM shipment&#39;s SIT values
 *PpmApi* | [**update_pro_gear_weight_ticket**](docs/PpmApi.md#update_pro_gear_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/pro-gear-weight-tickets/{proGearWeightTicketId} | Updates a pro-gear weight ticket
 *PpmApi* | [**update_weight_ticket**](docs/PpmApi.md#update_weight_ticket) | **PATCH** /ppm-shipments/{ppmShipmentId}/weight-ticket/{weightTicketId} | Updates a weight ticket document
 *PwsViolationsApi* | [**get_pws_violations**](docs/PwsViolationsApi.md#get_pws_violations) | **GET** /pws-violations | Fetch the possible PWS violations for an evaluation report
 *QueuesApi* | [**get_moves_queue**](docs/QueuesApi.md#get_moves_queue) | **GET** /queues/moves | Gets queued list of all customer moves by GBLOC origin
 *QueuesApi* | [**get_payment_requests_queue**](docs/QueuesApi.md#get_payment_requests_queue) | **GET** /queues/payment-requests | Gets queued list of all payment requests by GBLOC origin
+*QueuesApi* | [**get_services_counseling_origin_list**](docs/QueuesApi.md#get_services_counseling_origin_list) | **GET** /queues/counseling/origin-list | Gets queued list of all moves origin locations in the counselors queue
 *QueuesApi* | [**get_services_counseling_queue**](docs/QueuesApi.md#get_services_counseling_queue) | **GET** /queues/counseling | Gets queued list of all customer moves needing services counseling by GBLOC origin
 *QueuesApi* | [**list_prime_moves**](docs/QueuesApi.md#list_prime_moves) | **GET** /queues/prime-moves | getPrimeMovesQueue
 *ReportViolationsApi* | [**associate_report_violations**](docs/ReportViolationsApi.md#associate_report_violations) | **POST** /report-violations/{reportID} | Associate violations with an evaluation report
@@ -198,16 +178,21 @@ Class | Method | HTTP request | Description
 *SitExtensionApi* | [**deny_sit_extension**](docs/SitExtensionApi.md#deny_sit_extension) | **PATCH** /shipments/{shipmentID}/sit-extensions/{sitExtensionID}/deny | Denies a SIT extension
 *TacApi* | [**tac_validation**](docs/TacApi.md#tac_validation) | **GET** /tac/valid | Validation of a TAC value
 *TransportationOfficeApi* | [**get_transportation_offices**](docs/TransportationOfficeApi.md#get_transportation_offices) | **GET** /transportation-offices | Returns the transportation offices matching the search query
+*TransportationOfficeApi* | [**get_transportation_offices_gblocs**](docs/TransportationOfficeApi.md#get_transportation_offices_gblocs) | **GET** /transportation-offices/gblocs | Returns a list of distinct GBLOCs that exist in the transportation offices table
 *TransportationOfficeApi* | [**get_transportation_offices_open**](docs/TransportationOfficeApi.md#get_transportation_offices_open) | **GET** /open/transportation-offices | Returns the transportation offices matching the search query
 *UploadsApi* | [**create_upload**](docs/UploadsApi.md#create_upload) | **POST** /uploads | Create a new upload
+*UploadsApi* | [**delete_upload**](docs/UploadsApi.md#delete_upload) | **DELETE** /uploads/{uploadID} | Deletes an upload
 
 
 ## Documentation For Models
 
  - [Address](docs/Address.md)
  - [Affiliation](docs/Affiliation.md)
+ - [ApplicationParameters](docs/ApplicationParameters.md)
  - [ApproveSITExtension](docs/ApproveSITExtension.md)
  - [AssociateReportViolations](docs/AssociateReportViolations.md)
+ - [AvailableOfficeUser](docs/AvailableOfficeUser.md)
+ - [AvailableOfficeUsers](docs/AvailableOfficeUsers.md)
  - [BackupContact](docs/BackupContact.md)
  - [ClientError](docs/ClientError.md)
  - [Contractor](docs/Contractor.md)
@@ -241,13 +226,19 @@ Class | Method | HTTP request | Description
  - [EvaluationReportLocation](docs/EvaluationReportLocation.md)
  - [EvaluationReportOfficeUser](docs/EvaluationReportOfficeUser.md)
  - [EvaluationReportType](docs/EvaluationReportType.md)
+ - [FetchLineOfAccountingPayload](docs/FetchLineOfAccountingPayload.md)
  - [GBLOC](docs/GBLOC.md)
+ - [GBLOCs](docs/GBLOCs.md)
  - [Grade](docs/Grade.md)
+ - [InvalidRequestResponsePayload](docs/InvalidRequestResponsePayload.md)
  - [LOAType](docs/LOAType.md)
  - [LOATypeNullable](docs/LOATypeNullable.md)
+ - [LineOfAccounting](docs/LineOfAccounting.md)
  - [ListPrimeMove](docs/ListPrimeMove.md)
  - [ListPrimeMoves](docs/ListPrimeMoves.md)
  - [ListPrimeMovesResult](docs/ListPrimeMovesResult.md)
+ - [Location](docs/Location.md)
+ - [Locations](docs/Locations.md)
  - [LockedOfficeUser](docs/LockedOfficeUser.md)
  - [MTOAgent](docs/MTOAgent.md)
  - [MTOAgents](docs/MTOAgents.md)
@@ -271,6 +262,7 @@ Class | Method | HTTP request | Description
  - [MoveAuditHistoryItems](docs/MoveAuditHistoryItems.md)
  - [MoveHistory](docs/MoveHistory.md)
  - [MoveHistoryResult](docs/MoveHistoryResult.md)
+ - [MovePayload](docs/MovePayload.md)
  - [MoveStatus](docs/MoveStatus.md)
  - [MoveTaskOrder](docs/MoveTaskOrder.md)
  - [MoveTaskOrders](docs/MoveTaskOrders.md)
@@ -291,9 +283,12 @@ Class | Method | HTTP request | Description
  - [PPMCloseout](docs/PPMCloseout.md)
  - [PPMDocumentStatus](docs/PPMDocumentStatus.md)
  - [PPMDocuments](docs/PPMDocuments.md)
+ - [PPMSITEstimatedCost](docs/PPMSITEstimatedCost.md)
  - [PPMShipment](docs/PPMShipment.md)
+ - [PPMShipmentSIT](docs/PPMShipmentSIT.md)
  - [PPMShipmentSecondaryPickupAddress](docs/PPMShipmentSecondaryPickupAddress.md)
  - [PPMShipmentStatus](docs/PPMShipmentStatus.md)
+ - [PPMStatus](docs/PPMStatus.md)
  - [PWSViolation](docs/PWSViolation.md)
  - [PWSViolations](docs/PWSViolations.md)
  - [PatchMTOServiceItemStatusPayload](docs/PatchMTOServiceItemStatusPayload.md)
@@ -305,6 +300,7 @@ Class | Method | HTTP request | Description
  - [PaymentServiceItemParams](docs/PaymentServiceItemParams.md)
  - [PaymentServiceItemStatus](docs/PaymentServiceItemStatus.md)
  - [PaymentServiceItems](docs/PaymentServiceItems.md)
+ - [PostDocumentPayload](docs/PostDocumentPayload.md)
  - [ProGearWeightTicket](docs/ProGearWeightTicket.md)
  - [ProGearWeightTicketDocument](docs/ProGearWeightTicketDocument.md)
  - [ProGearWeightTickets](docs/ProGearWeightTickets.md)
@@ -354,6 +350,7 @@ Class | Method | HTTP request | Description
  - [SignedCertification](docs/SignedCertification.md)
  - [SignedCertificationType](docs/SignedCertificationType.md)
  - [StorageFacility](docs/StorageFacility.md)
+ - [SubmittedMovingExpenseType](docs/SubmittedMovingExpenseType.md)
  - [TacValid](docs/TacValid.md)
  - [TransportationOffice](docs/TransportationOffice.md)
  - [TransportationOffices](docs/TransportationOffices.md)

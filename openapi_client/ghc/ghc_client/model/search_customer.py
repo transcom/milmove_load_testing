@@ -96,9 +96,10 @@ class SearchCustomer(ModelNormal):
             'first_name': (str, none_type,),  # noqa: E501
             'last_name': (str, none_type,),  # noqa: E501
             'dod_id': (str, none_type,),  # noqa: E501
+            'emplid': (str, none_type,),  # noqa: E501
             'branch': (str,),  # noqa: E501
             'telephone': (str, none_type,),  # noqa: E501
-            'personal_email': (str,),  # noqa: E501
+            'personal_email': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -111,6 +112,7 @@ class SearchCustomer(ModelNormal):
         'first_name': 'firstName',  # noqa: E501
         'last_name': 'lastName',  # noqa: E501
         'dod_id': 'dodID',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'branch': 'branch',  # noqa: E501
         'telephone': 'telephone',  # noqa: E501
         'personal_email': 'personalEmail',  # noqa: E501
@@ -161,9 +163,10 @@ class SearchCustomer(ModelNormal):
             first_name (str, none_type): [optional]  # noqa: E501
             last_name (str, none_type): [optional]  # noqa: E501
             dod_id (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             branch (str): [optional]  # noqa: E501
             telephone (str, none_type): [optional]  # noqa: E501
-            personal_email (str): [optional]  # noqa: E501
+            personal_email (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -253,9 +256,10 @@ class SearchCustomer(ModelNormal):
             first_name (str, none_type): [optional]  # noqa: E501
             last_name (str, none_type): [optional]  # noqa: E501
             dod_id (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             branch (str): [optional]  # noqa: E501
             telephone (str, none_type): [optional]  # noqa: E501
-            personal_email (str): [optional]  # noqa: E501
+            personal_email (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

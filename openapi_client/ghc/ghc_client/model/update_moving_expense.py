@@ -98,6 +98,9 @@ class UpdateMovingExpense(ModelNormal):
             'status': (PPMDocumentStatus,),  # noqa: E501
             'reason': (str,),  # noqa: E501
             'weight_stored': (int,),  # noqa: E501
+            'sit_location': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'sit_estimated_cost': (int, none_type,),  # noqa: E501
+            'sit_reimburseable_amount': (int, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -114,6 +117,9 @@ class UpdateMovingExpense(ModelNormal):
         'status': 'status',  # noqa: E501
         'reason': 'reason',  # noqa: E501
         'weight_stored': 'weightStored',  # noqa: E501
+        'sit_location': 'sitLocation',  # noqa: E501
+        'sit_estimated_cost': 'sitEstimatedCost',  # noqa: E501
+        'sit_reimburseable_amount': 'sitReimburseableAmount',  # noqa: E501
     }
 
     read_only_vars = {
@@ -165,6 +171,9 @@ class UpdateMovingExpense(ModelNormal):
             status (PPMDocumentStatus): [optional]  # noqa: E501
             reason (str): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_estimated_cost (int, none_type): The estimated amount that the government will pay the service member to put their goods into storage. This estimated storage cost is separate from the estimated incentive.. [optional]  # noqa: E501
+            sit_reimburseable_amount (int, none_type): The amount of SIT that will be reimbursed. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -258,6 +267,9 @@ class UpdateMovingExpense(ModelNormal):
             status (PPMDocumentStatus): [optional]  # noqa: E501
             reason (str): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             weight_stored (int): The total weight stored in PPM SIT. [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_estimated_cost (int, none_type): The estimated amount that the government will pay the service member to put their goods into storage. This estimated storage cost is separate from the estimated incentive.. [optional]  # noqa: E501
+            sit_reimburseable_amount (int, none_type): The amount of SIT that will be reimbursed. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

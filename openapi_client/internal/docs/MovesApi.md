@@ -9,6 +9,7 @@ Method | HTTP request | Description
 [**show_move**](MovesApi.md#show_move) | **GET** /moves/{moveId} | Returns the given move
 [**submit_amended_orders**](MovesApi.md#submit_amended_orders) | **POST** /moves/{moveId}/submit_amended_orders | Submits amended orders for review
 [**submit_move_for_approval**](MovesApi.md#submit_move_for_approval) | **POST** /moves/{moveId}/submit | Submits a move for approval
+[**upload_additional_documents**](MovesApi.md#upload_additional_documents) | **PATCH** /moves/{moveId}/uploadAdditionalDocuments | Patch the additional documents for a given move
 
 
 # **get_all_moves**
@@ -388,6 +389,81 @@ No authorization required
 **401** | must be authenticated to use this endpoint |  -  |
 **403** | not authorized to approve this move |  -  |
 **409** | the move is not in a state to be approved |  -  |
+**500** | server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **upload_additional_documents**
+> Upload upload_additional_documents(move_id, file)
+
+Patch the additional documents for a given move
+
+Customers will on occaision need the ability to upload additional supporting documents, for a variety of reasons. This does not include amended order.
+
+### Example
+
+
+```python
+import time
+import internal_client
+from internal_client.api import moves_api
+from internal_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
+from internal_client.model.upload import Upload
+from pprint import pprint
+# Defining the host is optional and defaults to /internal
+# See configuration.py for a list of all supported configuration parameters.
+configuration = internal_client.Configuration(
+    host = "/internal"
+)
+
+
+# Enter a context with an instance of the API client
+with internal_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = moves_api.MovesApi(api_client)
+    move_id = "moveId_example" # str | UUID of the order
+    file = open('/path/to/file', 'rb') # file_type | The file to upload.
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Patch the additional documents for a given move
+        api_response = api_instance.upload_additional_documents(move_id, file)
+        pprint(api_response)
+    except internal_client.ApiException as e:
+        print("Exception when calling MovesApi->upload_additional_documents: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **move_id** | **str**| UUID of the order |
+ **file** | **file_type**| The file to upload. |
+
+### Return type
+
+[**Upload**](Upload.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: application/json
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**201** | created upload |  -  |
+**400** | invalid request |  -  |
+**403** | not authorized |  -  |
+**404** | not found |  -  |
+**413** | payload is too large |  -  |
 **500** | server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

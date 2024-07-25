@@ -59,6 +59,13 @@ class TestMovesApi(unittest.TestCase):
         """
         pass
 
+    def test_upload_additional_documents(self):
+        """Test case for upload_additional_documents
+
+        Patch the additional documents for a given move  # noqa: E501
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()

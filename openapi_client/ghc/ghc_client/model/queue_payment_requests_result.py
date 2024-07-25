@@ -31,7 +31,9 @@ from ghc_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from ghc_client.model.available_office_users import AvailableOfficeUsers
     from ghc_client.model.queue_payment_requests import QueuePaymentRequests
+    globals()['AvailableOfficeUsers'] = AvailableOfficeUsers
     globals()['QueuePaymentRequests'] = QueuePaymentRequests
 
 
@@ -92,6 +94,7 @@ class QueuePaymentRequestsResult(ModelNormal):
             'per_page': (int,),  # noqa: E501
             'total_count': (int,),  # noqa: E501
             'queue_payment_requests': (QueuePaymentRequests,),  # noqa: E501
+            'available_office_users': (AvailableOfficeUsers,),  # noqa: E501
         }
 
     @cached_property
@@ -104,6 +107,7 @@ class QueuePaymentRequestsResult(ModelNormal):
         'per_page': 'perPage',  # noqa: E501
         'total_count': 'totalCount',  # noqa: E501
         'queue_payment_requests': 'queuePaymentRequests',  # noqa: E501
+        'available_office_users': 'availableOfficeUsers',  # noqa: E501
     }
 
     read_only_vars = {
@@ -151,6 +155,7 @@ class QueuePaymentRequestsResult(ModelNormal):
             per_page (int): [optional]  # noqa: E501
             total_count (int): [optional]  # noqa: E501
             queue_payment_requests (QueuePaymentRequests): [optional]  # noqa: E501
+            available_office_users (AvailableOfficeUsers): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -240,6 +245,7 @@ class QueuePaymentRequestsResult(ModelNormal):
             per_page (int): [optional]  # noqa: E501
             total_count (int): [optional]  # noqa: E501
             queue_payment_requests (QueuePaymentRequests): [optional]  # noqa: E501
+            available_office_users (AvailableOfficeUsers): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

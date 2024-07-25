@@ -47,8 +47,8 @@ with ghc_client.ApiClient() as api_client:
         transportation_office_id="c56a4180-65aa-42ec-a945-5fd21dec0538",
         roles=[
             OfficeUserRole(
-                name="Transportation Ordering Officer",
-                role_type="transportation_ordering_officer",
+                name="Task Ordering Officer",
+                role_type="task_ordering_officer",
             ),
         ],
     ) # OfficeUserCreate | Office User information (optional)

@@ -55,6 +55,8 @@ class SignedCertificationType(ModelSimple):
         ('value',): {
             'PPM_PAYMENT': "PPM_PAYMENT",
             'SHIPMENT': "SHIPMENT",
+            'PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT': "PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT",
+            'CLOSEOUT_REVIEWED_PPM_PAYMENT': "CLOSEOUT_REVIEWED_PPM_PAYMENT",
         },
     }
 
@@ -106,10 +108,10 @@ class SignedCertificationType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users. ., must be one of ["PPM_PAYMENT", "SHIPMENT", ]  # noqa: E501
+            args[0] (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users.   - PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a move has a PPM shipment and is set to        service-counseling-completed \"Submit move details\" by service counselor.   - CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a PPM shipment is reviewed by counselor in close out queue. ., must be one of ["PPM_PAYMENT", "SHIPMENT", "PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT", "CLOSEOUT_REVIEWED_PPM_PAYMENT", ]  # noqa: E501
 
         Keyword Args:
-            value (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users. ., must be one of ["PPM_PAYMENT", "SHIPMENT", ]  # noqa: E501
+            value (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users.   - PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a move has a PPM shipment and is set to        service-counseling-completed \"Submit move details\" by service counselor.   - CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a PPM shipment is reviewed by counselor in close out queue. ., must be one of ["PPM_PAYMENT", "SHIPMENT", "PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT", "CLOSEOUT_REVIEWED_PPM_PAYMENT", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
@@ -200,10 +202,10 @@ class SignedCertificationType(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users. ., must be one of ["PPM_PAYMENT", "SHIPMENT", ]  # noqa: E501
+            args[0] (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users.   - PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a move has a PPM shipment and is set to        service-counseling-completed \"Submit move details\" by service counselor.   - CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a PPM shipment is reviewed by counselor in close out queue. ., must be one of ["PPM_PAYMENT", "SHIPMENT", "PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT", "CLOSEOUT_REVIEWED_PPM_PAYMENT", ]  # noqa: E501
 
         Keyword Args:
-            value (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users. ., must be one of ["PPM_PAYMENT", "SHIPMENT", ]  # noqa: E501
+            value (str): The type of signed certification:   - PPM_PAYMENT: This is used when the customer has a PPM shipment that they have uploaded their documents for and are       ready to submit their documentation for review. When they submit, they will be asked to sign certifying the       information is correct.   - SHIPMENT: This is used when a customer submits their move with their shipments to be reviewed by office users.   - PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a move has a PPM shipment and is set to        service-counseling-completed \"Submit move details\" by service counselor.   - CLOSEOUT_REVIEWED_PPM_PAYMENT: This is used when a PPM shipment is reviewed by counselor in close out queue. ., must be one of ["PPM_PAYMENT", "SHIPMENT", "PRE_CLOSEOUT_REVIEWED_PPM_PAYMENT", "CLOSEOUT_REVIEWED_PPM_PAYMENT", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

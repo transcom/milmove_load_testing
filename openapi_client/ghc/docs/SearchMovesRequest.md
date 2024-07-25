@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **per_page** | **int** |  | [optional] 
 **locator** | **str, none_type** | Move locator | [optional] 
 **dod_id** | **str, none_type** | DOD ID | [optional] 
+**emplid** | **str, none_type** | EMPLID | [optional] 
 **customer_name** | **str, none_type** | Customer Name | [optional] 
 **status** | **[str]** | Filtering for the status. | [optional] 
 **origin_postal_code** | **str, none_type** |  | [optional] 

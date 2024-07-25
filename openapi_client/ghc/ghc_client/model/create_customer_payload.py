@@ -67,6 +67,9 @@ class CreateCustomerPayload(ModelNormal):
     }
 
     validations = {
+        ('emplid',): {
+            'max_length': 7,
+        },
         ('telephone',): {
             'regex': {
                 'pattern': r'^[2-9]\d{2}-\d{3}-\d{4}$',  # noqa: E501
@@ -109,6 +112,7 @@ class CreateCustomerPayload(ModelNormal):
         return {
             'affiliation': (Affiliation,),  # noqa: E501
             'edipi': (str, none_type,),  # noqa: E501
+            'emplid': (str, none_type,),  # noqa: E501
             'first_name': (str,),  # noqa: E501
             'middle_name': (str, none_type,),  # noqa: E501
             'last_name': (str,),  # noqa: E501
@@ -133,6 +137,7 @@ class CreateCustomerPayload(ModelNormal):
     attribute_map = {
         'affiliation': 'affiliation',  # noqa: E501
         'edipi': 'edipi',  # noqa: E501
+        'emplid': 'emplid',  # noqa: E501
         'first_name': 'firstName',  # noqa: E501
         'middle_name': 'middleName',  # noqa: E501
         'last_name': 'lastName',  # noqa: E501
@@ -192,6 +197,7 @@ class CreateCustomerPayload(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             affiliation (Affiliation): [optional]  # noqa: E501
             edipi (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             first_name (str): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
             last_name (str): [optional]  # noqa: E501
@@ -293,6 +299,7 @@ class CreateCustomerPayload(ModelNormal):
                                 _visited_composed_classes = (Animal,)
             affiliation (Affiliation): [optional]  # noqa: E501
             edipi (str, none_type): [optional]  # noqa: E501
+            emplid (str, none_type): [optional]  # noqa: E501
             first_name (str): [optional]  # noqa: E501
             middle_name (str, none_type): [optional]  # noqa: E501
             last_name (str): [optional]  # noqa: E501

@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **str** |  | [optional] 
 **dod_id** | **str** |  | [optional] 
+**emplid** | **str** |  | [optional] 
 **user_id** | **str** |  | [optional] 
 **current_address** | [**Address**](Address.md) |  | [optional] 
 **first_name** | **str** |  | [optional] 

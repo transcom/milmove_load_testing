@@ -13,7 +13,9 @@ import sys
 import unittest
 
 import ghc_client
+from ghc_client.model.available_office_users import AvailableOfficeUsers
 from ghc_client.model.queue_moves import QueueMoves
+globals()['AvailableOfficeUsers'] = AvailableOfficeUsers
 globals()['QueueMoves'] = QueueMoves
 from ghc_client.model.queue_moves_result import QueueMovesResult
 

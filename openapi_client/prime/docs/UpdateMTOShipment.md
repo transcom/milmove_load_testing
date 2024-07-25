@@ -4,6 +4,8 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**actual_pro_gear_weight** | **int, none_type** | The actual weight of any pro gear shipped during a move. | [optional] 
+**actual_spouse_pro_gear_weight** | **int, none_type** | The actual weight of any pro gear shipped during a move. | [optional] 
 **scheduled_pickup_date** | **date, none_type** | The date the Prime contractor scheduled to pick up this shipment after consultation with the customer. | [optional] 
 **actual_pickup_date** | **date, none_type** | The date when the Prime contractor actually picked up the shipment. Updated after-the-fact. | [optional] 
 **first_available_delivery_date** | **date, none_type** | The date the Prime provides to the customer as the first possible delivery date so that they can plan their travel accordingly.  | [optional] 

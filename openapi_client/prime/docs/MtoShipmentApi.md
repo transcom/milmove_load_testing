@@ -157,10 +157,8 @@ with prime_client.ApiClient() as api_client:
         counselor_remarks="counselor approved",
         ppm_shipment=CreatePPMShipment(
             expected_departure_date=dateutil_parser('1970-01-01').date(),
-            pickup_postal_code="90210",
-            secondary_pickup_postal_code="90210",
-            destination_postal_code="90210",
-            secondary_destination_postal_code="90210",
+            pickup_address=CreatePPMShipmentPickupAddress(),
+            destination_address=CreatePPMShipmentDestinationAddress(),
             sit_expected=True,
             sit_location={},
             sit_estimated_weight=2000,
@@ -497,6 +495,8 @@ with prime_client.ApiClient() as api_client:
     mto_shipment_id = "mtoShipmentID_example" # str | UUID of the shipment being updated.
     if_match = "If-Match_example" # str | Optimistic locking is implemented via the `If-Match` header. If the ETag header does not match the value of the resource on the server, the server rejects the change with a `412 Precondition Failed` error. 
     body = UpdateMTOShipment(
+        actual_pro_gear_weight=4500,
+        actual_spouse_pro_gear_weight=4500,
         scheduled_pickup_date=dateutil_parser('1970-01-01').date(),
         actual_pickup_date=dateutil_parser('1970-01-01').date(),
         first_available_delivery_date=dateutil_parser('1970-01-01').date(),
@@ -517,10 +517,6 @@ with prime_client.ApiClient() as api_client:
         counselor_remarks="counselor approved",
         ppm_shipment=UpdatePPMShipment(
             expected_departure_date=dateutil_parser('1970-01-01').date(),
-            pickup_postal_code="90210",
-            secondary_pickup_postal_code="90210",
-            destination_postal_code="90210",
-            secondary_destination_postal_code="90210",
             sit_expected=True,
             sit_location={},
             sit_estimated_weight=2000,

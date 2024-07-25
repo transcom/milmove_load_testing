@@ -72,7 +72,13 @@ class WeightTicket(ModelNormal):
         ('empty_weight',): {
             'inclusive_minimum': 0,
         },
+        ('submitted_empty_weight',): {
+            'inclusive_minimum': 0,
+        },
         ('full_weight',): {
+            'inclusive_minimum': 0,
+        },
+        ('submitted_full_weight',): {
             'inclusive_minimum': 0,
         },
         ('adjusted_net_weight',): {
@@ -118,11 +124,15 @@ class WeightTicket(ModelNormal):
             'id': (str,),  # noqa: E501
             'vehicle_description': (str, none_type,),  # noqa: E501
             'empty_weight': (int, none_type,),  # noqa: E501
+            'submitted_empty_weight': (int, none_type,),  # noqa: E501
             'missing_empty_weight_ticket': (bool, none_type,),  # noqa: E501
             'full_weight': (int, none_type,),  # noqa: E501
+            'submitted_full_weight': (int, none_type,),  # noqa: E501
             'missing_full_weight_ticket': (bool, none_type,),  # noqa: E501
             'owns_trailer': (bool, none_type,),  # noqa: E501
+            'submitted_owns_trailer': (bool, none_type,),  # noqa: E501
             'trailer_meets_criteria': (bool, none_type,),  # noqa: E501
+            'submitted_trailer_meets_criteria': (bool, none_type,),  # noqa: E501
             'status': (OmittablePPMDocumentStatus,),  # noqa: E501
             'reason': (str, none_type,),  # noqa: E501
             'adjusted_net_weight': (int, none_type,),  # noqa: E501
@@ -149,11 +159,15 @@ class WeightTicket(ModelNormal):
         'id': 'id',  # noqa: E501
         'vehicle_description': 'vehicleDescription',  # noqa: E501
         'empty_weight': 'emptyWeight',  # noqa: E501
+        'submitted_empty_weight': 'submittedEmptyWeight',  # noqa: E501
         'missing_empty_weight_ticket': 'missingEmptyWeightTicket',  # noqa: E501
         'full_weight': 'fullWeight',  # noqa: E501
+        'submitted_full_weight': 'submittedFullWeight',  # noqa: E501
         'missing_full_weight_ticket': 'missingFullWeightTicket',  # noqa: E501
         'owns_trailer': 'ownsTrailer',  # noqa: E501
+        'submitted_owns_trailer': 'submittedOwnsTrailer',  # noqa: E501
         'trailer_meets_criteria': 'trailerMeetsCriteria',  # noqa: E501
+        'submitted_trailer_meets_criteria': 'submittedTrailerMeetsCriteria',  # noqa: E501
         'status': 'status',  # noqa: E501
         'reason': 'reason',  # noqa: E501
         'adjusted_net_weight': 'adjustedNetWeight',  # noqa: E501
@@ -225,11 +239,15 @@ class WeightTicket(ModelNormal):
             id (str): ID of this set of weight tickets.. [optional]  # noqa: E501
             vehicle_description (str, none_type): Description of the vehicle used for the trip. E.g. make/model, type of truck/van, etc.. [optional]  # noqa: E501
             empty_weight (int, none_type): Weight of the vehicle when empty.. [optional]  # noqa: E501
+            submitted_empty_weight (int, none_type): Customer submitted weight of the vehicle when empty.. [optional]  # noqa: E501
             missing_empty_weight_ticket (bool, none_type): Indicates if the customer is missing a weight ticket for the vehicle weight when empty.. [optional]  # noqa: E501
             full_weight (int, none_type): The weight of the vehicle when full.. [optional]  # noqa: E501
+            submitted_full_weight (int, none_type): Customer submitted weight of the vehicle when full.. [optional]  # noqa: E501
             missing_full_weight_ticket (bool, none_type): Indicates if the customer is missing a weight ticket for the vehicle weight when full.. [optional]  # noqa: E501
             owns_trailer (bool, none_type): Indicates if the customer used a trailer they own for the move.. [optional]  # noqa: E501
+            submitted_owns_trailer (bool, none_type): Indicates if the customer used a trailer they own for the move.. [optional]  # noqa: E501
             trailer_meets_criteria (bool, none_type): Indicates if the trailer that the customer used meets all the criteria to be claimable.. [optional]  # noqa: E501
+            submitted_trailer_meets_criteria (bool, none_type): Indicates if the trailer that the customer used meets all the criteria to be claimable.. [optional]  # noqa: E501
             status (OmittablePPMDocumentStatus): [optional]  # noqa: E501
             reason (str, none_type): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             adjusted_net_weight (int, none_type): Indicates the adjusted net weight of the vehicle. [optional]  # noqa: E501
@@ -337,11 +355,15 @@ class WeightTicket(ModelNormal):
             id (str): ID of this set of weight tickets.. [optional]  # noqa: E501
             vehicle_description (str, none_type): Description of the vehicle used for the trip. E.g. make/model, type of truck/van, etc.. [optional]  # noqa: E501
             empty_weight (int, none_type): Weight of the vehicle when empty.. [optional]  # noqa: E501
+            submitted_empty_weight (int, none_type): Customer submitted weight of the vehicle when empty.. [optional]  # noqa: E501
             missing_empty_weight_ticket (bool, none_type): Indicates if the customer is missing a weight ticket for the vehicle weight when empty.. [optional]  # noqa: E501
             full_weight (int, none_type): The weight of the vehicle when full.. [optional]  # noqa: E501
+            submitted_full_weight (int, none_type): Customer submitted weight of the vehicle when full.. [optional]  # noqa: E501
             missing_full_weight_ticket (bool, none_type): Indicates if the customer is missing a weight ticket for the vehicle weight when full.. [optional]  # noqa: E501
             owns_trailer (bool, none_type): Indicates if the customer used a trailer they own for the move.. [optional]  # noqa: E501
+            submitted_owns_trailer (bool, none_type): Indicates if the customer used a trailer they own for the move.. [optional]  # noqa: E501
             trailer_meets_criteria (bool, none_type): Indicates if the trailer that the customer used meets all the criteria to be claimable.. [optional]  # noqa: E501
+            submitted_trailer_meets_criteria (bool, none_type): Indicates if the trailer that the customer used meets all the criteria to be claimable.. [optional]  # noqa: E501
             status (OmittablePPMDocumentStatus): [optional]  # noqa: E501
             reason (str, none_type): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             adjusted_net_weight (int, none_type): Indicates the adjusted net weight of the vehicle. [optional]  # noqa: E501

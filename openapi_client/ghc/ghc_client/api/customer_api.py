@@ -260,7 +260,7 @@ class CustomerApi(object):
     ):
         """Creates a customer with Okta option  # noqa: E501
 
-        Creates a customer with option to create an Okta profile account  # noqa: E501
+        Creates a customer with option to also create an Okta profile account based on the office user's input when completing the UI form and submitting.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 

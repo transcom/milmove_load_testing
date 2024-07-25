@@ -34,9 +34,11 @@ def lazy_import():
     from internal_client.model.moving_expense_document import MovingExpenseDocument
     from internal_client.model.omittable_moving_expense_type import OmittableMovingExpenseType
     from internal_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
+    from internal_client.model.submitted_moving_expense_type import SubmittedMovingExpenseType
     globals()['MovingExpenseDocument'] = MovingExpenseDocument
     globals()['OmittableMovingExpenseType'] = OmittableMovingExpenseType
     globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
+    globals()['SubmittedMovingExpenseType'] = SubmittedMovingExpenseType
 
 
 class MovingExpense(ModelNormal):
@@ -99,16 +101,24 @@ class MovingExpense(ModelNormal):
             'created_at': (datetime,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
             'moving_expense_type': (OmittableMovingExpenseType,),  # noqa: E501
+            'submitted_moving_expense_type': (SubmittedMovingExpenseType,),  # noqa: E501
             'description': (str, none_type,),  # noqa: E501
+            'submitted_description': (str, none_type,),  # noqa: E501
             'paid_with_gtcc': (bool, none_type,),  # noqa: E501
             'amount': (int, none_type,),  # noqa: E501
+            'submitted_amount': (int, none_type,),  # noqa: E501
             'missing_receipt': (bool, none_type,),  # noqa: E501
             'status': (OmittablePPMDocumentStatus,),  # noqa: E501
             'reason': (str, none_type,),  # noqa: E501
             'sit_start_date': (date, none_type,),  # noqa: E501
+            'submitted_sit_start_date': (date, none_type,),  # noqa: E501
             'sit_end_date': (date, none_type,),  # noqa: E501
+            'submitted_sit_end_date': (date, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
             'weight_stored': (int, none_type,),  # noqa: E501
+            'sit_location': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
+            'sit_estimated_cost': (int, none_type,),  # noqa: E501
+            'sit_reimburseable_amount': (int, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -124,16 +134,24 @@ class MovingExpense(ModelNormal):
         'created_at': 'createdAt',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
         'moving_expense_type': 'movingExpenseType',  # noqa: E501
+        'submitted_moving_expense_type': 'submittedMovingExpenseType',  # noqa: E501
         'description': 'description',  # noqa: E501
+        'submitted_description': 'submittedDescription',  # noqa: E501
         'paid_with_gtcc': 'paidWithGtcc',  # noqa: E501
         'amount': 'amount',  # noqa: E501
+        'submitted_amount': 'submittedAmount',  # noqa: E501
         'missing_receipt': 'missingReceipt',  # noqa: E501
         'status': 'status',  # noqa: E501
         'reason': 'reason',  # noqa: E501
         'sit_start_date': 'sitStartDate',  # noqa: E501
+        'submitted_sit_start_date': 'submittedSitStartDate',  # noqa: E501
         'sit_end_date': 'sitEndDate',  # noqa: E501
+        'submitted_sit_end_date': 'submittedSitEndDate',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
         'weight_stored': 'weightStored',  # noqa: E501
+        'sit_location': 'sitLocation',  # noqa: E501
+        'sit_estimated_cost': 'sitEstimatedCost',  # noqa: E501
+        'sit_reimburseable_amount': 'sitReimburseableAmount',  # noqa: E501
     }
 
     read_only_vars = {
@@ -192,16 +210,24 @@ class MovingExpense(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             moving_expense_type (OmittableMovingExpenseType): [optional]  # noqa: E501
+            submitted_moving_expense_type (SubmittedMovingExpenseType): [optional]  # noqa: E501
             description (str, none_type): A brief description of the expense. [optional]  # noqa: E501
+            submitted_description (str, none_type): Customer submitted description of the expense. [optional]  # noqa: E501
             paid_with_gtcc (bool, none_type): Indicates if the service member used their government issued card to pay for the expense. [optional]  # noqa: E501
             amount (int, none_type): The total amount of the expense as indicated on the receipt. [optional]  # noqa: E501
+            submitted_amount (int, none_type): Customer submitted total amount of the expense as indicated on the receipt. [optional]  # noqa: E501
             missing_receipt (bool, none_type): Indicates if the service member is missing the receipt with the proof of expense amount. [optional]  # noqa: E501
             status (OmittablePPMDocumentStatus): [optional]  # noqa: E501
             reason (str, none_type): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             sit_start_date (date, none_type): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
+            submitted_sit_start_date (date, none_type): Customer submitted date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date, none_type): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
+            submitted_sit_end_date (date, none_type): Customer submitted date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
             weight_stored (int, none_type): The total weight stored in PPM SIT. [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_estimated_cost (int, none_type): The estimated amount that the government will pay the service member to put their goods into storage. This estimated storage cost is separate from the estimated incentive.. [optional]  # noqa: E501
+            sit_reimburseable_amount (int, none_type): The amount of SIT that will be reimbursed. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -295,16 +321,24 @@ class MovingExpense(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             moving_expense_type (OmittableMovingExpenseType): [optional]  # noqa: E501
+            submitted_moving_expense_type (SubmittedMovingExpenseType): [optional]  # noqa: E501
             description (str, none_type): A brief description of the expense. [optional]  # noqa: E501
+            submitted_description (str, none_type): Customer submitted description of the expense. [optional]  # noqa: E501
             paid_with_gtcc (bool, none_type): Indicates if the service member used their government issued card to pay for the expense. [optional]  # noqa: E501
             amount (int, none_type): The total amount of the expense as indicated on the receipt. [optional]  # noqa: E501
+            submitted_amount (int, none_type): Customer submitted total amount of the expense as indicated on the receipt. [optional]  # noqa: E501
             missing_receipt (bool, none_type): Indicates if the service member is missing the receipt with the proof of expense amount. [optional]  # noqa: E501
             status (OmittablePPMDocumentStatus): [optional]  # noqa: E501
             reason (str, none_type): The reason the services counselor has excluded or rejected the item.. [optional]  # noqa: E501
             sit_start_date (date, none_type): The date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
+            submitted_sit_start_date (date, none_type): Customer submitted date the shipment entered storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             sit_end_date (date, none_type): The date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
+            submitted_sit_end_date (date, none_type): Customer submitted date the shipment exited storage, applicable for the `STORAGE` movingExpenseType only. [optional]  # noqa: E501
             e_tag (str): A hash that should be used as the \"If-Match\" header for any updates.. [optional]  # noqa: E501
             weight_stored (int, none_type): The total weight stored in PPM SIT. [optional]  # noqa: E501
+            sit_location ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}): [optional]  # noqa: E501
+            sit_estimated_cost (int, none_type): The estimated amount that the government will pay the service member to put their goods into storage. This estimated storage cost is separate from the estimated incentive.. [optional]  # noqa: E501
+            sit_reimburseable_amount (int, none_type): The amount of SIT that will be reimbursed. [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

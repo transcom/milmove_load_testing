@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**update_billable_weight**](OrderApi.md#update_billable_weight) | **PATCH** /orders/{orderID}/update-billable-weight | Updates the max billable weight
 [**update_max_billable_weight_as_tio**](OrderApi.md#update_max_billable_weight_as_tio) | **PATCH** /orders/{orderID}/update-max-billable-weight/tio | Updates the max billable weight with TIO remarks
 [**update_order**](OrderApi.md#update_order) | **PATCH** /orders/{orderID} | Updates an order
+[**upload_amended_orders**](OrderApi.md#upload_amended_orders) | **POST** /orders/{orderID}/upload_amended_orders | Create an amended order for a given order
 
 
 # **acknowledge_excess_weight_risk**
@@ -855,6 +856,81 @@ No authorization required
 **412** | Precondition failed |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **upload_amended_orders**
+> Upload upload_amended_orders(order_id, file)
+
+Create an amended order for a given order
+
+Create an amended order for a given order
+
+### Example
+
+
+```python
+import time
+import ghc_client
+from ghc_client.api import order_api
+from ghc_client.model.invalid_request_response_payload import InvalidRequestResponsePayload
+from ghc_client.model.upload import Upload
+from pprint import pprint
+# Defining the host is optional and defaults to /ghc/v1
+# See configuration.py for a list of all supported configuration parameters.
+configuration = ghc_client.Configuration(
+    host = "/ghc/v1"
+)
+
+
+# Enter a context with an instance of the API client
+with ghc_client.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = order_api.OrderApi(api_client)
+    order_id = "orderID_example" # str | UUID of the order
+    file = open('/path/to/file', 'rb') # file_type | The file to upload.
+
+    # example passing only required values which don't have defaults set
+    try:
+        # Create an amended order for a given order
+        api_response = api_instance.upload_amended_orders(order_id, file)
+        pprint(api_response)
+    except ghc_client.ApiException as e:
+        print("Exception when calling OrderApi->upload_amended_orders: %s\n" % e)
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **order_id** | **str**| UUID of the order |
+ **file** | **file_type**| The file to upload. |
+
+### Return type
+
+[**Upload**](Upload.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: */*
+
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**201** | created upload |  -  |
+**400** | invalid request |  -  |
+**403** | not authorized |  -  |
+**404** | not found |  -  |
+**413** | payload is too large |  -  |
+**500** | server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

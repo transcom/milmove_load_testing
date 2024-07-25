@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **agency** | [**Affiliation**](Affiliation.md) |  | [optional] 
 **entitlement** | [**Entitlements**](Entitlements.md) |  | [optional] 
 **destination_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 
+**destination_duty_location_gbloc** | [**GBLOC**](GBLOC.md) |  | [optional] 
 **origin_duty_location** | [**DutyLocation**](DutyLocation.md) |  | [optional] 
 **origin_duty_location_gbloc** | [**GBLOC**](GBLOC.md) |  | [optional] 
 **move_task_order_id** | **str** |  | [optional] 
@@ -36,6 +37,7 @@ Name | Type | Description | Notes
 **packing_and_shipping_instructions** | **str** |  | [optional] 
 **method_of_payment** | **str** |  | [optional] 
 **naics** | **str** |  | [optional] 
+**orders_type** | [**OrdersType**](OrdersType.md) |  | [optional] 
 **e_tag** | **str** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 

@@ -102,8 +102,10 @@ class CreateShipment(ModelNormal):
             'customer_remarks': (str, none_type,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
             'secondary_pickup_address': (Address,),  # noqa: E501
+            'tertiary_pickup_address': (Address,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
             'secondary_delivery_address': (Address,),  # noqa: E501
+            'tertiary_delivery_address': (Address,),  # noqa: E501
             'agents': (MTOAgents,),  # noqa: E501
         }
 
@@ -121,8 +123,10 @@ class CreateShipment(ModelNormal):
         'customer_remarks': 'customerRemarks',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
+        'tertiary_pickup_address': 'tertiaryPickupAddress',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
         'secondary_delivery_address': 'secondaryDeliveryAddress',  # noqa: E501
+        'tertiary_delivery_address': 'tertiaryDeliveryAddress',  # noqa: E501
         'agents': 'agents',  # noqa: E501
     }
 
@@ -177,8 +181,10 @@ class CreateShipment(ModelNormal):
             customer_remarks (str, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
+            tertiary_pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            tertiary_delivery_address (Address): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
         """
 
@@ -277,8 +283,10 @@ class CreateShipment(ModelNormal):
             customer_remarks (str, none_type): [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
             secondary_pickup_address (Address): [optional]  # noqa: E501
+            tertiary_pickup_address (Address): [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
             secondary_delivery_address (Address): [optional]  # noqa: E501
+            tertiary_delivery_address (Address): [optional]  # noqa: E501
             agents (MTOAgents): [optional]  # noqa: E501
         """
 

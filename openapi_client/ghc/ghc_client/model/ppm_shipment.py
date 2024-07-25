@@ -77,27 +77,7 @@ class PPMShipment(ModelNormal):
     }
 
     validations = {
-        ('pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('destination_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('secondary_pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
         ('actual_pickup_postal_code',): {
-            'regex': {
-                'pattern': r'^(\d{5})$',  # noqa: E501
-            },
-        },
-        ('secondary_destination_postal_code',): {
             'regex': {
                 'pattern': r'^(\d{5})$',  # noqa: E501
             },
@@ -137,8 +117,6 @@ class PPMShipment(ModelNormal):
             'created_at': (datetime,),  # noqa: E501
             'status': (PPMShipmentStatus,),  # noqa: E501
             'expected_departure_date': (date,),  # noqa: E501
-            'pickup_postal_code': (str,),  # noqa: E501
-            'destination_postal_code': (str,),  # noqa: E501
             'sit_expected': (bool,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
             'updated_at': (datetime,),  # noqa: E501
@@ -149,14 +127,16 @@ class PPMShipment(ModelNormal):
             'reviewed_at': (datetime, none_type,),  # noqa: E501
             'approved_at': (datetime, none_type,),  # noqa: E501
             'pickup_address': (Address,),  # noqa: E501
-            'secondary_pickup_postal_code': (str, none_type,),  # noqa: E501
-            'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
             'secondary_pickup_address': (PPMShipmentSecondaryPickupAddress,),  # noqa: E501
+            'has_secondary_pickup_address': (bool, none_type,),  # noqa: E501
+            'tertiary_pickup_address': (PPMShipmentSecondaryPickupAddress,),  # noqa: E501
+            'has_tertiary_pickup_address': (bool, none_type,),  # noqa: E501
             'actual_pickup_postal_code': (str, none_type,),  # noqa: E501
             'destination_address': (Address,),  # noqa: E501
-            'secondary_destination_postal_code': (str, none_type,),  # noqa: E501
-            'has_secondary_destination_address': (bool, none_type,),  # noqa: E501
             'secondary_destination_address': (PPMShipmentSecondaryPickupAddress,),  # noqa: E501
+            'has_secondary_destination_address': (bool, none_type,),  # noqa: E501
+            'tertiary_destination_address': (PPMShipmentSecondaryPickupAddress,),  # noqa: E501
+            'has_tertiary_destination_address': (bool, none_type,),  # noqa: E501
             'actual_destination_postal_code': (str, none_type,),  # noqa: E501
             'estimated_weight': (int, none_type,),  # noqa: E501
             'has_pro_gear': (bool, none_type,),  # noqa: E501
@@ -190,8 +170,6 @@ class PPMShipment(ModelNormal):
         'created_at': 'createdAt',  # noqa: E501
         'status': 'status',  # noqa: E501
         'expected_departure_date': 'expectedDepartureDate',  # noqa: E501
-        'pickup_postal_code': 'pickupPostalCode',  # noqa: E501
-        'destination_postal_code': 'destinationPostalCode',  # noqa: E501
         'sit_expected': 'sitExpected',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
         'updated_at': 'updatedAt',  # noqa: E501
@@ -202,14 +180,16 @@ class PPMShipment(ModelNormal):
         'reviewed_at': 'reviewedAt',  # noqa: E501
         'approved_at': 'approvedAt',  # noqa: E501
         'pickup_address': 'pickupAddress',  # noqa: E501
-        'secondary_pickup_postal_code': 'secondaryPickupPostalCode',  # noqa: E501
-        'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
         'secondary_pickup_address': 'secondaryPickupAddress',  # noqa: E501
+        'has_secondary_pickup_address': 'hasSecondaryPickupAddress',  # noqa: E501
+        'tertiary_pickup_address': 'tertiaryPickupAddress',  # noqa: E501
+        'has_tertiary_pickup_address': 'hasTertiaryPickupAddress',  # noqa: E501
         'actual_pickup_postal_code': 'actualPickupPostalCode',  # noqa: E501
         'destination_address': 'destinationAddress',  # noqa: E501
-        'secondary_destination_postal_code': 'secondaryDestinationPostalCode',  # noqa: E501
-        'has_secondary_destination_address': 'hasSecondaryDestinationAddress',  # noqa: E501
         'secondary_destination_address': 'secondaryDestinationAddress',  # noqa: E501
+        'has_secondary_destination_address': 'hasSecondaryDestinationAddress',  # noqa: E501
+        'tertiary_destination_address': 'tertiaryDestinationAddress',  # noqa: E501
+        'has_tertiary_destination_address': 'hasTertiaryDestinationAddress',  # noqa: E501
         'actual_destination_postal_code': 'actualDestinationPostalCode',  # noqa: E501
         'estimated_weight': 'estimatedWeight',  # noqa: E501
         'has_pro_gear': 'hasProGear',  # noqa: E501
@@ -245,7 +225,7 @@ class PPMShipment(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, id, shipment_id, created_at, status, expected_departure_date, pickup_postal_code, destination_postal_code, sit_expected, e_tag, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, shipment_id, created_at, status, expected_departure_date, sit_expected, e_tag, *args, **kwargs):  # noqa: E501
         """PPMShipment - a model defined in OpenAPI
 
         Args:
@@ -254,8 +234,6 @@ class PPMShipment(ModelNormal):
             created_at (datetime): Timestamp of when the PPM Shipment was initially created (UTC)
             status (PPMShipmentStatus):
             expected_departure_date (date): Date the customer expects to begin their move. 
-            pickup_postal_code (str): The postal code of the origin location where goods are being moved from.
-            destination_postal_code (str): The postal code of the destination location where goods are being delivered to.
             sit_expected (bool): Captures whether some or all of the PPM shipment will require temporary storage at the origin or destination.  Must be set to `true` when providing `sitLocation`, `sitEstimatedWeight`, `sitEstimatedEntryDate`, and `sitEstimatedDepartureDate` values to calculate the `sitEstimatedCost`. 
             e_tag (str): A hash unique to this shipment that should be used as the \"If-Match\" header for any updates.
 
@@ -298,14 +276,16 @@ class PPMShipment(ModelNormal):
             reviewed_at (datetime, none_type): The timestamp of when the Service Counselor has reviewed all of the closeout documents.. [optional]  # noqa: E501
             approved_at (datetime, none_type): The timestamp of when the shipment was approved and the service member can begin their move.. [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
-            secondary_pickup_postal_code (str, none_type): [optional]  # noqa: E501
-            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             secondary_pickup_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_pickup_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
             actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
-            secondary_destination_postal_code (str, none_type): An optional secondary location near the destination where goods will be dropped off.. [optional]  # noqa: E501
-            has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
             secondary_destination_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_destination_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
             actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             estimated_weight (int, none_type): The estimated weight of the PPM shipment goods being moved.. [optional]  # noqa: E501
             has_pro_gear (bool, none_type): Indicates whether PPM shipment has pro gear for themselves or their spouse. . [optional]  # noqa: E501
@@ -362,8 +342,6 @@ class PPMShipment(ModelNormal):
         self.created_at = created_at
         self.status = status
         self.expected_departure_date = expected_departure_date
-        self.pickup_postal_code = pickup_postal_code
-        self.destination_postal_code = destination_postal_code
         self.sit_expected = sit_expected
         self.e_tag = e_tag
         for var_name, var_value in kwargs.items():
@@ -386,13 +364,11 @@ class PPMShipment(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, status, expected_departure_date, pickup_postal_code, destination_postal_code, sit_expected, *args, **kwargs):  # noqa: E501
+    def __init__(self, status, expected_departure_date, sit_expected, *args, **kwargs):  # noqa: E501
         """PPMShipment - a model defined in OpenAPI
 
             status (PPMShipmentStatus):
             expected_departure_date (date): Date the customer expects to begin their move. 
-            pickup_postal_code (str): The postal code of the origin location where goods are being moved from.
-            destination_postal_code (str): The postal code of the destination location where goods are being delivered to.
             sit_expected (bool): Captures whether some or all of the PPM shipment will require temporary storage at the origin or destination.  Must be set to `true` when providing `sitLocation`, `sitEstimatedWeight`, `sitEstimatedEntryDate`, and `sitEstimatedDepartureDate` values to calculate the `sitEstimatedCost`. 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -433,14 +409,16 @@ class PPMShipment(ModelNormal):
             reviewed_at (datetime, none_type): The timestamp of when the Service Counselor has reviewed all of the closeout documents.. [optional]  # noqa: E501
             approved_at (datetime, none_type): The timestamp of when the shipment was approved and the service member can begin their move.. [optional]  # noqa: E501
             pickup_address (Address): [optional]  # noqa: E501
-            secondary_pickup_postal_code (str, none_type): [optional]  # noqa: E501
-            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
             secondary_pickup_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_secondary_pickup_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_pickup_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_tertiary_pickup_address (bool, none_type): [optional]  # noqa: E501
             actual_pickup_postal_code (str, none_type): The actual postal code where the PPM shipment started. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             destination_address (Address): [optional]  # noqa: E501
-            secondary_destination_postal_code (str, none_type): An optional secondary location near the destination where goods will be dropped off.. [optional]  # noqa: E501
-            has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
             secondary_destination_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_secondary_destination_address (bool, none_type): [optional]  # noqa: E501
+            tertiary_destination_address (PPMShipmentSecondaryPickupAddress): [optional]  # noqa: E501
+            has_tertiary_destination_address (bool, none_type): [optional]  # noqa: E501
             actual_destination_postal_code (str, none_type): The actual postal code where the PPM shipment ended. To be filled once the customer has moved the shipment. . [optional]  # noqa: E501
             estimated_weight (int, none_type): The estimated weight of the PPM shipment goods being moved.. [optional]  # noqa: E501
             has_pro_gear (bool, none_type): Indicates whether PPM shipment has pro gear for themselves or their spouse. . [optional]  # noqa: E501
@@ -492,8 +470,6 @@ class PPMShipment(ModelNormal):
 
         self.status = status
         self.expected_departure_date = expected_departure_date
-        self.pickup_postal_code = pickup_postal_code
-        self.destination_postal_code = destination_postal_code
         self.sit_expected = sit_expected
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \

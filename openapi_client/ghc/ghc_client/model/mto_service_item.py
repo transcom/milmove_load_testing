@@ -143,7 +143,9 @@ class MTOServiceItem(ModelNormal):
             'rejected_at': (datetime, none_type,),  # noqa: E501
             'e_tag': (str,),  # noqa: E501
             'update_reason': (str, none_type,),  # noqa: E501
+            'standalone_crate': (bool, none_type,),  # noqa: E501
             'service_request_documents': (ServiceRequestDocuments,),  # noqa: E501
+            'estimated_price': (int, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -191,7 +193,9 @@ class MTOServiceItem(ModelNormal):
         'rejected_at': 'rejectedAt',  # noqa: E501
         'e_tag': 'eTag',  # noqa: E501
         'update_reason': 'updateReason',  # noqa: E501
+        'standalone_crate': 'standaloneCrate',  # noqa: E501
         'service_request_documents': 'serviceRequestDocuments',  # noqa: E501
+        'estimated_price': 'estimatedPrice',  # noqa: E501
     }
 
     read_only_vars = {
@@ -277,7 +281,9 @@ class MTOServiceItem(ModelNormal):
             rejected_at (datetime, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
             update_reason (str, none_type): Reason for updating service item.. [optional]  # noqa: E501
+            standalone_crate (bool, none_type): [optional]  # noqa: E501
             service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
+            estimated_price (int, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -409,7 +415,9 @@ class MTOServiceItem(ModelNormal):
             rejected_at (datetime, none_type): [optional]  # noqa: E501
             e_tag (str): [optional]  # noqa: E501
             update_reason (str, none_type): Reason for updating service item.. [optional]  # noqa: E501
+            standalone_crate (bool, none_type): [optional]  # noqa: E501
             service_request_documents (ServiceRequestDocuments): [optional]  # noqa: E501
+            estimated_price (int, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

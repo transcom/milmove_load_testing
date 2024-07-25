@@ -12,9 +12,12 @@ Name | Type | Description | Notes
 **document** | [**ProGearWeightTicketDocument**](ProGearWeightTicketDocument.md) |  | 
 **id** | **str** | The ID of the pro-gear weight ticket. | [optional] [readonly] 
 **belongs_to_self** | **bool, none_type** | Indicates if this information is for the customer&#39;s own pro-gear, otherwise, it&#39;s the spouse&#39;s. | [optional] 
+**submitted_belongs_to_self** | **bool, none_type** | Indicates if this information is for the customer&#39;s own pro-gear, otherwise, it&#39;s the spouse&#39;s. | [optional] 
 **description** | **str, none_type** | Describes the pro-gear that was moved. | [optional] 
 **has_weight_tickets** | **bool, none_type** | Indicates if the user has a weight ticket for their pro-gear, otherwise they have a constructed weight. | [optional] 
+**submitted_has_weight_tickets** | **bool, none_type** | Indicates if the user has a weight ticket for their pro-gear, otherwise they have a constructed weight. | [optional] 
 **weight** | **int, none_type** | Weight of the pro-gear. | [optional] 
+**submitted_weight** | **int, none_type** | Customer submitted weight of the pro-gear. | [optional] 
 **status** | [**OmittablePPMDocumentStatus**](OmittablePPMDocumentStatus.md) |  | [optional] 
 **reason** | **str, none_type** | The reason the services counselor has excluded or rejected the item. | [optional] 
 **e_tag** | **str** | A hash that should be used as the \&quot;If-Match\&quot; header for any updates. | [optional] [readonly] 

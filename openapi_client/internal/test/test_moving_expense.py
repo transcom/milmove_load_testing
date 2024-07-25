@@ -16,9 +16,11 @@ import internal_client
 from internal_client.model.moving_expense_document import MovingExpenseDocument
 from internal_client.model.omittable_moving_expense_type import OmittableMovingExpenseType
 from internal_client.model.omittable_ppm_document_status import OmittablePPMDocumentStatus
+from internal_client.model.submitted_moving_expense_type import SubmittedMovingExpenseType
 globals()['MovingExpenseDocument'] = MovingExpenseDocument
 globals()['OmittableMovingExpenseType'] = OmittableMovingExpenseType
 globals()['OmittablePPMDocumentStatus'] = OmittablePPMDocumentStatus
+globals()['SubmittedMovingExpenseType'] = SubmittedMovingExpenseType
 from internal_client.model.moving_expense import MovingExpense
 
 

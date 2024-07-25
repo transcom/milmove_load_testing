@@ -43,7 +43,9 @@ Name | Type | Description | Notes
 **rejected_at** | **datetime, none_type** |  | [optional] 
 **e_tag** | **str** |  | [optional] 
 **update_reason** | **str, none_type** | Reason for updating service item. | [optional] 
+**standalone_crate** | **bool, none_type** |  | [optional] 
 **service_request_documents** | [**ServiceRequestDocuments**](ServiceRequestDocuments.md) |  | [optional] 
+**estimated_price** | **int, none_type** |  | [optional] 
 **any string name** | **bool, date, datetime, dict, float, int, list, str, none_type** | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

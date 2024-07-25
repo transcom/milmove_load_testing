@@ -15,7 +15,7 @@ Method | HTTP request | Description
 
 Creates a customer with Okta option
 
-Creates a customer with option to create an Okta profile account
+Creates a customer with option to also create an Okta profile account based on the office user's input when completing the UI form and submitting.
 
 ### Example
 
@@ -43,6 +43,7 @@ with ghc_client.ApiClient() as api_client:
     body = CreateCustomerPayload(
         affiliation=Affiliation("ARMY"),
         edipi="John",
+        emplid="9485155",
         first_name="John",
         middle_name="David",
         last_name="Doe",
@@ -102,6 +103,7 @@ No authorization required
 **401** | The request was denied |  -  |
 **403** | The request was denied |  -  |
 **404** | The requested resource wasn&#39;t found |  -  |
+**409** | Conflict error |  -  |
 **412** | Precondition failed |  -  |
 **422** | The payload was unprocessable. |  -  |
 **500** | A server error occurred |  -  |
@@ -214,6 +216,7 @@ with ghc_client.ApiClient() as api_client:
         page=1,
         per_page=1,
         dod_id="dod_id_example",
+        emplid="emplid_example",
         branch="branch_example",
         customer_name="customer_name_example",
         sort="customerName",

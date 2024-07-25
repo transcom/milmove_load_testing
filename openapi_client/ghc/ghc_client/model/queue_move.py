@@ -37,12 +37,14 @@ def lazy_import():
     from ghc_client.model.gbloc import GBLOC
     from ghc_client.model.locked_office_user import LockedOfficeUser
     from ghc_client.model.move_status import MoveStatus
+    from ghc_client.model.ppm_status import PPMStatus
     globals()['Customer'] = Customer
     globals()['DeptIndicator'] = DeptIndicator
     globals()['DutyLocation'] = DutyLocation
     globals()['GBLOC'] = GBLOC
     globals()['LockedOfficeUser'] = LockedOfficeUser
     globals()['MoveStatus'] = MoveStatus
+    globals()['PPMStatus'] = PPMStatus
 
 
 class QueueMove(ModelNormal):
@@ -122,6 +124,7 @@ class QueueMove(ModelNormal):
             'locked_by_office_user_id': (str, none_type,),  # noqa: E501
             'locked_by_office_user': (LockedOfficeUser,),  # noqa: E501
             'lock_expires_at': (datetime, none_type,),  # noqa: E501
+            'ppm_status': (PPMStatus,),  # noqa: E501
         }
 
     @cached_property
@@ -149,6 +152,7 @@ class QueueMove(ModelNormal):
         'locked_by_office_user_id': 'lockedByOfficeUserID',  # noqa: E501
         'locked_by_office_user': 'lockedByOfficeUser',  # noqa: E501
         'lock_expires_at': 'lockExpiresAt',  # noqa: E501
+        'ppm_status': 'ppmStatus',  # noqa: E501
     }
 
     read_only_vars = {
@@ -211,6 +215,7 @@ class QueueMove(ModelNormal):
             locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
             locked_by_office_user (LockedOfficeUser): [optional]  # noqa: E501
             lock_expires_at (datetime, none_type): [optional]  # noqa: E501
+            ppm_status (PPMStatus): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -315,6 +320,7 @@ class QueueMove(ModelNormal):
             locked_by_office_user_id (str, none_type): [optional]  # noqa: E501
             locked_by_office_user (LockedOfficeUser): [optional]  # noqa: E501
             lock_expires_at (datetime, none_type): [optional]  # noqa: E501
+            ppm_status (PPMStatus): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

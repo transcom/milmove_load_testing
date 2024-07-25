@@ -924,6 +924,8 @@ with internal_client.ApiClient() as api_client:
         sit_start_date=dateutil_parser('1970-01-01').date(),
         sit_end_date=dateutil_parser('1970-01-01').date(),
         weight_stored=1,
+        sit_location={},
+        sit_reimburseable_amount=1,
     ) # UpdateMovingExpense | 
 
     # example passing only required values which don't have defaults set

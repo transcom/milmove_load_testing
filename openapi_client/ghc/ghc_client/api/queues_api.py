@@ -24,6 +24,7 @@ from ghc_client.model_utils import (  # noqa: F401
 )
 from ghc_client.model.error import Error
 from ghc_client.model.list_prime_moves_result import ListPrimeMovesResult
+from ghc_client.model.locations import Locations
 from ghc_client.model.queue_moves_result import QueueMovesResult
 from ghc_client.model.queue_payment_requests_result import QueuePaymentRequestsResult
 
@@ -58,12 +59,14 @@ class QueuesApi(object):
                     'locator',
                     'last_name',
                     'dod_id',
+                    'emplid',
                     'origin_duty_location',
                     'destination_duty_location',
                     'appeared_in_too_at',
                     'requested_move_date',
                     'status',
                     'order_type',
+                    'view_as_gbloc',
                 ],
                 'required': [],
                 'nullable': [
@@ -74,11 +77,15 @@ class QueuesApi(object):
                     'status',
                 ],
                 'validation': [
+                    'origin_duty_location',
                     'status',
                 ]
             },
             root_map={
                 'validations': {
+                    ('origin_duty_location',): {
+
+                    },
                     ('status',): {
 
                     },
@@ -88,6 +95,7 @@ class QueuesApi(object):
 
                         "LASTNAME": "lastName",
                         "DODID": "dodID",
+                        "EMPLID": "emplid",
                         "BRANCH": "branch",
                         "LOCATOR": "locator",
                         "STATUS": "status",
@@ -104,8 +112,8 @@ class QueuesApi(object):
                     ('status',): {
 
                         "SUBMITTED": "SUBMITTED",
-                        "APPROVALS_REQUESTED": "APPROVALS REQUESTED",
-                        "APPROVED": "APPROVED"
+                        "SERVICE_COUNSELING_COMPLETED": "SERVICE COUNSELING COMPLETED",
+                        "APPROVALS_REQUESTED": "APPROVALS REQUESTED"
                     },
                 },
                 'openapi_types': {
@@ -125,8 +133,10 @@ class QueuesApi(object):
                         (str,),
                     'dod_id':
                         (str,),
-                    'origin_duty_location':
+                    'emplid':
                         (str,),
+                    'origin_duty_location':
+                        ([str],),
                     'destination_duty_location':
                         (str,),
                     'appeared_in_too_at':
@@ -136,6 +146,8 @@ class QueuesApi(object):
                     'status':
                         ([str],),
                     'order_type':
+                        (str,),
+                    'view_as_gbloc':
                         (str,),
                 },
                 'attribute_map': {
@@ -147,12 +159,14 @@ class QueuesApi(object):
                     'locator': 'locator',
                     'last_name': 'lastName',
                     'dod_id': 'dodID',
+                    'emplid': 'emplid',
                     'origin_duty_location': 'originDutyLocation',
                     'destination_duty_location': 'destinationDutyLocation',
                     'appeared_in_too_at': 'appearedInTooAt',
                     'requested_move_date': 'requestedMoveDate',
                     'status': 'status',
                     'order_type': 'orderType',
+                    'view_as_gbloc': 'viewAsGBLOC',
                 },
                 'location_map': {
                     'page': 'query',
@@ -163,14 +177,17 @@ class QueuesApi(object):
                     'locator': 'query',
                     'last_name': 'query',
                     'dod_id': 'query',
+                    'emplid': 'query',
                     'origin_duty_location': 'query',
                     'destination_duty_location': 'query',
                     'appeared_in_too_at': 'query',
                     'requested_move_date': 'query',
                     'status': 'query',
                     'order_type': 'query',
+                    'view_as_gbloc': 'query',
                 },
                 'collection_format_map': {
+                    'origin_duty_location': 'multi',
                     'status': 'csv',
                 }
             },
@@ -202,10 +219,12 @@ class QueuesApi(object):
                     'locator',
                     'last_name',
                     'dod_id',
+                    'emplid',
                     'destination_duty_location',
                     'origin_duty_location',
                     'status',
                     'order_type',
+                    'view_as_gbloc',
                 ],
                 'required': [],
                 'nullable': [
@@ -234,6 +253,7 @@ class QueuesApi(object):
                         "BRANCH": "branch",
                         "STATUS": "status",
                         "DODID": "dodID",
+                        "EMPLID": "emplid",
                         "AGE": "age",
                         "ORIGINDUTYLOCATION": "originDutyLocation"
                     },
@@ -271,6 +291,8 @@ class QueuesApi(object):
                         (str,),
                     'dod_id':
                         (str,),
+                    'emplid':
+                        (str,),
                     'destination_duty_location':
                         (str,),
                     'origin_duty_location':
@@ -278,6 +300,8 @@ class QueuesApi(object):
                     'status':
                         ([str],),
                     'order_type':
+                        (str,),
+                    'view_as_gbloc':
                         (str,),
                 },
                 'attribute_map': {
@@ -290,10 +314,12 @@ class QueuesApi(object):
                     'locator': 'locator',
                     'last_name': 'lastName',
                     'dod_id': 'dodID',
+                    'emplid': 'emplid',
                     'destination_duty_location': 'destinationDutyLocation',
                     'origin_duty_location': 'originDutyLocation',
                     'status': 'status',
                     'order_type': 'orderType',
+                    'view_as_gbloc': 'viewAsGBLOC',
                 },
                 'location_map': {
                     'sort': 'query',
@@ -305,13 +331,62 @@ class QueuesApi(object):
                     'locator': 'query',
                     'last_name': 'query',
                     'dod_id': 'query',
+                    'emplid': 'query',
                     'destination_duty_location': 'query',
                     'origin_duty_location': 'query',
                     'status': 'query',
                     'order_type': 'query',
+                    'view_as_gbloc': 'query',
                 },
                 'collection_format_map': {
                     'status': 'csv',
+                }
+            },
+            headers_map={
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client
+        )
+        self.get_services_counseling_origin_list_endpoint = _Endpoint(
+            settings={
+                'response_type': (Locations,),
+                'auth': [],
+                'endpoint_path': '/queues/counseling/origin-list',
+                'operation_id': 'get_services_counseling_origin_list',
+                'http_method': 'GET',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'needs_ppm_closeout',
+                ],
+                'required': [],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'needs_ppm_closeout':
+                        (bool,),
+                },
+                'attribute_map': {
+                    'needs_ppm_closeout': 'needsPPMCloseout',
+                },
+                'location_map': {
+                    'needs_ppm_closeout': 'query',
+                },
+                'collection_format_map': {
                 }
             },
             headers_map={
@@ -341,6 +416,7 @@ class QueuesApi(object):
                     'locator',
                     'last_name',
                     'dod_id',
+                    'emplid',
                     'requested_move_date',
                     'submitted_at',
                     'origin_gbloc',
@@ -352,6 +428,8 @@ class QueuesApi(object):
                     'closeout_initiated',
                     'closeout_location',
                     'order_type',
+                    'ppm_status',
+                    'view_as_gbloc',
                 ],
                 'required': [],
                 'nullable': [
@@ -361,13 +439,18 @@ class QueuesApi(object):
                     'order',
                     'status',
                     'ppm_type',
+                    'ppm_status',
                 ],
                 'validation': [
+                    'origin_duty_location',
                     'status',
                 ]
             },
             root_map={
                 'validations': {
+                    ('origin_duty_location',): {
+
+                    },
                     ('status',): {
 
                     },
@@ -377,6 +460,7 @@ class QueuesApi(object):
 
                         "LASTNAME": "lastName",
                         "DODID": "dodID",
+                        "EMPLID": "emplid",
                         "BRANCH": "branch",
                         "LOCATOR": "locator",
                         "STATUS": "status",
@@ -387,7 +471,8 @@ class QueuesApi(object):
                         "DESTINATIONDUTYLOCATION": "destinationDutyLocation",
                         "PPMTYPE": "ppmType",
                         "CLOSEOUTINITIATED": "closeoutInitiated",
-                        "CLOSEOUTLOCATION": "closeoutLocation"
+                        "CLOSEOUTLOCATION": "closeoutLocation",
+                        "PPMSTATUS": "ppmStatus"
                     },
                     ('order',): {
 
@@ -403,6 +488,11 @@ class QueuesApi(object):
 
                         "FULL": "FULL",
                         "PARTIAL": "PARTIAL"
+                    },
+                    ('ppm_status',): {
+
+                        "WAITING_ON_CUSTOMER": "WAITING_ON_CUSTOMER",
+                        "NEEDS_CLOSEOUT": "NEEDS_CLOSEOUT"
                     },
                 },
                 'openapi_types': {
@@ -422,6 +512,8 @@ class QueuesApi(object):
                         (str,),
                     'dod_id':
                         (str,),
+                    'emplid':
+                        (str,),
                     'requested_move_date':
                         (str,),
                     'submitted_at':
@@ -429,7 +521,7 @@ class QueuesApi(object):
                     'origin_gbloc':
                         (str,),
                     'origin_duty_location':
-                        (str,),
+                        ([str],),
                     'destination_duty_location':
                         (str,),
                     'status':
@@ -444,6 +536,10 @@ class QueuesApi(object):
                         (str,),
                     'order_type':
                         (str,),
+                    'ppm_status':
+                        (str,),
+                    'view_as_gbloc':
+                        (str,),
                 },
                 'attribute_map': {
                     'page': 'page',
@@ -454,6 +550,7 @@ class QueuesApi(object):
                     'locator': 'locator',
                     'last_name': 'lastName',
                     'dod_id': 'dodID',
+                    'emplid': 'emplid',
                     'requested_move_date': 'requestedMoveDate',
                     'submitted_at': 'submittedAt',
                     'origin_gbloc': 'originGBLOC',
@@ -465,6 +562,8 @@ class QueuesApi(object):
                     'closeout_initiated': 'closeoutInitiated',
                     'closeout_location': 'closeoutLocation',
                     'order_type': 'orderType',
+                    'ppm_status': 'ppmStatus',
+                    'view_as_gbloc': 'viewAsGBLOC',
                 },
                 'location_map': {
                     'page': 'query',
@@ -475,6 +574,7 @@ class QueuesApi(object):
                     'locator': 'query',
                     'last_name': 'query',
                     'dod_id': 'query',
+                    'emplid': 'query',
                     'requested_move_date': 'query',
                     'submitted_at': 'query',
                     'origin_gbloc': 'query',
@@ -486,8 +586,11 @@ class QueuesApi(object):
                     'closeout_initiated': 'query',
                     'closeout_location': 'query',
                     'order_type': 'query',
+                    'ppm_status': 'query',
+                    'view_as_gbloc': 'query',
                 },
                 'collection_format_map': {
+                    'origin_duty_location': 'multi',
                     'status': 'csv',
                 }
             },
@@ -595,12 +698,14 @@ class QueuesApi(object):
             locator (str): [optional]
             last_name (str): [optional]
             dod_id (str): [optional]
-            origin_duty_location (str): [optional]
+            emplid (str): [optional]
+            origin_duty_location ([str]): [optional]
             destination_duty_location (str): [optional]
             appeared_in_too_at (datetime): [optional]
             requested_move_date (str): filters the requested pickup date of a shipment on the move. [optional]
             status ([str]): Filtering for the status.. [optional]
             order_type (str): order type. [optional]
+            view_as_gbloc (str): Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role. . [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -688,10 +793,12 @@ class QueuesApi(object):
             locator (str): [optional]
             last_name (str): [optional]
             dod_id (str): [optional]
+            emplid (str): [optional]
             destination_duty_location (str): [optional]
             origin_duty_location (str): [optional]
             status ([str]): Filtering for the status.. [optional]
             order_type (str): order type. [optional]
+            view_as_gbloc (str): Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role. . [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -755,6 +862,85 @@ class QueuesApi(object):
         kwargs['_request_auths'] = kwargs.get('_request_auths', None)
         return self.get_payment_requests_queue_endpoint.call_with_http_info(**kwargs)
 
+    def get_services_counseling_origin_list(
+        self,
+        **kwargs
+    ):
+        """Gets queued list of all moves origin locations in the counselors queue  # noqa: E501
+
+        An office services counselor user will be assigned a transportation office that will determine which moves are displayed in their queue based on the origin duty location. This pulls the availalble origin duty locations.   # noqa: E501
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+
+        >>> thread = api.get_services_counseling_origin_list(async_req=True)
+        >>> result = thread.get()
+
+
+        Keyword Args:
+            needs_ppm_closeout (bool): Only used for Services Counseling queue. If true, show PPM moves origin locations that are ready for closeout. Otherwise, show all other moves origin locations.. [optional]
+            _return_http_data_only (bool): response data without head status
+                code and headers. Default is True.
+            _preload_content (bool): if False, the urllib3.HTTPResponse object
+                will be returned without reading/decoding response data.
+                Default is True.
+            _request_timeout (int/float/tuple): timeout setting for this request. If
+                one number provided, it will be total request timeout. It can also
+                be a pair (tuple) of (connection, read) timeouts.
+                Default is None.
+            _check_input_type (bool): specifies if type checking
+                should be done one the data sent to the server.
+                Default is True.
+            _check_return_type (bool): specifies if type checking
+                should be done one the data received from the server.
+                Default is True.
+            _spec_property_naming (bool): True if the variable names in the input data
+                are serialized names, as specified in the OpenAPI document.
+                False if the variable names in the input data
+                are pythonic names, e.g. snake case (default)
+            _content_type (str/None): force body content-type.
+                Default is None and content-type will be predicted by allowed
+                content-types and body.
+            _host_index (int/None): specifies the index of the server
+                that we want to use.
+                Default is read from the configuration.
+            _request_auths (list): set to override the auth_settings for an a single
+                request; this effectively ignores the authentication
+                in the spec for a single request.
+                Default is None
+            async_req (bool): execute request asynchronously
+
+        Returns:
+            Locations
+                If the method is called asynchronously, returns the request
+                thread.
+        """
+        kwargs['async_req'] = kwargs.get(
+            'async_req', False
+        )
+        kwargs['_return_http_data_only'] = kwargs.get(
+            '_return_http_data_only', True
+        )
+        kwargs['_preload_content'] = kwargs.get(
+            '_preload_content', True
+        )
+        kwargs['_request_timeout'] = kwargs.get(
+            '_request_timeout', None
+        )
+        kwargs['_check_input_type'] = kwargs.get(
+            '_check_input_type', True
+        )
+        kwargs['_check_return_type'] = kwargs.get(
+            '_check_return_type', True
+        )
+        kwargs['_spec_property_naming'] = kwargs.get(
+            '_spec_property_naming', False
+        )
+        kwargs['_content_type'] = kwargs.get(
+            '_content_type')
+        kwargs['_host_index'] = kwargs.get('_host_index')
+        kwargs['_request_auths'] = kwargs.get('_request_auths', None)
+        return self.get_services_counseling_origin_list_endpoint.call_with_http_info(**kwargs)
+
     def get_services_counseling_queue(
         self,
         **kwargs
@@ -778,10 +964,11 @@ class QueuesApi(object):
             locator (str): filters to match the unique move code locator. [optional]
             last_name (str): filters using a prefix match on the service member's last name. [optional]
             dod_id (str): filters to match the unique service member's DoD ID. [optional]
+            emplid (str): filters to match the unique service member's EMPLID. [optional]
             requested_move_date (str): filters the requested pickup date of a shipment on the move. [optional]
             submitted_at (datetime): Start of the submitted at date in the user's local time zone converted to UTC. [optional]
             origin_gbloc (str): filters the GBLOC of the service member's origin duty location. [optional]
-            origin_duty_location (str): filters the name of the origin duty location on the orders. [optional]
+            origin_duty_location ([str]): filters the name of the origin duty location on the orders. [optional]
             destination_duty_location (str): filters the name of the destination duty location on the orders. [optional]
             status ([str]): filters the status of the move. [optional]
             needs_ppm_closeout (bool): Only used for Services Counseling queue. If true, show PPM moves that are ready for closeout. Otherwise, show all other moves.. [optional]
@@ -789,6 +976,8 @@ class QueuesApi(object):
             closeout_initiated (datetime): Latest date that closeout was initiated on a PPM on the move. [optional]
             closeout_location (str): closeout location. [optional]
             order_type (str): order type. [optional]
+            ppm_status (str): filters the status of the PPM shipment. [optional]
+            view_as_gbloc (str): Used to return a queue for a GBLOC other than the default of the current user. Requires the HQ role. The parameter is ignored if the requesting user does not have the necessary role. . [optional]
             _return_http_data_only (bool): response data without head status
                 code and headers. Default is True.
             _preload_content (bool): if False, the urllib3.HTTPResponse object

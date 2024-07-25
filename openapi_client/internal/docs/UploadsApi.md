@@ -122,6 +122,8 @@ with internal_client.ApiClient() as api_client:
     api_instance = uploads_api.UploadsApi(api_client)
     upload_id = "uploadId_example" # str | UUID of the upload to be deleted
     order_id = "orderId_example" # str | ID of the order that the upload belongs to (optional)
+    move_id = "moveId_example" # str | Optional ID of the move that the upload belongs to (optional)
+    ppm_id = "ppmId_example" # str | Optional PPM shipment ID related to the upload (optional)
 
     # example passing only required values which don't have defaults set
     try:
@@ -134,7 +136,7 @@ with internal_client.ApiClient() as api_client:
     # and optional values
     try:
         # Deletes an upload
-        api_instance.delete_upload(upload_id, order_id=order_id)
+        api_instance.delete_upload(upload_id, order_id=order_id, move_id=move_id, ppm_id=ppm_id)
     except internal_client.ApiException as e:
         print("Exception when calling UploadsApi->delete_upload: %s\n" % e)
 ```
@@ -146,6 +148,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **upload_id** | **str**| UUID of the upload to be deleted |
  **order_id** | **str**| ID of the order that the upload belongs to | [optional]
+ **move_id** | **str**| Optional ID of the move that the upload belongs to | [optional]
+ **ppm_id** | **str**| Optional PPM shipment ID related to the upload | [optional]
 
 ### Return type
 

@@ -107,6 +107,7 @@ class MTOServiceItemDomesticCrating(ModelComposed):
             'move_task_order_id': (str,),  # noqa: E501
             'model_type': (MTOServiceItemModelType,),  # noqa: E501
             'reason': (str, none_type,),  # noqa: E501
+            'standalone_crate': (bool, none_type,),  # noqa: E501
             'id': (str,),  # noqa: E501
             'mto_shipment_id': (str,),  # noqa: E501
             're_service_name': (str,),  # noqa: E501
@@ -132,6 +133,7 @@ class MTOServiceItemDomesticCrating(ModelComposed):
         'move_task_order_id': 'moveTaskOrderID',  # noqa: E501
         'model_type': 'modelType',  # noqa: E501
         'reason': 'reason',  # noqa: E501
+        'standalone_crate': 'standaloneCrate',  # noqa: E501
         'id': 'id',  # noqa: E501
         'mto_shipment_id': 'mtoShipmentID',  # noqa: E501
         're_service_name': 'reServiceName',  # noqa: E501
@@ -191,6 +193,7 @@ class MTOServiceItemDomesticCrating(ModelComposed):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             reason (str, none_type): The contractor's explanation for why an item needed to be crated or uncrated. Used by the TOO while deciding to approve or reject the service item. . [optional]  # noqa: E501
+            standalone_crate (bool, none_type): [optional]  # noqa: E501
             id (str): The ID of the service item.. [optional]  # noqa: E501
             mto_shipment_id (str): The ID of the shipment this service is for, if any. Optional.. [optional]  # noqa: E501
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501
@@ -308,6 +311,7 @@ class MTOServiceItemDomesticCrating(ModelComposed):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             reason (str, none_type): The contractor's explanation for why an item needed to be crated or uncrated. Used by the TOO while deciding to approve or reject the service item. . [optional]  # noqa: E501
+            standalone_crate (bool, none_type): [optional]  # noqa: E501
             id (str): The ID of the service item.. [optional]  # noqa: E501
             mto_shipment_id (str): The ID of the shipment this service is for, if any. Optional.. [optional]  # noqa: E501
             re_service_name (str): The full descriptive name of the service.. [optional]  # noqa: E501

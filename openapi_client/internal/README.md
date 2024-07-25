@@ -108,6 +108,7 @@ Class | Method | HTTP request | Description
 *MovesApi* | [**show_move**](docs/MovesApi.md#show_move) | **GET** /moves/{moveId} | Returns the given move
 *MovesApi* | [**submit_amended_orders**](docs/MovesApi.md#submit_amended_orders) | **POST** /moves/{moveId}/submit_amended_orders | Submits amended orders for review
 *MovesApi* | [**submit_move_for_approval**](docs/MovesApi.md#submit_move_for_approval) | **POST** /moves/{moveId}/submit | Submits a move for approval
+*MovesApi* | [**upload_additional_documents**](docs/MovesApi.md#upload_additional_documents) | **PATCH** /moves/{moveId}/uploadAdditionalDocuments | Patch the additional documents for a given move
 *MtoShipmentApi* | [**create_mto_shipment**](docs/MtoShipmentApi.md#create_mto_shipment) | **POST** /mto_shipments | createMTOShipment
 *MtoShipmentApi* | [**delete_shipment**](docs/MtoShipmentApi.md#delete_shipment) | **DELETE** /mto-shipments/{mtoShipmentId} | Soft deletes a shipment by ID
 *MtoShipmentApi* | [**list_mto_shipments**](docs/MtoShipmentApi.md#list_mto_shipments) | **GET** /moves/{moveTaskOrderID}/mto_shipments | Gets all shipments for a move task order
@@ -237,6 +238,7 @@ Class | Method | HTTP request | Description
  - [SignedCertificationTypeCreate](docs/SignedCertificationTypeCreate.md)
  - [SignedCertifications](docs/SignedCertifications.md)
  - [SubmitMoveForApprovalPayload](docs/SubmitMoveForApprovalPayload.md)
+ - [SubmittedMovingExpenseType](docs/SubmittedMovingExpenseType.md)
  - [TransportationOffice](docs/TransportationOffice.md)
  - [TransportationOffices](docs/TransportationOffices.md)
  - [UpdateMovingExpense](docs/UpdateMovingExpense.md)

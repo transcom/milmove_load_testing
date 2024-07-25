@@ -102,6 +102,7 @@ class Order(ModelNormal):
             'customer_id': (str,),  # noqa: E501
             'entitlement': (Entitlements,),  # noqa: E501
             'destination_duty_location': (DutyLocation,),  # noqa: E501
+            'destination_duty_location_gbloc': (str,),  # noqa: E501
             'origin_duty_location': (DutyLocation,),  # noqa: E501
             'origin_duty_location_gbloc': (str,),  # noqa: E501
             'report_by_date': (date,),  # noqa: E501
@@ -123,6 +124,7 @@ class Order(ModelNormal):
         'customer_id': 'customerID',  # noqa: E501
         'entitlement': 'entitlement',  # noqa: E501
         'destination_duty_location': 'destinationDutyLocation',  # noqa: E501
+        'destination_duty_location_gbloc': 'destinationDutyLocationGBLOC',  # noqa: E501
         'origin_duty_location': 'originDutyLocation',  # noqa: E501
         'origin_duty_location_gbloc': 'originDutyLocationGBLOC',  # noqa: E501
         'report_by_date': 'reportByDate',  # noqa: E501
@@ -182,6 +184,7 @@ class Order(ModelNormal):
             customer_id (str): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            destination_duty_location_gbloc (str): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location_gbloc (str): [optional]  # noqa: E501
             report_by_date (date): [optional]  # noqa: E501
@@ -285,6 +288,7 @@ class Order(ModelNormal):
             customer_id (str): [optional]  # noqa: E501
             entitlement (Entitlements): [optional]  # noqa: E501
             destination_duty_location (DutyLocation): [optional]  # noqa: E501
+            destination_duty_location_gbloc (str): [optional]  # noqa: E501
             origin_duty_location (DutyLocation): [optional]  # noqa: E501
             origin_duty_location_gbloc (str): [optional]  # noqa: E501
             report_by_date (date): [optional]  # noqa: E501

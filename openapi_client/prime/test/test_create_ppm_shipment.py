@@ -13,6 +13,10 @@ import sys
 import unittest
 
 import prime_client
+from prime_client.model.create_ppm_shipment_destination_address import CreatePPMShipmentDestinationAddress
+from prime_client.model.create_ppm_shipment_pickup_address import CreatePPMShipmentPickupAddress
+globals()['CreatePPMShipmentDestinationAddress'] = CreatePPMShipmentDestinationAddress
+globals()['CreatePPMShipmentPickupAddress'] = CreatePPMShipmentPickupAddress
 from prime_client.model.create_ppm_shipment import CreatePPMShipment
 
 

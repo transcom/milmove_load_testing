@@ -13,7 +13,9 @@ import sys
 import unittest
 
 import ghc_client
+from ghc_client.model.available_office_users import AvailableOfficeUsers
 from ghc_client.model.queue_payment_requests import QueuePaymentRequests
+globals()['AvailableOfficeUsers'] = AvailableOfficeUsers
 globals()['QueuePaymentRequests'] = QueuePaymentRequests
 from ghc_client.model.queue_payment_requests_result import QueuePaymentRequestsResult
 

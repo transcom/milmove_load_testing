@@ -31,9 +31,11 @@ from internal_client.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from internal_client.model.document import Document
     from internal_client.model.move_status import MoveStatus
     from internal_client.model.mto_shipments import MTOShipments
     from internal_client.model.transportation_office import TransportationOffice
+    globals()['Document'] = Document
     globals()['MTOShipments'] = MTOShipments
     globals()['MoveStatus'] = MoveStatus
     globals()['TransportationOffice'] = TransportationOffice
@@ -105,6 +107,7 @@ class MovePayload(ModelNormal):
             'closeout_office': (TransportationOffice,),  # noqa: E501
             'cancel_reason': (str, none_type,),  # noqa: E501
             'prime_counseling_completed_at': (datetime,),  # noqa: E501
+            'additional_documents': (Document,),  # noqa: E501
         }
 
     @cached_property
@@ -126,6 +129,7 @@ class MovePayload(ModelNormal):
         'closeout_office': 'closeout_office',  # noqa: E501
         'cancel_reason': 'cancel_reason',  # noqa: E501
         'prime_counseling_completed_at': 'primeCounselingCompletedAt',  # noqa: E501
+        'additional_documents': 'additionalDocuments',  # noqa: E501
     }
 
     read_only_vars = {
@@ -186,6 +190,7 @@ class MovePayload(ModelNormal):
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501
             prime_counseling_completed_at (datetime): [optional]  # noqa: E501
+            additional_documents (Document): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -292,6 +297,7 @@ class MovePayload(ModelNormal):
             closeout_office (TransportationOffice): [optional]  # noqa: E501
             cancel_reason (str, none_type): [optional]  # noqa: E501
             prime_counseling_completed_at (datetime): [optional]  # noqa: E501
+            additional_documents (Document): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

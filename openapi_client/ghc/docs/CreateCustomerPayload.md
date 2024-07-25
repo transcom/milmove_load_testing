@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **affiliation** | [**Affiliation**](Affiliation.md) |  | [optional] 
 **edipi** | **str, none_type** |  | [optional] 
+**emplid** | **str, none_type** |  | [optional] 
 **first_name** | **str** |  | [optional] 
 **middle_name** | **str, none_type** |  | [optional] 
 **last_name** | **str** |  | [optional] 
